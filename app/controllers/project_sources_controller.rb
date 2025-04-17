@@ -1,21 +1,22 @@
 class ProjectSourcesController < ApplicationController
+  # TODO: Too fat - Figure out how to refactor
   def create
-    User.where(email: params[:email]).first_or_create
-
-    # TODO: Capture projects (.blend file names)
-    projects_attributes = [
-      { name: "suzanne", uuid: SecureRandom.uuid },
-      { name: "papaya", uuid: SecureRandom.uuid }
-    ]
+    user = User.where(email: params[:email]).first_or_create
 
     project_source_id = session[:project_source_id]
-    @project_source = ProjectSource.new(uuid: project_source_id, projects_attributes:)
+    @project_source = ProjectSource.new(uuid: project_source_id)
     @project_source.attachments.attach(params[:attachments])
-    @project_source.save!
 
-    @project_source.attachments.each do |attached_file|
-      Rails.logger.info "attached_file: #{attached_file.inspect}"
+    projects_attributes = []
+    params[:mainBlendFiles].each do |index|
+      projects_attributes << {
+        name: @project_source.attachments[index.to_i].blob.filename,
+        uuid: SecureRandom.uuid,
+        user_id: user.id
+      }
     end
+    @project_source.projects_attributes = projects_attributes
+    @project_source.save!
 
     redirect_to projects_path
   end
