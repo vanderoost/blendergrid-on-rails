@@ -4,7 +4,6 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.string :uuid
       t.string :name
 
-      t.belongs_to :user
       t.belongs_to :project_source
 
       t.timestamps

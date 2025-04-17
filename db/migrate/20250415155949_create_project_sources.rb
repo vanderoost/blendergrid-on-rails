@@ -3,6 +3,8 @@ class CreateProjectSources < ActiveRecord::Migration[8.0]
     create_table :project_sources do |t|
       t.string :uuid
 
+      t.belongs_to :user
+
       t.timestamps
     end
   end

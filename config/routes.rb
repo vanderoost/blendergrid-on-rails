@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resource :session
+  resources :passwords, param: :token
   get "project_sources/create"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -11,7 +13,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "home#upload"
+  root "project_sources#new"
 
   resources :project_sources
   resources :projects
