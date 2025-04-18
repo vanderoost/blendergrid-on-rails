@@ -39,3 +39,5 @@
 localstack-volume/*
 terraform/.*
 terraform/terraform.tfstate*
+
+/config/credentials/development.key

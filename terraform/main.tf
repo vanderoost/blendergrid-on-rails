@@ -1,3 +1,4 @@
+# TODO: Get Rails config in here, one source of truth
 provider "aws" {
   access_key = "test"
   secret_key = "test"
@@ -14,9 +15,8 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "blendergrid-on-rails-development"
+  bucket        = "swarm-engine-dev"
   force_destroy = true
-
 }
 
 resource "aws_s3_bucket_cors_configuration" "cors_configuration" {

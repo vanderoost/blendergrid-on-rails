@@ -7,9 +7,7 @@ class ProjectsController < ApplicationController
 
     Array(session[:project_source_uuids]).each do |project_source_uuid|
       project_source = ProjectSource.find_by(uuid: project_source_uuid)
-      if not project_source
-        continue
-      end
+      next if not project_source
       projects += project_source.projects
     end
 

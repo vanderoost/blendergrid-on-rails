@@ -1,3 +1,14 @@
 <h1><%= @project.name %></h1>
 
+<table>
+  <tr>
+    <td>UUID</td>
+    <td><%= @project.uuid %></td>
+  </tr>
+  <tr>
+    <td>Status</td>
+    <td><%= @project.status.to_s %></td>
+  </tr>
+</table>
+
 <%= link_to "Back", projects_path %>

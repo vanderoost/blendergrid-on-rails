@@ -7,9 +7,9 @@ class ProjectSourcesController < ApplicationController
     session[:project_source_id] = project_source_id
   end
 
+  # TODO: Defattify this method
   def create
-    project_source_id = session[:project_source_id]
-    @project_source = ProjectSource.new(uuid: project_source_id)
+    @project_source = ProjectSource.new(uuid: session[:project_source_id])
     @project_source.attachments.attach(params[:attachments])
 
     # Allow creating projects when the user is not logged in. Email a magic link.
@@ -19,17 +19,11 @@ class ProjectSourcesController < ApplicationController
       @project_source.user = User.first_or_create!(email_address: params[:email])
     end
 
-    projects_attributes = []
-    params[:mainBlendFiles].each do |index|
-      projects_attributes << {
-        name: @project_source.attachments[index.to_i].blob.filename,
-        uuid: SecureRandom.uuid
-      }
-    end
-    @project_source.projects_attributes = projects_attributes
+    @project_source.start_projects(params[:mainBlendFiles])
+    @project_source.save!
+
     session[:project_source_uuids] ||= []
     session[:project_source_uuids] << @project_source.uuid
-    @project_source.save!
 
     redirect_to projects_path
   end
