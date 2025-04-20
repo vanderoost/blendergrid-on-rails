@@ -22,14 +22,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-full">
-   <nav>
-      <%= link_to "Home", root_path %>
-      <%= button_to "Log out", session_path, method: :delete if authenticated? %>
-    </nav>
+  <body class="h-screen flex flex-col">
+    <%= render "layouts/colors_background" %>
 
-    <main class="flex flex-col items-center justify-center min-h-full">
-      <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <%= render "layouts/header" %>
+
+    <main class="flex-grow flex flex-col items-center justify-center">
+      <div class="mx-auto max-w-7xl py-6 w-full">
         <%= yield %>
       </div>
     </main>

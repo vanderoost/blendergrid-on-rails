@@ -2,6 +2,7 @@ class ProjectSourcesController < ApplicationController
   allow_unauthenticated_access only: %i[ new create ]
 
   def new
+    @big_color = true
     project_source_id = SecureRandom.uuid
     Rails.logger.info "Using project_source_id: #{project_source_id}"
     session[:project_source_id] = project_source_id

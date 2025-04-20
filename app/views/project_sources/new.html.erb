@@ -4,10 +4,12 @@
     dragenter->upload#addHighlight
     dragleave->upload#removeHighlight
     dragover->upload#disableDefaultDrag
-    drop->upload#addDroppedFiles"
+    drop->upload#addDroppedFiles
+  "
   data-upload-highlight-counter-value="0"
   data-highlight="false"
-  class="group/dragdrop transition">
+  class="group/dragdrop transition max-w-88 mx-auto"
+>
   <%= form_with url: "/project_sources",
     data: {action: raw("submit->upload#submit")},
     class: "flex flex-col gap-4 bg-white p-6 shadow-xl rounded-xl border border-gray-200" do |form| %>
@@ -19,37 +21,57 @@
         data-upload-target="uploadArea"
         class="
           group-data-[highlight=true]/dragdrop:border-blue-700/50
-          group-data-[highlight=true]/dragdrop:bg-blue-200
-          transition mt-2 flex justify-center
-          rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+          group-data-[highlight=true]/dragdrop:bg-blue-200 transition mt-2 flex
+          justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10
+        "
+      >
         <div class="text-center">
-          <svg class="
-            group-data-[highlight=true]/dragdrop:text-blue-400
-            group-data-[highlight=true]/dragdrop:scale-125
-            group-data-[highlight=true]/dragdrop:animate-bounce
-            transition mx-auto size-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
-            <path fill-rule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" />
+          <svg
+            class="
+              group-data-[highlight=true]/dragdrop:text-blue-400
+              group-data-[highlight=true]/dragdrop:scale-125
+              group-data-[highlight=true]/dragdrop:animate-bounce transition mx-auto size-12
+              text-gray-300
+            "
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+            data-slot="icon"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
+              clip-rule="evenodd"
+            />
           </svg>
           <div class="mt-4 flex text-sm/6 text-gray-700">
-            <label for="attachments" class="relative cursor-pointer rounded-md font-semibold text-blue-500 hover:text-blue-700">
+            <label
+              for="attachments"
+              class="
+                relative cursor-pointer rounded-md font-semibold text-blue-600
+                hover:text-blue-700
+              "
+            >
               <span>Upload a file</span>
               <%= form.file_field :attachments,
-                data: {
-                  'upload-target': 'fileInput',
-                  'action': raw('change->upload#filesChanged'),
-                },
-                multiple: true, direct_upload: true, class: "sr-only" %>
+                              data: {
+                                "upload-target": "fileInput",
+                                action: raw("change->upload#filesChanged"),
+                              },
+                              multiple: true,
+                              direct_upload: true,
+                              class: "sr-only" %>
             </label>
             <p class="pl-1">or drag and drop</p>
           </div>
           <p class="text-xs/5 text-gray-500">
-            at least one .blend file, max 
+            at least one .blend file, max
             <span title="yes, TB with a capital T">5TB</span>
           </p>
         </div>
       </div>
     </div>
-    
+
     <%# FILE LIST %>
     <div data-upload-target="fileList" class="space-y-5"></div>
 
@@ -65,16 +87,47 @@
                 name="mainBlendFiles[]"
                 type="checkbox"
                 aria-describedby="checkbox-description"
-                class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-blue-500 checked:bg-blue-500 indeterminate:border-blue-500 indeterminate:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto">
-              <svg class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled/checkbox:stroke-gray-950/25" viewBox="0 0 14 14" fill="none">
-                <path class="opacity-0 group-has-checked/checkbox:opacity-100" d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                <path class="opacity-0 group-has-indeterminate/checkbox:opacity-100" d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                class="
+                  col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300
+                  bg-white checked:border-blue-600 checked:bg-blue-600
+                  indeterminate:border-blue-600 indeterminate:bg-blue-600 focus-visible:outline-2
+                  focus-visible:outline-offset-2 focus-visible:outline-blue-600
+                  disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100
+                  forced-colors:appearance-auto
+                "
+              >
+              <svg
+                class="
+                  pointer-events-none col-start-1 row-start-1 size-3.5 self-center
+                  justify-self-center stroke-white group-has-disabled/checkbox:stroke-gray-950/25
+                "
+                viewBox="0 0 14 14"
+                fill="none"
+              >
+                <path
+                  class="opacity-0 group-has-checked/checkbox:opacity-100"
+                  d="M3 8L6 11L11 3.5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  class="
+                    opacity-0 group-has-indeterminate/checkbox:opacity-100
+                  "
+                  d="M3 7H11"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
               </svg>
             </div>
           </div>
+
           <div class="text-sm/6 cursor-pointer">
             <label id="file-name" class="font-medium text-gray-900"></label>
           </div>
+
           <div class="text-sm/6 ml-auto">
             <span id="file-size" class="text-gray-500"></span>
           </div>
@@ -82,26 +135,39 @@
       </template>
     </div>
 
-
     <%# EMAIL %>
     <div class="relative">
-      <label for="email" class="absolute -top-2 left-2 inline-block rounded-lg bg-white px-1 text-xs font-medium text-gray-900">Email</label>
+      <label
+        for="email"
+        class="
+          absolute -top-2 left-2 inline-block rounded-lg bg-white px-1 text-xs font-medium
+          text-gray-900
+        "
+      >Email</label>
 
-        <%= form.email_field :email,
-          data: {action: raw('change->upload#emailChanged')},
-          class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm/6",
-          placeholder: "suzanne@blendergrid.com"
-        %>
+      <%= form.email_field :email,
+                       data: {
+                         action: raw("change->upload#emailChanged"),
+                       },
+                       class:
+                         "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6",
+                       placeholder: "suzanne@blendergrid.com" %>
     </div>
 
     <%# SUBMIT %>
-      <div>
-        <button
-          data-upload-target="submit"
-          type="submit"
-          disabled
-          class="flex w-full justify-center rounded-md bg-blue-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-blue-200 cursor-pointer disabled:cursor-not-allowed">Start a Render</button>
-      </div>
+    <div>
+      <button
+        data-upload-target="submit"
+        type="submit"
+        disabled
+        class="
+          flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm/6
+          font-semibold text-white shadow-xs hover:bg-blue-600 focus-visible:outline-2
+          focus-visible:outline-offset-2 focus-visible:outline-blue-600
+          disabled:bg-blue-200 cursor-pointer disabled:cursor-not-allowed
+        "
+      >Start a Render</button>
+    </div>
   <% end %>
 
   <%= javascript_include_tag "activestorage" %>
