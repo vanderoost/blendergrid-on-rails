@@ -8,7 +8,7 @@
   "
   data-upload-highlight-counter-value="0"
   data-highlight="false"
-  class="group/dragdrop transition max-w-88 mx-auto"
+  class="group/dragdrop transition mx-auto"
 >
   <%= form_with url: "/project_sources",
     data: {action: raw("submit->upload#submit")},
@@ -73,13 +73,13 @@
     </div>
 
     <%# FILE LIST %>
-    <div data-upload-target="fileList" class="space-y-5"></div>
+    <div data-upload-target="fileList" class="space-y-5 hidden py-2 px-1"></div>
 
     <%# FILE ITEM TEMPLATE - TODO: Turn this into a round progress bar %>
-    <div style="display: none">
+    <div class="hidden">
       <template data-upload-target="fileItemTemplate">
         <div class="flex gap-3 justify-around">
-          <div class="flex h-6 shrink-0 items-center">
+          <div class="flex h-6 shrink-0 items-center" id="checkbox-container">
             <div class="group/checkbox grid size-4 grid-cols-1">
               <input
                 data-upload-target="project"

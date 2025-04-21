@@ -1,4 +1,4 @@
-<div>
+<div class="w-full">
   <% @projects.map(&:project_source).uniq.each do |project_source| %>
     <%= turbo_stream_from [project_source, :projects] %>
   <% end %>

@@ -80,6 +80,14 @@ export default class extends Controller {
   updateFileList() {
     console.debug("updateFileList")
 
+    if (this.files.length > 0) {
+      this.fileListTarget.classList.remove("hidden")
+
+    } else {
+      this.fileListTarget.classList.add("hidden")
+      return
+    }
+
     const mainBlendFileMask = this.projectTargets.map((project) => project.checked)
     this.fileListTarget.innerHTML = ""
     this.files.forEach(
@@ -104,6 +112,7 @@ export default class extends Controller {
 
     const template = this.fileItemTemplateTarget.content.cloneNode(true)
     const checkboxElem = template.querySelector("#checkbox")
+    const checkboxContainer = template.querySelector("#checkbox-container")
     const fileNameElem = template.querySelector("#file-name")
     const fileSizeElem = template.querySelector("#file-size")
 
@@ -113,6 +122,12 @@ export default class extends Controller {
     checkboxElem.checked = isBlendFile(file) && (
       mainBlendFileMask[index] || this.blendFileCount < 2)
     checkboxElem.hidden = !isBlendFile(file) || this.blendFileCount < 2
+
+    checkboxContainer.removeAttribute("id")
+    if (this.blendFileCount < 2)
+      checkboxContainer.classList.add("hidden")
+    else
+      checkboxContainer.classList.remove("hidden")
 
     fileNameElem.textContent = truncate(file.name, MAX_FILE_NAME_LENGTH)
     fileNameElem.setAttribute("title", file.name)

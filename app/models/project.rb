@@ -6,8 +6,7 @@ class Project < ApplicationRecord
     [ :started,  :waiting, :rendering, :finished, :failed ],
     default: :started
 
-  broadcasts_to ->(project) { [ project.project_source, :projects ] },
-    target: ->(project) { dom_id(project) },
-    inserts_by: :prepend,
-    partial: "projects/project"
+  broadcasts_to ->(p) { [ p.project_source, :projects ] },
+    partial: "projects/project",
+    inserts_by: :prepend
 end
