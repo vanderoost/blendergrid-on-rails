@@ -11,13 +11,15 @@ class Workflow < ApplicationRecord
     end
 
     self.finished!
-    self.save
     Rails.logger.info "Workflow is finished!"
 
     # TODO: Pull the integrity check results form S3
 
-    # Do a wire thing to the frontend
     self.project.status = :waiting
+
+    # Do a cable thing to the frontend
+
     self.project.save # TODO: Can we save both ath the same time?
+    self.save
   end
 end
