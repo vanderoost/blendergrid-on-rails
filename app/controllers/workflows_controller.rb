@@ -1,8 +1,6 @@
 class WorkflowsController < ApplicationController
   include ::ActionController::HttpAuthentication::Token::ControllerMethods
 
-  TOKEN = "secret"
-
   # TOOD: Figure out if this can be cleaned up for API-only routes
   allow_unauthenticated_access # To turn off email/password login
   skip_before_action :verify_authenticity_token # To turn off CSRF protection
@@ -24,7 +22,7 @@ class WorkflowsController < ApplicationController
     def authenticate
       authenticate_or_request_with_http_token do |token, options|
         Rails.logger.info "Authenticating with token: '#{token}'"
-        token == TOKEN
+        token == Rails.application.credentials.api_token
       end
     end
 

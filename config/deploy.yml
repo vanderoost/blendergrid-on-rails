@@ -96,6 +96,13 @@ ssh:
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
+#   redis:
+#     image: redis:7.4
+#     # host: 192.168.0.2
+#     roles: [web]
+#     port: 6379
+#     directories:
+#       - data:/data
 #   db:
 #     image: mysql:8.0
 #     host: 192.168.0.2
@@ -111,9 +118,3 @@ ssh:
 #       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
 #     directories:
 #       - data:/var/lib/mysql
-#   redis:
-#     image: redis:7.0
-#     host: 192.168.0.2
-#     port: 6379
-#     directories:
-#       - data:/data

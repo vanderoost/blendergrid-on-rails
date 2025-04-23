@@ -1,4 +1,4 @@
-return if ENV["SECRET_KEY_BASE_DUMMY"].present?
+return if ENV["SECRET_KEY_BASE_DUMMY"].present? # Prevent the build from shitting itself
 
 Rails.application.config.to_prepare do
   class ActiveStorage::DirectUploadsController
