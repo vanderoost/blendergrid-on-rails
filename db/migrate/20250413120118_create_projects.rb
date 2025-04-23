@@ -5,6 +5,8 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.string :name
       t.string :main_blend_file
       t.integer :status
+      t.json :settings, null: false, default: {}
+      t.json :stats, null: false, default: {}
 
       t.belongs_to :project_source
 

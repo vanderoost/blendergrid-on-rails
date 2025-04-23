@@ -40,23 +40,25 @@
   </td>
 
   <td class="hidden py-5 pr-6 sm:table-cell">
-    <div class="text-sm/6 text-gray-900">Animation</div>
-    <div class="mt-1 text-xs/5 text-gray-500">Frames: 1-160</div>
+    <div class="text-sm/6 text-gray-900"><%= project.frame_range_type %></div>
+    <div class="mt-1 text-xs/5 text-gray-500"><%= project.frame_range_str %></div>
   </td>
 
   <td class="hidden py-5 pr-6 sm:table-cell">
-    <div class="text-sm/6 text-gray-900">1920x1080px</div>
-    <div class="mt-1 text-xs/5 text-gray-500">Samples: 128</div>
+    <div class="text-sm/6 text-gray-900"><%= project.resolution_str %></div>
+    <div class="mt-1 text-xs/5 text-gray-500">
+      <%= project.samples_str %>
+    </div>
   </td>
 
   <td class="py-5 text-right">
     <div class="flex justify-end">
-      <%= link_to project, class: "text-sm/6 font-medium text-blue-600 hover:text-blue-500" do %>
+      <%= link_to project, class: "text-sm/6 font-medium text-violet-600 hover:text-violet-500" do %>
         <span class="hidden sm:inline">Project</span>
         settings<span class="sr-only">, invoice #00012, Reform</span>
       <% end %>
     </div>
-    <div class="mt-1 text-xs/5 text-gray-500">
+    <div class="mt-1 text-xs/5 text-gray-500 collapse">
       Invoice
       <span class="text-gray-900">#00012</span>
     </div>

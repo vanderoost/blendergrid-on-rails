@@ -9,8 +9,10 @@ class WorkflowsController < ApplicationController
   before_action :authenticate, :set_workflow
 
   def update
+    Rails.logger.info "Update Workflow - Params: #{params.inspect}"
+
     if params[:status] == "finished"
-      @workflow.finalize()
+      @workflow.finalize(result: params[:result])
     end
 
     # TODO: Handle sad paths

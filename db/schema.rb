@@ -52,6 +52,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_18_143418) do
     t.string "name"
     t.string "main_blend_file"
     t.integer "status"
+    t.json "settings", default: {}, null: false
+    t.json "stats", default: {}, null: false
     t.integer "project_source_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

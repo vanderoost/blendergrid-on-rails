@@ -8,7 +8,7 @@
   "
   data-upload-highlight-counter-value="0"
   data-highlight="false"
-  class="group/dragdrop transition mx-auto"
+  class="group/dragdrop flex flex-col items-center justify-center min-h-3/4"
 >
   <%= form_with url: "/project_sources",
     data: {action: raw("submit->upload#submit")},
@@ -20,15 +20,15 @@
       <div
         data-upload-target="uploadArea"
         class="
-          group-data-[highlight=true]/dragdrop:border-blue-700/50
-          group-data-[highlight=true]/dragdrop:bg-blue-200 transition mt-2 flex
+          group-data-[highlight=true]/dragdrop:border-violet-700/50
+          group-data-[highlight=true]/dragdrop:bg-violet-200 transition mt-2 flex
           justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10
         "
       >
         <div class="text-center">
           <svg
             class="
-              group-data-[highlight=true]/dragdrop:text-blue-400
+              group-data-[highlight=true]/dragdrop:text-violet-400
               group-data-[highlight=true]/dragdrop:scale-125
               group-data-[highlight=true]/dragdrop:animate-bounce transition mx-auto size-12
               text-gray-300
@@ -48,8 +48,8 @@
             <label
               for="attachments"
               class="
-                relative cursor-pointer rounded-md font-semibold text-blue-600
-                hover:text-blue-700
+                relative cursor-pointer rounded-md font-semibold text-violet-600
+                hover:text-violet-700
               "
             >
               <span>Upload a file</span>
@@ -89,11 +89,11 @@
                 aria-describedby="checkbox-description"
                 class="
                   col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300
-                  bg-white checked:border-blue-600 checked:bg-blue-600
-                  indeterminate:border-blue-600 indeterminate:bg-blue-600 focus-visible:outline-2
-                  focus-visible:outline-offset-2 focus-visible:outline-blue-600
-                  disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100
-                  forced-colors:appearance-auto
+                  bg-white checked:border-violet-600 checked:bg-violet-600
+                  indeterminate:border-violet-600 indeterminate:bg-violet-600
+                  focus-visible:outline-2 focus-visible:outline-offset-2
+                  focus-visible:outline-violet-600 disabled:border-gray-300 disabled:bg-gray-100
+                  disabled:checked:bg-gray-100 forced-colors:appearance-auto
                 "
               >
               <svg
@@ -150,7 +150,7 @@
                          action: raw("change->upload#emailChanged"),
                        },
                        class:
-                         "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6",
+                         "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-violet-600 sm:text-sm/6",
                        placeholder: "suzanne@blendergrid.com" %>
     </div>
 
@@ -161,10 +161,10 @@
         type="submit"
         disabled
         class="
-          flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm/6
-          font-semibold text-white shadow-xs hover:bg-blue-600 focus-visible:outline-2
-          focus-visible:outline-offset-2 focus-visible:outline-blue-600
-          disabled:bg-blue-200 cursor-pointer disabled:cursor-not-allowed
+          flex w-full justify-center rounded-md bg-violet-600 px-3 py-1.5 text-sm/6
+          font-semibold text-white shadow-xs hover:bg-violet-600 focus-visible:outline-2
+          focus-visible:outline-offset-2 focus-visible:outline-violet-600
+          disabled:bg-violet-200 cursor-pointer disabled:cursor-not-allowed
         "
       >Start a Render</button>
     </div>

@@ -4,7 +4,7 @@ class Workflow < ApplicationRecord
 
   belongs_to :project
 
-  def finalize
+  def finalize(result: nil)
     if self.finished?
       Rails.logger.warn "Workflow was already finished!"
       return
@@ -13,9 +13,19 @@ class Workflow < ApplicationRecord
     self.finished!
     Rails.logger.info "Workflow is finished!"
 
+    Rails.logger.info "Result: " + result.inspect
     # TODO: Pull the integrity check results form S3
 
     self.project.status = :waiting
+
+    if result
+      if result[:settings]
+        self.project.settings = result[:settings]
+      end
+      if result[:stats]
+        self.project.stats = result[:stats]
+      end
+    end
 
     # Do a cable thing to the frontend
 

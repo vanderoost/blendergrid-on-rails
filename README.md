@@ -49,7 +49,17 @@ Ruby version: ruby 3.4.2
 
 * System dependencies
 
-* Configuration
+## Configuration
+
+Update secrets and credentials
+```bash
+rails credentials:edit 
+```
+
+For specific environments
+```bash
+rails credentials:edit -e production
+```
 
 * Database creation
 
@@ -57,14 +67,23 @@ Ruby version: ruby 3.4.2
 
 * How to run the test suite
 
-## Run locally
+## Running locally
 
 ```bash
-bin/rails server
+bin/dev
 ```
 
 * Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
+## Deployment instructions
+```bash
+kamal deploy
 
-* ...
+```
+
+## Monitoring
+
+Live tailing logs
+```bash
+kamal logs
+```

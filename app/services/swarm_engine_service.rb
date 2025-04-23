@@ -27,8 +27,6 @@ class SwarmEngineService
     project = workflow.project
     Rails.logger.info "Starting Integrity Check for Project(#{project.name})"
 
-    workflow.uuid = SecureRandom.uuid
-
     message = {
       workflow_id: workflow.uuid,
       deadline: Time.now.to_i,
@@ -45,10 +43,9 @@ class SwarmEngineService
           job_id: "integrity-check",
           command: [
             "$input_dir/project/#{project.main_blend_file}",
-              "--python",
-              "$input_dir/scripts/old_integrity_check.py",
+              "--python", "$input_dir/scripts/integrity_check.py",
               "--",
-              "$output_dir"
+              "--output-dir", "$output_dir"
           ],
           image: {
             command: [
