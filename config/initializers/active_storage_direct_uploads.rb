@@ -1,4 +1,5 @@
-# TODO: Figure out how to do this cleaner 🙈
+return if ENV["SECRET_KEY_BASE_DUMMY"].present?
+
 Rails.application.config.to_prepare do
   class ActiveStorage::DirectUploadsController
     def create
