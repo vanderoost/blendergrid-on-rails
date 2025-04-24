@@ -57,7 +57,9 @@ group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
-  gem "redis"
+  gem "redis" # For local ActionCable
+
+  gem "hotwire-spark" # Read Jorge's blog post!
 end
 
 group :test do

@@ -9,42 +9,52 @@ export default class extends Controller {
     "fileList",
     "fileItemTemplate",
     "submit",
+    "submitText",
     "project",
   ]
-  static values = { highlightCounter: Number }
+  static values = {
+    dragCounter: Number,
+    isDragging: Boolean,
+    isSubmitting: Boolean,
+    isUploading: Boolean,
+  }
 
   files = []
   blendFileCount = 0
   hasEmail = false
+  bytesTotal = 0
+  bytesUploaded = []
 
   connect() {
-    console.info("Upload controller connected :D")
+    addEventListener("direct-upload:progress", (e) => this.uploadProgress(e))
+
+    // Debug - Show fake files from the start
+    //this.files = [
+    //  { name: "test.blend", size: 12345 },
+    //  { name: "another.blend", size: 4312 },
+    //]
+    //this.updateFileList()
   }
 
-  addHighlight(event) {
+  addDrag(event) {
     event.preventDefault()
-    this.highlightCounterValue++
-
-    const files = eventFiles(event)
-    console.debug(`addHighlight - ${this.highlightCounterValue} - Dragging ${files.length} file(s)`)
+    this.dragCounterValue++
   }
 
-  removeHighlight(event) {
+  removeDrag(event) {
     event.preventDefault()
-    this.highlightCounterValue--
-
-    console.debug("removeHighlight - ", this.highlightCounterValue)
+    this.dragCounterValue--
   }
 
-  highlightCounterValueChanged() {
-    this.element.setAttribute("data-highlight", !!this.highlightCounterValue)
+  dragCounterValueChanged() {
+    this.isDraggingValue = this.dragCounterValue > 0
   }
 
   disableDefaultDrag(event) { event.preventDefault(); }
 
   addDroppedFiles(event) {
     event.preventDefault()
-    this.highlightCounterValue = 0
+    this.dragCounterValue = 0
 
     console.debug(`New file(s) dropped`)
 
@@ -77,9 +87,11 @@ export default class extends Controller {
     this.checkForm(event.target.form)
   }
 
-  updateFileList() {
-    console.debug("updateFileList")
+  updateMainBlendFiles() {
+    this.checkForm()
+  }
 
+  updateFileList() {
     if (this.files.length > 0) {
       this.fileListTarget.classList.remove("hidden")
 
@@ -88,10 +100,9 @@ export default class extends Controller {
       return
     }
 
-    const mainBlendFileMask = this.projectTargets.map((project) => project.checked)
     this.fileListTarget.innerHTML = ""
     this.files.forEach(
-      (file, index) => this.addFileItem(file, index, mainBlendFileMask)
+      (file, index) => this.addFileItem(file, index)
     )
   }
 
@@ -100,34 +111,48 @@ export default class extends Controller {
     console.debug("blendFileCount", this.blendFileCount)
     console.debug("hasEmail", this.hasEmail)
 
-    if (this.blendFileCount > 0 && this.hasEmail) {
+    if (this.mainBlendFileCount > 0 && this.hasEmail) {
       this.submitTarget.removeAttribute("disabled")
     } else {
       this.submitTarget.setAttribute("disabled", true)
     }
+
+    if (this.mainBlendFileCount > 1) {
+      this.submitTextTarget.textContent = `Start ${this.mainBlendFileCount} Renders`
+    } else {
+      this.submitTextTarget.textContent = `Start a Render`
+    }
   }
 
-  addFileItem(file, index, mainBlendFileMask) {
+  addFileItem(file, index) {
     console.debug("addFileItem", file)
 
     const template = this.fileItemTemplateTarget.content.cloneNode(true)
     const checkboxElem = template.querySelector("#checkbox")
-    const checkboxContainer = template.querySelector("#checkbox-container")
+    const checkboxWrapper = template.querySelector("#checkbox-wrapper")
+    const progressDonutWrapper = template.querySelector("#progress-donut-wrapper")
+    const progressDonutElem = template.querySelector("#progress-donut")
     const fileNameElem = template.querySelector("#file-name")
     const fileSizeElem = template.querySelector("#file-size")
+
+    const hasMultipleBlendFiles = this.blendFileCount > 1
+
+    checkboxWrapper.setAttribute("id", `checkbox-wrapper-${index}`)
+    if (!hasMultipleBlendFiles)
+      checkboxWrapper.classList.add("hidden")
 
     checkboxElem.setAttribute("id", `file-${index}`)
     checkboxElem.setAttribute("aria-describedby", `file-${index}-name`)
     checkboxElem.value = index
     checkboxElem.checked = isBlendFile(file) && (
-      mainBlendFileMask[index] || this.blendFileCount < 2)
-    checkboxElem.hidden = !isBlendFile(file) || this.blendFileCount < 2
+      this.mainBlendFilesMask[index] || this.blendFileCount < 2)
+    if (!isBlendFile(file))
+      checkboxElem.classList.add("hidden")
 
-    checkboxContainer.removeAttribute("id")
-    if (this.blendFileCount < 2)
-      checkboxContainer.classList.add("hidden")
-    else
-      checkboxContainer.classList.remove("hidden")
+    progressDonutWrapper.setAttribute("id", `progress-donut-wrapper-${index}`)
+    progressDonutElem.setAttribute("id", `progress-donut-${index}`)
+    if (hasMultipleBlendFiles)
+      progressDonutWrapper.classList.add("hidden")
 
     fileNameElem.textContent = truncate(file.name, MAX_FILE_NAME_LENGTH)
     fileNameElem.setAttribute("title", file.name)
@@ -142,10 +167,55 @@ export default class extends Controller {
   }
 
   submit(event) {
-    console.debug("submit", event)
+    if (!this.isUploadingValue) {
+      this.submitTarget.setAttribute("disabled", true)
+      this.isSubmittingValue = true
+      this.submitTextTarget.textContent = `Preparing Upload${this.files.length > 1 ? "s" : ""}`
+      this.bytesUploaded = Array(this.files.length).fill(0)
+      this.bytesTotal = this.files.reduce((a, b) => a + b.size, 0)
+      console.debug("bytesTotal", this.bytesTotal)
+    }
+
+    for (let index = 0; index < this.files.length; index++) {
+      this.fileListTarget.querySelector(`#checkbox-wrapper-${index}`)
+        .classList.add("hidden")
+      this.fileListTarget.querySelector(`#progress-donut-wrapper-${index}`)
+        .classList.remove("hidden")
+    }
+  }
+
+  uploadProgress(event) {
+    this.isSubmittingValue = false
+    this.isUploadingValue = true
+
+    const { file, progress } = event.detail
+    const index = this.files.findIndex((f) => f.name === file.name)
+    if (index === -1) return
+    const donutLength = 150.8 * (1.0 - progress / 100.0)
+
+    this.fileListTarget.querySelector(`#progress-donut-${index}`)
+      .setAttribute("stroke-dashoffset", donutLength.toFixed(2))
+
+    this.bytesUploaded[index] = Math.round(file.size * progress / 100.0)
+    console.debug("bytesUploaded", this.bytesUploaded)
+    this.totalUploaded = this.bytesUploaded.reduce((a, b) => a + b, 0)
+    console.debug("totalUploaded", this.totalUploaded)
+    const totalProgress = this.totalUploaded / this.bytesTotal
+    this.submitTextTarget.textContent = `Uploading ${(totalProgress * 100).toFixed(0)}%`
+  }
+
+  get mainBlendFilesMask() {
+    return this.projectTargets.map((project) => project.checked);
+  }
+
+  get mainBlendFileCount() {
+    return this.projectTargets.filter((project) => project.checked).length;
   }
 }
 
+// Event listeners for upload progress and stuff
+
+// Helpers
 const eventFiles = (event) => {
   if (event.target?.files) {
     return Array.from(event.target.files)

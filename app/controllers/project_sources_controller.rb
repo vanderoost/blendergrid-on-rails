@@ -2,7 +2,6 @@ class ProjectSourcesController < ApplicationController
   allow_unauthenticated_access only: %i[ new create ]
 
   def new
-    @big_color = true
     project_source_id = SecureRandom.uuid
     Rails.logger.info "Using project_source_id: #{project_source_id}"
     session[:project_source_id] = project_source_id
@@ -23,6 +22,7 @@ class ProjectSourcesController < ApplicationController
     @project_source.start_projects(params[:mainBlendFiles])
     @project_source.save!
 
+    # TODO: Cleanup unused project_source_uuids, or time them out
     session[:project_source_uuids] ||= []
     session[:project_source_uuids] << @project_source.uuid
 
