@@ -73,3 +73,5 @@ gem "tailwindcss-ruby", "~> 4.1"
 # AWS
 gem "aws-sdk-s3", require: false
 gem "aws-sdk-sns", require: false
+
+gem "rails_icons", "~> 1.3"

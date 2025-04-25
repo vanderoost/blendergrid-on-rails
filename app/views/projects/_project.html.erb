@@ -1,22 +1,11 @@
 <tr id="<%= dom_id(project) %>">
   <td class="relative py-5 pr-6">
     <div class="flex gap-x-6">
-      <svg
-        class="hidden h-6 w-5 flex-none text-gray-400 sm:block"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
-        data-slot="icon"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm-.75-4.75a.75.75 0 0 0 1.5 0V8.66l1.95 2.1a.75.75 0 1 0 1.1-1.02l-3.25-3.5a.75.75 0 0 0-1.1 0L6.2 9.74a.75.75 0 1 0 1.1 1.02l1.95-2.1v4.59Z"
-          clip-rule="evenodd"
-        />
-      </svg>
+      <%= icon "arrow-path", class: "size-5 text-gray-500 animate-spin" %>
+
       <div class="flex-auto">
         <div class="flex items-start gap-x-3">
-          <div class="text-sm/6 font-medium text-gray-900">
+          <div class="font-medium text-gray-900">
             <%= middle_truncate(project.name, 64) %>
           </div>
           <div
@@ -40,12 +29,12 @@
   </td>
 
   <td class="hidden py-5 pr-6 sm:table-cell">
-    <div class="text-sm/6 text-gray-900"><%= project.frame_range_type %></div>
+    <div class="text-gray-900"><%= project.frame_range_type %></div>
     <div class="mt-1 text-xs/5 text-gray-500"><%= project.frame_range_str %></div>
   </td>
 
   <td class="hidden py-5 pr-6 sm:table-cell">
-    <div class="text-sm/6 text-gray-900"><%= project.resolution_str %></div>
+    <div class="text-gray-900"><%= project.resolution_str %></div>
     <div class="mt-1 text-xs/5 text-gray-500">
       <%= project.samples_str %>
     </div>
@@ -53,9 +42,9 @@
 
   <td class="py-5 text-right">
     <div class="flex justify-end">
-      <%= link_to project, class: "text-sm/6 font-medium text-blue-600 hover:text-blue-500" do %>
-        <span class="hidden sm:inline">Project</span>
-        settings<span class="sr-only">, invoice #00012, Reform</span>
+      <%= link_to project, class: "font-medium text-blue-600 hover:text-blue-500 flex gap-2" do %>
+        <%= icon "adjustments-horizontal" %>
+        <span class="hidden sm:inline">Settings</span>
       <% end %>
     </div>
     <div class="mt-1 text-xs/5 text-gray-500 collapse">

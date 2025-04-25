@@ -22,10 +22,10 @@
         <div
           data-upload-target="uploadArea"
           class="
-            group-data-[upload-is-dragging-value=true]/uploader:border-blue-600
-            group-data-[upload-is-dragging-value=true]/uploader:bg-blue-600/10 transition
-            flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6
-            py-10
+            px-2 py-10 group-data-[upload-is-dragging-value=true]/uploader:border-blue-600
+            group-data-[upload-is-dragging-value=true]/uploader:bg-blue-600/10
+            transition-all flex justify-center rounded-lg border border-dashed
+            border-gray-900/25 min-w-xs
           "
         >
           <div class="text-center">
@@ -47,12 +47,15 @@
                 clip-rule="evenodd"
               />
             </svg>
-            <div class="mt-4 flex text-md/6 text-gray-700">
+            <div class="mt-4 flex text-md/6 text-gray-800">
               <label
                 for="attachments"
                 class="
                   relative cursor-pointer rounded-md font-semibold text-blue-600
-                  hover:text-blue-700
+                  hover:text-blue-700 underline
+                  group-data-[upload-is-dragging-value=true]/uploader:text-gray-800
+                  group-data-[upload-is-dragging-value=true]/uploader:font-normal
+                  group-data-[upload-is-dragging-value=true]/uploader:no-underline
                 "
               >
                 <span>Upload a file</span>
@@ -65,7 +68,14 @@
                                 direct_upload: true,
                                 class: "sr-only" %>
               </label>
-              <p class="pl-1">or drag and drop</p>
+              <p class="pl-1">or
+                <span
+                  class="
+                    group-data-[upload-is-dragging-value=true]/uploader:text-blue-600
+                    group-data-[upload-is-dragging-value=true]/uploader:font-semibold
+                    group-data-[upload-is-dragging-value=true]/uploader:underline
+                  "
+                >drag 'n drop</span></p>
             </div>
             <p class="text-sm/5 text-gray-500">
               at least one .blend file
@@ -103,7 +113,7 @@
                 <svg
                   class="
                     pointer-events-none col-start-1 row-start-1 size-3.5 self-center
-                    justify-self-center stroke-white group-has-disabled/checkbox:stroke-gray-950/25
+                    justify-self-center stroke-white group-has-disabled/checkbox:stroke-gray-900/40
                   "
                   viewBox="0 0 14 14"
                   fill="none"
@@ -132,16 +142,16 @@
               <svg class="w-full h-full" viewBox="0 0 64 64">
                 <circle
                   class="text-gray-200 stroke-current"
-                  stroke-width="16"
+                  stroke-width="14"
                   cx="32"
                   cy="32"
-                  r="24"
+                  r="25"
                   fill="transparent"
                 ></circle>
                 <circle
                   id="progress-donut"
                   class="text-blue-600 stroke-current progress-donut"
-                  stroke-width="16"
+                  stroke-width="14"
                   cx="32"
                   cy="32"
                   r="24"
@@ -154,7 +164,7 @@
 
             <%# File name %>
             <div class="text-md/6 cursor-pointer">
-              <label id="file-name" class="font-medium text-gray-900"></label>
+              <label id="file-name" class="font-medium text-gray-800"></label>
             </div>
 
             <%# File size %>
@@ -179,6 +189,7 @@
                          data: {
                            action: raw("change->upload#emailChanged"),
                          },
+                         placeholder: "suzanne@blender.org",
                          class:
                            "block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-base/6" %>
       </div>
@@ -208,7 +219,7 @@
             <circle
               class="opacity-25"
               stroke="currentColor"
-              stroke-width="16"
+              stroke-width="14"
               cx="32"
               cy="32"
               r="24"
@@ -217,7 +228,7 @@
             <circle
               class="opacity-75"
               stroke="currentColor"
-              stroke-width="16"
+              stroke-width="14"
               cx="32"
               cy="32"
               r="24"

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-const MAX_FILE_NAME_LENGTH = 36
+const MAX_FILE_NAME_LENGTH = 32
 
 export default class extends Controller {
   static targets = [
@@ -167,6 +167,11 @@ export default class extends Controller {
   }
 
   submit(event) {
+    console.debug("SUBMIT", event)
+    event.preventDefault()
+    // TODO: Show some hint that we're moving to the projects page
+    setTimeout(() => event.target.submit(), 3000)
+
     if (!this.isUploadingValue) {
       this.submitTarget.setAttribute("disabled", true)
       this.isSubmittingValue = true

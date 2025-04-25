@@ -1,3 +1,8 @@
+<% @nav_links = [
+  { name: "Start", path: root_path },
+  { name: "Projects", path: projects_path },
+] %>
+
 <header>
   <nav
     class="
@@ -36,14 +41,37 @@
       </button>
     </div>
     <div class="hidden lg:flex lg:gap-x-12">
-      <%= link_to "Projects",
-      projects_path,
-      class: "text-sm/6 font-semibold text-blue-600" %>
-      <a href="#" class="text-sm/6 font-semibold text-blue-600">Pricing</a>
+      <% @nav_links.each do |link| %>
+        <%= link_to link[:name],
+        link[:path],
+        class: [
+          "font-semibold border-b-2",
+          "text-blue-600 border-blue-600 cursor-default": current_page?(link[:path]),
+          "border-transparent text-gray-800 hover:text-gray-500":
+            !current_page?(link[:path]),
+        ] %>
+      <% end %>
 
-      <%= button_to "Log out", session_path, method: :delete if authenticated? %>
-      <a href="#" class="text-sm/6 font-semibold text-blue-600">Log in
-        <span aria-hidden="true">&rarr;</span></a>
+      <% if authenticated? %>
+        <%= button_to "Log out", session_path, method: :delete if authenticated? %>
+      <% else %>
+        <div>
+        <a
+          href="#"
+          class="
+            font-semibold text-gray-800 border-gray-800 rounded-lg hover:opacity-80
+            hover:border-gray-500 py-1 mr-3
+          "
+        >Log in</a>
+        <a
+          href="#"
+          class="
+            font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3
+            py-1.5 hover:opacity-80
+          "
+        >Register free</a>
+      <% end %>
+        </div>
     </div>
   </nav>
   <!-- Mobile menu, show/hide based on menu open state. -->
@@ -59,9 +87,9 @@
       <div class="flex items-center justify-between">
         <a href="#" class="-m-1.5 p-1.5">
           <span class="sr-only">Blendergrid</span>
-          <%= render "components/logo", class_str: "h-8 w-auto fill-blue-600" %>
+          <%= render "components/logo", class_str: "h-10 w-auto fill-blue-600" %>
         </a>
-        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
+        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-800">
           <span class="sr-only">Close menu</span>
           <svg
             class="size-6"
@@ -79,34 +107,16 @@
       <div class="mt-6 flow-root">
         <div class="-my-6 divide-y divide-gray-500/10">
           <div class="space-y-2 py-6">
-            <a
-              href="#"
-              class="
-                -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900
-                hover:bg-gray-50
-              "
-            >Product</a>
-            <a
-              href="#"
-              class="
-                -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900
-                hover:bg-gray-50
-              "
-            >Features</a>
-            <a
-              href="#"
-              class="
-                -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900
-                hover:bg-gray-50
-              "
-            >Marketplace</a>
-            <a
-              href="#"
-              class="
-                -mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900
-                hover:bg-gray-50
-              "
-            >Company</a>
+            <% @nav_links.each do |link| %>
+              <%= link_to link[:name],
+              link[:path],
+              class: [
+                "font-semibold border-b-2",
+                "text-blue-600 border-blue-600 cursor-default": current_page?(link[:path]),
+                "border-transparent text-gray-800 hover:border-gray-800":
+                  !current_page?(link[:path]),
+              ] %>
+            <% end %>
           </div>
           <div class="py-6">
             <a
