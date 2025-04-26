@@ -19,13 +19,8 @@ class ProjectSource < ApplicationRecord
 
     save!
 
-    swarm_engine_service = SwarmEngineService.new
     projects.find_each do |project|
-      workflow = project.workflows.create!(
-        uuid: SecureRandom.uuid,
-        job_type: :integrity_check
-      )
-      swarm_engine_service.start_integrity_check_workflow(workflow)
+      project.state.start_integrity_check
     end
   end
 end

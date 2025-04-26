@@ -2,12 +2,25 @@ class Project < ApplicationRecord
   belongs_to :project_source
   has_many :workflows
 
-  enum :status,
-    [ :started,  :waiting, :rendering, :finished, :failed ],
-    default: :started
+  enum :status, [
+      :uploaded,
+      :checking_integrity,
+      :integrity_checked,
+      :calculating_price,
+      :price_calculated,
+      :rendering,
+      :finished,
+      :cancelled,
+      :failed,
+      :deleted
+    ], default: :uploaded
 
   attribute :settings, :json, default: {}
   attribute :stats, :json,  default: {}
+
+  def state
+    "ProjectStates::#{self.status.classify}".constantize.new(self)
+  end
 
   # TODO: "Rubyfy" this and make it look clean
   def resolution_str

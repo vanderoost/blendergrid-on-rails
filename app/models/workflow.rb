@@ -6,6 +6,7 @@ class Workflow < ApplicationRecord
 
   def finalize(result: nil)
     if self.finished?
+      # TODO: Also make a state machine for workflow state?
       Rails.logger.warn "Workflow was already finished!"
       return
     end
@@ -13,23 +14,8 @@ class Workflow < ApplicationRecord
     self.finished!
     Rails.logger.info "Workflow is finished!"
 
-    Rails.logger.info "Result: " + result.inspect
-    # TODO: Pull the integrity check results form S3
+    project.state.finish(result: result)
 
-    self.project.status = :waiting
-
-    if result
-      if result[:settings]
-        self.project.settings = result[:settings]
-      end
-      if result[:stats]
-        self.project.stats = result[:stats]
-      end
-    end
-
-    # Do a cable thing to the frontend
-
-    self.project.save # TODO: Can we save both ath the same time?
     self.save
   end
 end
