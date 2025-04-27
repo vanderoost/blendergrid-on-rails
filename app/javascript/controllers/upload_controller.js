@@ -8,6 +8,7 @@ export default class extends Controller {
     "fileInput",
     "fileList",
     "fileItemTemplate",
+    "email",
     "submit",
     "submitText",
     "project",
@@ -27,6 +28,7 @@ export default class extends Controller {
 
   connect() {
     addEventListener("direct-upload:progress", (e) => this.uploadProgress(e))
+    this.checkForm()
 
     // Debug - Show fake files from the start
     //this.files = [
@@ -80,11 +82,8 @@ export default class extends Controller {
     console.debug(this.projectTargets)
   }
 
-  emailChanged(event) {
-    console.debug("emailChanged", event.target.value)
-    this.hasEmail = isValidEmail(event.target.value)
-
-    this.checkForm(event.target.form)
+  emailChanged() {
+    this.checkForm()
   }
 
   updateMainBlendFiles() {
@@ -107,11 +106,7 @@ export default class extends Controller {
   }
 
   checkForm() {
-    console.debug("checkForm")
-    console.debug("blendFileCount", this.blendFileCount)
-    console.debug("hasEmail", this.hasEmail)
-
-    if (this.mainBlendFileCount > 0 && this.hasEmail) {
+    if (this.mainBlendFileCount > 0 && isValidEmail(this.emailTarget.value)) {
       this.submitTarget.removeAttribute("disabled")
     } else {
       this.submitTarget.setAttribute("disabled", true)
@@ -168,12 +163,8 @@ export default class extends Controller {
 
   submit(event) {
     console.debug("SUBMIT", event)
-    event.preventDefault()
-    // TODO: Show some hint that we're moving to the projects page
-    setTimeout(() => event.target.submit(), 3000)
 
     if (!this.isUploadingValue) {
-      this.submitTarget.setAttribute("disabled", true)
       this.isSubmittingValue = true
       this.submitTextTarget.textContent = `Preparing Upload${this.files.length > 1 ? "s" : ""}`
       this.bytesUploaded = Array(this.files.length).fill(0)

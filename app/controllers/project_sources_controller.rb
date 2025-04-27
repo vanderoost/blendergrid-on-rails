@@ -7,7 +7,7 @@ class ProjectSourcesController < ApplicationController
     session[:project_source_id] = project_source_id
   end
 
-  # TODO: Defattify this method
+  # TODO: Defattify this
   def create
     @project_source = ProjectSource.new(uuid: session[:project_source_id])
     @project_source.attachments.attach(params[:attachments])
@@ -16,8 +16,10 @@ class ProjectSourcesController < ApplicationController
     if authenticated?
       @project_source.user = current_user
     else
-      @project_source.user = User.first_or_create!(email_address: params[:email])
+      @project_source.user = User.first_or_create!(email: params[:email])
     end
+
+    session[:email] = @project_source.user.email
 
     @project_source.start_projects(params[:mainBlendFiles])
     @project_source.save!

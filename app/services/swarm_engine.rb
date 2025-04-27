@@ -57,11 +57,11 @@ module SwarmEngine
               "--python", "$input_dir/scripts/integrity_check.py",
               "--", "--output-dir", "$output_dir"
             ],
-            image: {
+            image: Rails.env.production? ? {
               command: [ "python",
                         "$input_dir/scripts/get_blender_image.py",
                         "$input_dir/project/#{project.main_blend_file}" ]
-            }
+            } : "blendergrid/blender:latest"
           }
         ],
         metadata: { type: "integrity-check", created_by: "blendergrid-on-rails" }

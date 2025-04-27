@@ -188,8 +188,10 @@
         <%= form.email_field :email,
                          data: {
                            action: raw("change->upload#emailChanged"),
+                           "upload-target": "email",
                          },
                          placeholder: "suzanne@blender.org",
+                         value: session[:email],
                          class:
                            "block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-base/6" %>
       </div>
@@ -198,13 +200,14 @@
       <div>
         <button
           data-upload-target="submit"
-          type="submit"
           disabled
           class="
             tabular-nums flex w-full justify-center rounded-md bg-blue-600 px-3 py-2
             font-semibold text-white shadow-xs hover:opacity-90 focus-visible:outline-2
             focus-visible:outline-offset-2 focus-visible:outline-blue-600
             disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed items-center
+            group-data-[upload-is-submitting-value=true]/uploader:opacity-60
+            group-data-[upload-is-submitting-value=true]/uploader:cursor-not-allowed
           "
         >
           <svg

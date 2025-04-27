@@ -22,7 +22,7 @@ class Project < ApplicationRecord
     "ProjectStates::#{self.status.classify}".constantize.new(self)
   end
 
-  # TODO: "Rubyfy" this and make it look clean
+  # TODO: "Rubyfy" this and make it look clean, put it in helpser
   def resolution_str
     format = self.settings.dig("output", "format")
     if not format
@@ -42,33 +42,44 @@ class Project < ApplicationRecord
   end
 
   def samples_str
-    if self.settings && self.settings["samples"]
-      samples = self.settings["samples"]
-      "Samples: #{samples}"
+    if self.settings
+      samples = self.settings.dig("render", "sampling", "max_samples")
+      if samples
+        "Samples: #{samples}"
+      else
+        ""
+      end
     else
       ""
     end
   end
 
   def frame_range_type
-    if self.settings && self.settings["frame_range"]
-      frame_range = self.settings["frame_range"]
-      if frame_range.start == frame_range.end
-        "Single Frame"
-      else
-        "Animation"
+    if self.settings
+      start_frame = self.settings.dig("output", "frame_range", "start")
+      end_frame = self.settings.dig("output", "frame_range", "end")
+      if start_frame && end_frame
+        if start_frame == end_frame
+          "Single Frame"
+        else
+          "Animation"
+        end
       end
     else
       ""
     end
   end
+
   def frame_range_str
-    if self.settings && self.settings["frame_range"]
-      frame_range = self.settings["frame_range"]
-      if frame_range.start == frame_range.end
-        "Frame: #{self.frame_range.start}"
-      else
-        "Frames: #{self.frame_range.start}-#{self.frame_range.end}"
+    if self.settings
+      start_frame = self.settings.dig("output", "frame_range", "start")
+      end_frame = self.settings.dig("output", "frame_range", "end")
+      if start_frame && end_frame
+        if start_frame == end_frame
+          "Frame #{start_frame}"
+        else
+          "Frames #{start_frame} - #{end_frame}"
+        end
       end
     else
       ""

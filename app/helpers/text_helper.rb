@@ -1,5 +1,6 @@
 module TextHelper
   def middle_truncate(text, n = 48)
+    text = text.to_s
     if text.length <= n
       text
     else

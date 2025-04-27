@@ -1,16 +1,16 @@
-<div class="w-full">
+<div class="w-full bg-white border-t border-gray-200 mt-6">
   <% @projects.map(&:project_source).uniq.each do |project_source| %>
     <%= turbo_stream_from [project_source, :projects] %>
   <% end %>
 
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class=" mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
     <h1
       class="
-        mx-auto max-w-2xl text-font-semibold text-gray-900 lg:mx-0 lg:max-w-none text-lg
+        mx-auto max-w-2xl text-font-semibold text-gray-900 lg:mx-0 lg:max-w-none text-xl
       "
     >Render Projects</h1>
   </div>
-  <div class="mt-6 overflow-hidden border-t border-gray-100">
+  <div class="overflow-hidden border-t border-gray-100">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
 
@@ -24,7 +24,7 @@
             </tr>
           </thead>
 
-          <tbody id="projects">
+          <tbody>
             <tr class="text-sm/6 text-gray-900">
               <th scope="colgroup" colspan="3" class="relative isolate py-2 font-semibold">
                 <span>Uploaded</span>
@@ -41,8 +41,9 @@
               </th>
             </tr>
 
-            <%= render @projects %>
-
+            <div id="projects">
+              <%= render @projects %>
+            </div>
           </tbody>
         </table>
       </div>
