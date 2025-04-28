@@ -32,4 +32,18 @@ module ProjectsHelper
 
     icon spec[:icon], class: classes.join(" ")
   end
+
+  def short_frame_summary(project)
+    content_tag :span do
+      "37 Frame Animation"
+    end
+  end
+
+  def short_frame_details(project)
+    "Frame 6 - 42 "
+  end
+
+  def short_resolution_details(project)
+    "1920x1080px"
+  end
 end

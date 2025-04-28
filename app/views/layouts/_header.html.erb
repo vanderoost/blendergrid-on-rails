@@ -53,23 +53,15 @@
       <% end %>
 
       <% if authenticated? %>
-        <%= button_to "Log out", session_path, method: :delete if authenticated? %>
+        <%= button_to "Sign out", session_path, method: :delete if authenticated? %>
       <% else %>
         <div>
-        <a
-          href="#"
-          class="
-            font-semibold text-gray-800 border-gray-800 rounded-lg hover:opacity-80
+
+        <%= link_to "Sign in", new_session_path, class: "
+            font-semibold text-gray-800 rounded-lg hover:opacity-80
             hover:border-gray-500 py-1 mr-3
-          "
-        >Log in</a>
-        <a
-          href="#"
-          class="
-            font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3
-            py-1.5 hover:opacity-80
-          "
-        >Register free</a>
+          " %>
+        <%= link_to "Sign up free", new_registration_path, class: "font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3 py-1.5 hover:opacity-80" %>
       <% end %>
         </div>
     </div>
@@ -125,7 +117,7 @@
                 -mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900
                 hover:bg-gray-50
               "
-            >Log in</a>
+            >Sign in</a>
           </div>
         </div>
       </div>

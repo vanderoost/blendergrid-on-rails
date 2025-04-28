@@ -1,43 +1,29 @@
 # TODO: Consider splitting up in multiple files but keep it simple for now
 module ProjectStates
   class BaseState
+    ACTIONS = %i[
+        check_integrity
+        calculate_price
+        start_render
+        finish
+        cancel
+        fail
+        delete
+      ].freeze
+
     def initialize(project)
       @project = project
     end
 
-    def start_integrity_check
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def start_price_calculation
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def start_render
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def finish
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def cancel
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def fail
-      raise "Can't #{__method__} in state '#{@project.status}'"
-    end
-
-    def delete
-      raise "Can't #{__method__} in state '#{@project.status}'"
+    ACTIONS.each do |event|
+      define_method(event) do |*|
+        raise "Can't #{event} in state '#{@project.status}'"
+      end
     end
   end
 
-  class ProjectStates::Uploaded < ProjectStates::BaseState
-    def start_integrity_check
-      puts "Starting integrity check!"
-
+  class Uploaded < BaseState
+    def check_integrity
       workflow = @project.workflows.create!(
         uuid: SecureRandom.uuid,
         job_type: :integrity_check
@@ -67,6 +53,18 @@ module ProjectStates
   end
 
   class IntegrityChecked < BaseState
+    def calculate_price
+      Rails.logger.info "Starting price calculation for project #{@project.name}"
+
+      workflow = @project.workflows.create!(
+        uuid: SecureRandom.uuid,
+        job_type: :price_calculation
+      )
+
+      Workflows::StartPriceCalculationJob.perform_later(workflow.id)
+
+      @project.update!(status: :calculating_price)
+    end
   end
 
   class CalculatingPrice < BaseState

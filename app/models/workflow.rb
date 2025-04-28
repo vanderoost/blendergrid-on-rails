@@ -1,5 +1,5 @@
 class Workflow < ApplicationRecord
-  enum :job_type, [ :integrity_check,  :price_calculation, :render ]
+  enum :job_type, [ :integrity_check, :price_calculation, :render ]
   enum :status, [ :started,  :finished, :failed ], default: :started
 
   belongs_to :project

@@ -4,9 +4,6 @@ Rails.application.config.to_prepare do
   class ActiveStorage::DirectUploadsController
     def create
       project_source_id = session[:project_source_id]
-
-      Rails.logger.info "Custom project_source_id: #{project_source_id}"
-
       blob = ActiveStorage::Blob.create_before_direct_upload_custom(
         **blob_args, project_source_id:
       )
@@ -26,8 +23,6 @@ Rails.application.config.to_prepare do
     )
         # TODO: Maybe put this in config?
         key = "project-sources/#{project_source_id}/#{filename}"
-        Rails.logger.info "Using custom Blob key: #{key}"
-
         create!(
           key: key,
           filename: filename,

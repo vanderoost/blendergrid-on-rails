@@ -20,7 +20,7 @@ class ProjectSource < ApplicationRecord
     save!
 
     projects.find_each do |project|
-      project.state.start_integrity_check
+      project.state.check_integrity
     end
   end
 end

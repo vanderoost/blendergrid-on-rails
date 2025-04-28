@@ -1,7 +1,7 @@
 class WorkflowsController < ApplicationController
   include ::ActionController::HttpAuthentication::Token::ControllerMethods
 
-  # TOOD: Figure out if this can be cleaned up for API-only routes
+  # TOOD: Use an API namespace for "update"
   allow_unauthenticated_access # To turn off email/password login
   skip_before_action :verify_authenticity_token # To turn off CSRF protection
   before_action :authenticate, :set_workflow

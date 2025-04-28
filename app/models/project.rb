@@ -18,6 +18,8 @@ class Project < ApplicationRecord
   attribute :settings, :json, default: {}
   attribute :stats, :json,  default: {}
 
+  delegate :user, to: :project_source, allow_nil: true
+
   def state
     "ProjectStates::#{self.status.classify}".constantize.new(self)
   end
