@@ -2,13 +2,12 @@ class ProjectSourcesController < ApplicationController
   allow_unauthenticated_access only: %i[ new create ]
 
   def new
-    project_source_id = SecureRandom.uuid
-    session[:project_source_id] = project_source_id
+    session[:project_source_uuid] = SecureRandom.uuid
   end
 
   # TODO: Defattify this
   def create
-    @project_source = ProjectSource.new(uuid: session[:project_source_id])
+    @project_source = ProjectSource.new(uuid: session[:project_source_uuid])
     @project_source.attachments.attach(params[:attachments])
 
     # Allow creating projects when the user is not logged in. Email a magic link.
@@ -25,11 +24,11 @@ class ProjectSourcesController < ApplicationController
     @project_source.start_projects(params[:mainBlendFiles])
     @project_source.save!
 
-    session[:project_source_uuids] ||= []
-    session[:project_source_uuids] << @project_source.uuid
+    session[:project_source_ids] ||= []
+    session[:project_source_ids] << @project_source.id
 
     # Rotate the Project Source ID
-    session[:project_source_id] = SecureRandom.uuid
+    session[:project_source_uuid] = SecureRandom.uuid
 
     redirect_to projects_path
   end

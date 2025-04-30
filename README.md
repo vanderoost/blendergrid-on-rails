@@ -46,9 +46,9 @@ Also make sure Redis is running for websockets (Turbo Streams over ActionCable) 
 * Services (job queues, cache servers, search engines, etc.)
 
 ## Deployment instructions
+
 ```bash
 kamal deploy
-
 ```
 
 ## Monitoring

@@ -40,7 +40,12 @@
       <p class="text-sm/6 font-semibold text-gray-900">
         <%= link_to project do %>
           <span class="absolute inset-x-0 -top-px bottom-0"></span>
-          <%= middle_truncate(project.name, 64) %><%= status_badge project, class: "ml-2" %>
+          <%= middle_truncate(project.name, 64) %>
+          <%= render "components/badge",
+          text: status_text(project),
+          color: status_color(project),
+          id: dom_id(project, :status),
+          className: "ml-2" %>
         <% end %>
       </p>
       <div class="mt-2.5 flex items-center gap-x-2.5 text-xs/5 text-gray-500">

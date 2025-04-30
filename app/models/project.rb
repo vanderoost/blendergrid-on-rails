@@ -7,9 +7,9 @@ class Project < ApplicationRecord
   enum :status, [
       :uploaded,
       :checking_integrity,
-      :integrity_checked,
+      :checked,
       :calculating_price,
-      :price_calculated,
+      :waiting,
       :rendering,
       :finished,
       :cancelled,
@@ -20,73 +20,23 @@ class Project < ApplicationRecord
   attribute :settings, :json, default: {}
   attribute :stats, :json,  default: {}
 
-  delegate :user, to: :project_source, allow_nil: true
 
-  # TODO: "Rubify" this and make it look clean, put it in helpser
-  def resolution_str
-    format = self.settings.dig("output", "format")
-    if not format
-      return ""
-    end
-
-    resolution_x = format.dig("resolution_x")
-    resolution_y = format.dig("resolution_y")
-    resolution_percentage = format.dig("resolution_percentage")
-    if resolution_x && resolution_y && resolution_percentage
-      resolution_x = resolution_x * resolution_percentage / 100
-      resolution_y = resolution_y * resolution_percentage / 100
-      "#{resolution_x}x#{resolution_y}px"
-    else
-      ""
-    end
+  STAGES = [ :uploaded, :waiting, :rendering, :finished, :stopped, :deleted ].freeze
+  def stage
+    return :uploaded if status.to_sym.in? [ :uploaded, :checking_integrity, :checked ]
+    return :waiting if status.to_sym.in? [ :calculating_price, :waiting ]
+    return :stopped if status.to_sym.in? [ :cancelled, :failed ]
+    status.to_sym
   end
 
-  def samples_str
-    if self.settings
-      samples = self.settings.dig("render", "sampling", "max_samples")
-      if samples
-        "Samples: #{samples}"
-      else
-        ""
-      end
-    else
-      ""
-    end
+  def is_processing
+    status.in? [ :checking_integrity, :calculating_price, :rendering ]
   end
 
-  def frame_range_type
-    if self.settings
-      start_frame = self.settings.dig("output", "frame_range", "start")
-      end_frame = self.settings.dig("output", "frame_range", "end")
-      if start_frame && end_frame
-        if start_frame == end_frame
-          "Single Frame"
-        else
-          "Animation"
-        end
-      end
-    else
-      ""
-    end
-  end
-
-  def frame_range_str
-    if self.settings
-      start_frame = self.settings.dig("output", "frame_range", "start")
-      end_frame = self.settings.dig("output", "frame_range", "end")
-      if start_frame && end_frame
-        if start_frame == end_frame
-          "Frame #{start_frame}"
-        else
-          "Frames #{start_frame} - #{end_frame}"
-        end
-      end
-    else
-      ""
-    end
-  end
-
-  broadcasts_to ->(p) { [ p.project_source, :projects ] },
+  broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },
     partial: "projects/project",
+    target: ->(project) { "stage_#{project.stage}" },
     inserts_by: :prepend
+
+  delegate :user, to: :project_source, allow_nil: true
 end

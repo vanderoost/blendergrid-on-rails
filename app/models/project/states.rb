@@ -1,6 +1,6 @@
 module Project::States
   ACTIONS = [
-    :start_price_calculation, :start_render, :finish, :cancel, :fail
+    :check_integrity, :calculate_price, :start_render, :finish, :cancel, :fail
   ].freeze
 
   class BaseState
@@ -34,11 +34,11 @@ module Project::States
         end
       end
 
-      @project.update!(status: :integrity_checked)
+      @project.update!(status: :checked)
     end
   end
 
-  class IntegrityChecked < BaseState
+  class Checked < BaseState
     def calculate_price
       Rails.logger.info "Starting price calculation for project #{@project.name}"
 
@@ -50,7 +50,7 @@ module Project::States
 
   class CalculatingPrice < BaseState
     def finish(result: nil)
-      @project.update!(status: :price_calculated)
+      @project.update!(status: :waiting)
 
       # ProjectMailer.with(project: @project).price_calculated.deliver_later
     end
@@ -60,7 +60,7 @@ module Project::States
     end
   end
 
-  class PriceCalculated < BaseState
+  class Waiting < BaseState
     def start_render
       # Workflows::StartRenderJob.perform_later(@project)
 

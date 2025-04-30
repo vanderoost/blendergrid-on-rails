@@ -3,9 +3,8 @@ return if ENV["SECRET_KEY_BASE_DUMMY"].present? # Prevent the build from shittin
 Rails.application.config.to_prepare do
   class ActiveStorage::DirectUploadsController
     def create
-      project_source_id = session[:project_source_id]
       blob = ActiveStorage::Blob.create_before_direct_upload_custom(
-        **blob_args, project_source_id:
+        **blob_args, project_source_id: session[:project_source_uuid]
       )
 
       render json: direct_upload_json(blob)

@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
-@source inline("ring-{slate,amber,emerald,indigo,sky,blue,green,gray,rose,zinc,}-600/20");
-@source inline("text-{slate,amber,emerald,indigo,sky,blue,green,gray,rose,zinc,}-700");
+@source inline("ring-{slate,amber,emerald,indigo,sky,blue,green,gray,rose,zinc,}-500/10");
+@source inline("text-{slate,amber,emerald,indigo,sky,blue,green,gray,rose,zinc,}-600");
 @source inline("bg-{slate,amber,emerald,indigo,sky,blue,green,gray,rose,zinc,}-50");
+
 

@@ -2,9 +2,9 @@ module ProjectsHelper
   STATUS_UI = {
     uploaded:           { color: "slate",   icon: "arrow-up-tray"      },
     checking_integrity: { color: "amber",   icon: "arrow-path", class: "animate-spin" },
-    integrity_checked:  { color: "emerald", icon: "check-badge"        },
+    checked:  { color: "emerald", icon: "check-badge"        },
     calculating_price:  { color: "indigo",  icon: "calculator"         },
-    price_calculated:   { color: "sky",     icon: "currency-dollar"    },
+    waiting:   { color: "sky",     icon: "currency-dollar"    },
     rendering:          { color: "blue",    icon: "cpu-chip"           },
     finished:           { color: "green",   icon: "check-circle"       },
     cancelled:          { color: "gray",    icon: "x-circle"           },
@@ -12,6 +12,7 @@ module ProjectsHelper
     deleted:            { color: "zinc",    icon: "trash"              }
   }.freeze
 
+  # TODO: Deprecate this, turn into a partial
   def status_badge(project, **options)
     spec   = STATUS_UI.fetch(project.status.to_sym)
     text   = Project.human_attribute_name("status.#{project.status}")
@@ -23,6 +24,14 @@ module ProjectsHelper
     content_tag :span, class: classes.join(" "), id: dom_id(project, :status) do
         text
     end
+  end
+
+  def status_text(project)
+    Project.human_attribute_name("status.#{project.status}")
+  end
+
+  def status_color(project)
+    STATUS_UI.fetch(project.status.to_sym)[:color]
   end
 
   def status_icon(project, **options)
