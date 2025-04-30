@@ -423,7 +423,6 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  aws-sdk-core
   aws-sdk-s3
   aws-sdk-sns
   bcrypt (~> 3.1.7)
