@@ -14,7 +14,7 @@ class Workflow < ApplicationRecord
     self.finished!
     Rails.logger.info "Workflow is finished!"
 
-    project.state.finish(result: result)
+    project.finish(result: result)
 
     self.save
   end

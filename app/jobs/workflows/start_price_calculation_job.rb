@@ -1,8 +1,12 @@
 class Workflows::StartPriceCalculationJob < ApplicationJob
   queue_as :default
 
-  def perform(workflow_id)
-    workflow = Workflow.find(workflow_id)
+  def perform(project)
+    workflow = project.workflows.create!(
+      uuid: SecureRandom.uuid,
+      job_type: :price_calculation
+    )
+
     SwarmEngine.publish_price_calculation(workflow)
   end
 end

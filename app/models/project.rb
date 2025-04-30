@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  include Project::StateMachine
+
   belongs_to :project_source
   has_many :workflows
 
@@ -20,11 +22,7 @@ class Project < ApplicationRecord
 
   delegate :user, to: :project_source, allow_nil: true
 
-  def state
-    "ProjectStates::#{self.status.classify}".constantize.new(self)
-  end
-
-  # TODO: "Rubyfy" this and make it look clean, put it in helpser
+  # TODO: "Rubify" this and make it look clean, put it in helpser
   def resolution_str
     format = self.settings.dig("output", "format")
     if not format

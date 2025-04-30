@@ -17,5 +17,17 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find(params[:id])
+
+    s3 = Aws::S3::Resource.new # <-- resource, not Client
+    bucket = s3.bucket(
+      Rails.application.credentials.dig(:swarm_engine, :bucket)
+    )
+
+    @sample_frame_urls = []
+    bucket.objects(prefix: "projects/#{@project.uuid}/output/sample-frames")
+      .limit(5)
+      .each do |sample_frame|
+        @sample_frame_urls << sample_frame.presigned_url(:get, expires_in: 3600)
+      end
   end
 end

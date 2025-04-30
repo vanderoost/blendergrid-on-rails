@@ -7,6 +7,19 @@
           <%= time_ago_in_words(@project.created_at) %>
         </p>
 
+        <% if @project.price_calculated? %>
+          <div class="mt-6">
+            <h2 class="text-lg font-semibold text-gray-900">Sample Frames</h2>
+            <div class="flex">
+              <% @sample_frame_urls.each do |url| %>
+                <div class="shrink">
+                  <%= image_tag url, class: "" %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
         <dl class="mt-6 divide-y divide-gray-100 border-t border-gray-200 text-sm/6">
           <% for attachment in @project.project_source.attachments %>
             <div class="py-6 sm:flex">

@@ -1,8 +1,8 @@
-<% @projects.map(&:project_source).uniq.each do |project_source| %>
-  <%= turbo_stream_from [project_source, :projects] %>
-<% end %>
-
 <%= form_with url: price_calculations_path do |form| %>
+
+  <% @projects.map(&:project_source).uniq.each do |project_source| %>
+    <%= turbo_stream_from [project_source, :projects] %>
+  <% end %>
 
   <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -24,7 +24,7 @@
   <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
     <%= form.submit "Calculate Price",
                 class:
-                  "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-xs hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600" %>
+                  "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer" %>
   </div>
 
 <% end %>
