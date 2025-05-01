@@ -4,8 +4,8 @@ class PriceCalculationsController < ApplicationController
   def create
     for project in Project.where(uuid: params[:project_uuids])
       project.state.calculate_price
-
-      redirect_to projects_path
     end
+
+    redirect_to projects_path, notice: "Price calculation started!"
   end
 end

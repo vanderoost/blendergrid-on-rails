@@ -13,12 +13,14 @@ class ProjectSourcesController < ApplicationController
     # Allow creating projects when the user is not logged in. Email a magic link.
     if authenticated?
       @project_source.user = current_user
-    else
-      @project_source.user = User.first_or_create!(email_address: params[:email_address])
-    end
 
-    if @project_source.user
-      session[:email_address] = @project_source.user.email_address
+    else
+      @project_source.user = User.where(email_address: params[:email_address])
+        .first_or_create
+
+      if @project_source.user
+        session[:email_address] = @project_source.user.email_address
+      end
     end
 
     @project_source.start_projects(params[:mainBlendFiles])
