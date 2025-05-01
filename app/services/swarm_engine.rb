@@ -1,5 +1,7 @@
 module SwarmEngine
   TOPIC_PREFIX = "external".freeze
+  MAX_SAMPLE_PIXEL_COUNT = 1_000_000
+  MAX_SAMPLE_SPP = 48
 
   class << self
     def publish_integrity_check(workflow)
@@ -79,17 +81,35 @@ module SwarmEngine
       bucket      = Rails.application.credentials.dig(:swarm_engine, :bucket)
       swarm_env   = Rails.application.credentials.dig(:swarm_engine, :env)
 
-      # orig_res_x = project.settings.output.format.resolution_x
-      # orig_res_y = project.settings.output.format.resolution_y
-      # orig_spp = project.settings.render.sampling.max_samples
-      # frame_range_start = project.settings.output.frame_range.start
-      # frame_range_end = project.settings.output.frame_range.end
-      # frame_range_step = project.settings.output.frame_range.end
+      orig_res_x = project.settings.dig("output", "format", "resolution_x")
+      orig_res_y = project.settings.dig("output", "format", "resolution_y")
+      orig_spp = project.settings.dig("render", "sampling", "max_samples")
+      frame_start = project.settings.dig("output", "frame_range", "start")
+      frame_end = project.settings.dig("output", "frame_range", "end")
+      frame_step = project.settings.dig("output", "frame_range", "end")
 
-      sample_res_x = 1280
-      sample_res_y = 720
-      sample_spp = 48
-      sample_frames = [ 0, 50, 100 ]
+      orig_pixel_count = orig_res_x * orig_res_y
+      if orig_pixel_count > MAX_SAMPLE_PIXEL_COUNT
+        pixel_factor = Math.sqrt(MAX_SAMPLE_PIXEL_COUNT.to_f / orig_pixel_count.to_f)
+        sample_res_x = (orig_res_x * pixel_factor).round
+        sample_res_y = (orig_res_y * pixel_factor).round
+      else
+        sample_res_x = orig_res_x
+        sample_res_y = orig_res_y
+      end
+
+      all_frames = (frame_start..frame_end).step(frame_step).to_a
+      if all_frames.length > 3
+        sample_frames = [
+          all_frames[0],
+          all_frames[all_frames.length / 2],
+          all_frames[-1]
+        ]
+      else
+        sample_frames = all_frames
+      end
+
+      sample_spp = [ MAX_SAMPLE_SPP, orig_spp ].min
       blender_version = "latest"
 
       {

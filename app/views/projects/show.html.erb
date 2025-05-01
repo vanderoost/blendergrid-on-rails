@@ -11,10 +11,10 @@
 
           <div class="mt-6">
             <h2 class="text-lg font-semibold text-gray-900">Sample Frames</h2>
-            <div class="flex flex-col sm:flex-row gap-3 md:gap-6 mt-2">
+            <div class="flex flex-col justify-center sm:flex-row gap-3 md:gap-6 mt-2">
               <% @sample_frame_urls.each do |url| %>
                 <div class="shrink shadow-lg">
-                  <%= image_tag url, class: "" %>
+                  <%= image_tag url, class: "max-h-96" %>
                 </div>
               <% end %>
             </div>
