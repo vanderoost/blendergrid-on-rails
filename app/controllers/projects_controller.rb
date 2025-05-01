@@ -25,8 +25,8 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    @product.destroy
-    redirect_to products_path
+    @project.destroy
+    redirect_to projects_path
   end
 
   private
