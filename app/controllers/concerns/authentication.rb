@@ -26,8 +26,8 @@ module Authentication
     end
 
     def find_session_by_cookie
-      if cookies.encrypted[:session_id]
-        Session.find_by(id: cookies.encrypted[:session_id])
+      if cookies.signed[:session_id]
+        Session.find_by(id: cookies.signed[:session_id])
       end
     end
 
@@ -46,26 +46,21 @@ module Authentication
         ip_address: request.remote_ip).tap do |session|
         Current.session = session
 
-        if remember
-          Rails.logger.debug "Remembering User Session"
-          cookies.encrypted.permanent[:session_id] = {
-            value: session.id, httponly: true, same_site: :lax
-          }
-        else
-          Rails.logger.debug "Not Remembering User Session"
-          cookies.encrypted[:session_id] = {
-            value: session.id, httponly: true, same_site: :lax
-          }
-        end
+        signed_cookies = cookies.signed
+        signed_cookies = signed_cookies.permanent if remember
+
+        signed_cookies[:session_id] = {
+          value: session.id,
+          httponly: true,
+          same_site: :lax,
+          secure: Rails.env.production?
+        }
       end
     end
 
     def current_user
-      Rails.logger.info "GETTING CURRENT USER"
       session = resume_session
-      if session
-        session.user
-      end
+      session.user if session
     end
 
     def terminate_session
