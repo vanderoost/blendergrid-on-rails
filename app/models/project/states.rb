@@ -34,17 +34,15 @@ module Project::States
         end
       end
 
-      @project.update!(status: :checked)
+      @project.checked!
     end
   end
 
   class Checked < BaseState
     def calculate_price
-      Rails.logger.info "Starting price calculation for project #{@project.name}"
-
       Workflows::StartPriceCalculationJob.perform_later(@project)
 
-      @project.update!(status: :calculating_price)
+      @project.calculating_price!
     end
   end
 
@@ -56,7 +54,7 @@ module Project::States
     end
 
     def fail
-      @project.update!(status: :failed)
+      @project.failed!
     end
   end
 
@@ -64,13 +62,13 @@ module Project::States
     def start_render
       # Workflows::StartRenderJob.perform_later(@project)
 
-      @project.update!(status: :rendering)
+      @project.rendering!
     end
   end
 
   class Rendering < BaseState
     def finish(result: nil)
-      @project.update!(status: :finished)
+      @project.finished!
 
       # ProjectMailer.with(project: @project).render_finished.deliver_later
     end
@@ -78,11 +76,11 @@ module Project::States
     def cancel
       # Workflows::StopRenderJob.perform_later(@project)
 
-      @project.update!(status: :cancelled)
+      @project.cancelled!
     end
 
     def fail
-      @project.update!(status: :failed)
+      @project.failed!
 
       # ProjectMailer.with(project: @project).render_failed.deliver_later
     end

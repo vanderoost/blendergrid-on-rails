@@ -5,8 +5,9 @@
     <% @projects_by_stage[stage]&.map(&:project_source)&.uniq&.each do |ps| %>
       <%= turbo_stream_from [ps, stage, :projects] %>
     <% end %>
-    <!-- TODO: Url needs to be dynamic based on stage -->
-    <%= form_with url: price_calculations_path do |form| %>
+
+    <%= form_with url: price_calculations_path,
+      data: {controller: "#{stage}-projects"} do |form| %>
 
       <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -28,12 +29,26 @@
         </ul>
       </div>
 
-      <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
-        <%= form.submit "Submit for #{stage.capitalize}",
-                    class:
-                      "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer" %>
-      </div>
-
+      <% if stage == :uploaded %>
+        <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
+          <%= form.submit "Calculate Price",
+                      data: {
+                        "#{stage}-projects-target": "button",
+                      },
+                      class:
+                        "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 disabled:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
+        </div>
+      <% elsif stage == :waiting %>
+        <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
+          <%= form.submit "Render (Coming Soon!)",
+                      data: {
+                        "#{stage}-projects-target": "button",
+                      },
+                      disabled: true,
+                      class:
+                        "flex justify-center rounded-md bg-amber-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-amber-500 disabled:bg-amber-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
+        </div>
+      <% end %>
     <% end %>
 
   <% end %>

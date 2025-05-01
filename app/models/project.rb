@@ -20,7 +20,6 @@ class Project < ApplicationRecord
   attribute :settings, :json, default: {}
   attribute :stats, :json,  default: {}
 
-
   STAGES = [ :uploaded, :waiting, :rendering, :finished, :stopped, :deleted ].freeze
   def stage
     return :uploaded if status.to_sym.in? [ :uploaded, :checking_integrity, :checked ]
@@ -30,7 +29,7 @@ class Project < ApplicationRecord
   end
 
   def is_processing
-    status.in? [ :checking_integrity, :calculating_price, :rendering ]
+    status.to_sym.in? [ :checking_integrity, :calculating_price, :rendering ]
   end
 
   broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },

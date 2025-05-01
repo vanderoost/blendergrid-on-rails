@@ -1,5 +1,7 @@
 # Blendergrid on Rails
 
+Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
+
 A proof of concept re-write of the Blendergrid.com Web App in Rails.
 
 ## Versions
@@ -8,7 +10,19 @@ Rails version: 8.0.2
 Rack version: 3.1.12
 Ruby version: 3.4.2
 
-* System dependencies
+## System dependencies
+
+For running locally, making web sockets work you need to have Redis installed.
+
+Mac:
+```bash
+brew install redis
+```
+
+Linux:
+```bash
+sudo apt-get install redis-server
+```
 
 ## Configuration
 
@@ -22,7 +36,9 @@ For specific environments
 rails credentials:edit -e production
 ```
 
-* Database creation
+## Database
+
+### Creation
 
 Locally:
 ```bash
@@ -31,11 +47,13 @@ rails db:create
 
 In production, Kamal takes care of this.
 
-* Database initialization
+### Initialization
 
 * How to run the test suite
 
 ## Running locally
+
+Running a local server (using foreman for both web and tailwind refreshes)
 
 ```bash
 bin/dev
@@ -56,6 +74,11 @@ kamal deploy
 Live tailing production logs
 ```bash
 kamal logs
+```
+
+Opening a shell in the web app Docker container
+```bash
+kamal shell
 ```
 
 ### Running a console
