@@ -46,9 +46,10 @@
         link[:path],
         class: [
           "font-semibold border-b-2",
-          "text-blue-600 border-blue-600 cursor-default": current_page?(link[:path]),
-          "border-transparent text-gray-800 hover:text-gray-500":
-            !current_page?(link[:path]),
+          "text-blue-600 border-blue-600": on_page?(link[:path]),
+          "cursor-default": current_page?(link[:path]),
+          "border-transparent text-gray-800": !on_page?(link[:path]),
+          "hover:opacity-70": !current_page?(link[:path]),
         ] %>
       <% end %>
 
@@ -58,10 +59,10 @@
         <div>
 
         <%= link_to "Sign in", new_session_path, class: "
-            font-semibold text-gray-800 rounded-lg hover:opacity-80
+            font-semibold text-gray-800 rounded-lg hover:opacity-70
             hover:border-gray-500 py-1 mr-3
           " %>
-        <%= link_to "Sign up free", new_registration_path, class: "font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3 py-1.5 hover:opacity-80" %>
+        <%= link_to "Sign up free", new_registration_path, class: "font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3 py-1.5 hover:opacity-70" %>
       <% end %>
         </div>
     </div>

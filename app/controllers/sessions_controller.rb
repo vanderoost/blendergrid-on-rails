@@ -6,17 +6,10 @@ class SessionsController < ApplicationController
   end
 
   def create
-    Rails.logger.info "Creating new session: #{params.inspect}"
+    permitted = params.permit(:email_address, :password, :remember_me)
 
-    if user = User.authenticate_by(params.permit(:email_address, :password))
-      start_new_session_for user
-
-      if params[:remember_me]
-        # cookies.signed[:user_id] = { value: user.id, expires: 2.weeks.from_now }
-      else
-        # expires at the end of the browser session
-        # cookies.signed[:user_id] = user.id
-      end
+    if (user = User.authenticate_by(permitted.slice(:email_address, :password)))
+      start_new_session_for user, remember: params[:remember_me] == "1"
 
       redirect_to after_authentication_url
     else

@@ -32,6 +32,10 @@ class Project < ApplicationRecord
     status.to_sym.in? [ :checking_integrity, :calculating_price, :rendering ]
   end
 
+  def to_param
+    uuid
+  end
+
   broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },
     partial: "projects/project",
     target: ->(project) { "stage_#{project.stage}" },

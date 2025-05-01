@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  allow_unauthenticated_access only: %i[ index show ]
+  before_action :set_project, only: [ :show, :destroy ]
+  allow_unauthenticated_access # Allow guests to manage their projects
 
   def index
     projects = Project.where(project_source_id: session[:project_source_ids])
@@ -10,8 +11,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
-
     # TODO: Make it work, then clean up this mess
     bucket = Aws::S3::Resource.new.bucket(
       Rails.application.credentials.dig(:swarm_engine, :bucket)
@@ -23,5 +22,27 @@ class ProjectsController < ApplicationController
       .each do |sample_frame|
         @sample_frame_urls << sample_frame.presigned_url(:get, expires_in: 3600)
       end
+  end
+
+  def destroy
+    @product.destroy
+    redirect_to products_path
+  end
+
+  private
+
+  def set_project
+    project = Project.find_by(uuid: params[:id])
+    render status: :not_found unless is_authorized?(project)
+
+    @project = project
+  end
+
+  def is_authorized?(project)
+    if authenticated?
+      current_user.id == project.user_id
+    else
+      session[:project_source_ids].include?(project.project_source_id)
+    end
   end
 end

@@ -26,7 +26,9 @@ module Authentication
     end
 
     def find_session_by_cookie
-      Session.find_by(id: cookies.encrypted[:session_id]) if cookies.encrypted[:session_id]
+      if cookies.encrypted[:session_id]
+        Session.find_by(id: cookies.encrypted[:session_id])
+      end
     end
 
     def request_authentication
@@ -45,10 +47,12 @@ module Authentication
         Current.session = session
 
         if remember
+          Rails.logger.debug "Remembering User Session"
           cookies.encrypted.permanent[:session_id] = {
             value: session.id, httponly: true, same_site: :lax
           }
         else
+          Rails.logger.debug "Not Remembering User Session"
           cookies.encrypted[:session_id] = {
             value: session.id, httponly: true, same_site: :lax
           }

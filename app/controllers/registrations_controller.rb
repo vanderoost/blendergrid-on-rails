@@ -32,8 +32,6 @@
      # TODO: Email confirmations (maybe use devise?)
      start_new_session_for @user
      redirect_to root_path, notice: "Welcome to Blendergrid!"
-
-     # TODO: Associate any guest-projects from the session with the user
    end
 
    def user_params
