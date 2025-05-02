@@ -9,8 +9,8 @@ export default class extends Controller {
     "fileList",
     "fileItemTemplate",
     "email",
-    "submit",
-    "submitText",
+    "button",
+    "buttonText",
     "project",
   ]
   static values = {
@@ -29,13 +29,6 @@ export default class extends Controller {
   connect() {
     addEventListener("direct-upload:progress", (e) => this.uploadProgress(e))
     this.checkForm()
-
-    // Debug - Show fake files from the start
-    //this.files = [
-    //  { name: "test.blend", size: 12345 },
-    //  { name: "another.blend", size: 4312 },
-    //]
-    //this.updateFileList()
   }
 
   addDrag(event) {
@@ -58,14 +51,10 @@ export default class extends Controller {
     event.preventDefault()
     this.dragCounterValue = 0
 
-    console.debug(`New file(s) dropped`)
-
     this.filesChanged(event)
   }
 
   filesChanged(event) {
-    console.debug("filesChanged", event)
-
     const newFiles = eventFiles(event)
 
     this.files.push(...newFiles)
@@ -78,16 +67,6 @@ export default class extends Controller {
     this.updateFileList()
 
     this.checkForm(event.target.form)
-
-    console.debug(this.projectTargets)
-  }
-
-  emailChanged() {
-    this.checkForm()
-  }
-
-  updateMainBlendFiles() {
-    this.checkForm()
   }
 
   updateFileList() {
@@ -107,21 +86,19 @@ export default class extends Controller {
 
   checkForm() {
     if (this.mainBlendFileCount > 0 && isValidEmail(this.emailTarget.value)) {
-      this.submitTarget.removeAttribute("disabled")
+      this.buttonTarget.removeAttribute("disabled")
     } else {
-      this.submitTarget.setAttribute("disabled", true)
+      this.buttonTarget.setAttribute("disabled", true)
     }
 
     if (this.mainBlendFileCount > 1) {
-      this.submitTextTarget.textContent = `Start ${this.mainBlendFileCount} Renders`
+      this.buttonTextTarget.textContent = `Create ${this.mainBlendFileCount} Projects`
     } else {
-      this.submitTextTarget.textContent = `Start a Render`
+      this.buttonTextTarget.textContent = `Create a Project`
     }
   }
 
   addFileItem(file, index) {
-    console.debug("addFileItem", file)
-
     const template = this.fileItemTemplateTarget.content.cloneNode(true)
     const checkboxElem = template.querySelector("#checkbox")
     const checkboxWrapper = template.querySelector("#checkbox-wrapper")
@@ -161,15 +138,14 @@ export default class extends Controller {
     this.fileListTarget.appendChild(template)
   }
 
-  submit(event) {
-    console.debug("SUBMIT", event)
+  submit(e) {
+    console.debug("SUBMIT", e)
 
     if (!this.isUploadingValue) {
       this.isSubmittingValue = true
-      this.submitTextTarget.textContent = `Preparing Upload${this.files.length > 1 ? "s" : ""}`
+      this.buttonTextTarget.textContent = `Preparing Upload${this.files.length > 1 ? "s" : ""}`
       this.bytesUploaded = Array(this.files.length).fill(0)
       this.bytesTotal = this.files.reduce((a, b) => a + b.size, 0)
-      console.debug("bytesTotal", this.bytesTotal)
     }
 
     for (let index = 0; index < this.files.length; index++) {
@@ -193,11 +169,9 @@ export default class extends Controller {
       .setAttribute("stroke-dashoffset", donutLength.toFixed(2))
 
     this.bytesUploaded[index] = Math.round(file.size * progress / 100.0)
-    console.debug("bytesUploaded", this.bytesUploaded)
     this.totalUploaded = this.bytesUploaded.reduce((a, b) => a + b, 0)
-    console.debug("totalUploaded", this.totalUploaded)
     const totalProgress = this.totalUploaded / this.bytesTotal
-    this.submitTextTarget.textContent = `Uploading ${(totalProgress * 100).toFixed(0)}%`
+    this.buttonTextTarget.textContent = `Uploading ${(totalProgress * 100).toFixed(0)}%`
   }
 
   get mainBlendFilesMask() {

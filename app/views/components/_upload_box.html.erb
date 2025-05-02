@@ -198,15 +198,19 @@
     <%# SUBMIT %>
     <div>
       <button
-        data-upload-target="submit"
+        data-upload-target="button"
         disabled
         class="
           tabular-nums flex w-full justify-center rounded-md bg-blue-600 px-3 py-2
           font-semibold text-white shadow-xs hover:opacity-90 focus-visible:outline-2
           focus-visible:outline-offset-2 focus-visible:outline-blue-600
-          disabled:opacity-60 cursor-pointer disabled:cursor-not-allowed items-center
-          group-data-[upload-is-submitting-value=true]/uploader:opacity-60
-          group-data-[upload-is-submitting-value=true]/uploader:cursor-loading
+          disabled:opacity-70 cursor-pointer disabled:cursor-not-allowed
+          group-data-[upload-is-submitting-value=true]/uploader:shadow-none
+          group-data-[upload-is-submitting-value=true]/uploader:opacity-70
+          group-data-[upload-is-submitting-value=true]/uploader:pointer-events-none
+          group-data-[upload-is-uploading-value=true]/uploader:shadow-none
+          group-data-[upload-is-uploading-value=true]/uploader:opacity-70
+          group-data-[upload-is-uploading-value=true]/uploader:pointer-events-none
         "
       >
         <svg
@@ -239,7 +243,7 @@
             stroke-dashoffset="113.1"
           ></circle>
         </svg>
-        <span data-upload-target="submitText">Start a Render</span>
+        <span data-upload-target="buttonText">Create a Project</span>
       </button>
     </div>
   <% end %>
