@@ -1,28 +1,16 @@
 # Blendergrid on Rails
 
-Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
-
 A proof of concept re-write of the Blendergrid.com Web App in Rails.
+
+[*Demo Screencast*](https://vimeo.com/1080902705/f13f9968d7?share=copy)
+
+Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
 
 ## Versions
 
-Rails version: 8.0.2
-Rack version: 3.1.12
-Ruby version: 3.4.2
-
-## System dependencies
-
-For running locally, making web sockets work you need to have Redis installed.
-
-Mac:
-```bash
-brew install redis
-```
-
-Linux:
-```bash
-sudo apt-get install redis-server
-```
+- Rails version: 8.0.2
+- Rack version: 3.1.12
+- Ruby version: 3.4.2
 
 ## Configuration
 
@@ -61,7 +49,19 @@ bin/dev
 
 Also make sure Redis is running for websockets (Turbo Streams over ActionCable) to work.
 
-* Services (job queues, cache servers, search engines, etc.)
+## Services (job queues, cache servers, search engines, etc.)
+
+For running websockets locally, you need to have Redis installed.
+
+Mac:
+```bash
+brew install redis
+```
+
+Linux:
+```bash
+sudo apt-get install redis-server
+```
 
 ## Deployment instructions
 
