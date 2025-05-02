@@ -2,7 +2,8 @@
 
 A proof of concept re-write of the Blendergrid.com Web App in Rails.
 
-[*Demo Screencast*](https://vimeo.com/1080902705/f13f9968d7?share=copy)
+[Check the Demo Screencast](https://vimeo.com/1080902705/f13f9968d7)
+[![Demo Screencast](https://i.vimeocdn.com/video/2011590551-851fdc17aa70d9917d09bcf1c9c4d872f3dbf4c211452271ba7dc5e1cd2bd276-d_1280x720)](https://vimeo.com/1080902705/f13f9968d7)
 
 Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
 
