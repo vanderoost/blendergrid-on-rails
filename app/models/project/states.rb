@@ -60,7 +60,7 @@ module Project::States
 
   class Waiting < BaseState
     def start_render
-      # Workflows::StartRenderJob.perform_later(@project)
+      Workflows::StartRenderJob.perform_later(@project)
 
       @project.rendering!
     end
@@ -93,6 +93,9 @@ module Project::States
   end
 
   class Failed < BaseState
+  end
+
+  class Deleted < BaseState
   end
 
   class InvalidTransition < StandardError

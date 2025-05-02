@@ -18,6 +18,12 @@ module SwarmEngine
       publish("workflow_started", payload)
     end
 
+    def publish_render(workflow)
+      project = workflow.project
+
+      # TODO: Implement
+    end
+
     private
 
     def publish(event_type, message_hash)

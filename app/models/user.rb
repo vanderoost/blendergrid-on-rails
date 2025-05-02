@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  has_secure_password validations: false # Allow email-only users to reduce friction
+  has_secure_password validations: false # Allow guests to reduce friction
   has_many :sessions, dependent: :destroy
   has_many :projects, through: :project_sources
 

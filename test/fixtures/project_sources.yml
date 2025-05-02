@@ -1,7 +1,10 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  uuid: MyString
+  uuid: 1234-abcd
 
 two:
-  uuid: MyString
+  uuid: 2345-bcde
+
+three:
+  uuid: 3456-cdef

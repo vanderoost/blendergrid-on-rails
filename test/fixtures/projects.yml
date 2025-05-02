@@ -1,7 +1,22 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# Read about fixtures at
+# https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+uploaded:
+  project_source: one
+  name: cube
+  status: uploaded
 
-two:
-  name: MyString
+checked:
+  project_source: two
+  name: suzanne
+  status: checked
+
+waiting:
+  project_source: three
+  name: sintel
+  status: waiting
+
+rendering:
+  project_source: one
+  name: donut
+  status: rendering

@@ -13,3 +13,9 @@ docker-desktop:
 	@if ! docker info > /dev/null 2>&1; then \
 		docker desktop start; \
 	fi
+
+live-test:
+	@while :; do \
+		find {app,test} \( -iname '*.rb' -o -iname '*.yml' \) | \
+		entr -cd bash -c 'rails test' && break; \
+	done
