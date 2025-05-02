@@ -16,6 +16,6 @@ docker-desktop:
 
 live-test:
 	@while :; do \
-		find {app,test} \( -iname '*.rb' -o -iname '*.yml' \) | \
-		entr -cd bash -c 'rails test' && break; \
+	  find {app,test} \( -name '*.rb' -o -name '*.yml' \) | \
+		entr -cd bash -c 'bin/rails test' && break; \
 	done

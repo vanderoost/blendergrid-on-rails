@@ -95,7 +95,7 @@
             <div class="group/checkbox grid size-4 grid-cols-1 mx-auto">
               <input
                 data-upload-target="project"
-                data-action="upload#updateMainBlendFiles"
+                data-action="upload#checkForm"
                 id="checkbox"
                 name="mainBlendFiles[]"
                 type="checkbox"
@@ -180,13 +180,12 @@
         for="email_address"
         class="
           absolute -top-2.5 left-2 inline-block rounded-lg px-1 text-sm font-medium
-          text-gray-800 bg-white
+          text-gray-600 bg-white
         "
       >Email</label>
-
       <%= form.email_field :email_address,
                        data: {
-                         action: raw("change->upload#emailChanged"),
+                         action: raw("change->upload#checkForm"),
                          "upload-target": "email",
                        },
                        placeholder: "suzanne@blender.org",

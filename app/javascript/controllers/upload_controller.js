@@ -138,9 +138,7 @@ export default class extends Controller {
     this.fileListTarget.appendChild(template)
   }
 
-  submit(e) {
-    console.debug("SUBMIT", e)
-
+  submit() {
     if (!this.isUploadingValue) {
       this.isSubmittingValue = true
       this.buttonTextTarget.textContent = `Preparing Upload${this.files.length > 1 ? "s" : ""}`
@@ -183,9 +181,6 @@ export default class extends Controller {
   }
 }
 
-// Event listeners for upload progress and stuff
-
-// Helpers
 const eventFiles = (event) => {
   if (event.target?.files) {
     return Array.from(event.target.files)

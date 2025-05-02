@@ -32,6 +32,12 @@ class ProjectSourcesController < ApplicationController
     # Rotate the Project Source ID
     session[:project_source_uuid] = SecureRandom.uuid
 
+    if params[:mainBlendFiles].length > 1
+      flash[:notice] = "Created #{params[:mainBlendFiles].length} projects!"
+    else
+      flash[:notice] = "Created a project!"
+    end
+
     redirect_to projects_path
   end
 end
