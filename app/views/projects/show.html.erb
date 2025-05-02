@@ -6,7 +6,7 @@
           <div>
             <h1 class="text-xl font-semibold text-gray-900"><%= @project.name %></h1>
             <p class="mt-1 text-sm/6 text-gray-500">Created
-            <%= time_ago_in_words(@project.created_at) %>
+              <%= time_ago_in_words(@project.created_at) %>
             </p>
           </div>
           <div class="ml-auto">
@@ -51,7 +51,6 @@
         <p class="mt-1 text-sm/6 text-gray-500">Change your project settings</p>
 
         <%= form_with(model: @project, class: "mt-6 space-y-6") do |f| %>
-          
 
           <div class="flex justify-start gap-x-3">
             <%= link_to "Back",
@@ -62,7 +61,6 @@
 
         <% end %>
       </div>
-    </div>
     </div>
   </div>
 </div>

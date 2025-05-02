@@ -1,6 +1,4 @@
-# Blendergrid on Rails
-
-[![CI](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml/badge.svg)](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml)
+# Blendergrid on Rails [![CI](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml/badge.svg)](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml)
 
 A proof of concept re-write of the Blendergrid.com Web App in Rails.
 
@@ -40,7 +38,19 @@ In production, Kamal takes care of this.
 
 ### Initialization
 
-* How to run the test suite
+## How to run the test suite
+
+One off tests:
+
+```bash
+rails test
+```
+
+Live texting on code changes:
+
+```bash
+make live-test
+```
 
 ## Running locally
 
@@ -74,12 +84,14 @@ kamal deploy
 
 ## Monitoring
 
-Live tailing production logs
+Live tailing production logs:
+
 ```bash
 kamal logs
 ```
 
-Opening a shell in the web app Docker container
+Opening a shell in the web app Docker container:
+
 ```bash
 kamal shell
 ```
