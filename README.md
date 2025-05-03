@@ -9,7 +9,7 @@ Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
 
 ## Versions
 
-- Rails version: 8.0.2
+- Rails version: 8.1.0.alpha
 - Rack version: 3.1.12
 - Ruby version: 3.4.2
 
@@ -46,7 +46,7 @@ One off tests:
 rails test
 ```
 
-Live texting on code changes:
+Live testing on code changes:
 
 ```bash
 make live-test
