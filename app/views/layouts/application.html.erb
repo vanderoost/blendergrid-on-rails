@@ -24,14 +24,14 @@
   </head>
 
   <body class="h-screen flex flex-col">
-    <%= render "layouts/header" %>
+    <%= render "components/header" %>
 
     <main class="flex-grow">
       <%= yield %>
     </main>
 
-    <%= render "layouts/footer" %>
+    <%= render "components/footer" %>
 
-    <%= render "layouts/notifications" %>
+    <%= render "components/notifications" %>
   </body>
 </html>
