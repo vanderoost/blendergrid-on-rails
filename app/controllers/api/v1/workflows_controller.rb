@@ -7,7 +7,7 @@ class Api::V1::WorkflowsController < ApplicationController
 
   def update
     if params[:status] == "finished"
-      @workflow.finalize(result: params[:result])
+      @workflow.finalize(result: params[:result], timing: params[:timing])
     end
 
     # TODO: Handle sad paths

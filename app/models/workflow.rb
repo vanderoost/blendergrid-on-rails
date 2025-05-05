@@ -1,21 +1,21 @@
 class Workflow < ApplicationRecord
   enum :job_type, [ :integrity_check, :price_calculation, :render ]
-  enum :status, [ :started,  :finished, :failed ], default: :started
+  enum :status, [ :started, :finished, :failed ], default: :started
+  attribute :timing, :json, default: {}
 
   belongs_to :project
 
-  def finalize(result: nil)
+  def finalize(result: nil, timing: nil)
+    # TODO: Also make a state machine for workflow state?
     if self.finished?
-      # TODO: Also make a state machine for workflow state?
       Rails.logger.warn "Workflow was already finished!"
       return
     end
 
+    self.timing = timing or {}
     self.finished!
-    Rails.logger.info "Workflow is finished!"
+    self.save!
 
     project.finish(result: result)
-
-    self.save
   end
 end

@@ -36,6 +36,13 @@ class Project < ApplicationRecord
     uuid
   end
 
+  def price
+    price_calc_wf = workflows.where(job_type: :price_calculation).first
+    return nil unless price_calc_wf
+
+    price_calc_wf.timing
+  end
+
   broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },
     partial: "projects/project",
     target: ->(project) { "stage_#{project.stage}" },

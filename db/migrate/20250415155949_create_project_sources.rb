@@ -1,4 +1,4 @@
-class CreateProjectSources < ActiveRecord::Migration[8.0]
+class CreateProjectSources < ActiveRecord::Migration[8.1]
   def change
     create_table :project_sources do |t|
       t.string :uuid
