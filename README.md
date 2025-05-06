@@ -49,7 +49,7 @@ rails test
 Live testing on code changes:
 
 ```bash
-make live-test
+bundle exec guard
 ```
 
 ## Running locally
