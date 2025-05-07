@@ -42,6 +42,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
   create_table "price_calculations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "project_id"
+    t.json "settings", default: {}, null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_price_calculations_on_project_id"
   end

@@ -20,8 +20,9 @@ module SwarmEngine
 
     def publish_render(workflow)
       project = workflow.project
+      payload = build_render_payload(project, workflow.uuid)
 
-      # TODO: Implement
+      publish("workflow_started", payload)
     end
 
     private
@@ -163,6 +164,61 @@ module SwarmEngine
         ],
         metadata: {
           type: "price-calculation",
+          created_by: "blendergrid-on-rails",
+          project_uuid: project.uuid,
+          project_name: project.name,
+          user: project.user.email_address
+        }
+      }
+    end
+
+    def build_render_payload(project, workflow_uuid)
+      bucket      = Rails.application.credentials.dig(:swarm_engine, :bucket)
+      swarm_env   = Rails.application.credentials.dig(:swarm_engine, :env)
+
+      frame_start = project.settings.dig("output", "frame_range", "start")
+      frame_end = project.settings.dig("output", "frame_range", "end")
+      frame_step = project.settings.dig("output", "frame_range", "end")
+
+      blender_version = "latest"
+
+      {
+        workflow_id: workflow_uuid,
+        deadline:    5.hours.from_now.to_i, # TODO: Put in a config somewhere
+        files: {
+          input: {
+            scripts: "s3://blendergrid-blender-scripts/#{swarm_env}",
+            settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
+            project: "s3://#{bucket}/project-sources/#{project.project_source.uuid}"
+          },
+          output: "s3://#{bucket}/projects/#{project.uuid}/output",
+          logs: "s3://#{bucket}/projects/#{project.uuid}/logs"
+        },
+        executions: [
+          {
+            job_id:  "frame-$frame",
+            command: [
+              "$input_dir/project/#{project.main_blend_file}",
+              "--python",
+              "$input_dir/scripts/init.py",
+              "-o",
+              "$output_dir/frames/frame-", # TODO: Use the project output file name
+              "-f",
+              "$frame",
+              "--",
+              "--settings-file",
+              "$input_dir/settings/integrity-check.json",
+              "--project-dir",
+              "$input_dir/project"
+            ],
+            parameters: {
+              frame: { start: frame_start, end: frame_end, step: frame_step }
+            },
+            image: "blendergrid/blender:#{blender_version}"
+          }
+        ],
+        metadata: {
+          type: "render",
           created_by: "blendergrid-on-rails",
           project_uuid: project.uuid,
           project_name: project.name,

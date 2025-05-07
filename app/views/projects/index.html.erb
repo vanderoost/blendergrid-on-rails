@@ -40,6 +40,8 @@
 
 <% else %>
 
+  <% form_url_by_stage = { uploaded: price_calculations_path, waiting: renders_path } %>
+
   <% Project::STAGES.each do |stage| %>
     <% projects = @projects_by_stage.fetch(stage, [])
       next if projects.empty? %>
@@ -48,7 +50,7 @@
         <%= turbo_stream_from [ps, stage, :projects] %>
       <% end %>
 
-      <%= form_with url: price_calculations_path,
+      <%= form_with url: form_url_by_stage[stage],
     data: {controller: "#{stage}-projects"} do |form| %>
 
         <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
@@ -60,7 +62,7 @@
           </div>
 
           <ul
-            id="stage_<?= project.stage %>"
+            id="stage_<%= stage %>"
             role="list"
             class="
               divide-y divide-gray-100 overflow-hidden bg-white ring-1 ring-gray-900/5
@@ -82,13 +84,12 @@
           </div>
         <% elsif stage == :waiting %>
           <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
-            <%= form.submit "Render (Coming Soon!)",
+            <%= form.submit "Render",
                         data: {
                           "#{stage}-projects-target": "button",
                         },
-                        disabled: true,
                         class:
-                          "flex justify-center rounded-md bg-amber-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-amber-500 disabled:bg-amber-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
+                          "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 disabled:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
           </div>
         <% end %>
       <% end %>

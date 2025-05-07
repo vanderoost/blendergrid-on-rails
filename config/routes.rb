@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resources :price_calculations, only: [ :create ]
+  resources :renders, only: [ :create ]
+
   resources :project_sources
   resources :projects
   resources :registrations, only: [ :new, :create ]

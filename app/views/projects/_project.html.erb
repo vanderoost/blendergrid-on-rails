@@ -9,8 +9,6 @@
 
       <% if project.is_processing %>
         <%= icon "arrow-path", class: "size-5 text-gray-500 animate-spin" %>
-      <% elsif project.waiting? %>
-        <%= icon "check-circle", class: "size-5 text-gray-500" %>
       <% else %>
         <%= check_box_tag "project_uuids[]",
         project.uuid,
