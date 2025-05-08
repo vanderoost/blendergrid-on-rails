@@ -23,7 +23,7 @@ class Webhooks::StripeController < ApplicationController
       return head 400
     end
 
-    Rails.logger.debug "Webhook event received: " + event.inspect
+    Rails.logger.info "Webhook event received: " + event.inspect
 
     if event["type"] == "checkout.session.completed" ||
     event["type"] == "checkout.session.async_payment_succeeded"
@@ -33,14 +33,14 @@ class Webhooks::StripeController < ApplicationController
 
   private
     def fulfill_checkout(checkout_session_id)
-      Rails.logger.debug "Fulfilling checkout session: " + checkout_session_id
+      Rails.logger.info "Fulfilling checkout session: " + checkout_session_id
 
       projects = Project.where(stripe_session_id: checkout_session_id)
 
-      Rails.logger.debug "Starting render for #{projects.count} projects"
+      Rails.logger.info "Starting render for #{projects.count} projects"
 
       projects.each do |project|
-        Rails.logger.debug "Rendering project: " + project.id
+        Rails.logger.info "Rendering project: " + project.uuid
         project.start_render
       end
     end

@@ -82,6 +82,15 @@ sudo apt-get install redis-server
 kamal deploy
 ```
 
+### Nuking the server and starting from scratch
+
+```bash
+ssh ubuntu@rails.blendergrid.com
+
+# On the server
+/Users/richard/.ssh/known_hosts:1457
+```
+
 ## Monitoring
 
 Live tailing production logs:
