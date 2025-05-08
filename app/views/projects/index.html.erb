@@ -1,3 +1,10 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "https://js.stripe.com/v3/" %>
+  <%= tag :meta,
+  name: :stripe_key,
+  content: Rails.application.credentials.dig(:stripe, :public_key) %>
+<% end %>
+
 <% if @projects_by_stage.empty? %>
 
   <div class="flex flex-col items-center justify-center min-h-4/5 py-6">
@@ -84,12 +91,17 @@
           </div>
         <% elsif stage == :waiting %>
           <div class="max-w-7xl mx-auto my-8 sm:px-6 lg:px-8">
+
+            <div id="checkout">
+              <!-- Checkout will insert the payment form here -->
+            </div>
+
             <%= form.submit "Render",
                         data: {
                           "#{stage}-projects-target": "button",
                         },
                         class:
-                          "flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 disabled:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
+                          "invisible flex justify-center rounded-md bg-green-600 ml-auto px-4 py-2 font-semibold text-white shadow-md hover:bg-green-500 disabled:bg-green-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60" %>
           </div>
         <% end %>
       <% end %>

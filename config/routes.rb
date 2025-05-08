@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Webhooks
+  namespace :webhooks do
+    post "stripe", to: "stripe#handle"
+  end
+
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
@@ -24,6 +29,8 @@ Rails.application.routes.draw do
   resources :project_sources
   resources :projects
   resources :registrations, only: [ :new, :create ]
+
+  resources :stripe_checkout_sessions, only: [ :create ]
 
   root "home#index"
 end

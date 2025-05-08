@@ -7,6 +7,7 @@ class CreateProjects < ActiveRecord::Migration[8.1]
       t.integer :status
       t.json :settings, null: false, default: {}
       t.json :stats, null: false, default: {}
+      t.string :stripe_session_id
 
       t.belongs_to :project_source
 

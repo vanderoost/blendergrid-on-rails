@@ -13,3 +13,6 @@ docker-desktop:
 	@if ! docker info > /dev/null 2>&1; then \
 		docker desktop start; \
 	fi
+
+stripe-local-webhooks:
+	@stripe listen --forward-to http://127.0.0.1:3000/webhooks/stripe

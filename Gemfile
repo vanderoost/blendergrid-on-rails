@@ -80,3 +80,5 @@ gem "aws-sdk-s3"
 gem "aws-sdk-sns"
 
 gem "rails_icons", "~> 1.3"
+gem "stripe"
+gem "requestjs-rails"

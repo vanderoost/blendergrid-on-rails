@@ -23,7 +23,8 @@ class Project < ApplicationRecord
   STAGES = [ :uploaded, :waiting, :rendering, :finished, :stopped, :deleted ].freeze
   def stage
     return :uploaded if status.to_sym.in? [ :uploaded, :checking_integrity, :checked ]
-    return :waiting if status.to_sym.in? [ :calculating_price, :waiting ]
+    return :waiting if status.to_sym.in? [
+      :calculating_price, :waiting, :payment_pending ]
     return :stopped if status.to_sym.in? [ :cancelled, :failed ]
     status.to_sym
   end
@@ -37,6 +38,8 @@ class Project < ApplicationRecord
   end
 
   def price
+    return 1000 # TODO: Calculate real price
+
     price_calc_wf = workflows.where(job_type: :price_calculation).first
     return nil unless price_calc_wf
 

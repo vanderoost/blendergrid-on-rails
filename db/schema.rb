@@ -63,6 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.json "settings", default: {}, null: false
     t.json "stats", default: {}, null: false
     t.integer "status"
+    t.string "stripe_session_id"
     t.datetime "updated_at", null: false
     t.string "uuid"
     t.index ["project_source_id"], name: "index_projects_on_project_source_id"
