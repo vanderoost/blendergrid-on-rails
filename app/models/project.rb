@@ -38,7 +38,7 @@ class Project < ApplicationRecord
   end
 
   def price
-    return 100 # TODO: Calculate real price
+    return 10000 # TODO: Calculate real price
 
     price_calc_wf = workflows.where(job_type: :price_calculation).first
     return nil unless price_calc_wf
