@@ -15,11 +15,11 @@ class ProjectSourcesController < ApplicationController
       @project_source.user = current_user
 
     else
-      @project_source.user = User.where(email_address: params[:email_address])
+      @project_source.user = User.where(email: params[:email])
         .first_or_create
 
       if @project_source.user
-        session[:email_address] = @project_source.user.email_address
+        session[:email] = @project_source.user.email
       end
     end
 

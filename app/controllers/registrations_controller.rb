@@ -6,7 +6,7 @@
    end
 
    def create
-     @user = User.where(email_address: user_params[:email_address]).first
+     @user = User.where(email: user_params[:email]).first
      Rails.logger.info "User: " + @user.inspect
      if @user
        if @user.password_digest
@@ -35,6 +35,6 @@
    end
 
    def user_params
-     params.require(:user).permit(:email_address, :password, :password_confirmation)
+     params.require(:user).permit(:email, :password, :password_confirmation)
    end
  end

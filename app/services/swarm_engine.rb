@@ -167,7 +167,7 @@ module SwarmEngine
           created_by: "blendergrid-on-rails",
           project_uuid: project.uuid,
           project_name: project.name,
-          user: project.user.email_address
+          user: project.user.email
         }
       }
     end
@@ -222,7 +222,7 @@ module SwarmEngine
           created_by: "blendergrid-on-rails",
           project_uuid: project.uuid,
           project_name: project.name,
-          user: project.user.email_address
+          user: project.user.email
         }
       }
     end

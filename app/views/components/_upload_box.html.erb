@@ -177,19 +177,19 @@
     <%# EMAIL %>
     <div class="relative">
       <label
-        for="email_address"
+        for="email"
         class="
           absolute -top-2.5 left-2 inline-block rounded-lg px-1 text-sm font-medium
           text-gray-600 bg-white
         "
       >Email</label>
-      <%= form.email_field :email_address,
+      <%= form.email_field :email,
                        data: {
                          action: raw("change->upload#checkForm"),
                          "upload-target": "email",
                        },
                        placeholder: "suzanne@blender.org",
-                       value: session[:email_address],
+                       value: session[:email],
                        class:
                          "block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-base/6" %>
     </div>
