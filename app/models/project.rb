@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   include Project::StateMachine
 
-  belongs_to :project_source
+  belongs_to :upload
   has_many :workflows
 
   enum :status, [
@@ -46,10 +46,10 @@ class Project < ApplicationRecord
     price_calc_wf.timing
   end
 
-  broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },
+  broadcasts_to ->(project) { [ project.upload, project.stage, :projects ] },
     partial: "projects/project",
     target: ->(project) { "stage_#{project.stage}" },
     inserts_by: :prepend
 
-  delegate :user, to: :project_source, allow_nil: true
+  delegate :user, to: :upload, allow_nil: true
 end

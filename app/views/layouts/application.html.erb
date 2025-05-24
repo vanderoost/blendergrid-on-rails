@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full bg-gray-100">
+<html>
   <head>
     <title><%= content_for(:title) || "Blendergrid" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -23,7 +23,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col">
     <%= render "layouts/header" %>
 
     <main class="flex-grow">
@@ -31,7 +31,6 @@
     </main>
 
     <%= render "layouts/footer" %>
-
     <%= render "layouts/notifications" %>
   </body>
 </html>

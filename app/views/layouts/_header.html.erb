@@ -3,125 +3,21 @@
   { name: "Projects", path: projects_path },
 ] %>
 
-<header class="bg-white border-b border-gray-200">
-  <nav
-    class="
-      mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8
-    "
-    aria-label="Global"
-  >
-    <%= link_to root_path, class: "-m-1.5 p-1.5" do %>
-      <span class="sr-only">Blendergrid</span>
-      <%= render "components/logo", class_str: "h-8 w-auto fill-blue-600" %>
+<header>
+  <nav>
+    <% @nav_links.each do |link| %>
+      <%= link_to link[:name], link[:path] %>
     <% end %>
 
-    <div class="flex lg:hidden">
-      <button
-        type="button"
-        class="
-          -m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700
-        "
-      >
-        <span class="sr-only">Open main menu</span>
-        <svg
-          class="size-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          aria-hidden="true"
-          data-slot="icon"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-          />
-        </svg>
-      </button>
-    </div>
-    <div class="hidden lg:flex lg:gap-x-12">
-      <% @nav_links.each do |link| %>
-        <%= link_to link[:name],
-        link[:path],
-        class: [
-          "font-semibold border-b-2",
-          "text-blue-600 border-blue-600": on_page?(link[:path]),
-          "cursor-default cursor-events-none": current_page?(link[:path]),
-          "border-transparent text-gray-800": !on_page?(link[:path]),
-          "hover:opacity-70": !current_page?(link[:path]),
-        ] %>
-      <% end %>
+    <% if authenticated? %>
 
-      <% if authenticated? %>
-        <%= button_to "Sign out", session_path, method: :delete if authenticated? %>
-      <% else %>
-        <div>
+      <%= button_to "Sign out", session_path, method: :delete %>
 
-        <%= link_to "Sign in", new_session_path, class: "
-            font-semibold text-gray-800 rounded-lg hover:opacity-70
-            hover:border-gray-500 py-1 mr-3
-          " %>
-        <%= link_to "Sign up free", new_registration_path, class: "font-semibold text-white bg-blue-600 border-blue-600 border-2 rounded-lg px-3 py-1.5 hover:opacity-70" %>
-      <% end %>
-        </div>
-    </div>
+    <% else %>
+
+      <%= link_to "Log in", new_session_path %>
+      <%= link_to "Sign up", signup_path %>
+
+    <% end %>
   </nav>
-  <!-- Mobile menu, show/hide based on menu open state. -->
-  <div class="hidden" role="dialog" aria-modal="false">
-    <!-- Background backdrop, show/hide based on slide-over state. -->
-    <div class="fixed inset-0 z-10"></div>
-    <div
-      class="
-        fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-blue-600 px-6 py-6
-        sm:max-w-sm sm:ring-1 sm:ring-gray-900/10
-      "
-    >
-      <div class="flex items-center justify-between">
-        <a href="#" class="-m-1.5 p-1.5">
-          <span class="sr-only">Blendergrid</span>
-          <%= render "components/logo", class_str: "h-10 w-auto fill-blue-600" %>
-        </a>
-        <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-800">
-          <span class="sr-only">Close menu</span>
-          <svg
-            class="size-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            aria-hidden="true"
-            data-slot="icon"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      <div class="mt-6 flow-root">
-        <div class="-my-6 divide-y divide-gray-500/10">
-          <div class="space-y-2 py-6">
-            <% @nav_links.each do |link| %>
-              <%= link_to link[:name],
-              link[:path],
-              class: [
-                "font-semibold border-b-2",
-                "text-blue-600 border-blue-600 cursor-default": current_page?(link[:path]),
-                "border-transparent text-gray-800 hover:border-gray-800":
-                  !current_page?(link[:path]),
-              ] %>
-            <% end %>
-          </div>
-          <div class="py-6">
-            <a
-              href="#"
-              class="
-                -mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900
-                hover:bg-gray-50
-              "
-            >Sign in</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </header>

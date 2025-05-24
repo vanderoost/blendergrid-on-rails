@@ -1,0 +1,24 @@
+<%= render "components/wrapper" do %>
+  <%= form_with model: @user do |form| %>
+
+    <label for="email">Email address</label>
+    <%= form.email_field :email,
+                     required: true,
+                     autofocus: true,
+                     autocomplete: "email",
+                     value: params[:email] %>
+
+    <label for="password">Choose your password</label>
+    <%= form.password_field :password, required: true, maxlength: 72 %>
+
+    <label for="password">Password again to be sure</label>
+    <%= form.password_field :password_confirmation, required: true, maxlength: 72 %>
+
+    <%= form.submit "Create account" %>
+  <% end %>
+<% end %>
+
+<p>
+  Already have an account?
+  <%= link_to "Sign in", new_session_path %>
+</p>

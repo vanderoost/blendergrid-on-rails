@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
-  has_many :projects, through: :project_sources
+  has_many :projects, through: :uploads
 
   # normalizes :email, with: ->(e) { e.strip.downcase }
   before_save { self.email = email.downcase }

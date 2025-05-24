@@ -60,7 +60,7 @@ module SwarmEngine
         files: {
           input: {
             scripts:  "s3://blendergrid-blender-scripts/#{swarm_env}",
-            project:  "s3://#{bucket}/project-sources/#{project.project_source.uuid}"
+            project:  "s3://#{bucket}/uploads/#{project.upload.uuid}"
           },
           output: "s3://#{bucket}/projects/#{project.uuid}/jsons",
           logs:   "s3://#{bucket}/projects/#{project.uuid}/logs"
@@ -126,7 +126,7 @@ module SwarmEngine
           input: {
             scripts: "s3://blendergrid-blender-scripts/#{swarm_env}",
             settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-            project: "s3://#{bucket}/project-sources/#{project.project_source.uuid}"
+            project: "s3://#{bucket}/uploads/#{project.upload.uuid}"
           },
           output: "s3://#{bucket}/projects/#{project.uuid}/output",
           logs: "s3://#{bucket}/projects/#{project.uuid}/logs"
@@ -189,7 +189,7 @@ module SwarmEngine
           input: {
             scripts: "s3://blendergrid-blender-scripts/#{swarm_env}",
             settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-            project: "s3://#{bucket}/project-sources/#{project.project_source.uuid}"
+            project: "s3://#{bucket}/uploads/#{project.upload.uuid}"
           },
           output: "s3://#{bucket}/projects/#{project.uuid}/output",
           logs: "s3://#{bucket}/projects/#{project.uuid}/logs"

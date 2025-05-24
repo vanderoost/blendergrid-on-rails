@@ -47,26 +47,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.index ["project_id"], name: "index_price_calculations_on_project_id"
   end
 
-  create_table "project_sources", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.string "uuid"
-    t.index ["user_id"], name: "index_project_sources_on_user_id"
-  end
-
   create_table "projects", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "main_blend_file"
     t.string "name"
-    t.integer "project_source_id"
     t.json "settings", default: {}, null: false
     t.json "stats", default: {}, null: false
     t.integer "status"
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
+    t.integer "upload_id"
     t.string "uuid"
-    t.index ["project_source_id"], name: "index_projects_on_project_source_id"
+    t.index ["upload_id"], name: "index_projects_on_upload_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -76,6 +68,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.string "user_agent"
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "uploads", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "uuid"
+    t.index ["user_id"], name: "index_uploads_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -2,21 +2,21 @@
 # https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 uploaded:
-  project_source: one
+  upload: one
   name: cube
   status: uploaded
 
 checked:
-  project_source: two
+  upload: two
   name: suzanne
   status: checked
 
 waiting:
-  project_source: three
+  upload: three
   name: sintel
   status: waiting
 
 rendering:
-  project_source: one
+  upload: one
   name: donut
   status: rendering

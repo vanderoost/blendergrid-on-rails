@@ -1,4 +1,4 @@
-class ProjectSource < ApplicationRecord
+class Upload < ApplicationRecord
   belongs_to :user
   has_many :projects
   has_many_attached :attachments

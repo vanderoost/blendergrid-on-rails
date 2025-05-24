@@ -3,8 +3,8 @@ class ProjectsController < ApplicationController
   allow_unauthenticated_access # Allow guests to manage their projects
 
   def index
-    projects = Project.where(project_source_id: session[:project_source_ids])
-      .includes(:project_source)
+    projects = Project.where(upload_id: session[:upload_ids])
+      .includes(:upload)
       .order(created_at: :desc)
 
     @projects_by_stage = projects.group_by(&:stage)
@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
     if authenticated?
       current_user.id == project.user_id
     else
-      session[:project_source_ids].include?(project.project_source_id)
+      session[:upload_ids].include?(project.upload_id)
     end
   end
 end
