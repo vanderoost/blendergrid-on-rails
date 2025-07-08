@@ -313,7 +313,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rdoc (6.14.0)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     redis (5.4.0)
@@ -393,7 +393,7 @@ GEM
       railties (>= 6.0.0)
     stringio (3.1.7)
     stripe (15.2.1)
-    tailwindcss-rails (4.2.3)
+    tailwindcss-rails (4.3.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.1.10-arm64-darwin)
