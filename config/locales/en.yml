@@ -29,17 +29,3 @@
 
 en:
   hello: "Hello world"
-
-  activerecord:
-    attributes:
-      project/status:
-        uploaded:            "Uploaded"
-        checking_integrity:  "Checking .blend file"
-        integrity_checked:   ".blend file checked"
-        calculating_price:   "Calculating price"
-        price_calculated:    "Ready to render"
-        rendering:           "Rendering"
-        finished:            "Finished"
-        cancelled:           "Cancelled"
-        failed:              "Failed"
-        deleted:             "Deleted"

@@ -32,14 +32,3 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-
-/app/assets/builds/*
-!/app/assets/builds/.keep
-
-localstack-volume/*
-terraform/.*
-terraform/terraform.tfstate*
-
-/config/credentials/development.key
-
-/config/credentials/production.key

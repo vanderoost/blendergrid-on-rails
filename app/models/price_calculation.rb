@@ -1,4 +1,0 @@
-class PriceCalculation < ApplicationRecord
-  belongs_to :project
-  has_one :workflow
-end

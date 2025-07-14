@@ -1,8 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-# gem "rails", "~> 8.0.2"
-gem "rails", git: "https://github.com/vanderoost/rails"
+gem "rails", "~> 8.0.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
@@ -15,13 +14,11 @@ gem "importmap-rails"
 gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails"
-# Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem "bcrypt", "~> 3.1.7"
+# gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
@@ -57,28 +54,10 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
-
-  gem "redis" # For local ActionCable
-
-  gem "hotwire-spark" # Read Jorge's blog post!
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  gem "minitest"
-  gem "minitest-reporters"
-  gem "guard"
-  gem "guard-minitest"
 end
-
-gem "tailwindcss-ruby", "~> 4.1"
-
-# AWS
-gem "aws-sdk-s3"
-gem "aws-sdk-sns"
-
-gem "rails_icons", "~> 1.3"
-gem "stripe"
-gem "requestjs-rails"

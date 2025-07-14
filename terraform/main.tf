@@ -1,4 +1,5 @@
 # TODO: Get Rails config in here, one source of truth
+
 provider "aws" {
   access_key = "test"
   secret_key = "test"
