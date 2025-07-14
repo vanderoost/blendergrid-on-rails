@@ -17,13 +17,11 @@ Rails.application.routes.draw do
 
   resources :passwords, param: :token
   resources :price_calculations, only: [ :create ]
-  resources :renders, only: [ :create ]
-  resources :uploads
   resources :projects
-  resources :users, except: [ :new ]
+  resources :renders, only: [ :create ]
   resources :stripe_checkout_sessions, only: [ :create ]
-
-  get "signup", to: "users#new"
+  resources :uploads
+  resources :users
 
   root "home#index"
 end

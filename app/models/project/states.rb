@@ -1,8 +1,4 @@
 module Project::States
-  ACTIONS = [
-    :check_integrity, :calculate_price, :start_render, :finish, :cancel, :fail
-  ].freeze
-
   class BaseState
     def initialize(project)
       @project = project

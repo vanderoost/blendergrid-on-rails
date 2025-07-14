@@ -1,26 +1,22 @@
 class Project < ApplicationRecord
-  include Project::StateMachine
+  # Make the 'bones stick through' - The State names should be ok to show the user
+  STATES = %i[ uploaded checking_integrity checked calculating_price waiting rendering
+    finished cancelled failed deleted].freeze
+  ACTIONS = %i[ check_integrity calculate_price start_render finish cancel fail ]
+    .freeze
+
+  include Statusable
 
   belongs_to :upload
   has_many :workflows
 
-  enum :status, [
-      :uploaded,
-      :checking_integrity,
-      :checked,
-      :calculating_price,
-      :waiting,
-      :rendering,
-      :finished,
-      :cancelled,
-      :failed,
-      :deleted
+  enum :status, %i[ uploaded checking_integrity checked calculating_price waiting rendering finished cancelled failed deleted
     ], default: :uploaded
 
   attribute :settings, :json, default: {}
   attribute :stats, :json,  default: {}
 
-  STAGES = [ :uploaded, :waiting, :rendering, :finished, :stopped, :deleted ].freeze
+  STAGES = %i[ uploaded waiting rendering finished stopped deleted ].freeze
   def stage
     return :uploaded if status.to_sym.in? [ :uploaded, :checking_integrity, :checked ]
     return :waiting if status.to_sym.in? [

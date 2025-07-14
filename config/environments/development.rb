@@ -71,5 +71,5 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   # Allow the Swarm Engine to hit our API locally from Docker Compose
-  config.hosts = [ "127.0.0.1", "host.docker.internal" ]
+  config.hosts = [ IPAddr.new("0.0.0.0/0"), "host.docker.internal" ]
 end

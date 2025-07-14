@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
+ActiveRecord::Schema[8.1].define(version: 2025_06_13_125322) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -39,10 +39,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "email_verifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "email_address"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "integrity_checks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "project_id"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_integrity_checks_on_project_id"
+  end
+
   create_table "price_calculations", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "project_id"
-    t.json "settings", default: {}, null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_price_calculations_on_project_id"
   end
@@ -59,6 +71,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.integer "upload_id"
     t.string "uuid"
     t.index ["upload_id"], name: "index_projects_on_upload_id"
+  end
+
+  create_table "renders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "project_id"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_renders_on_project_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -80,11 +99,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "email", null: false
-    t.string "name"
+    t.string "email_address"
     t.string "password_digest"
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
   create_table "workflows", force: :cascade do |t|

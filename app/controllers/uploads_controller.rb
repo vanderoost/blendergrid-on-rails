@@ -2,7 +2,6 @@ class UploadsController < ApplicationController
   allow_unauthenticated_access only: %i[ new create ]
 
   def new
-    session[:upload_uuid] = SecureRandom.uuid
   end
 
   # TODO: Defattify this
