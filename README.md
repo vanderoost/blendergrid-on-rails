@@ -9,20 +9,16 @@ Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
 
 ## Versions
 
-- Rails version: 8.1.0.alpha
-- Rack version: 3.1.12
+- Rails version: 8.0.2
 - Ruby version: 3.4.2
 
 ## Configuration
 
-Update secrets and credentials
+Make sure the `EDITOR` environment variable is set (`export EDITOR=vim`).
+
+Update credentials and secrets.
 ```bash
 rails credentials:edit 
-```
-
-For specific environments
-```bash
-rails credentials:edit -e production
 ```
 
 ## Database
@@ -37,6 +33,8 @@ rails db:create
 In production, Kamal takes care of this.
 
 ### Initialization
+
+TODO
 
 ## How to run the test suite
 
@@ -54,6 +52,8 @@ bundle exec guard
 
 ## Running locally
 
+### Server
+
 Running a local server (using foreman for both web and tailwind refreshes)
 
 ```bash
@@ -61,6 +61,41 @@ bin/dev
 ```
 
 Also make sure Redis is running for websockets (Turbo Streams over ActionCable) to work.
+
+### Localstack & Terraform
+
+Use `tfenv` to manage Terraform versions.
+
+To install `tfenv`:
+```bash
+brew install tfenv
+```
+
+To install Terraform:
+```bash
+tfenv install
+```
+or
+```bash
+tfenv install latest
+```
+
+To use a specific version of Terraform:
+```bash
+tfenv use <version>
+```
+
+Make sure Localstack is running:
+```bash
+docker compose up -d
+```
+
+To build the infrastructure:
+```bash
+cd terraform
+terraform init
+terraform apply -auto-approve
+```
 
 ## Services (job queues, cache servers, search engines, etc.)
 

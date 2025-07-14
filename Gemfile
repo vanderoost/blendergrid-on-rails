@@ -61,3 +61,6 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+# Active Storage S3 service adapter
+gem "aws-sdk-s3", require: false

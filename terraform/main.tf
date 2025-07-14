@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket        = "swarm-engine-dev"
+  bucket        = "blendergrid-uploads-development"
   force_destroy = true
 }
 

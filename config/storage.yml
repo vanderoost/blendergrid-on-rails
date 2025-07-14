@@ -6,6 +6,15 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+localstack:
+  service: S3
+  access_key_id: test
+  secret_access_key: test
+  region: us-east-1
+  endpoint: http://localhost:4566
+  bucket: blendergrid-uploads-<%= Rails.env %>
+  force_path_style: true
+
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3

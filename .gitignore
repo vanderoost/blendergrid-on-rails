@@ -32,3 +32,11 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Localstack
+/localstack-volume/*
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
