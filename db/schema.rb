@@ -40,6 +40,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_133044) do
   end
 
   create_table "uploads", force: :cascade do |t|
+    t.string "uuid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

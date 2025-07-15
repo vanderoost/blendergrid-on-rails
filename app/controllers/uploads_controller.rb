@@ -1,6 +1,6 @@
 class UploadsController < ApplicationController
   def new
-    @upload = Upload.new
+    @upload = Upload.new(uuid: SecureRandom.uuid)
   end
 
   def create
@@ -18,6 +18,6 @@ class UploadsController < ApplicationController
 
   private
     def upload_params
-      params.require(:upload).permit(:source_file)
+      params.require(:upload).permit(:source_file, :uuid)
     end
 end

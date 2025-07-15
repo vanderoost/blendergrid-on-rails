@@ -1,4 +1,12 @@
+<%= javascript_include_tag "activestorage" %>
+
 <%= form_with model: @upload do |form| %>
-  <%= form.file_field :source_file %>
+  <%= form.hidden_field :uuid, value: @upload.uuid %>
+  <%= form.file_field :source_file,
+                  direct_upload: true,
+                  data: {
+                    direct_upload_url:
+                      rails_direct_uploads_url(upload_uuid: @upload.uuid),
+                  } %>
   <%= form.submit %>
 <% end %>

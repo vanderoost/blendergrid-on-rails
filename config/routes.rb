@@ -13,4 +13,7 @@ Rails.application.routes.draw do
   root "uploads#new"
 
   resources :uploads
+
+  # Custom Active Storage Direct Uploads
+  post "/rails/active_storage/direct_uploads", to: "direct_uploads#create"
 end
