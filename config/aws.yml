@@ -1,0 +1,10 @@
+default: &default
+  region: us-east-1
+
+development:
+  <<: *default
+  account_id: "000000000000"
+
+production:
+  <<: *default
+  account_id: "999999999999"

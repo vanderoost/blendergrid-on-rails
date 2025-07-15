@@ -6,7 +6,7 @@ require "rails/all"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module BlendergridOnRails2
+module BlendergridOnRails
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
@@ -23,5 +23,9 @@ module BlendergridOnRails2
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Custom configuration
+    config.aws = config_for(:aws)
+    config.swarm_engine = config_for(:swarm_engine)
   end
 end

@@ -62,5 +62,8 @@ group :test do
   gem "selenium-webdriver"
 end
 
-# Active Storage S3 service adapter
+# AWS S3 as Active Storage service adapter
 gem "aws-sdk-s3", require: false
+
+# AWS SNS to talk to the Swarm Engine
+gem "aws-sdk-sns"

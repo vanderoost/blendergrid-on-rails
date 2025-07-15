@@ -91,6 +91,9 @@ GEM
       aws-sdk-core (~> 3, >= 3.225.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
+    aws-sdk-sns (1.99.0)
+      aws-sdk-core (~> 3, >= 3.216.0)
+      aws-sigv4 (~> 1.5)
     aws-sigv4 (1.12.1)
       aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.3.0)
@@ -384,6 +387,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk-s3
+  aws-sdk-sns
   bootsnap
   brakeman
   capybara
