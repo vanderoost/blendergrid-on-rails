@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_14_133044) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_17_125520) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_133044) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "integrity_checks", force: :cascade do |t|
+    t.integer "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_integrity_checks_on_project_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string "uuid"
+    t.string "main_blend_file"
+    t.integer "upload_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upload_id"], name: "index_projects_on_upload_id"
+  end
+
   create_table "uploads", force: :cascade do |t|
     t.string "uuid"
     t.datetime "created_at", null: false
@@ -46,8 +62,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_14_133044) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "workflows", force: :cascade do |t|
+    t.string "uuid"
+    t.string "status"
+    t.string "workflowable_type"
+    t.integer "workflowable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uuid"], name: "index_workflows_on_uuid", unique: true
+    t.index ["workflowable_type", "workflowable_id"], name: "index_workflows_on_workflowable"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

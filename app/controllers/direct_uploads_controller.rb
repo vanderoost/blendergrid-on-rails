@@ -13,6 +13,7 @@ class DirectUploadsController < ActiveStorage::DirectUploadsController
 
   private
     def make_key(uuid, filename)
-      "#{uuid}/#{filename}"
+      key_prefix = Rails.configuration.swarm_engine[:key_prefix]
+      "#{key_prefix}/#{uuid}/#{filename}"
     end
 end

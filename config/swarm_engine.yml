@@ -1,5 +1,9 @@
 development:
   env: dev
+  bucket: swarm-engine-dev
+  key_prefix: uploads
 
 production:
   env: staging
+  bucket: blendergrid-staging-us-east-1
+  key_prefix: uploads

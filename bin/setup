@@ -30,10 +30,10 @@ FileUtils.chdir APP_ROOT do
   system! "bin/rails restart"
 end
 
-FileUtils.chdir APP_ROOT + "/terraform" do
-  puts "\n== Running terraform init =="
-  system! "terraform init"
-
-  puts "\n== Running terraform apply =="
-  system! "terraform apply -auto-approve"
-end
+# FileUtils.chdir APP_ROOT + "/terraform" do
+#   puts "\n== Running terraform init =="
+#   system! "terraform init"
+#
+#   puts "\n== Running terraform apply =="
+#   system! "terraform apply -auto-approve"
+# end

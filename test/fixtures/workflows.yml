@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  status: MyString
+  workflowable: one
+  workflowable_type: Workflowable
+
+two:
+  status: MyString
+  workflowable: two
+  workflowable_type: Workflowable
