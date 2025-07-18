@@ -41,6 +41,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_125520) do
 
   create_table "integrity_checks", force: :cascade do |t|
     t.integer "project_id"
+    t.json "stats"
+    t.json "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_integrity_checks_on_project_id"

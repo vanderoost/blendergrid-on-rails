@@ -3,6 +3,15 @@ class IntegrityCheck < ApplicationRecord
 
   belongs_to :project
 
+  def handle_result(result)
+    logger.info "IntegrityCheck#handle_result"
+    logger.debug result.inspect
+
+    self.stats = result.dig("stats")
+    self.settings = result.dig("settings")
+    save!
+  end
+
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?

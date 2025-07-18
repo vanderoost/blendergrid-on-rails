@@ -6,6 +6,7 @@ class Api::V1::WorkflowsController < ApplicationController
     if @workflow.nil?
       render json: { error: "Workflow not found" }, status: :not_found
     elsif params[:status] == "finished"
+      @workflow.handle_result params[:result]
       @workflow.finish
       render json: @workflow
     elsif params[:status] == "failed"

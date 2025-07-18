@@ -1,0 +1,7 @@
+<%= tag.div id: dom_id(integrity_check) do %>
+  <%= "Integrity Check Status: #{integrity_check.workflow.status}" %>
+
+  <% unless integrity_check.settings.blank? %>
+    <%= debug integrity_check.settings %>
+  <% end %>
+<% end %>
