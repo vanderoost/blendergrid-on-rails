@@ -1,5 +1,7 @@
 <%= javascript_include_tag "activestorage" %>
 
+<h1>New Upload</h1>
+
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
   <%= form.file_field :source_file,

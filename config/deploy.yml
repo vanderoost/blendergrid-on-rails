@@ -1,13 +1,13 @@
 # Name of your application. Used to uniquely configure containers.
-service: blendergrid_on_rails_2
+service: blendergrid_on_rails
 
 # Name of the container image.
-image: your-user/blendergrid_on_rails_2
+image: blendergrid/web-app
 
 # Deploy to these servers.
 servers:
   web:
-    - 192.168.0.1
+    - 3.233.46.160
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -19,13 +19,14 @@ servers:
 # Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
 proxy:
   ssl: true
-  host: app.example.com
+  host: rails.blendergrid.com
 
 # Credentials for your image host.
 registry:
   # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  username: your-user
+  # TODO: See if we can put the account id in some better config location
+  server: "281752919491.dkr.ecr.us-east-1.amazonaws.com"
+  username: AWS
 
   # Always use an access token rather than real password when possible.
   password:
@@ -47,7 +48,7 @@ env:
     # WEB_CONCURRENCY: 2
 
     # Match this to any external database server to configure Active Record correctly
-    # Use blendergrid_on_rails_2-db for a db accessory server on same machine via local kamal docker network.
+    # Use blendergrid_on_rails-db for a db accessory server on same machine via local kamal docker network.
     # DB_HOST: 192.168.0.2
 
     # Log everything from Rails
@@ -65,7 +66,7 @@ aliases:
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
 volumes:
-  - "blendergrid_on_rails_2_storage:/rails/storage"
+  - "blendergrid_on_rails_storage:/rails/storage"
 
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
@@ -88,8 +89,8 @@ builder:
   #   - RAILS_MASTER_KEY
 
 # Use a different ssh user than root
-# ssh:
-#   user: app
+ssh:
+  user: ubuntu
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
