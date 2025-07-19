@@ -3,7 +3,7 @@ class Workflow < ApplicationRecord
   ACTIONS = %i[start finish fail].freeze
 
   include Statusable
-  include Uuidentifiable
+  include Uuidable
 
   belongs_to :workflowable, polymorphic: true
   delegate :project, to: :workflowable

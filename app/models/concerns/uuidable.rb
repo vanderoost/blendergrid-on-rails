@@ -1,4 +1,4 @@
-module Uuidentifiable
+module Uuidable
   extend ActiveSupport::Concern
 
   included do
