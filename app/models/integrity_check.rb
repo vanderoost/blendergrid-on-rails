@@ -4,9 +4,6 @@ class IntegrityCheck < ApplicationRecord
   belongs_to :project
 
   def handle_result(result)
-    logger.info "IntegrityCheck#handle_result"
-    logger.debug result.inspect
-
     self.stats = result.dig("stats")
     self.settings = result.dig("settings")
     save!

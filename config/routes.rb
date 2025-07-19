@@ -12,17 +12,14 @@ Rails.application.routes.draw do
   # API
   namespace :api do
     namespace :v1 do
-      resources :workflows
-
-      # TODO: Somehow this is not working
-      # resources :workflows, param: :uuid
+      resources :workflows, param: :uuid
     end
   end
 
   # Defines the root path route ("/")
   root "uploads#new"
 
-  resources :uploads
+  resources :uploads, param: :uuid
 
   # Custom Active Storage Direct Uploads
   post "/rails/active_storage/direct_uploads", to: "direct_uploads#create"

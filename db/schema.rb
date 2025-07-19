@@ -55,12 +55,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_17_125520) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"
+    t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
 
   create_table "uploads", force: :cascade do |t|
     t.string "uuid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["uuid"], name: "index_uploads_on_uuid", unique: true
   end
 
   create_table "users", force: :cascade do |t|

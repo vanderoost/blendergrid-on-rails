@@ -17,6 +17,6 @@ class Api::V1::WorkflowsController < ApplicationController
 
   private
     def set_workflow
-      @workflow = Workflow.find_by(uuid: params[:id])
+      @workflow = Workflow.find_by(uuid: params[:uuid])
     end
 end

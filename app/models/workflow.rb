@@ -3,6 +3,7 @@ class Workflow < ApplicationRecord
   ACTIONS = %i[start finish fail].freeze
 
   include Statusable
+  include Uuidentifiable
 
   belongs_to :workflowable, polymorphic: true
   delegate :project, to: :workflowable
@@ -14,9 +15,7 @@ class Workflow < ApplicationRecord
   end
 
   def handle_result(result)
-    logger.info "Workflow#handle_result"
     return if result.nil?
-    logger.debug result.inspect
     workflowable.handle_result(result)
   end
 end

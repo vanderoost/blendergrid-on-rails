@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  include Uuidentifiable
+
   belongs_to :upload
   has_one :integrity_check
 
