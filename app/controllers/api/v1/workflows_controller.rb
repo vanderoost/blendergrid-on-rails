@@ -1,22 +1,19 @@
-class Api::V1::WorkflowsController < ApplicationController
+class Api::V1::WorkflowsController < Api::BaseController
   before_action :set_workflow
-  skip_before_action :verify_authenticity_token # Turn off CSRF protection
 
   def update
-    if @workflow.nil?
-      render json: { error: "Workflow not found" }, status: :not_found
-    elsif params[:status] == "finished"
+    if params[:status] == "finished"
       @workflow.handle_result params[:result]
       @workflow.finish
-      render json: @workflow
     elsif params[:status] == "failed"
       @workflow.fail
-      render json: @workflow
     end
+
+    render json: @workflow
   end
 
   private
     def set_workflow
-      @workflow = Workflow.find_by(uuid: params[:uuid])
+      @workflow = Workflow.find_by!(uuid: params[:uuid])
     end
 end
