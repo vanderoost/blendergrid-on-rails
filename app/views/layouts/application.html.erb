@@ -27,11 +27,11 @@
       <%= link_to "Home", root_path %>
       <%= link_to "Projects", projects_path %>
       <%= link_to "Log in", new_session_path unless authenticated? %>
-      <%= link_to "Sign up", new_user_path unless authenticated? %>
+      <%= link_to "Sign up", signup_path unless authenticated? %>
       <%= button_to "Log out", session_path, method: :delete if authenticated? %>
     </nav>
     <%= yield %>
 
-    <%= debug params %>
+    <%= debug params if Rails.env.development? %>
   </body>
 </html>
