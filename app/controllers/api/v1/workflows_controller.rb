@@ -3,7 +3,7 @@ class Api::V1::WorkflowsController < Api::BaseController
 
   def update
     if params[:status] == "finished"
-      @workflow.handle_result params[:result]
+      @workflow.handle_result result_params
       @workflow.finish
     elsif params[:status] == "failed"
       @workflow.fail
@@ -15,5 +15,12 @@ class Api::V1::WorkflowsController < Api::BaseController
   private
     def set_workflow
       @workflow = Workflow.find_by!(uuid: params[:uuid])
+    end
+
+    def result_params
+      params[:result].merge({
+        node_type: params.dig(:node_type),
+        timing: params.dig(:timing)
+      })
     end
 end

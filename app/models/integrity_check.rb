@@ -3,12 +3,6 @@ class IntegrityCheck < ApplicationRecord
 
   belongs_to :project
 
-  def handle_result(result)
-    self.stats = result.dig("stats")
-    self.settings = result.dig("settings")
-    save!
-  end
-
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
@@ -45,5 +39,11 @@ class IntegrityCheck < ApplicationRecord
       ],
       metadata: { type: "integrity-check", created_by: "blendergrid-on-rails" }
     }
+  end
+
+  def handle_result(result)
+    self.stats = result.dig("stats")
+    self.settings = result.dig("settings")
+    save!
   end
 end

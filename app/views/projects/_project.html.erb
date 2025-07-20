@@ -1,4 +1,11 @@
 <%= turbo_stream_from project %>
 
-<h2><%= project.main_blend_file %></h2>
-<%= render project.integrity_check %>
+<h2>
+  <%= link_to project do %>
+    <%= project.main_blend_file %>
+  <% end %>
+</h2>
+
+<p>
+  <%= "Status: #{project.status}" %>
+</p>

@@ -1,1 +1,12 @@
 <h1><%= @project.main_blend_file %></h1>
+
+<%= render @project %>
+
+<% if @project.price_calculation&.workflow.blank? %>
+  <%= button_to "Calculate price",
+  project_price_calculation_path(@project),
+  method: :post %>
+<% end %>
+
+<%= render @project.integrity_check %>
+<%= render @project.price_calculation if @project.price_calculation.present? %>

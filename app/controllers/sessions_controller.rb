@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
-      claim_stashed_uploads(user)
+      claim_stashed_uploads user
       redirect_to after_authentication_url
     else
       redirect_to new_session_path, alert: "Try another email address or password."

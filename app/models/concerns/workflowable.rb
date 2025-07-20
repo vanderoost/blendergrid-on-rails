@@ -3,12 +3,9 @@ module Workflowable
 
   included do
     has_one :workflow, as: :workflowable
-    after_create :add_workflow
+    after_create :create_workflow
     broadcasts_to :project
-
-    def add_workflow
-      create_workflow(uuid: SecureRandom.uuid)
-    end
+    delegate :status, to: :workflow
 
     def make_workflow_message
       raise NotImplementedError

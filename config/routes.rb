@@ -9,7 +9,9 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resources :uploads, param: :uuid
-  resources :projects, param: :uuid
+  resources :projects, param: :uuid do
+    resource :price_calculation
+  end
 
   namespace :api do
     namespace :v1 do
