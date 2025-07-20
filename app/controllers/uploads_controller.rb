@@ -1,4 +1,7 @@
 class UploadsController < ApplicationController
+  include UploadStashable
+
+  allow_unauthenticated_access
   before_action :set_upload, only: :show
 
   def show
@@ -9,9 +12,11 @@ class UploadsController < ApplicationController
   end
 
   def create
-    @upload = Upload.new(upload_params)
+    scope = authenticated? ? Current.user.uploads : Upload
+    @upload = scope.new(upload_params)
+
     if @upload.save
-      persist_in_session @upload
+      stash_upload @upload
       redirect_to @upload
     else
       render :new, status: :unprocessable_entity
@@ -25,10 +30,5 @@ class UploadsController < ApplicationController
 
     def upload_params
       params.require(:upload).permit(:source_file, :uuid)
-    end
-
-    def persist_in_session(upload)
-      session[:upload_uuids] ||= []
-      session[:upload_uuids] << upload.uuid
     end
 end

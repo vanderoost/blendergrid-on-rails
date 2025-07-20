@@ -1,6 +1,7 @@
 class Upload < ApplicationRecord
   include Uuidable
 
+  belongs_to :user, optional: true
   has_one_attached :source_file
   has_many :projects
 

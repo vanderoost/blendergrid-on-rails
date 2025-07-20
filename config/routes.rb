@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resource :session
+  resources :passwords, param: :token
+  resources :uploads, param: :uuid
+  resources :projects, param: :uuid
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
@@ -18,9 +21,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "uploads#new"
-
-  resources :uploads, param: :uuid
-  resources :projects, param: :uuid
 
   # Custom Active Storage Direct Uploads
   post "/rails/active_storage/direct_uploads", to: "direct_uploads#create"
