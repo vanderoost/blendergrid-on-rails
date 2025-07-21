@@ -6,6 +6,7 @@ module Workflowable
     after_create :create_workflow
     broadcasts_to :project
     delegate :status, to: :workflow
+    delegate :settings, to: :workflow
 
     def make_workflow_message
       raise NotImplementedError

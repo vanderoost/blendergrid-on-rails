@@ -42,8 +42,7 @@ class IntegrityCheck < ApplicationRecord
   end
 
   def handle_result(result)
-    self.stats = result.dig("stats")
-    self.settings = result.dig("settings")
-    save!
+    update(stats: result.dig("stats"))
+    self.workflow.update(settings: result.dig("settings"))
   end
 end

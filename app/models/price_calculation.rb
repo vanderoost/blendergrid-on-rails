@@ -1,4 +1,7 @@
 class PriceCalculation < ApplicationRecord
+  MAX_PIXEL_COUNT = 1280 * 720
+  MAX_SPP = 128
+
   include Workflowable
 
   belongs_to :project
@@ -11,11 +14,57 @@ class PriceCalculation < ApplicationRecord
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
-    # TODO: Use real data
-    sample_res_x = 960
-    sample_res_y = 540
-    sample_spp = 64
-    sample_frames = [ 1, 5, 10 ]
+    # Resolution
+    sample_res_x = project.settings.res_x
+    sample_res_y = project.settings.res_y
+    orig_pixel_count = sample_res_x * sample_res_y
+    if orig_pixel_count > MAX_PIXEL_COUNT
+      pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
+      sample_res_x = (sample_res_x * pixel_factor).round
+      sample_res_y = (sample_res_y * pixel_factor).round
+      logger.info "Custom resolution: #{sample_res_x}x#{sample_res_y}"
+    end
+
+    # Sample count
+    sample_spp = project.settings.spp
+    if sample_spp > MAX_SPP
+      sample_spp = MAX_SPP
+      logger.info "Custom SPP: #{sample_spp}"
+    end
+
+    # Frames
+    frame_start = project.settings.output.frame_range.start
+    frame_end = project.settings.output.frame_range.end
+    frame_step = project.settings.output.frame_range.step
+    all_frames = (frame_start..frame_end).step(frame_step).to_a
+    if all_frames.length > 3
+      sample_frames = [
+        all_frames[0],
+        all_frames[all_frames.length / 2],
+        all_frames[-1]
+      ]
+    else
+      sample_frames = all_frames
+    end
+
+    # TODO: This side effect doesn't really belong here.
+    update(sample_settings: {
+      output: {
+        format: {
+          resolution_x: sample_res_x,
+          resolution_y: sample_res_y,
+          resolution_percentage: 100
+        },
+        frame_range: sample_frames
+      },
+      render: {
+        sampling: {
+          max_samples: sample_spp
+        }
+      }
+    })
+
+    # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
     blender_version = "latest"
 
     {
@@ -55,9 +104,7 @@ class PriceCalculation < ApplicationRecord
               "--project-dir",
               "/tmp/project"
             ],
-            parameters: {
-                frame: sample_frames
-            },
+            parameters: { frame: sample_frames },
             image: "blendergrid/blender:#{blender_version}"
           }
       ],
@@ -70,18 +117,23 @@ class PriceCalculation < ApplicationRecord
   end
 
   def handle_result(result)
-    self.node_type = result.dig("node_type")
-    self.timing = result.dig("timing")
+    update(node_type: result.dig("node_type"), timing: result.dig("timing"))
+
+    # This should be kicked off somewhere else, maybe in the state machine?
     calculate_price
-    save!
   end
 
   def calculate_price
-    server_count = 1
-
     # Scene specific
-    sample_factor = 5.0
-    pixel_factor = 2.0
+    orig_pixel_count = project.settings.res_x * project.settings.res_y
+    sample_pixel_count = project.sample_settings.res_x * project.sample_settings.res_y
+    pixel_factor = orig_pixel_count.to_f / sample_pixel_count
+    logger.info "Pixel factor: #{pixel_factor}"
+
+    orig_sample_count = project.settings.spp * orig_pixel_count
+    sample_sample_count = project.sample_settings.spp * sample_pixel_count
+    sample_factor = orig_sample_count.to_f / sample_sample_count
+    logger.info "SPP factor: #{sample_factor}"
 
     # Variables
     api_time_per_server = 20.seconds
@@ -89,9 +141,11 @@ class PriceCalculation < ApplicationRecord
     min_jobs_per_server = 3
     server_hour_price = 0.50
     target_margin = 0.7
+    min_price_cents = 69
 
     # Calculate
-    job_count = 100 # TODO: Actually calculate this
+    job_count = project.settings.frame_count # TODO: Take subframes into account
+    server_count = Math.sqrt(job_count).ceil
     max_server_count = [ 1, job_count / min_jobs_per_server ].max
 
     # TODO: Put this into a "timing/timeline" PORO?
@@ -121,7 +175,7 @@ class PriceCalculation < ApplicationRecord
     logger.info "Total time: #{total_time}"
     cost = total_time.in_hours * server_hour_price
 
-    self.price_cents = (cost / (1 - target_margin) * 100).ceil
+    self.price_cents = min_price_cents + (cost / (1 - target_margin) * 100).round
     self.save
   end
 

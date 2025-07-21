@@ -42,7 +42,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
   create_table "integrity_checks", force: :cascade do |t|
     t.integer "project_id"
     t.json "stats"
-    t.json "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_integrity_checks_on_project_id"
@@ -51,8 +50,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
   create_table "price_calculations", force: :cascade do |t|
     t.integer "project_id"
     t.string "node_type"
-    t.integer "price_cents"
+    t.json "sample_settings"
     t.json "timing"
+    t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_price_calculations_on_project_id"
@@ -97,6 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
   create_table "workflows", force: :cascade do |t|
     t.string "uuid"
     t.string "status"
+    t.json "settings"
     t.string "workflowable_type"
     t.integer "workflowable_id"
     t.datetime "created_at", null: false

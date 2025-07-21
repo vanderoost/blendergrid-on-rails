@@ -3,6 +3,7 @@ class CreateWorkflows < ActiveRecord::Migration[8.0]
     create_table :workflows do |t|
       t.string :uuid, index: { unique: true }
       t.string :status
+      t.json :settings
       t.references :workflowable, polymorphic: true
       t.timestamps
     end
