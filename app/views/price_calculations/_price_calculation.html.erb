@@ -1,6 +1,7 @@
 <%= tag.div id: dom_id(price_calculation) do %>
   <%= "Price Calculation Status: #{price_calculation.status}" %>
   <%= "Node Type: #{price_calculation.node_type}" %>
+  <%= "Price: $#{price_calculation.price}" %>
 
   <% unless price_calculation.timing.blank? %>
     <%= debug price_calculation.timing %>

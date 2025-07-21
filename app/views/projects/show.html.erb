@@ -6,7 +6,8 @@
   <%= button_to "Calculate price",
   project_price_calculation_path(@project),
   method: :post %>
+<% else %>
+  <%= render @project.price_calculation %>
 <% end %>
 
 <%= render @project.integrity_check %>
-<%= render @project.price_calculation if @project.price_calculation.present? %>

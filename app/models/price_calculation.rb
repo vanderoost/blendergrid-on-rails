@@ -72,6 +72,61 @@ class PriceCalculation < ApplicationRecord
   def handle_result(result)
     self.node_type = result.dig("node_type")
     self.timing = result.dig("timing")
+    calculate_price
     save!
+  end
+
+  def calculate_price
+    server_count = 1
+
+    # Scene specific
+    sample_factor = 5.0
+    pixel_factor = 2.0
+
+    # Variables
+    api_time_per_server = 20.seconds
+    boot_time = 5.minutes
+    min_jobs_per_server = 3
+    server_hour_price = 0.50
+    target_margin = 0.7
+
+    # Calculate
+    job_count = 100 # TODO: Actually calculate this
+    max_server_count = [ 1, job_count / min_jobs_per_server ].max
+
+    # TODO: Put this into a "timing/timeline" PORO?
+    api_time = api_time_per_server * server_count
+    download_time = (timing["download"]["max"] / 1000).seconds
+    server_prep_time = boot_time + download_time
+    frame_init_time = ((timing["init"]["mean"] + timing["init"]["std"]) / 1000).seconds
+    frame_sampling_time = (
+      (timing["sampling"]["mean"] + timing["sampling"]["std"]) / 1000).seconds
+    frame_sampling_time *= sample_factor
+    frame_post_time = ((timing["post"]["mean"] + timing["post"]["std"]) / 1000).seconds
+    frame_post_time *= pixel_factor
+    frame_upload_time = (
+      (timing["upload"]["mean"] + timing["upload"]["std"]) / 1000).seconds
+    frame_upload_time *= pixel_factor
+
+    time_per_frame = frame_init_time + frame_sampling_time + frame_post_time
+      + frame_upload_time
+
+    total_frame_time = time_per_frame * job_count
+
+    # Optional: Tiles stitching
+
+    # Optional: Zipping and encoding
+
+    total_time = api_time + server_prep_time + total_frame_time
+    logger.info "Total time: #{total_time}"
+    cost = total_time.in_hours * server_hour_price
+
+    self.price_cents = (cost / (1 - target_margin) * 100).ceil
+    self.save
+  end
+
+  def price
+    return "Calculating..." if price_cents.blank?
+    price_cents / 100.0
   end
 end

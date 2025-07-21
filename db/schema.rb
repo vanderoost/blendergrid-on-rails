@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
   create_table "price_calculations", force: :cascade do |t|
     t.integer "project_id"
     t.string "node_type"
+    t.integer "price_cents"
     t.json "timing"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
