@@ -117,9 +117,13 @@ class PriceCalculation < ApplicationRecord
   end
 
   def handle_result(result)
-    update(node_type: result.dig("node_type"), timing: result.dig("timing"))
+    update(
+      node_provider: result.dig(:node_provider),
+      node_type: result.dig(:node_type),
+      timing: result.dig(:timing),
+    )
 
-    # This should be kicked off somewhere else, maybe in the state machine?
+    # TODO: This should be kicked off somewhere else (state machine?)
     calculate_price
   end
 
@@ -136,20 +140,37 @@ class PriceCalculation < ApplicationRecord
     logger.info "SPP factor: #{sample_factor}"
 
     # Variables
-    api_time_per_server = 20.seconds
+    api_time_per_node = 20.seconds
     boot_time = 5.minutes
     min_jobs_per_server = 3
-    server_hour_price = 0.50
     target_margin = 0.7
     min_price_cents = 69
 
     # Calculate
     job_count = project.settings.frame_count # TODO: Take subframes into account
-    server_count = Math.sqrt(job_count).ceil
-    max_server_count = [ 1, job_count / min_jobs_per_server ].max
+    node_count = Math.sqrt(job_count).ceil
+    # max_server_count = [ 1, job_count / min_jobs_per_server ].max
+
+    # Server cost
+    # TODO: Move this somewhere else - Unit test it
+    nodes_remaining = node_count
+    total_hourly_cost = 0
+    supplies = NodeSupply.where(provider: node_provider, node_type: node_type)
+      .order(:millicents_per_hour)
+    supplies.each do |supply|
+      nodes_to_use = [ nodes_remaining, supply.capacity ].min
+      total_hourly_cost += supply.millicents_per_hour * nodes_to_use
+      nodes_remaining -= nodes_to_use
+    end
+    if nodes_remaining > 0
+      total_hourly_cost += supplies.last.millicents_per_hour * nodes_remaining
+    end
+    avg_node_hour_cost = total_hourly_cost.to_f / node_count / 100_000
+    logger.info "Total hourly cost: #{total_hourly_cost}"
+    logger.info "Average hourly cost: #{avg_node_hour_cost}"
 
     # TODO: Put this into a "timing/timeline" PORO?
-    api_time = api_time_per_server * server_count
+    api_time = api_time_per_node * node_count
     download_time = (timing["download"]["max"] / 1000).seconds
     server_prep_time = boot_time + download_time
     frame_init_time = ((timing["init"]["mean"] + timing["init"]["std"]) / 1000).seconds
@@ -173,7 +194,7 @@ class PriceCalculation < ApplicationRecord
 
     total_time = api_time + server_prep_time + total_frame_time
     logger.info "Total time: #{total_time}"
-    cost = total_time.in_hours * server_hour_price
+    cost = total_time.in_hours * avg_node_hour_cost
 
     self.price_cents = min_price_cents + (cost / (1 - target_margin) * 100).round
     self.save

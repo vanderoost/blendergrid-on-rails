@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_21_182142) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,8 +47,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_19_000007) do
     t.index ["project_id"], name: "index_integrity_checks_on_project_id"
   end
 
+  create_table "node_supplies", force: :cascade do |t|
+    t.string "provider"
+    t.string "region"
+    t.string "zone"
+    t.string "node_type"
+    t.integer "capacity", default: 0
+    t.integer "millicents_per_hour"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "price_calculations", force: :cascade do |t|
     t.integer "project_id"
+    t.string "node_provider"
     t.string "node_type"
     t.json "sample_settings"
     t.json "timing"

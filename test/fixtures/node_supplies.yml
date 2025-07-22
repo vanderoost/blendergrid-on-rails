@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the "{}" from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+us_east_1a:
+  provider: localstack
+  region: us-east-1
+  zone: a
+  node_type: macbook-pro
+  capacity: 3
+  millicents_per_hour: 40000
+
+us_east_1b:
+  provider: localstack
+  region: us-east-1
+  zone: b
+  node_type: macbook-pro
+  capacity: 5
+  millicents_per_hour: 45000
+
+ap_south_1a:
+  provider: localstack
+  region: ap-south-1
+  zone: a
+  node_type: macbook-pro
+  capacity: 4
+  millicents_per_hour: 35000

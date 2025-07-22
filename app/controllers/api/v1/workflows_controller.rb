@@ -3,7 +3,7 @@ class Api::V1::WorkflowsController < Api::BaseController
 
   def update
     if params[:status] == "finished"
-      @workflow.handle_result result_params
+      @workflow.handle_result workflow_params
       @workflow.finish
     elsif params[:status] == "failed"
       @workflow.fail
@@ -17,10 +17,20 @@ class Api::V1::WorkflowsController < Api::BaseController
       @workflow = Workflow.find_by!(uuid: params[:uuid])
     end
 
-    def result_params
-      params[:result].merge({
-        node_type: params.dig(:node_type),
+    # TODO: So ugly - Update the Swarm Engine to send us better data
+    def workflow_params
+      workflow_params = params[:result].merge({
         timing: params.dig(:timing)
       })
+
+      if params.dig(:node_type).present?
+        node_provider, node_type = params[:node_type].split(":")
+        workflow_params = workflow_params.merge({
+          node_provider: node_provider,
+          node_type: node_type
+        })
+      end
+
+      workflow_params
     end
 end
