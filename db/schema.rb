@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_21_182142) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -65,6 +65,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_182142) do
     t.string "node_type_name"
     t.json "sample_settings"
     t.json "timing"
+    t.integer "expected_render_time"
     t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -79,6 +80,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_182142) do
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
+  end
+
+  create_table "renders", force: :cascade do |t|
+    t.integer "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_renders_on_project_id"
   end
 
   create_table "sessions", force: :cascade do |t|

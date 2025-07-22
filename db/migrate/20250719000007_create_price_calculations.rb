@@ -6,6 +6,7 @@ class CreatePriceCalculations < ActiveRecord::Migration[8.0]
       t.string :node_type_name
       t.json :sample_settings
       t.json :timing
+      t.integer :expected_render_time
       t.integer :price_cents
       t.timestamps
     end

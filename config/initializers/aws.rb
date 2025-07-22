@@ -13,5 +13,6 @@ else
     region:      "us-east-1",
     credentials: Aws::Credentials.new("test", "test"),
     endpoint:    "http://localhost:4566",
+    s3: { force_path_style: true }
   )
 end

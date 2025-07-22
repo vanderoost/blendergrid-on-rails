@@ -2,6 +2,12 @@
 
 <%= render @project %>
 
+<% if @project.render&.workflow.blank? %>
+  <%= button_to "Start Render", project_render_path(@project), method: :post %>
+<% else %>
+  <%= render @project.render %>
+<% end %>
+
 <% if @project.price_calculation&.workflow.blank? %>
   <%= button_to "Calculate price",
   project_price_calculation_path(@project),

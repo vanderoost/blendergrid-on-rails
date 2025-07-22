@@ -76,8 +76,8 @@ class PriceCalculation < ApplicationRecord
           settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
           project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}"
         },
-      output: "s3://#{bucket}/projects/#{project.uuid}/output",
-      logs: "s3://#{bucket}/projects/#{project.uuid}/logs"
+        logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
+        output: "s3://#{bucket}/projects/#{project.uuid}/output"
       },
       executions: [
           {
@@ -117,7 +117,7 @@ class PriceCalculation < ApplicationRecord
   end
 
   def handle_result(result)
-    logger.info "PriceCalculation#handle_result(#{result})"
+    logger.info "PriceCalculation#handle_result(#{result}"
     update(
       node_provider_id: result.dig(:node_provider_id),
       node_type_name: result.dig(:node_type_name),
@@ -199,12 +199,17 @@ class PriceCalculation < ApplicationRecord
 
     total_time = api_time + server_prep_time + total_frame_time
     logger.info "Total time: #{total_time}"
+
+    # TODO: Does this attriburte belong to the price calculation? Or project? Or render?
+    self.expected_render_time = total_time
+
     cost = total_time.in_hours * avg_node_hour_cost
 
     self.price_cents = min_price_cents + (cost / (1 - target_margin) * 100).round
     self.save
   end
 
+  # TODO: Move this to a view helper?
   def price
     return "Calculating..." if price_cents.blank?
     price_cents / 100.0

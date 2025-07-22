@@ -4,6 +4,7 @@ class Project < ApplicationRecord
   belongs_to :upload
   has_one :integrity_check
   has_one :price_calculation
+  has_one :render
 
   after_create :create_integrity_check
 
