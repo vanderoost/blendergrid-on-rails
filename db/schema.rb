@@ -48,20 +48,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_21_182142) do
   end
 
   create_table "node_supplies", force: :cascade do |t|
-    t.string "provider"
+    t.string "provider_id"
     t.string "region"
     t.string "zone"
-    t.string "node_type"
+    t.string "type_name"
     t.integer "capacity", default: 0
     t.integer "millicents_per_hour"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
   create_table "price_calculations", force: :cascade do |t|
     t.integer "project_id"
-    t.string "node_provider"
-    t.string "node_type"
+    t.string "node_provider_id"
+    t.string "node_type_name"
     t.json "sample_settings"
     t.json "timing"
     t.integer "price_cents"

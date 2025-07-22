@@ -117,9 +117,10 @@ class PriceCalculation < ApplicationRecord
   end
 
   def handle_result(result)
+    logger.info "PriceCalculation#handle_result(#{result})"
     update(
-      node_provider: result.dig(:node_provider),
-      node_type: result.dig(:node_type),
+      node_provider_id: result.dig(:node_provider_id),
+      node_type_name: result.dig(:node_type_name),
       timing: result.dig(:timing),
     )
 
@@ -155,8 +156,12 @@ class PriceCalculation < ApplicationRecord
     # TODO: Move this somewhere else - Unit test it
     nodes_remaining = node_count
     total_hourly_cost = 0
-    supplies = NodeSupply.where(provider: node_provider, node_type: node_type)
+    supplies = NodeSupply
+      .where(provider_id: node_provider_id, type_name: node_type_name)
       .order(:millicents_per_hour)
+    if supplies.empty?
+      raise "No supplies found for #{node_provider_id}:#{node_type_name}"
+    end
     supplies.each do |supply|
       nodes_to_use = [ nodes_remaining, supply.capacity ].min
       total_hourly_cost += supply.millicents_per_hour * nodes_to_use

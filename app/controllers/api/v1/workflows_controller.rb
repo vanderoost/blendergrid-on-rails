@@ -24,10 +24,10 @@ class Api::V1::WorkflowsController < Api::BaseController
       })
 
       if params.dig(:node_type).present?
-        node_provider, node_type = params[:node_type].split(":")
+        node_provider_id, node_type_name = params[:node_type].split(":")
         workflow_params = workflow_params.merge({
-          node_provider: node_provider,
-          node_type: node_type
+          node_provider_id: node_provider_id,
+          node_type_name: node_type_name
         })
       end
 

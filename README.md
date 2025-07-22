@@ -120,10 +120,10 @@ kamal deploy
 ### Nuking the server and starting from scratch
 
 ```bash
-kamal remove -y && \
+bin/kamal remove -y && \
 ssh ubuntu@rails.blendergrid.com \
   'docker volume rm $(docker volume ls -q | grep blendergrid)' && \
-kamal setup
+bin/kamal setup
 ```
 
 ## Monitoring
