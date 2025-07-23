@@ -19,7 +19,7 @@ localstack:
   access_key_id: test
   secret_access_key: test
   region: us-east-1
-  endpoint: http://localhost:4566
+  endpoint: <%= Rails.application.credentials.dig(:aws, :endpoint) %>
   bucket: <%= Rails.configuration.swarm_engine[:bucket] %>
   force_path_style: true
 

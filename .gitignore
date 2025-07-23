@@ -40,3 +40,5 @@
 .terraform/
 *.tfstate
 *.tfstate.*
+
+/config/credentials/development.key

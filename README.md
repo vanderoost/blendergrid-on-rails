@@ -16,9 +16,14 @@ Live at: [rails.blendergrid.com](https://rails.blendergrid.com)
 
 Make sure the `EDITOR` environment variable is set (`export EDITOR=vim`).
 
-Update credentials and secrets.
+Update credentials and secrets:
 ```bash
-rails credentials:edit 
+RAILS_ENV=production bin/rails credentials:edit
+```
+
+For specific development credentials (if they differ from production), use:
+```bash
+rails credentials:edit -e development
 ```
 
 ## Database
