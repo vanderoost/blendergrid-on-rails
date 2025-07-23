@@ -2,8 +2,15 @@
 
 <%= render @project %>
 
-<% if @project.render&.workflow.blank? %>
-  <%= button_to "Start Render", project_render_path(@project), method: :post %>
+<% if @project.render.nil? %>
+  <%= button_to "Pay & Render",
+  project_payments_path(@project),
+  method: :post,
+  form: {
+    data: {
+      turbo: false,
+    },
+  } %>
 <% else %>
   <%= render @project.render %>
 <% end %>

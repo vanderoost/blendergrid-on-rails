@@ -13,7 +13,10 @@ Rails.application.routes.draw do
   resources :uploads, param: :uuid
   resources :projects, param: :uuid do
     resource :price_calculation
-    resource :render
+
+    # TODO: Think of a better name than 'Payments'
+    # TODO: For multi-project support, this should move somewhere else
+    resources :payments, only: :create
   end
 
   namespace :api do
@@ -23,5 +26,9 @@ Rails.application.routes.draw do
         patch "/", on: :collection, action: :update
       end
     end
+  end
+
+  namespace :webhooks do
+    post "stripe", to: "stripe#handle"
   end
 end

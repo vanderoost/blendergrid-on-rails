@@ -67,3 +67,6 @@ gem "aws-sdk-s3", require: false
 
 # AWS SNS to talk to the Swarm Engine
 gem "aws-sdk-sns"
+
+# Payments
+gem "stripe", "~> 15.3"

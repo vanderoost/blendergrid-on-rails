@@ -1,6 +1,7 @@
 require "aws-sdk-core"
 
 credentials = Rails.application.credentials.dig(:aws)
+return if credentials.nil?
 
 Aws.config.update(
   region: "us-east-1",

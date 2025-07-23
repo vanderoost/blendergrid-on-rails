@@ -30,8 +30,9 @@
 
 /public/assets
 
-# Ignore master key for decrypting credentials and more.
+# Ignore keys for decrypting credentials and more.
 /config/master.key
+/config/credentials/development.key
 
 # Localstack
 /localstack-volume/*
@@ -40,5 +41,3 @@
 .terraform/
 *.tfstate
 *.tfstate.*
-
-/config/credentials/development.key
