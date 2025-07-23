@@ -1,6 +1,6 @@
-class CreatePriceCalculations < ActiveRecord::Migration[8.0]
+class CreateQuotes < ActiveRecord::Migration[8.0]
   def change
-    create_table :price_calculations do |t|
+    create_table :quotes do |t|
       t.references :project
       t.string :node_provider_id
       t.string :node_type_name

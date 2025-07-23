@@ -1,6 +1,6 @@
 require "test_helper"
 
-class IntegrityCheckTest < ActiveSupport::TestCase
+class QuoteTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

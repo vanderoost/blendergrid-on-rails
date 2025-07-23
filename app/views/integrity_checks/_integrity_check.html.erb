@@ -1,7 +1,0 @@
-<%= tag.div id: dom_id(integrity_check) do %>
-  <%= "Integrity Check Status: #{integrity_check.status}" %>
-
-  <% if integrity_check.settings.present? %>
-    <%= debug integrity_check.settings %>
-  <% end %>
-<% end %>

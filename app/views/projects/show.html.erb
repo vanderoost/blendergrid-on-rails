@@ -15,12 +15,10 @@
   <%= render @project.render %>
 <% end %>
 
-<% if @project.price_calculation&.workflow.blank? %>
-  <%= button_to "Calculate price",
-  project_price_calculation_path(@project),
-  method: :post %>
+<% if @project.quote&.workflow.blank? %>
+  <%= button_to "Calculate price", project_quote_path(@project), method: :post %>
 <% else %>
-  <%= render @project.price_calculation %>
+  <%= render @project.quote %>
 <% end %>
 
-<%= render @project.integrity_check %>
+<%= render @project.check %>

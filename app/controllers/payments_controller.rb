@@ -22,7 +22,7 @@ class PaymentsController < ApplicationController
       {
         price_data: {
           currency: "usd",
-          unit_amount: project.price_calculation.price_cents,
+          unit_amount: project.quote.price_cents,
           product_data: { name: project.main_blend_file }
         },
         quantity: 1

@@ -1,4 +1,4 @@
-class IntegrityCheck < ApplicationRecord
+class Check < ApplicationRecord
   include Workflowable
 
   belongs_to :project

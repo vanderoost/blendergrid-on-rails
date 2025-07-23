@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :uploads, param: :uuid
   resources :projects, param: :uuid do
-    resource :price_calculation
+    resource :quote
 
     # TODO: Think of a better name than 'Payments'
     # TODO: For multi-project support, this should move somewhere else

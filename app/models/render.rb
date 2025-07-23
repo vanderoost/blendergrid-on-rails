@@ -7,7 +7,7 @@ class Render < ApplicationRecord
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
-    expected_render_time = project.price_calculation.expected_render_time
+    expected_render_time = project.quote.expected_render_time
     if expected_render_time.nil?
       raise "The price calculation's expected_render_time is nil"
     end
@@ -76,5 +76,9 @@ class Render < ApplicationRecord
     bucket.objects(prefix: prefix)
       .sort_by(&:key)
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def handle_result(result)
+    logger.info "Render result: #{result}"
   end
 end

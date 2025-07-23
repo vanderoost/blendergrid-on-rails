@@ -2,11 +2,11 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
-  has_one :integrity_check
-  has_one :price_calculation
+  has_one :check
+  has_one :quote
   has_one :render
 
-  after_create :create_integrity_check
+  after_create :create_check
 
   scope :from_session, ->(session) {
     joins(:upload).merge(Upload.from_session(session))
@@ -14,10 +14,10 @@ class Project < ApplicationRecord
 
   # TODO: Add state machine
   def status
-    if price_calculation&.workflow.present?
-      "price-calculation-#{price_calculation.status}"
-    elsif integrity_check&.workflow.present?
-      "integrity-check-#{integrity_check.status}"
+    if quote&.workflow.present?
+      "price-calculation-#{quote.status}"
+    elsif check&.workflow.present?
+      "integrity-check-#{check.status}"
     else
       "uploaded"
     end
@@ -35,13 +35,13 @@ end
 class Project::Settings
   def self.for_project(project)
     new(snapshots: [
-      project.integrity_check&.settings,
-      project.price_calculation&.settings
+      project.check&.settings,
+      project.quote&.settings
       # project.render&.settings
     ])
   end
 
   def self.for_sample(project)
-    new(snapshots: [ project.price_calculation&.sample_settings ])
+    new(snapshots: [ project.quote&.sample_settings ])
   end
 end

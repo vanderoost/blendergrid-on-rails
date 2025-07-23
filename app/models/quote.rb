@@ -1,4 +1,4 @@
-class PriceCalculation < ApplicationRecord
+class Quote < ApplicationRecord
   MAX_PIXEL_COUNT = 1280 * 720
   MAX_SPP = 128
 
@@ -117,7 +117,7 @@ class PriceCalculation < ApplicationRecord
   end
 
   def handle_result(result)
-    logger.info "PriceCalculation#handle_result(#{result}"
+    logger.info "Quote#handle_result(#{result}"
     update(
       node_provider_id: result.dig(:node_provider_id),
       node_type_name: result.dig(:node_type_name),
