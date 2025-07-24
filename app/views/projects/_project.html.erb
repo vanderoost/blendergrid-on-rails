@@ -1,11 +1,21 @@
-<%= turbo_stream_from project %>
-
-<h2>
-  <%= link_to project do %>
+<%= tag.div id: dom_id(project) do %>
+  <h2>
     <%= project.main_blend_file %>
-  <% end %>
-</h2>
+  </h2>
 
-<p>
-  <%= "Status: #{project.status}" %>
-</p>
+  <p>
+    <%= "Project Status: #{project.status}" %>
+  </p>
+
+  <% if project.checked? %>
+    <%= button_to "Calculate price", project_quote_path(project), method: :post %>
+  <% elsif project.quoted? %>
+    <%= render project.quote %>
+    <%= form_with url: project_payments_path(project), method: :post,
+      data: { turbo: false } do |form| %>
+      <%= form.submit "Pay & Render" %>
+    <% end %>
+  <% elsif project.render.present? %>
+    <%= render project.render %>
+  <% end %>
+<% end %>

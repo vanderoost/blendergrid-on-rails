@@ -4,7 +4,6 @@ class Api::V1::WorkflowsController < Api::BaseController
   def update
     if params[:status] == "finished"
       @workflow.handle_result workflow_params
-      @workflow.finish
     elsif params[:status] == "failed"
       @workflow.fail
     end

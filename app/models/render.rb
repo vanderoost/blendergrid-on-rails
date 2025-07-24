@@ -2,12 +2,11 @@ require "aws-sdk-s3"
 
 class Render < ApplicationRecord
   include Workflowable
-  belongs_to :project
 
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
-    expected_render_time = project.quote.expected_render_time
+    expected_render_time = project.quotes.last.expected_render_time
     if expected_render_time.nil?
       raise "The price calculation's expected_render_time is nil"
     end
@@ -81,4 +80,10 @@ class Render < ApplicationRecord
   def handle_result(result)
     logger.info "Render result: #{result}"
   end
+
+  private
+    def start_workflow
+      project.start_rendering
+      create_workflow
+    end
 end

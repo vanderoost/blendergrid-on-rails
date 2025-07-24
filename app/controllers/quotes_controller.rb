@@ -4,7 +4,7 @@ class QuotesController < ApplicationController
   allow_unauthenticated_access only: %i[ create ]
 
   def create
-    @quote = @project.build_quote
+    @quote = @project.quotes.new # Option to pass in any custom data from the user
     if @quote.save
       redirect_to @project
     else

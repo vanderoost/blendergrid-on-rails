@@ -11,13 +11,11 @@ module Workflow::States
 
   class Created < BaseState
     def start
-      swarm_engine = SwarmEngine.new
-      swarm_engine.start_workflow(@workflow)
-      @workflow.open!
+      @workflow.started!
     end
   end
 
-  class Open < BaseState
+  class Started < BaseState
     def finish
       @workflow.finished!
     end

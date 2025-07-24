@@ -1,27 +1,32 @@
 class Project < ApplicationRecord
+  STATES = %i[
+    uploaded
+    checking
+    checked
+    quoting
+    quoted
+    rendering
+    rendered
+    finished
+    cancelled
+    failed].freeze
+  ACTIONS = %i[start_checking start_quoting start_rendering finish cancel fail].freeze
+
   include Uuidable
+  include Statusable
 
   belongs_to :upload
-  has_one :check
-  has_one :quote
-  has_one :render
+  has_many :checks
+  has_many :quotes
+  has_many :renders
 
-  after_create :create_check
+  broadcasts_to ->(project) { :projects }
+
+  after_create :start_check
 
   scope :from_session, ->(session) {
     joins(:upload).merge(Upload.from_session(session))
   }
-
-  # TODO: Add state machine
-  def status
-    if quote&.workflow.present?
-      "price-calculation-#{quote.status}"
-    elsif check&.workflow.present?
-      "integrity-check-#{check.status}"
-    else
-      "uploaded"
-    end
-  end
 
   def settings
     @settings ||= Project::Settings.for_project(self)
@@ -30,18 +35,31 @@ class Project < ApplicationRecord
   def sample_settings
     @sample_settings ||= Project::Settings.for_sample(self)
   end
+
+  def check = latest(:check)
+  def quote = latest(:quote)
+  def render = latest(:render)
+
+  private
+    def start_check
+      checks.create
+    end
+
+    def latest(model_sym)
+      public_send(model_sym.to_s.pluralize).last
+    end
 end
 
 class Project::Settings
   def self.for_project(project)
     new(snapshots: [
-      project.check&.settings,
-      project.quote&.settings
-      # project.render&.settings
+      project.checks.last&.settings,
+      project.quotes.last&.settings,
+      project.renders.last&.settings
     ])
   end
 
   def self.for_sample(project)
-    new(snapshots: [ project.quote&.sample_settings ])
+    new(snapshots: [ project.quotes.last&.sample_settings ])
   end
 end

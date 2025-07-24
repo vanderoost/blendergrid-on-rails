@@ -26,9 +26,8 @@ class Webhooks::StripeController < Webhooks::BaseController
 
       project = Project.find_by(uuid: session.metadata["project_uuid"])
       return unless project
-      return if project.render.present?
 
       logger.info "STARTING RENDER FOR PROJECT: #{project.inspect}"
-      project.create_render
+      project.renders.create
     end
 end

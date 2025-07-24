@@ -4,8 +4,6 @@ class Quote < ApplicationRecord
 
   include Workflowable
 
-  belongs_to :project
-
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
@@ -212,6 +210,12 @@ class Quote < ApplicationRecord
   # TODO: Move this to a view helper?
   def price
     return "Calculating..." if price_cents.blank?
-    price_cents / 100.0
+    "$#{'%.2f' % (price_cents / 100.0)}"
   end
+
+  private
+    def start_workflow
+      project.start_quoting
+      create_workflow
+    end
 end

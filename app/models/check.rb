@@ -1,8 +1,6 @@
 class Check < ApplicationRecord
   include Workflowable
 
-  belongs_to :project
-
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
@@ -45,4 +43,10 @@ class Check < ApplicationRecord
     update(stats: result.dig("stats"))
     self.workflow.update(settings: result.dig("settings"))
   end
+
+  private
+    def start_workflow
+      project.start_checking
+      create_workflow
+    end
 end

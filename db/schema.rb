@@ -60,9 +60,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
   end
 
   create_table "projects", force: :cascade do |t|
-    t.string "uuid"
-    t.string "main_blend_file"
     t.integer "upload_id"
+    t.string "uuid"
+    t.string "status"
+    t.string "main_blend_file"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"

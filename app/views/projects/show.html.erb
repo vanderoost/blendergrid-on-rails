@@ -1,24 +1,3 @@
-<h1><%= @project.main_blend_file %></h1>
+<%= turbo_stream_from :projects %>
 
 <%= render @project %>
-
-<% if @project.render.nil? %>
-  <%= button_to "Pay & Render",
-  project_payments_path(@project),
-  method: :post,
-  form: {
-    data: {
-      turbo: false,
-    },
-  } %>
-<% else %>
-  <%= render @project.render %>
-<% end %>
-
-<% if @project.quote&.workflow.blank? %>
-  <%= button_to "Calculate price", project_quote_path(@project), method: :post %>
-<% else %>
-  <%= render @project.quote %>
-<% end %>
-
-<%= render @project.check %>
