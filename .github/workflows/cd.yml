@@ -27,7 +27,7 @@ jobs:
       # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
       - name: Get ECR Login Password
         run: |
-          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password" >> $GITHUB_ENV
+          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
 
       - name: Deploy using Kamal
         run: bin/kamal deploy
