@@ -77,19 +77,20 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy using Kamal
-        run: bin/kamal deploy
-        env:
-          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
+      # - name: Deploy using Kamal
+      #   run: bin/kamal deploy
+      #   env:
+      #     RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      #     KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
+          ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Deploy command
-        run: bundle exec kamal deploy --skip-push 
+      - name: Deploy using Kamal
+        run: bin/kamal deploy --skip-push 
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
