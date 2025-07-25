@@ -78,6 +78,8 @@ sudo apt-get install redis-server
 
 ## Deployment instructions
 
+Manual deployment:
+
 ```bash
 kamal deploy
 ```
