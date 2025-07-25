@@ -30,9 +30,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
-      - name: Get ECR Login Password
-        run: |
-          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
+      - name: Login to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Export ECR password for Kamal
+        run: echo "KAMAL_REGISTRY_PASSWORD=${{ steps.ecr.outputs.password }}" >> $GITHUB_ENV
 
       - name: Deploy using Kamal
         run: bin/kamal deploy
