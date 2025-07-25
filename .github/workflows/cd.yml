@@ -48,7 +48,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           labels: |
-            "service=blendergrid-web-app"
+            "service=blendergrid_on_rails"
           tags: |
             "281752919491.dkr.ecr.us-east-1.amazonaws.com/blendergrid/web-app:latest"
             "281752919491.dkr.ecr.us-east-1.amazonaws.com/blendergrid/web-app:${{ steps.tag.outputs.tag }}"
