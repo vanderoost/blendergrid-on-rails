@@ -12,7 +12,7 @@ amazon:
   access_key_id: <%= Rails.application.credentials.dig(:aws, :access_key_id) %>
   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
   region: us-east-1
-  bucket: <%= Rails.configuration.swarm_engine[:bucket] %>
+  bucket: <%= Rails.configuration.swarm_engine.dig(:bucket) %>
 
 localstack:
   service: S3
@@ -20,7 +20,7 @@ localstack:
   secret_access_key: test
   region: us-east-1
   endpoint: <%= Rails.application.credentials.dig(:aws, :endpoint) %>
-  bucket: <%= Rails.configuration.swarm_engine[:bucket] %>
+  bucket: <%= Rails.configuration.swarm_engine.dig(:bucket) %>
   force_path_style: true
 
 # Remember not to checkin your GCS keyfile to a repository
