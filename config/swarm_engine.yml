@@ -1,9 +1,15 @@
-development:
-  env: dev
+default: &defaults
+  env: <%= Rails.env %>
   bucket: swarm-engine-dev
   key_prefix: uploads
 
+test:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
 production:
-  env: staging
+  <<: *defaults
+  env: prod
   bucket: blendergrid-staging-us-east-1
-  key_prefix: uploads
