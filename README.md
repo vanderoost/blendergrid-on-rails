@@ -1,4 +1,4 @@
-# Blendergrid on Rails [![CI/CD](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci-cd.yml)
+# Blendergrid on Rails [![CI](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml/badge.svg)](https://github.com/vanderoost/blendergrid-on-rails/actions/workflows/ci.yml)
 
 A proof of concept re-write of the Blendergrid.com Web App in Rails.
 
