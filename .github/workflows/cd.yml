@@ -1,8 +1,9 @@
 name: CD
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+  # push:
+  #   branches: [ main ]
 
 jobs:
   deploy:
@@ -23,8 +24,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
+      - name: Get ECR Login Password
+        run: |
+          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password" >> $GITHUB_ENV
+
       - name: Deploy using Kamal
         run: bin/kamal deploy
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_REGISTRY_PASSWORD: ${{ secrets.KAMAL_REGISTRY_PASSWORD }}
+          KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
