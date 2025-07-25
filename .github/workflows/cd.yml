@@ -86,7 +86,7 @@ jobs:
         run: bin/kamal deploy --skip-push 
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_123456789012_dkr_ecr_us_east_1_amazonaws_com }}
+          KAMAL_REGISTRY_PASSWORD: ${{ steps.login-ecr.outputs.docker_password_281752919491_dkr_ecr_us_east_1_amazonaws_com }}
 
 concurrency:
   group: deploy-prod
