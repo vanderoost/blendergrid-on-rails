@@ -21,7 +21,6 @@ jobs:
       BUNDLE_WITHOUT: "development test"
       DOCKER_BUILDKIT: 1
       RAILS_ENV: production
-      ECR_FULL_REPO: 281752919491.dkr.ecr.us-east-1.amazonaws.com/blendergrid/web-app
 
     steps:
       - name: Checkout code
@@ -29,26 +28,10 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      # - name: Set up Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: .ruby-version
-      #     bundler-cache: true
-
       # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-
-      # - name: Get ECR Login Password
-      #   run: |
-      #     echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
-
-      # - name: Docker meta
-      #   id: dockermeta
-      #   uses: docker/metadata-action@v4
-      #   with:
-      #     images: ${{ env.ECR_FULL_REPO }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -82,6 +65,11 @@ jobs:
       #   env:
       #     RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
       #     KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
+
+      # TODO: Can we use the login-ecr step instead?
+      - name: Get ECR Login Password
+        run: |
+          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
