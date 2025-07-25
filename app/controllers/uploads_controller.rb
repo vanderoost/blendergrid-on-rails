@@ -29,6 +29,7 @@ class UploadsController < ApplicationController
     end
 
     def upload_params
-      params.require(:upload).permit(:source_file, :uuid)
+      # params.require(:upload).permit(:source_file, :uuid)
+      params.expect(upload: [ :source_file, :uuid ])
     end
 end

@@ -1,6 +1,7 @@
 name: CD
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
@@ -20,6 +21,7 @@ jobs:
       BUNDLE_WITHOUT: "development test"
       DOCKER_BUILDKIT: 1
       RAILS_ENV: production
+      ECR_FULL_REPO: 281752919491.dkr.ecr.us-east-1.amazonaws.com/blendergrid/web-app
 
     steps:
       - name: Checkout code
@@ -27,11 +29,48 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      # - name: Set up Ruby
+      #   uses: ruby/setup-ruby@v1
+      #   with:
+      #     ruby-version: .ruby-version
+      #     bundler-cache: true
+
+      # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      # - name: Get ECR Login Password
+      #   run: |
+      #     echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
+
+      - name: Docker meta
+        id: dockermeta
+        uses: docker/metadata-action@v4
         with:
-          ruby-version: .ruby-version
-          bundler-cache: true
+          images: ${{ env.ECR_FULL_REPO }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set Tag
+        id: tag
+        run: |
+          echo "tag=$(git rev-parse "$GITHUB_SHA")" >> $GITHUB_OUTPUT
+
+      - name: Build Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          push: true
+          labels: |
+            "service=blendergrid-web-app"
+          tags: |
+            "blendergrid/web-app:latest"
+            "blendergrid/web-app:${{ steps.tag.outputs.tag }}"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max 
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -41,13 +80,19 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
-      - name: Get ECR Login Password
-        run: |
-          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
+      # - name: Deploy using Kamal
+      #   run: bin/kamal deploy
+      #   env:
+      #     RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+      #     KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
 
-      - name: Deploy using Kamal
-        run: bin/kamal deploy
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Deploy command
+        run: bundle exec kamal deploy --skip-push 
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
           KAMAL_REGISTRY_PASSWORD: ${{ env.KAMAL_REGISTRY_PASSWORD }}
