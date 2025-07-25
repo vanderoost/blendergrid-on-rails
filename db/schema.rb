@@ -10,26 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
   create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.bigint "record_id", null: false
-    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.bigint "byte_size", null: false
-    t.string "checksum"
-    t.string "content_type"
-    t.datetime "created_at", null: false
-    t.string "filename", null: false
     t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
     t.text "metadata"
     t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -39,62 +39,93 @@ ActiveRecord::Schema[8.1].define(version: 2025_05_04_145258) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "price_calculations", force: :cascade do |t|
-    t.datetime "created_at", null: false
+  create_table "checks", force: :cascade do |t|
     t.integer "project_id"
-    t.json "settings", default: {}, null: false
+    t.json "stats"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_price_calculations_on_project_id"
+    t.index ["project_id"], name: "index_checks_on_project_id"
   end
 
-  create_table "project_sources", force: :cascade do |t|
+  create_table "node_supplies", force: :cascade do |t|
+    t.string "provider_id"
+    t.string "region"
+    t.string "zone"
+    t.string "type_name"
+    t.integer "capacity", default: 0
+    t.integer "millicents_per_hour"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
-    t.string "uuid"
-    t.index ["user_id"], name: "index_project_sources_on_user_id"
+    t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
   create_table "projects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "main_blend_file"
-    t.string "name"
-    t.integer "project_source_id"
-    t.json "settings", default: {}, null: false
-    t.json "stats", default: {}, null: false
-    t.integer "status"
-    t.string "stripe_session_id"
-    t.datetime "updated_at", null: false
+    t.integer "upload_id"
     t.string "uuid"
-    t.index ["project_source_id"], name: "index_projects_on_project_source_id"
+    t.string "status"
+    t.string "main_blend_file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upload_id"], name: "index_projects_on_upload_id"
+    t.index ["uuid"], name: "index_projects_on_uuid", unique: true
+  end
+
+  create_table "quotes", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "node_provider_id"
+    t.string "node_type_name"
+    t.json "sample_settings"
+    t.json "timing"
+    t.integer "expected_render_time"
+    t.integer "price_cents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_quotes_on_project_id"
+  end
+
+  create_table "renders", force: :cascade do |t|
+    t.integer "project_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_renders_on_project_id"
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "ip_address"
-    t.datetime "updated_at", null: false
-    t.string "user_agent"
     t.integer "user_id", null: false
+    t.string "ip_address"
+    t.string "user_agent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "uploads", force: :cascade do |t|
+    t.string "uuid"
+    t.integer "user_id"
     t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_uploads_on_user_id"
+    t.index ["uuid"], name: "index_uploads_on_uuid", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
-    t.string "password_digest"
+    t.string "password_digest", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
   create_table "workflows", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "job_type"
-    t.integer "project_id"
-    t.integer "status"
-    t.json "timing", default: {}, null: false
-    t.datetime "updated_at", null: false
     t.string "uuid"
-    t.index ["project_id"], name: "index_workflows_on_project_id"
+    t.string "status"
+    t.json "settings"
+    t.string "workflowable_type"
+    t.integer "workflowable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["uuid"], name: "index_workflows_on_uuid", unique: true
+    t.index ["workflowable_type", "workflowable_id"], name: "index_workflows_on_workflowable"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

@@ -1,36 +1,34 @@
 Rails.application.routes.draw do
+  root "uploads#new"
+
+  get "signup" => "users#new"
+  get "up" => "rails/health#show", as: :rails_health_check
+  post "rails/active_storage/direct_uploads", to: "direct_uploads#create"
+
+  # TODO: Narrow the methods down to only the ones implemented in controllers
+
+  resources :users
   resource :session
   resources :passwords, param: :token
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resources :uploads, param: :uuid
+  resources :projects, param: :uuid do
+    resource :quote
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  get "up" => "rails/health#show", as: :rails_health_check
+    # TODO: Think of a better name than 'Payments'
+    # TODO: For multi-project support, this should move somewhere else
+    resources :payments, only: :create
+  end
 
-  # API
   namespace :api do
     namespace :v1 do
-      resources :workflows, only: [ :update ]
+      resources :workflows, param: :uuid
+      resources :node_supplies, only: [] do
+        patch "/", on: :collection, action: :update
+      end
     end
   end
 
-  # Webhooks
   namespace :webhooks do
     post "stripe", to: "stripe#handle"
   end
-
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  resources :price_calculations, only: [ :create ]
-  resources :renders, only: [ :create ]
-
-  resources :project_sources
-  resources :projects
-  resources :registrations, only: [ :new, :create ]
-
-  resources :stripe_checkout_sessions, only: [ :create ]
-
-  root "home#index"
 end

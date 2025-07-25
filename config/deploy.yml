@@ -1,14 +1,13 @@
 # Name of your application. Used to uniquely configure containers.
-service: blendergrid
+service: blendergrid_on_rails
 
 # Name of the container image.
-# image: richardvdoost/blendergrid-on-rails
-image: "blendergrid/web-app"
+image: blendergrid/web-app
 
 # Deploy to these servers.
 servers:
   web:
-    - 54.81.221.44
+    - 3.233.46.160
   # job:
   #   hosts:
   #     - 192.168.0.1
@@ -25,14 +24,13 @@ proxy:
 # Credentials for your image host.
 registry:
   # Specify the registry server, if you're not using Docker Hub
-  # server: registry.digitalocean.com / ghcr.io / ...
-  # username: richardvdoost
+  # TODO: See if we can put the account id in some better config location
+  server: "281752919491.dkr.ecr.us-east-1.amazonaws.com"
+  username: AWS
 
   # Always use an access token rather than real password when possible.
-  server: "987682347645.dkr.ecr.us-east-1.amazonaws.com"
-  username: AWS
   password:
-    - AWS_ECR_PASSWORD
+    - KAMAL_REGISTRY_PASSWORD
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
@@ -50,7 +48,7 @@ env:
     # WEB_CONCURRENCY: 2
 
     # Match this to any external database server to configure Active Record correctly
-    # Use blendergrid-db for a db accessory server on same machine via local kamal docker network.
+    # Use blendergrid_on_rails-db for a db accessory server on same machine via local kamal docker network.
     # DB_HOST: 192.168.0.2
 
     # Log everything from Rails
@@ -68,7 +66,7 @@ aliases:
 # Use a persistent storage volume for sqlite database files and local Active Storage files.
 # Recommended to change this to a mounted volume path that is backed up off server.
 volumes:
-  - "blendergrid_storage:/rails/storage"
+  - "blendergrid_on_rails_storage:/rails/storage"
 
 
 # Bridge fingerprinted assets, like JS and CSS, between versions to avoid
@@ -96,13 +94,6 @@ ssh:
 
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
-#   redis:
-#     image: redis:7.4
-#     # host: 192.168.0.2
-#     roles: [web]
-#     port: 6379
-#     directories:
-#       - data:/data
 #   db:
 #     image: mysql:8.0
 #     host: 192.168.0.2
@@ -118,3 +109,9 @@ ssh:
 #       - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
 #     directories:
 #       - data:/var/lib/mysql
+#   redis:
+#     image: redis:7.0
+#     host: 192.168.0.2
+#     port: 6379
+#     directories:
+#       - data:/data

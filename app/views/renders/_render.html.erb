@@ -1,0 +1,7 @@
+<%= tag.div id: dom_id(render) do %>
+  <%= "Render Status: #{render.status}" %>
+
+  <% render.frame_urls.each do |url| %>
+    <%= image_tag url, loading: "lazy", width: 240, alt: File.basename(url, ".*") %>
+  <% end %>
+<% end %>

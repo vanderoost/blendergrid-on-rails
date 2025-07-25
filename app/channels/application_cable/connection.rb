@@ -1,15 +1,21 @@
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :connection_id
+    identified_by :current_user
 
     def connect
-      self.connection_id = find_or_set_connection_id
+      # Original Rails 8 way:
+      # set_current_user || reject_unauthorized_connection
+
+      # New way, let everytyhing through:
+      set_current_user
+
+      # TODO: Do a `reject unless current_user` for certain channels we want to protect
     end
 
-    private
-
-    def find_or_set_connection_id
-      cookies.encrypted[:connection_id] ||= SecureRandom.uuid
-    end
+      def set_current_user
+        if session = Session.find_by(id: cookies.signed[:session_id])
+          self.current_user = session.user
+        end
+      end
   end
 end

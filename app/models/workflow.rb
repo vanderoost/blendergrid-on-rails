@@ -1,21 +1,29 @@
 class Workflow < ApplicationRecord
-  enum :job_type, [ :integrity_check, :price_calculation, :render ]
-  enum :status, [ :started, :finished, :failed ], default: :started
-  attribute :timing, :json, default: {}
+  STATES = %i[created started finished stopped failed].freeze
+  ACTIONS = %i[start finish stop fail].freeze
 
-  belongs_to :project
+  include Statusable
+  include Uuidable
 
-  def finalize(result: nil, timing: nil)
-    # TODO: Also make a state machine for workflow state?
-    if self.finished?
-      Rails.logger.warn "Workflow was already finished!"
-      return
-    end
+  belongs_to :workflowable, polymorphic: true
+  delegate :project, to: :workflowable
 
-    self.timing = timing or {}
-    self.finished!
-    self.save!
+  after_create :publish_start
 
-    project.finish(result: result)
+  def make_start_message
+    workflowable.make_workflow_start_message
   end
+
+  def handle_result(result)
+    finish
+    project.finish
+    return if result.nil?
+    workflowable.handle_result(result)
+  end
+
+  private
+    def publish_start
+      start
+      SwarmEngine.new.start_workflow self
+    end
 end

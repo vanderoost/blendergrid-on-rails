@@ -1,16 +1,19 @@
 require "aws-sdk-core"
 
+credentials = Rails.application.credentials.dig(:aws)
+return if credentials.nil?
+
 Aws.config.update(
-  region: Rails.application.credentials.dig(:aws, :default_region) || "us-east-1",
+  region: "us-east-1",
   credentials: Aws::Credentials.new(
-    Rails.application.credentials.dig(:aws, :access_key_id),
-    Rails.application.credentials.dig(:aws, :secret_access_key)
+    credentials.dig(:access_key_id),
+    credentials.dig(:secret_access_key)
   ),
+  s3: { force_path_style: !!credentials.dig(:force_path_style) }
 )
 
-endpoint = Rails.application.credentials.dig(:aws, :endpoint)
+endpoint = credentials.dig(:endpoint)
 if endpoint.present?
-  Rails.logger.info "Using custom endpoint: #{endpoint}"
-  Aws.config[:s3] = { endpoint: endpoint, force_path_style: true }
-  Aws.config[:sns] = { endpoint: endpoint }
+  Rails.logger.info "Using custom AWS endpoint: #{endpoint}"
+  Aws.config[:endpoint] = endpoint
 end

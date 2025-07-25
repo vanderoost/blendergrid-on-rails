@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html class="h-full bg-gray-100">
+<html>
   <head>
-    <title><%= content_for(:title) || "Blendergrid" %></title>
+    <title><%= content_for(:title) || "Blendergrid On Rails" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -23,15 +22,16 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="h-screen flex flex-col">
-    <%= render "layouts/header" %>
+  <body>
+    <nav>
+      <%= link_to "Home", root_path %>
+      <%= link_to "Projects", projects_path %>
+      <%= link_to "Log in", new_session_path unless authenticated? %>
+      <%= link_to "Sign up", signup_path unless authenticated? %>
+      <%= button_to "Log out", session_path, method: :delete if authenticated? %>
+    </nav>
+    <%= yield %>
 
-    <main class="flex-grow">
-      <%= yield %>
-    </main>
-
-    <%= render "layouts/footer" %>
-
-    <%= render "layouts/notifications" %>
+    <%= debug params if Rails.env.development? %>
   </body>
 </html>

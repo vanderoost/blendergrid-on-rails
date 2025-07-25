@@ -1,47 +1,33 @@
-class Webhooks::StripeController < ApplicationController
-  allow_unauthenticated_access
-  skip_before_action :verify_authenticity_token # To turn off CSRF protection
-
+class Webhooks::StripeController < Webhooks::BaseController
   def handle
-    Rails.logger.debug "Stripe Webhook Received"
-
-    endpoint_secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
-
-    event = nil
-
-    # Verify webhook signature and extract the event
-    # See https://stripe.com/docs/webhooks#verify-events for more information.
-    begin
-      sig_header = request.env["HTTP_STRIPE_SIGNATURE"]
-      payload = request.body.read
-      event = Stripe::Webhook.construct_event(payload, sig_header, endpoint_secret)
-    rescue JSON::ParserError => e
-      Rails.logger.error "Invalid payload: " + e.message
-      return head 400
-    rescue Stripe::SignatureVerificationError => e
-      Rails.logger.error "Invalid signature: " + e.message
-      return head 400
+    case event.type
+    when "checkout.session.completed", "checkout.session.async_payment_succeeded"
+      handle_successful_checkout event.data.object
+    else
+      logger.info "UNHANDLED EVENT TYPE: #{event.type}"
     end
 
-    Rails.logger.info "Webhook event received: " + event.inspect
+    head :ok
 
-    if event["type"] == "checkout.session.completed" ||
-    event["type"] == "checkout.session.async_payment_succeeded"
-      fulfill_checkout(event["data"]["object"]["id"])
-    end
+  rescue JSON::ParserError, Stripe::SignatureVerificationError => e
+    render json: { error: e.message }, status: :bad_request
   end
 
   private
-    def fulfill_checkout(checkout_session_id)
-      Rails.logger.info "Fulfilling checkout session: " + checkout_session_id
+    def event
+      payload = request.body.read
+      signature = request.env["HTTP_STRIPE_SIGNATURE"]
+      secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
+      Stripe::Webhook.construct_event(payload, signature, secret)
+    end
 
-      projects = Project.where(stripe_session_id: checkout_session_id)
+    def handle_successful_checkout(session)
+      logger.info "SUCCESSFUL CHECKOUT"
 
-      Rails.logger.info "Starting render for #{projects.count} projects"
+      project = Project.find_by(uuid: session.metadata["project_uuid"])
+      return unless project
 
-      projects.each do |project|
-        Rails.logger.info "Rendering project: " + project.uuid
-        project.start_render
-      end
+      logger.info "STARTING RENDER FOR PROJECT: #{project.inspect}"
+      project.renders.create
     end
 end

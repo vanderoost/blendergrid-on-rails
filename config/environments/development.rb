@@ -28,7 +28,7 @@ Rails.application.configure do
   # Change to :null_store to avoid any caching.
   config.cache_store = :memory_store
 
-  # Store files on Localstack S3
+  # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :localstack
 
   # Don't care if the mailer can't send.
@@ -71,5 +71,5 @@ Rails.application.configure do
   # config.generators.apply_rubocop_autocorrect_after_generate!
 
   # Allow the Swarm Engine to hit our API locally from Docker Compose
-  config.hosts = [ "127.0.0.1", "host.docker.internal" ]
+  config.hosts = [ IPAddr.new("0.0.0.0/0"), "host.docker.internal" ]
 end

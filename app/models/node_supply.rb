@@ -1,0 +1,2 @@
+class NodeSupply < ApplicationRecord
+end

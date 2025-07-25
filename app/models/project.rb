@@ -1,55 +1,65 @@
 class Project < ApplicationRecord
-  include Project::StateMachine
+  STATES = %i[
+    uploaded
+    checking
+    checked
+    quoting
+    quoted
+    rendering
+    rendered
+    finished
+    cancelled
+    failed].freeze
+  ACTIONS = %i[start_checking start_quoting start_rendering finish cancel fail].freeze
 
-  belongs_to :project_source
-  has_many :workflows
+  include Uuidable
+  include Statusable
 
-  enum :status, [
-      :uploaded,
-      :checking_integrity,
-      :checked,
-      :calculating_price,
-      :waiting,
-      :rendering,
-      :finished,
-      :cancelled,
-      :failed,
-      :deleted
-    ], default: :uploaded
+  belongs_to :upload
+  has_many :checks
+  has_many :quotes
+  has_many :renders
 
-  attribute :settings, :json, default: {}
-  attribute :stats, :json,  default: {}
+  broadcasts_to ->(project) { :projects }
 
-  STAGES = [ :uploaded, :waiting, :rendering, :finished, :stopped, :deleted ].freeze
-  def stage
-    return :uploaded if status.to_sym.in? [ :uploaded, :checking_integrity, :checked ]
-    return :waiting if status.to_sym.in? [
-      :calculating_price, :waiting, :payment_pending ]
-    return :stopped if status.to_sym.in? [ :cancelled, :failed ]
-    status.to_sym
+  after_create :start_check
+
+  scope :from_session, ->(session) {
+    joins(:upload).merge(Upload.from_session(session))
+  }
+
+  def settings
+    @settings ||= Project::Settings.for_project(self)
   end
 
-  def is_processing
-    status.to_sym.in? [ :checking_integrity, :calculating_price, :rendering ]
+  def sample_settings
+    @sample_settings ||= Project::Settings.for_sample(self)
   end
 
-  def to_param
-    uuid
+  def check = latest(:check)
+  def quote = latest(:quote)
+  def render = latest(:render)
+
+  private
+    def start_check
+      checks.create
+    end
+
+    def latest(model_sym)
+      public_send(model_sym.to_s.pluralize).last
+    end
+end
+
+class Project::Settings
+  def self.for_project(project)
+    new(snapshots: [
+      project.checks.last&.settings,
+      project.quotes.last&.settings,
+      project.renders.last&.settings
+    ])
   end
 
-  def price
-    return 10000 # TODO: Calculate real price
-
-    price_calc_wf = workflows.where(job_type: :price_calculation).first
-    return nil unless price_calc_wf
-
-    price_calc_wf.timing
+  def self.for_sample(project)
+    new(snapshots: [ project.quotes.last&.sample_settings ])
   end
-
-  broadcasts_to ->(project) { [ project.project_source, project.stage, :projects ] },
-    partial: "projects/project",
-    target: ->(project) { "stage_#{project.stage}" },
-    inserts_by: :prepend
-
-  delegate :user, to: :project_source, allow_nil: true
 end

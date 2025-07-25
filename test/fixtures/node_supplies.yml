@@ -1,0 +1,26 @@
+us_east_1a:
+  id: 1
+  provider_id: localstack
+  region: us-east-1
+  zone: a
+  type_name: macbook-pro
+  capacity: 3
+  millicents_per_hour: 40000
+
+us_east_1b:
+  id: 2
+  provider_id: localstack
+  region: us-east-1
+  zone: b
+  type_name: macbook-pro
+  capacity: 5
+  millicents_per_hour: 45000
+
+ap_south_1a:
+  id: 3
+  provider_id: localstack
+  region: ap-south-1
+  zone: a
+  type_name: macbook-pro
+  capacity: 4
+  millicents_per_hour: 35000

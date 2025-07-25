@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t blendergrid .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name blendergrid blendergrid
+# docker build -t blendergrid_on_rails .
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name blendergrid_on_rails blendergrid_on_rails
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
