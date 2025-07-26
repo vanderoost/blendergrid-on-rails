@@ -1,14 +1,18 @@
+<% full = local_assigns.fetch(:full, false) %>
+
 <%= tag.div id: dom_id(project) do %>
-  <h2>
-    <%= project.main_blend_file %>
-  </h2>
+  <% if full %>
+    <h1><%= project.blend_filepath %></h1>
+  <% else %>
+    <h2><%= link_to(project.blend_filepath, project) %></h2>
+  <% end %>
 
   <p>
     <%= "Project Status: #{project.status}" %>
   </p>
 
   <% if project.checked? %>
-    <%= button_to "Calculate price", project_quote_path(project), method: :post %>
+    <%= button_to "Calculate price", project_quotes_path(project), method: :post %>
   <% elsif project.quoted? %>
     <%= render project.quote %>
     <%= form_with url: project_payments_path(project), method: :post,

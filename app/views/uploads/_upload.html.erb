@@ -1,0 +1,33 @@
+<% full = local_assigns.fetch(:full, false) %>
+
+<% title = "Upload - #{upload.created_at.localtime.iso8601}" %>
+
+<% if full %>
+  <h1><%= title %></h1>
+<% else %>
+  <h2><%= link_to(title, upload) %></h2>
+<% end %>
+
+<% if full %>
+  <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
+
+    <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
+    <% upload.blend_files.each.map(&:blob).map(&:filename).each do |filepath| %>
+      <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
+      <%= form.label :blend_filepaths, filepath, value: filepath %>
+      <br>
+    <% end %>
+
+    <h3><%= "Found #{pluralize(upload.zip_files.count, ".zip file")}" %></h3>
+    <% upload.zip_files.each.map(&:blob).each do |blob| %>
+      <h4><%= blob.filename %></h4>
+      <% blob.metadata[:blend_filepaths]&.each do |filepath| %>
+        <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
+        <%= form.label :blend_filepaths, filepath, value: filepath %>
+        <br>
+      <% end %>
+    <% end %>
+
+    <%= form.submit "Create Projects" %>
+  <% end %>
+<% end %>

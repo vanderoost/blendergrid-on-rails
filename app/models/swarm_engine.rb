@@ -26,6 +26,7 @@ class SwarmEngine
 
     def topic_arn
       topic = "external-#{@swarm_engine_env}-topic"
+      Rails.logger.debug "Topic: #{topic}"
       "arn:aws:sns:#{@region}:#{@account_id}:#{topic}"
     end
 end

@@ -24,14 +24,14 @@ class Check < ApplicationRecord
         {
           job_id: "integrity-check",
           command: [
-            "/tmp/project/#{project.main_blend_file}",
+            "/tmp/project/#{project.blend_filepath}",
             "--python", "/tmp/scripts/integrity_check.py",
             "--",
             "--output-dir", "/tmp/output"
           ],
           image: Rails.env.production? ? {
             command: [ "python", "/tmp/scripts/get_blender_image.py",
-            "/tmp/project/#{project.main_blend_file}" ]
+            "/tmp/project/#{project.blend_filepath}" ]
           } : "blendergrid/blender:latest"
         }
       ],

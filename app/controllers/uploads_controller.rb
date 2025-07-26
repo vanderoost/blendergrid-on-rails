@@ -1,8 +1,12 @@
 class UploadsController < ApplicationController
   include UploadStashable
 
-  allow_unauthenticated_access
+  allow_unauthenticated_access only: %i[ index show new create ]
   before_action :set_upload, only: :show
+
+  def index
+    @uploads = authenticated? ? Current.user.uploads : Upload.from_session(session)
+  end
 
   def show
   end
@@ -29,7 +33,6 @@ class UploadsController < ApplicationController
     end
 
     def upload_params
-      # params.require(:upload).permit(:source_file, :uuid)
-      params.expect(upload: [ :source_file, :uuid ])
+      params.expect(upload: [ :uuid, files: [] ])
     end
 end

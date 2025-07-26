@@ -39,7 +39,7 @@ class Render < ApplicationRecord
         {
           job_id: "frame-$frame",
           command: [
-            "/tmp/project/#{project.main_blend_file}",
+            "/tmp/project/#{project.blend_filepath}",
             "--python",
             "/tmp/scripts/init.py",
             "-o",
@@ -62,7 +62,7 @@ class Render < ApplicationRecord
         type: "render",
         created_by: "blendergrid-on-rails",
         project_uuid: project.uuid,
-        project_name: project.main_blend_file
+        project_name: project.blend_filepath
       }
     }
   end

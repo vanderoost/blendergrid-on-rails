@@ -81,7 +81,7 @@ class Quote < ApplicationRecord
           {
             job_id:  "sample-frame-$frame",
             command: [
-              "/tmp/project/#{project.main_blend_file}",
+              "/tmp/project/#{project.blend_filepath}",
               "--python",
               "/tmp/scripts/init.py",
               "--python",
