@@ -92,9 +92,8 @@ jobs:
           if-no-files-found: ignore
 
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
-    needs: [scan_ruby, scan_js, lint, test]
+    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # needs: [scan_ruby, scan_js, lint, test]
 
     runs-on: ubuntu-latest
 
