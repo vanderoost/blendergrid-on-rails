@@ -1,6 +1,7 @@
 name: CI/CD
 
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches: [ main ]
@@ -147,7 +148,10 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Deploy using Kamal
+      - name: HACK - Create empty secrets file for Kamal
+        run: mkdir -p .kamal && touch .kamal/secrets
+
+      - name: Deploy with Kamal
         run: bin/kamal deploy --skip-push 
         env:
           RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
