@@ -91,19 +91,15 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
-  deploy:
+  build:
     # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    # needs: [scan_ruby, scan_js, lint, test]
-
     runs-on: ubuntu-latest
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ vars.AWS_REGION }}
-      BUNDLE_WITHOUT: "development test"
       DOCKER_BUILDKIT: 1
-      RAILS_ENV: production
 
     steps:
       - name: Checkout code
@@ -136,10 +132,22 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max 
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+  deploy:
+    needs: [scan_ruby, scan_js, lint, test, build]
+
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      BUNDLE_WITHOUT: "development test"
+      RAILS_ENV: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -147,11 +155,21 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
+      # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
+      - name: Get ECR Login Password
+        run: |
+          echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Create a Kamal secrets file
         run: |
           mkdir -p .kamal && echo > .kamal/secrets
           echo "RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}" >> .kamal/secrets
-          echo "KAMAL_REGISTRY_PASSWORD=${{ steps.login-ecr.outputs.docker_password_281752919491_dkr_ecr_us_east_1_amazonaws_com }}" >> .kamal/secrets
+          echo "KAMAL_REGISTRY_PASSWORD=${{ env.KAMAL_REGISTRY_PASSWORD }}" >> .kamal/secrets
 
       - name: Kamal Deploy
         run: bin/kamal deploy --skip-push 
