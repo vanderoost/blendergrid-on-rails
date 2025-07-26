@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   workflow_dispatch:
@@ -91,6 +91,7 @@ jobs:
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
 
+
   build:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -134,7 +135,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max 
 
-
   deploy:
     needs: [scan_ruby, scan_js, lint, test, build]
 
@@ -156,7 +156,7 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
+          
       # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
       - name: Get ECR Login Password
         run: |
@@ -177,5 +177,5 @@ jobs:
         run: bin/kamal deploy --skip-push 
 
 concurrency:
-  group: ci-cd
+  group: ci
   cancel-in-progress: true

@@ -11,5 +11,5 @@ development:
 
 production:
   <<: *defaults
-  env: prod
+  env: staging
   bucket: blendergrid-staging-us-east-1
