@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 
 on:
   workflow_dispatch:
@@ -156,7 +156,7 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          
+
       # TODO: Set up a dedicated Github Actions user on AWS that can only access ECR
       - name: Get ECR Login Password
         run: |
@@ -177,5 +177,5 @@ jobs:
         run: bin/kamal deploy --skip-push 
 
 concurrency:
-  group: ci
+  group: continuous-integration
   cancel-in-progress: true
