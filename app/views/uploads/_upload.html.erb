@@ -1,0 +1,24 @@
+<% compact = local_assigns.fetch(:compact, local_assigns.key?(:upload_counter)) %>
+<% title = "Upload - #{upload.created_at.localtime.iso8601}" %>
+
+<h2>
+  <%= compact ? link_to(title, upload) : title %>
+</h2>
+
+<% unless compact %>
+  <% if upload.blend_filepaths.present? %>
+    <h2><%= "Found #{pluralize(upload.blend_filepaths.count, ".blend file")}" %></h2>
+    <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
+      <% upload.blend_filepaths.each do |filepath| %>
+        <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
+        <%= form.label :blend_filepaths, filepath, value: filepath %>
+        <br>
+      <% end %>
+      <%= form.submit "Create Projects" %>
+    <% end %>
+  <% else %>
+    <p>No .blend files found. Processing uploads might still be in progress.</p>
+  <% end %>
+<% end %>
+
+<%= debug local_assigns %>

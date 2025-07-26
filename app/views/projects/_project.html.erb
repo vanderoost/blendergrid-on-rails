@@ -1,6 +1,8 @@
+<% compact = local_assigns.fetch(:compact, local_assigns.key?(:project_counter)) %>
+
 <%= tag.div id: dom_id(project) do %>
   <h2>
-    <%= project.main_blend_file %>
+    <%= compact ? link_to(project.blend_filepath, project) : project.blend_filepath %>
   </h2>
 
   <p>
@@ -8,7 +10,7 @@
   </p>
 
   <% if project.checked? %>
-    <%= button_to "Calculate price", project_quote_path(project), method: :post %>
+    <%= button_to "Calculate price", project_quotes_path(project), method: :post %>
   <% elsif project.quoted? %>
     <%= render project.quote %>
     <%= form_with url: project_payments_path(project), method: :post,

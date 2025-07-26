@@ -10,9 +10,11 @@ Rails.application.routes.draw do
   resources :users
   resource :session
   resources :passwords, param: :token
-  resources :uploads, param: :uuid
+  resources :uploads, param: :uuid do
+    resources :project_batches
+  end
   resources :projects, param: :uuid do
-    resource :quote
+    resources :quotes
 
     # TODO: Think of a better name than 'Payments'
     # TODO: For multi-project support, this should move somewhere else

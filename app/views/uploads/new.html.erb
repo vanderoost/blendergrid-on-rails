@@ -2,11 +2,14 @@
 
 <h1>Upload a .blend file</h1>
 
-<h2>VEVE ❤️</h2>
+<h2>VEVE is lief ❤️</h2>
+
+<%= render "test", variable: "BAR" %>
 
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
-  <%= form.file_field :source_file,
+  <%= form.file_field :files,
+                  multiple: true,
                   direct_upload: true,
                   data: {
                     direct_upload_url:
