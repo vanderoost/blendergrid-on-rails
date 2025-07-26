@@ -1,24 +1,33 @@
-<% compact = local_assigns.fetch(:compact, local_assigns.key?(:upload_counter)) %>
+<% full = local_assigns.fetch(:full, false) %>
+
 <% title = "Upload - #{upload.created_at.localtime.iso8601}" %>
 
-<h2>
-  <%= compact ? link_to(title, upload) : title %>
-</h2>
+<% if full %>
+  <h1><%= title %></h1>
+<% else %>
+  <h2><%= link_to(title, upload) %></h2>
+<% end %>
 
-<% unless compact %>
-  <% if upload.blend_filepaths.present? %>
-    <h2><%= "Found #{pluralize(upload.blend_filepaths.count, ".blend file")}" %></h2>
-    <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
-      <% upload.blend_filepaths.each do |filepath| %>
+<% if full %>
+  <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
+
+    <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
+    <% upload.blend_files.each.map(&:blob).map(&:filename).each do |filepath| %>
+      <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
+      <%= form.label :blend_filepaths, filepath, value: filepath %>
+      <br>
+    <% end %>
+
+    <h3><%= "Found #{pluralize(upload.zip_files.count, ".zip file")}" %></h3>
+    <% upload.zip_files.each.map(&:blob).each do |blob| %>
+      <h4><%= blob.filename %></h4>
+      <% blob.metadata[:blend_filepaths]&.each do |filepath| %>
         <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
         <%= form.label :blend_filepaths, filepath, value: filepath %>
         <br>
       <% end %>
-      <%= form.submit "Create Projects" %>
     <% end %>
-  <% else %>
-    <p>No .blend files found. Processing uploads might still be in progress.</p>
+
+    <%= form.submit "Create Projects" %>
   <% end %>
 <% end %>
-
-<%= debug local_assigns %>

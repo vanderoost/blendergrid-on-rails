@@ -1,3 +1,5 @@
+require "zip"
+
 class Upload < ApplicationRecord
   include Uuidable
 
@@ -5,7 +7,7 @@ class Upload < ApplicationRecord
   has_many_attached :files
   has_many :projects
 
-  after_create :find_blend_filepaths
+  after_create :analyze_zip_files
 
   scope :from_session, ->(session) { where(uuid: Array(session[:upload_uuids])) }
 
@@ -13,14 +15,31 @@ class Upload < ApplicationRecord
     ProjectBatch.new(upload: self, blend_filepaths:)
   end
 
+  def blend_files
+    files.select { |file|
+      file.blob.filename.extension == "blend"
+    }
+  end
+
+  def zip_files
+    files.select { |file|
+      file.blob.filename.extension == "zip"
+    }
+  end
+
   private
-    def find_blend_filepaths
-      self.blend_filepaths = files.select { |file|
-        file.blob.filename.extension == "blend"
-      }.map { |file| file.blob.filename.to_s }
-      save!
-      # TODO: If someone uploads a directory, make sure the relative file paths are
-      # preserved.
-      # TODO: Handle .zip files by looking inside the contents (in background jobs)
+    def analyze_zip_files
+      zip_files.each do |zip_file|
+        blend_entries = Zip::File.open_buffer(zip_file.blob.download)
+          .select { |entry| is_blend_entry? entry }
+        zip_file.blob.metadata[:blend_filepaths] = blend_entries.map(&:name)
+        zip_file.blob.save
+      end
     end
+end
+
+def is_blend_entry?(entry)
+  entry.ftype == :file &&
+  !entry.name.start_with?("__MACOSX/") &&
+  entry.name.end_with?(".blend")
 end

@@ -4,8 +4,6 @@
 
 <h2>VEVE is lief ❤️</h2>
 
-<%= render "test", variable: "BAR" %>
-
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
   <%= form.file_field :files,
@@ -15,5 +13,5 @@
                     direct_upload_url:
                       rails_direct_uploads_url(upload_uuid: @upload.uuid),
                   } %>
-  <%= form.submit "Upload" %>
+  <%= form.submit %>
 <% end %>
