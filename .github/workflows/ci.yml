@@ -92,7 +92,8 @@ jobs:
           if-no-files-found: ignore
 
   build:
-    # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
     runs-on: ubuntu-latest
 
     env:
@@ -116,6 +117,7 @@ jobs:
           echo "tag=$(git rev-parse "$GITHUB_SHA")" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Image
@@ -125,7 +127,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: true
           labels: |
-            "service=blendergrid_on_rails"
+            service=blendergrid_on_rails
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/blendergrid/web-app:latest
             ${{ steps.login-ecr.outputs.registry }}/blendergrid/web-app:${{ steps.tag.outputs.tag }}
