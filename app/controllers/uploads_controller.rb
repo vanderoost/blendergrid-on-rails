@@ -20,7 +20,7 @@ class UploadsController < ApplicationController
     @upload = scope.new(upload_params)
 
     if @upload.save
-      stash_upload @upload
+      stash_upload @upload.uuid
       redirect_to @upload
     else
       render :new, status: :unprocessable_entity
