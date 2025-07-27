@@ -9,33 +9,23 @@ resource "aws_ecr_lifecycle_policy" "web_app" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep the 16 most recent untagged images, expire all others"
+        description  = "Only keep the 3 latest tagged images"
         selection = {
-          tagStatus   = "untagged"
-          countType   = "imageCountMoreThan"
-          countNumber = 16
+          tagStatus      = "tagged"
+          tagPatternList = ["*"],
+          countType      = "imageCountMoreThan"
+          countNumber    = 3
         }
         action = { type = "expire" }
       },
       {
         rulePriority = 2
-        description  = "Keep the 8 most recent tagged images, expire all others"
+        description  = "Expire all untagged images older than 14 days"
         selection = {
-          tagStatus      = "tagged"
-          tagPatternList = ["*"],
-          countType      = "imageCountMoreThan"
-          countNumber    = 8
-        }
-        action = { type = "expire" }
-      },
-      {
-        rulePriority = 3
-        description  = "Expire all images older than 30 days"
-        selection = {
-          tagStatus   = "any"
+          tagStatus   = "untagged"
           countType   = "sinceImagePushed",
           countUnit   = "days",
-          countNumber = 30
+          countNumber = 14
         }
         action = { type = "expire" }
       },
