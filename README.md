@@ -39,7 +39,7 @@ In production, Kamal takes care of this.
 
 ### Initialization
 
-TODO
+Run `bin/setup` to create the database and initialize the test database.
 
 ## How to run the test suite
 
@@ -67,40 +67,17 @@ bin/dev
 
 Also make sure Redis is running for websockets (Turbo Streams over ActionCable) to work.
 
-### Localstack & Terraform
+### Email
 
-Use `tfenv` to manage Terraform versions.
+Use Mailhog to run a local SMTP server.
 
-To install `tfenv`:
+To install Mailhog:
+
 ```bash
-brew install tfenv
+brew install mailhog
 ```
 
-To install Terraform:
-```bash
-tfenv install
-```
-or
-```bash
-tfenv install latest
-```
-
-To use a specific version of Terraform:
-```bash
-tfenv use <version>
-```
-
-Make sure Localstack is running:
-```bash
-docker compose up -d
-```
-
-To build the infrastructure:
-```bash
-cd terraform
-terraform init
-terraform apply -auto-approve
-```
+Then run `mailhog`, and open `http://localhost:8025` in your browser to see the inbox.
 
 ## Services (job queues, cache servers, search engines, etc.)
 
@@ -118,11 +95,19 @@ sudo apt-get install redis-server
 
 ## Deployment instructions
 
+Make sure the infrastructure is up and running.
+
+```bash
+infra
+```
+
 Manual deployment:
 
 ```bash
 kamal deploy
 ```
+
+Pushing to `main` will also trigger a deployment, configured in `.github/workflows/ci.yml`.
 
 ### Nuking the server and starting from scratch
 
