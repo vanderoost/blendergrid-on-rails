@@ -10,6 +10,7 @@ class Api::V1::NodeSuppliesController < Api::BaseController
 
   private
     def collection_params
+      # TODO: Use params.expect() instead
       params.require(:node_supplies).map do |entry|
         entry.permit(
           :provider_id, :region, :zone, :type_name, :capacity, :millicents_per_hour

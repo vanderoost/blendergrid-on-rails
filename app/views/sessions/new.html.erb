@@ -4,20 +4,24 @@
 <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
 
 <%= form_with url: session_path do |form| %>
-  <%= form.label :email_address %>
-  <%= form.email_field :email_address,
-                   required: true,
-                   autofocus: true,
-                   autocomplete: "username",
-                   value: params[:email_address] %>
-  <br>
+  <div>
+    <%= form.label :email_address %><br>
+    <%= form.email_field :email_address,
+                     required: true,
+                     autofocus: true,
+                     autocomplete: "username",
+                     value: params[:email_address] %>
+  </div><br>
 
-  <%= form.label :password %>
-  <%= form.password_field :password, required: true, autocomplete: "current-password" %>
-  <br>
+  <div>
+    <%= form.label :password %><br>
+    <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+  </div><br>
 
-  <%= form.submit "Log in" %>
+  <div>
+    <%= form.submit "Log in" %>
+  </div><br>
 <% end %>
-<br>
 
 <%= link_to "Forgot password?", new_password_path %>
+<%= link_to "No account yet?", new_signups_path %>

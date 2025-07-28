@@ -1,0 +1,18 @@
+<nav>
+  <%= link_to "Home", root_path %>
+  <%= link_to "Uploads", uploads_path %>
+  <%= link_to "Projects", projects_path %>
+
+  <% if authenticated? %>
+    <div>
+      <span>
+        Logged in as
+        <%= Current.user.email_address %>
+      </span>
+      <%= button_to "Log out", session_path, method: :delete %>
+    </div>
+  <% else %>
+    <%= link_to "Log in", new_session_path %>
+    <%= link_to "Sign up", new_signups_path %>
+  <% end %>
+</nav>

@@ -4,12 +4,18 @@
 
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
-  <%= form.file_field :files,
-                  multiple: true,
-                  direct_upload: true,
-                  data: {
-                    direct_upload_url:
-                      rails_direct_uploads_url(upload_uuid: @upload.uuid),
-                  } %>
-  <%= form.submit %>
+
+  <div>
+    <%= form.file_field :files,
+                    multiple: true,
+                    direct_upload: true,
+                    data: {
+                      direct_upload_url:
+                        rails_direct_uploads_url(upload_uuid: @upload.uuid),
+                    } %>
+  </div><br>
+
+  <div>
+    <%= form.submit %>
+  </div><br>
 <% end %>

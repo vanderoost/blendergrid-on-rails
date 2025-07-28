@@ -1,15 +1,18 @@
 Rails.application.routes.draw do
   root "uploads#new"
 
-  get "signup" => "users#new"
   get "up" => "rails/health#show", as: :rails_health_check
-  post "rails/active_storage/direct_uploads", to: "direct_uploads#create"
 
   # TODO: Narrow the methods down to only the ones implemented in controllers
 
-  resources :users
+  resource :signups, path: "signup", only: %w[new create]
+  # TODO: Think about making it `resources :sessions, path: "session"`
   resource :session
+
+  # resource :signups, only: %w[new create]
+  resources :users
   resources :passwords, param: :token
+  resources :email_address_verifications, param: :token
   resources :uploads, param: :uuid do
     resources :project_batches
   end
@@ -33,4 +36,6 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe", to: "stripe#handle"
   end
+
+  post "rails/active_storage/direct_uploads", to: "direct_uploads#create"
 end

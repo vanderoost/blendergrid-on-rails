@@ -1,7 +1,7 @@
 class DirectUploadsController < ActiveStorage::DirectUploadsController
   def create
     blob = ActiveStorage::Blob.create_before_direct_upload!(
-      key: make_key(params.require(:upload_uuid), params.dig(:blob, :filename)),
+      key: make_key(params.dig(:upload_uuid), params.dig(:blob, :filename)),
       filename: params.dig(:blob, :filename),
       byte_size: params.dig(:blob, :byte_size),
       checksum:  params.dig(:blob, :checksum),
