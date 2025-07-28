@@ -1,27 +1,24 @@
 <h1>Log in</h1>
 
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
-
 <%= form_with url: session_path do |form| %>
-  <div>
-    <%= form.label :email_address %><br>
-    <%= form.email_field :email_address,
-                     required: true,
-                     autofocus: true,
-                     autocomplete: "username",
-                     value: params[:email_address] %>
-  </div><br>
-
-  <div>
-    <%= form.label :password %><br>
-    <%= form.password_field :password, required: true, autocomplete: "current-password" %>
-  </div><br>
-
-  <div>
-    <%= form.submit "Log in" %>
-  </div><br>
+  <fieldset>
+    <div>
+      <%= form.label :email_address %><br>
+      <%= form.email_field :email_address,
+                       required: true,
+                       autofocus: true,
+                       autocomplete: "username",
+                       value: params[:email_address] %>
+    </div>
+    <br>
+    <div>
+      <%= form.label :password %><br>
+      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+    </div>
+    <br>
+    <div><%= form.submit "Log in" %></div>
+  </fieldset>
 <% end %>
-
-<%= link_to "Forgot password?", new_password_path %>
+<br>
 <%= link_to "No account yet?", new_signups_path %>
+<%= link_to "Forgot password?", new_password_path %>

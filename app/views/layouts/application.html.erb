@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="color-scheme" content="light dark">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -24,11 +25,14 @@
 
   <body>
     <%= render "layouts/navigation" %>
+    <br>
 
-    <%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-    <%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+    <%= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
+    <%= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
+    <br>
 
     <%= yield %>
+    <br>
 
     <%# debug params if Rails.env.development? %>
     <%# debug session[:upload_uuids] if Rails.env.development? %>

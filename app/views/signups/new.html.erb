@@ -9,24 +9,25 @@
 <% end %>
 
 <%= form_with model: @signup do |form| %>
-  <div>
-    <%= form.label :email_address %><br>
-    <%= form.email_field :email_address, required: true, autofocus: true %>
-  </div><br>
-
-  <div>
-    <%= form.label :password %><br>
-    <%= form.password_field :password %>
-  </div><br>
-
-  <div>
-    <%= form.label :password_confirmation, "Confirm password" %><br>
-    <%= form.password_field :password_confirmation %>
-  </div><br>
-
-  <div>
-    <%= form.submit "Sign up" %>
-  </div><br>
+  <fieldset>
+    <div>
+      <%= form.label :email_address %><br>
+      <%= form.email_field :email_address, required: true, autofocus: true %>
+    </div>
+    <br>
+    <div>
+      <%= form.label :password %><br>
+      <%= form.password_field :password %>
+    </div>
+    <br>
+    <div>
+      <%= form.label :password_confirmation, "Confirm password" %><br>
+      <%= form.password_field :password_confirmation %>
+    </div>
+    <br>
+    <div><%= form.submit "Sign up" %></div>
+  </fieldset>
 <% end %>
+<br>
 
 <%= link_to "Already signed up?", new_session_path %>
