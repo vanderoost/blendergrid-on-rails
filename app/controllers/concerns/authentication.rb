@@ -4,46 +4,29 @@ module Authentication
   included do
     before_action :require_authentication
     helper_method :authenticated?
-    helper_method :has_session?
   end
 
   class_methods do
     def allow_unauthenticated_access(**options)
       skip_before_action :require_authentication, **options
-      before_action :resume_session
     end
   end
 
   private
-    def require_authentication
-      authenticated? || request_authentication
-    end
-
     def authenticated?
-      has_session? && Current.user.registered?
+      resume_session
     end
 
-    def has_session?
-      resume_session
+    def require_authentication
+      resume_session || request_authentication
     end
 
     def resume_session
       Current.session ||= find_session_by_cookie
-      return Current.session unless params.key?(:session_token)
-
-      token_user = User.find_by_token_for(:session, params[:session_token])
-      if token_user.nil?
-        flash[:alert] = "Invalid session token"
-        return Current.session
-      end
-
-      logger.info "Token user: #{token_user.inspect}"
-      start_new_session_for token_user
-      flash[:notice] = "Valid session token"
     end
 
     def find_session_by_cookie
-      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+      Session.find_by(id: cookies.signed[:session_id])
     end
 
     def request_authentication
@@ -56,13 +39,7 @@ module Authentication
     end
 
     def start_new_session_for(user)
-      email_address = user.email_address || user.guest_email_address
-
-      if Current.user&.unidentified? ||
-      Current.user&.guest_email_address == email_address
-        Current.user.uploads.update_all(user_id: user.id)
-      end
-
+      Upload.where(guest_email_address: user.email_address).update_all(user_id: user.id)
       user.sessions.create!(
         user_agent: request.user_agent,
         ip_address: request.remote_ip

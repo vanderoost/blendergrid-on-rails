@@ -2,6 +2,14 @@
 
 <h1>Upload a .blend file</h1>
 
+<% if @upload.errors.any? %>
+  <div style="color:red">
+    <% @upload.errors.full_messages.each do |message| %>
+      <p><%= message %></p>
+    <% end %>
+  </div>
+<% end %>
+
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
   <fieldset>
@@ -20,10 +28,8 @@
         <%= form.label :guest_email_address, "Email address" %><br>
         <%= form.email_field :guest_email_address,
                          autocomplete: "username",
-                         placeholder: "Enter your email address",
                          value:
-                           params[:guest_email_address] ||
-                             Current.user&.guest_email_address %>
+                           params[:guest_email_address] || session[:guest_email_address] %>
       </div>
       <br>
     <% end %>

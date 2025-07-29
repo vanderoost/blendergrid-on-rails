@@ -3,11 +3,14 @@ require "zip"
 class Upload < ApplicationRecord
   include Uuidable
 
-  belongs_to :user
+  belongs_to :user, optional: true
   has_many_attached :files
   has_many :projects
 
   after_create :analyze_zip_files
+
+  validates :guest_email_address, presence: true, if: -> { user_id.blank? }
+  validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
   def new_project_batch(blend_filepaths)
     ProjectBatch.new(upload: self, blend_filepaths:)

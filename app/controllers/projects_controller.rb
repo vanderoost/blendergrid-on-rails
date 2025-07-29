@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   allow_unauthenticated_access only: %i[ index show ]
 
   def index
-    @projects = Current.user&.projects || []
+    @projects = Project.joins(:upload).merge(accessible_uploads)
   end
 
   def show
