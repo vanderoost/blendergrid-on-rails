@@ -2,10 +2,11 @@ class UploadsController < ApplicationController
   include UploadStashable
 
   allow_unauthenticated_access only: %i[ index show new create ]
+  before_action :set_user, only: :create
   before_action :set_upload, only: :show
 
   def index
-    @uploads = authenticated? ? Current.user.uploads : Upload.from_session(session)
+    @uploads = Current.user&.uploads || []
   end
 
   def show
@@ -16,11 +17,8 @@ class UploadsController < ApplicationController
   end
 
   def create
-    scope = authenticated? ? Current.user.uploads : Upload
-    @upload = scope.new(upload_params)
-
+    @upload = @user.uploads.new upload_params
     if @upload.save
-      stash_upload @upload.uuid
       redirect_to @upload
     else
       render :new, status: :unprocessable_entity
@@ -28,6 +26,16 @@ class UploadsController < ApplicationController
   end
 
   private
+    def set_user
+      @user = Current.user
+      unless @user
+        @user = User.create!(params.expect(upload: [ :guest_email_address ]))
+        logger.info "Starting a new guest session"
+        start_new_session_for @user
+      end
+      logger.info "User: #{@user.inspect}"
+    end
+
     def set_upload
       @upload = Upload.find_by!(uuid: params[:uuid])
     end

@@ -13,7 +13,6 @@ class SessionsController < ApplicationController
       if user.email_address_verified?
         logger.info "AUTHENTICATED & VERIFIED #{user.email_address}"
         start_new_session_for user
-        claim_stashed_uploads user
         redirect_to after_authentication_url
       else
         logger.info "AUTHENTICATED BUT NOT VERIFIED #{user.email_address}"

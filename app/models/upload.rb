@@ -3,13 +3,11 @@ require "zip"
 class Upload < ApplicationRecord
   include Uuidable
 
-  belongs_to :user, optional: true
+  belongs_to :user
   has_many_attached :files
   has_many :projects
 
   after_create :analyze_zip_files
-
-  scope :from_session, ->(session) { where(uuid: Array(session[:upload_uuids])) }
 
   def new_project_batch(blend_filepaths)
     ProjectBatch.new(upload: self, blend_filepaths:)

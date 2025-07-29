@@ -124,6 +124,8 @@ class Quote < ApplicationRecord
 
     # TODO: This should be kicked off somewhere else (state machine?)
     calculate_price
+
+    ProjectMailer.project_quote_finished(project).deliver_later
   end
 
   def calculate_price

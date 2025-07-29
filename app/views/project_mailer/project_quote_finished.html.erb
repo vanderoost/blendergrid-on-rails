@@ -1,0 +1,9 @@
+<p>Price quote of '<%= @project.blend_filepath %>' is finished!</p>
+
+<p>You can access it at your
+  <a
+    href="<%= projects_url(session_token: @user.generate_token_for(:session)) %>"
+  >
+    Projects page
+  </a>
+</p>

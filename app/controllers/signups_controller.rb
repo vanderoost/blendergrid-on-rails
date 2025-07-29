@@ -6,7 +6,7 @@ class SignupsController < ApplicationController
   end
 
   def create
-    @signup = Signup.new(signup_params)
+    @signup = Signup.new signup_params
     if @signup.save
       redirect_to root_path, notice: "Check your email inbox for a verification link."
     else

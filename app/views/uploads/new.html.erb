@@ -15,15 +15,18 @@
                       } %>
     </div>
     <br>
-    <div>
-      <%= form.label :email_address %><br>
-      <%= form.email_field :email_address,
-                       required: true,
-                       autofocus: true,
-                       autocomplete: "username",
-                       value: params[:email_address] %>
-    </div>
-    <br>
+    <% unless authenticated? %>
+      <div>
+        <%= form.label :guest_email_address, "Email address" %><br>
+        <%= form.email_field :guest_email_address,
+                         autocomplete: "username",
+                         placeholder: "Enter your email address",
+                         value:
+                           params[:guest_email_address] ||
+                             Current.user&.guest_email_address %>
+      </div>
+      <br>
+    <% end %>
     <div>
       <%= form.submit %>
     </div>

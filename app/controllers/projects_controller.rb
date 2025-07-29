@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   allow_unauthenticated_access only: %i[ index show ]
 
   def index
-    @projects = authenticated? ? Current.user.projects : Project.from_session(session)
+    @projects = Current.user&.projects || []
   end
 
   def show

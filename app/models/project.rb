@@ -20,13 +20,12 @@ class Project < ApplicationRecord
   has_many :quotes
   has_many :renders
 
+  delegate :user, to: :upload
+
   broadcasts_to ->(project) { :projects }
 
   after_create :start_check
-
-  scope :from_session, ->(session) {
-    joins(:upload).merge(Upload.from_session(session))
-  }
+  after_create :send_test_email
 
   def settings
     @settings ||= Project::Settings.for_project(self)
@@ -43,6 +42,10 @@ class Project < ApplicationRecord
   private
     def start_check
       checks.create
+    end
+
+    def send_test_email
+      ProjectMailer.project_created(self).deliver_later
     end
 
     def latest(model_sym)
