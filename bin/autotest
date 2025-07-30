@@ -1,0 +1,79 @@
+#!/usr/bin/env ruby
+
+class AutoTest
+  WATCHED_PATHS = %w[app test config lib].freeze
+  WATCHED_EXTENSIONS = %w[rb erb haml slim].freeze
+  POLL_INTERVAL = 0.3 # seconds
+
+  def initialize
+    @running = false
+    @file_times = {}
+    puts "AutoTest starting..."
+    puts "Watching: #{WATCHED_PATHS.join(', ')}"
+    puts "Extensions: #{WATCHED_EXTENSIONS.join(', ')}"
+    puts "Press Ctrl+C to stop\n\n"
+
+    scan_files
+  end
+
+  def start
+    run_tests # Run once at startup
+
+    trap('INT') do
+      puts "\n\nStopping AutoTest..."
+      exit
+    end
+
+    loop do
+      check_for_changes
+      sleep POLL_INTERVAL
+    end
+  end
+
+  private
+
+  def scan_files
+    pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
+    WATCHED_PATHS.each do |path|
+      next unless Dir.exist?(path)
+
+      Dir.glob(File.join(path, pattern)).each do |file|
+        @file_times[file] = File.mtime(file)
+      end
+    end
+  end
+
+  def check_for_changes
+    changed_files = []
+    pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
+
+    WATCHED_PATHS.each do |path|
+      next unless Dir.exist?(path)
+
+      Dir.glob(File.join(path, pattern)).each do |file|
+        mtime = File.mtime(file)
+
+        if !@file_times[file] || @file_times[file] < mtime
+          changed_files << file
+          @file_times[file] = mtime
+        end
+      end
+    end
+
+    unless changed_files.empty?
+      puts "\nFiles changed:"
+      changed_files.each { |file| puts "  #{file}" }
+
+      run_tests
+    end
+  end
+
+  def run_tests
+    return if @running
+    @running = true
+    system("bin/rails test --fail-fast")
+    @running = false
+  end
+end
+
+AutoTest.new.start
