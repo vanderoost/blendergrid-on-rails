@@ -12,25 +12,46 @@ class UploadTest < ActiveSupport::TestCase
   test "guest upload should have files" do
     @guest_upload.files = []
     assert_not @guest_upload.save
-    assert @guest_upload.errors.key?(:files)
+    assert @guest_upload.errors.include?(:files)
   end
 
   test "user upload should have files" do
     @user_upload.files = []
     assert_not @user_upload.save
-    assert @user_upload.errors.key?(:files)
+    assert @user_upload.errors.include?(:files)
   end
 
   test "guest upload should have a guest email address" do
     @guest_upload.guest_email_address = ""
     assert_not @guest_upload.save
-    assert @guest_upload.errors.key?(:guest_email_address)
+    assert @guest_upload.errors.include?(:guest_email_address)
+  end
+
+  test "guest upload should reject invalid guest email addresses" do
+    valid_addresses = %w[user@example.com USER@foo.COM A_US-ER@foo.bar.org
+      first.last@foo.jp alice+bob@baz.cn foo@bar.fighters]
+
+    valid_addresses.each do |valid_address|
+      @guest_upload.guest_email_address = valid_address
+      assert @guest_upload.save, "#{valid_address.inspect} should be valid"
+    end
+  end
+
+  test "email address validation should reject invalid addresses" do
+    invalid_addresses = %w[user@example,com user_at_foo.org user.name@example.
+      foo@bar_baz.com foo@bar+baz.com]
+
+    invalid_addresses.each do |invalid_address|
+      @guest_upload.guest_email_address = invalid_address
+      assert_not @guest_upload.save, "#{invalid_address.inspect} should be invalid"
+      assert @guest_upload.errors.include?(:guest_email_address)
+    end
   end
 
   test "guest upload should have a guest session id" do
     @guest_upload.guest_session_id = nil
     assert_not @guest_upload.save
-    assert @guest_upload.errors.key?(:guest_session_id)
+    assert @guest_upload.errors.include?(:guest_session_id)
   end
 
   def setup

@@ -1,11 +1,13 @@
 class Signup
   include ActiveModel::Model
   include ActiveModel::Attributes
+  include EmailValidatable
 
   attribute :email_address, :string
   attribute :password, :string
 
-  validates :email_address, presence: true
+  validates :email_address, presence: true, length: { maximum: 255 }
+  validates :email_address, format: EmailValidatable::VALID_EMAIL_REGEX
   validates :password, length: 8..72, confirmation: true
 
   def save

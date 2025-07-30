@@ -40,6 +40,7 @@ module Authentication
 
     def start_new_session_for(user)
       Upload.where(guest_email_address: user.email_address).update_all(user_id: user.id)
+
       user.sessions.create!(
         user_agent: request.user_agent,
         ip_address: request.remote_ip

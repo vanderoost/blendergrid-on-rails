@@ -49,10 +49,10 @@ One off tests:
 rails test
 ```
 
-Live testing on code changes:
+Automatic testing on code changes:
 
 ```bash
-bundle exec guard
+autotest
 ```
 
 ## Running locally

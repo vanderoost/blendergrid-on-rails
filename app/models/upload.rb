@@ -2,6 +2,7 @@ require "zip"
 
 class Upload < ApplicationRecord
   include Uuidable
+  include EmailValidatable
 
   belongs_to :user, optional: true
   has_many_attached :files
@@ -10,7 +11,9 @@ class Upload < ApplicationRecord
   after_create :analyze_zip_files
 
   validates :files, presence: true
-  validates :guest_email_address, presence: true, if: -> { user_id.blank? }
+  validates :guest_email_address, presence: true,
+                                  format: EmailValidatable::VALID_EMAIL_REGEX,
+                                  if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
   def new_project_batch(blend_filepaths)

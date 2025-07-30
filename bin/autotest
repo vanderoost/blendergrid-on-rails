@@ -3,77 +3,51 @@
 class AutoTest
   WATCHED_PATHS = %w[app test config lib].freeze
   WATCHED_EXTENSIONS = %w[rb erb].freeze
-  POLL_INTERVAL = 0.5 # seconds
+  POLL_INTERVAL_SECONDS = 0.5
 
   def initialize
     @running = false
     @file_times = {}
-    puts "AutoTest starting..."
-    puts "Watching: #{WATCHED_PATHS.join(', ')}"
-    puts "Extensions: #{WATCHED_EXTENSIONS.join(', ')}"
-    puts "Press Ctrl+C to stop\n\n"
-
-    scan_files
   end
 
   def start
-    run_tests # Run once at startup
-
     trap('INT') do
-      puts "\n\nStopping AutoTest..."
       exit
     end
 
     loop do
-      check_for_changes
-      sleep POLL_INTERVAL
+      run_tests if a_file_changed?
+      sleep POLL_INTERVAL_SECONDS
     end
   end
 
   private
+    def a_file_changed?
+      a_file_changed = false
+      pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
 
-  def scan_files
-    pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
-    WATCHED_PATHS.each do |path|
-      next unless Dir.exist?(path)
+      WATCHED_PATHS.each do |path|
+        next unless Dir.exist?(path)
 
-      Dir.glob(File.join(path, pattern)).each do |file|
-        @file_times[file] = File.mtime(file)
-      end
-    end
-  end
+        Dir.glob(File.join(path, pattern)).each do |file|
+          mtime = File.mtime(file)
+          next if @file_times.dig(file) == mtime
 
-  def check_for_changes
-    changed_files = []
-    pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
-
-    WATCHED_PATHS.each do |path|
-      next unless Dir.exist?(path)
-
-      Dir.glob(File.join(path, pattern)).each do |file|
-        mtime = File.mtime(file)
-
-        if !@file_times[file] || @file_times[file] < mtime
-          changed_files << file
           @file_times[file] = mtime
+          a_file_changed = true
         end
       end
+
+      a_file_changed
     end
 
-    unless changed_files.empty?
-      puts "\nFiles changed:"
-      changed_files.each { |file| puts "  #{file}" }
-
-      run_tests
+    def run_tests
+      return if @running
+      @running = true
+      system("clear")
+      system("bin/rails test --fail-fast")
+      @running = false
     end
-  end
-
-  def run_tests
-    return if @running
-    @running = true
-    system("bin/rails test --fail-fast")
-    @running = false
-  end
 end
 
 AutoTest.new.start
