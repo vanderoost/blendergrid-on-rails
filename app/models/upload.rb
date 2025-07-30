@@ -9,6 +9,7 @@ class Upload < ApplicationRecord
 
   after_create :analyze_zip_files
 
+  validates :files, presence: true
   validates :guest_email_address, presence: true, if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 

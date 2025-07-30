@@ -79,6 +79,24 @@ brew install mailhog
 
 Then run `mailhog`, and open `http://localhost:8025` in your browser to see the inbox.
 
+TODO: Maybe make this a command in `bin/` and/or run it automatically on bin/dev?
+
+### Stripe
+
+Make sure Stripe CLI is installed:
+
+```bash
+brew install stripe
+```
+
+Then run the webhook listener / forwarder for making Webhooks in the Sandbox work:
+
+```bash
+stripe listen --forward-to localhost:3000/webhooks/stripe
+```
+
+TODO: Maybe make this a command in `bin/` and/or run it automatically on bin/dev?
+
 ## Services (job queues, cache servers, search engines, etc.)
 
 For running websockets locally, you need to have Redis installed.

@@ -3,7 +3,7 @@
 <h1>Upload a .blend file</h1>
 
 <% if @upload.errors.any? %>
-  <div style="color:red">
+  <div class="error-explanation">
     <% @upload.errors.full_messages.each do |message| %>
       <p><%= message %></p>
     <% end %>
