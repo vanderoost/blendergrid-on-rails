@@ -1,3 +1,5 @@
+require "test_helper"
+
 class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should get new signups page" do
     get new_signups_url
