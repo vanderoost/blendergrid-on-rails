@@ -16,8 +16,13 @@ class UploadsController < ApplicationController
   end
 
   def create
-    session[:guest_email_address] = upload_params[:guest_email_address]
-    @upload = Upload.new(upload_params)
+    if authenticated?
+      @upload = Current.user.uploads.new upload_params
+    else
+      session[:guest_email_address] = upload_params[:guest_email_address]
+      @upload = Upload.new upload_params
+    end
+
     if @upload.save
       redirect_to @upload
     else
