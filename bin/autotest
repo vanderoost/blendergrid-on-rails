@@ -6,7 +6,6 @@ class AutoTest
   POLL_INTERVAL_SECONDS = 0.5
 
   def initialize
-    @running = false
     @file_times = {}
   end
 
@@ -23,7 +22,7 @@ class AutoTest
 
   private
     def a_file_changed?
-      a_file_changed = false
+      changed = false
       pattern = "**/*.{#{WATCHED_EXTENSIONS.join(',')}}"
 
       WATCHED_PATHS.each do |path|
@@ -34,19 +33,16 @@ class AutoTest
           next if @file_times.dig(file) == mtime
 
           @file_times[file] = mtime
-          a_file_changed = true
+          changed = true
         end
       end
 
-      a_file_changed
+      changed
     end
 
     def run_tests
-      return if @running
-      @running = true
       system("clear")
       system("bin/rails test --fail-fast")
-      @running = false
     end
 end
 
