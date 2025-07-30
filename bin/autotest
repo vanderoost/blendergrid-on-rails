@@ -2,8 +2,8 @@
 
 class AutoTest
   WATCHED_PATHS = %w[app test config lib].freeze
-  WATCHED_EXTENSIONS = %w[rb erb haml slim].freeze
-  POLL_INTERVAL = 0.3 # seconds
+  WATCHED_EXTENSIONS = %w[rb erb].freeze
+  POLL_INTERVAL = 0.5 # seconds
 
   def initialize
     @running = false
