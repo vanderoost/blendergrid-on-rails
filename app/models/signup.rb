@@ -14,7 +14,7 @@ class Signup
     if valid?
       user = User.new(email_address:, password:)
       if user.save
-        send_verification_email_to user
+        EmailAddressVerification.new(user).save
         true
       else
         user.errors.each do |error|
@@ -28,9 +28,4 @@ class Signup
   def model_name
     ActiveModel::Name.new(self, nil, self.class.name)
   end
-
-  private
-    def send_verification_email_to(user)
-      EmailAddressVerificationMailer.verify_email_address(user).deliver_later
-    end
 end

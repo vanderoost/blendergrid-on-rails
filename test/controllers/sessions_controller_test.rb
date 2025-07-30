@@ -6,12 +6,32 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should login user" do
+  test "should login verified users" do
     assert_difference("Session.count", 1) do
       post session_url, params: {
         email_address: "one@example.com", password: "password"
       }
     end
     assert_redirected_to root_url
+    assert flash.key? :notice
+  end
+
+  test "should redirect non-verified users to the verification page" do
+    assert_difference("Session.count", 0) do
+      post session_url, params: {
+        email_address: "two@example.com", password: "password"
+      }
+    end
+    assert_response :redirect
+  end
+
+  test "should block wrong credentials" do
+    assert_difference("Session.count", 0) do
+      post session_url, params: {
+        email_address: "two@example.com", password: "wrong-password"
+      }
+    end
+    assert_response :redirect
+    assert flash.key? :alert
   end
 end

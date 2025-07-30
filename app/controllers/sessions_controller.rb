@@ -13,10 +13,13 @@ class SessionsController < ApplicationController
       if user.email_address_verified?
         logger.info "AUTHENTICATED & VERIFIED #{user.email_address}"
         start_new_session_for user
-        redirect_to after_authentication_url
+        redirect_to after_authentication_url, notice: "You're signed in!"
       else
         logger.info "AUTHENTICATED BUT NOT VERIFIED #{user.email_address}"
-        redirect_to new_email_address_verification_path
+        # Automatically send a new verification email (if we haven't already sent one
+        # recently)
+        EmailAddressVerification.new(user).save
+        redirect_to root_path, notice: "Check your email inbox for a NEW verification link."
       end
     else
       logger.info "AUTHENTICATION FAILED #{params[:email_address]}"

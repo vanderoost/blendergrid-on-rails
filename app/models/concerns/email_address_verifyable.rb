@@ -1,4 +1,4 @@
-module EmailAddressVerification
+module EmailAddressVerifyable
   extend ActiveSupport::Concern
 
   included do

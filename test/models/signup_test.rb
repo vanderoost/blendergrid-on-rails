@@ -8,13 +8,13 @@ class SignupTest < ActiveSupport::TestCase
   test "email address should be present" do
     @signup.email_address = ""
     assert_not @signup.save
-    assert @signup.errors.include?(:email_address)
+    assert @signup.errors.key?(:email_address)
   end
 
   test "email address should not be too long" do
     @signup.email_address = "a" * 256 + "@example.com"
     assert_not @signup.save
-    assert @signup.errors.include?(:email_address)
+    assert @signup.errors.key?(:email_address)
   end
 
   test "email address validation should accept valid addresses" do
@@ -34,7 +34,7 @@ class SignupTest < ActiveSupport::TestCase
     invalid_addresses.each do |invalid_address|
       @signup.email_address = invalid_address
       assert_not @signup.save, "#{invalid_address.inspect} should be invalid"
-      assert @signup.errors.include?(:email_address)
+      assert @signup.errors.key?(:email_address)
     end
   end
 
@@ -42,25 +42,25 @@ class SignupTest < ActiveSupport::TestCase
     @signup.password = ""
     @signup.password_confirmation = ""
     assert_not @signup.save
-    assert @signup.errors.include?(:password)
+    assert @signup.errors.key?(:password)
   end
 
   test "password should not be too short" do
     @signup.password = "secret"
     assert_not @signup.save
-    assert @signup.errors.include?(:password)
+    assert @signup.errors.key?(:password)
   end
 
   test "password should not be too long" do
     @signup.password = "a" * 75
     assert_not @signup.save
-    assert @signup.errors.include?(:password)
+    assert @signup.errors.key?(:password)
   end
 
   test "password confirmation should be the same as password" do
     @signup.password_confirmation += "_"
     assert_not @signup.save
-    assert @signup.errors.include?(:password_confirmation)
+    assert @signup.errors.key?(:password_confirmation)
   end
 
   def setup

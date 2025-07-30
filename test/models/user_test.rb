@@ -5,7 +5,7 @@ class UserTest < ActiveSupport::TestCase
     duplicate = @user.dup
     @user.save
     assert_not duplicate.save
-    assert duplicate.errors.include?(:email_address)
+    assert duplicate.errors.key?(:email_address)
   end
 
   test "email addresses should be saved as lower case" do
