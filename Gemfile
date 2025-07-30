@@ -69,4 +69,4 @@ gem "aws-sdk-s3", require: false
 gem "aws-sdk-sns"
 
 # Payments
-gem "stripe", "~> 15.3"
+gem "stripe", "~> 15.4"
