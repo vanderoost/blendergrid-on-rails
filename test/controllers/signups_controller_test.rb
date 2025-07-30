@@ -15,5 +15,6 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       } }
     end
     assert_response :redirect
+    assert flash.key? :notice
   end
 end

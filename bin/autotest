@@ -2,7 +2,7 @@
 
 class AutoTest
   WATCHED_PATHS = %w[app test config lib].freeze
-  WATCHED_EXTENSIONS = %w[rb erb].freeze
+  WATCHED_EXTENSIONS = %w[rb erb yml].freeze
   POLL_INTERVAL_SECONDS = 0.5
 
   def initialize

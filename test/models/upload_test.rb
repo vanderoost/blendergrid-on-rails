@@ -12,19 +12,19 @@ class UploadTest < ActiveSupport::TestCase
   test "guest upload should have files" do
     @guest_upload.files = []
     assert_not @guest_upload.save
-    assert @guest_upload.errors.include?(:files)
+    assert @guest_upload.errors.key?(:files)
   end
 
   test "user upload should have files" do
     @user_upload.files = []
     assert_not @user_upload.save
-    assert @user_upload.errors.include?(:files)
+    assert @user_upload.errors.key?(:files)
   end
 
   test "guest upload should have a guest email address" do
     @guest_upload.guest_email_address = ""
     assert_not @guest_upload.save
-    assert @guest_upload.errors.include?(:guest_email_address)
+    assert @guest_upload.errors.key?(:guest_email_address)
   end
 
   test "guest upload should reject invalid guest email addresses" do
@@ -44,14 +44,14 @@ class UploadTest < ActiveSupport::TestCase
     invalid_addresses.each do |invalid_address|
       @guest_upload.guest_email_address = invalid_address
       assert_not @guest_upload.save, "#{invalid_address.inspect} should be invalid"
-      assert @guest_upload.errors.include?(:guest_email_address)
+      assert @guest_upload.errors.key?(:guest_email_address)
     end
   end
 
   test "guest upload should have a guest session id" do
     @guest_upload.guest_session_id = nil
     assert_not @guest_upload.save
-    assert @guest_upload.errors.include?(:guest_session_id)
+    assert @guest_upload.errors.key?(:guest_session_id)
   end
 
   def setup
@@ -61,7 +61,7 @@ class UploadTest < ActiveSupport::TestCase
     )
     attach_test_file(@guest_upload)
 
-    @user_upload = Upload.new(user: users(:one))
+    @user_upload = Upload.new(user: users(:verified_user))
     attach_test_file(@user_upload)
   end
 
