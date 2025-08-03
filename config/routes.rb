@@ -36,6 +36,4 @@ Rails.application.routes.draw do
   namespace :webhooks do
     post "stripe", to: "stripe#handle"
   end
-
-  post "rails/active_storage/direct_uploads", to: "direct_uploads#create"
 end

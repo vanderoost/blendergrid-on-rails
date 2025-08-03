@@ -18,8 +18,9 @@
                       multiple: true,
                       direct_upload: true,
                       data: {
-                        direct_upload_url:
-                          rails_direct_uploads_url(upload_uuid: @upload.uuid),
+                        key_prefix: "uploads/#{@upload.uuid}",
+                        keep_filename: true,
+                        use_multipart: true,
                       } %>
     </div>
     <br>
