@@ -10,20 +10,27 @@
   </div>
 <% end %>
 
-<%= form_with model: @upload do |form| %>
+<%= form_with model: @upload, data: {
+    controller: "direct-uploads",
+    action: %w[
+      direct-uploads:start->direct-uploads#uploadsStart
+      direct-upload:initialize->direct-uploads#uploadInit
+      direct-upload:progress->direct-uploads#uploadProgress
+      direct-upload:error->direct-uploads#uploadError
+      direct-upload:end->direct-uploads#uploadEnd
+    ].join(" ") } do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
   <fieldset>
-    <div data-controller="direct-uploads">
-      <%= form.file_field :files,
-                      multiple: true,
-                      direct_upload: true,
-                      data: {
-                        key_prefix: "uploads/#{@upload.uuid}",
-                        keep_filename: true,
-                        use_multipart: true,
-                      } %>
-      <div data-direct-uploads-target="list"></div>
-    </div>
+    <%= form.file_field :files,
+                    multiple: true,
+                    direct_upload: true,
+                    data: {
+                      key_prefix: "uploads/#{@upload.uuid}",
+                      keep_filename: true,
+                      use_multipart: true,
+                    } %>
+    <div data-direct-uploads-target="list"></div>
+    <div data-direct-uploads-target="summary"></div>
     <br>
     <% unless authenticated? %>
       <div>

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/vanderoost/rails.git
-  revision: c0fe3fb5d15e6e5618fe5c93c1fe44176cbbf2cf
+  revision: 607586789cdc72f920bab8f32f1b95506d51fc3b
   branch: 8-0-multipart-direct-uploads
   specs:
     actionmailbox (8.0.2)
