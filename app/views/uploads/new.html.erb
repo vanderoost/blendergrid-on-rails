@@ -13,7 +13,7 @@
 <%= form_with model: @upload do |form| %>
   <%= form.hidden_field :uuid, value: @upload.uuid %>
   <fieldset>
-    <div>
+    <div data-controller="direct-uploads">
       <%= form.file_field :files,
                       multiple: true,
                       direct_upload: true,
@@ -22,6 +22,7 @@
                         keep_filename: true,
                         use_multipart: true,
                       } %>
+      <div data-direct-uploads-target="list"></div>
     </div>
     <br>
     <% unless authenticated? %>
