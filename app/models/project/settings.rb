@@ -36,7 +36,7 @@ class Project::Settings
     if frame_range_type == :animation
       @frame_count ||= (output.frame_range.start..output.frame_range.end)
       .step(output.frame_range.step).count
-    elsif frame_range_type == :single_frame
+    elsif frame_range_type == :image
       1
     else
       raise "Unknown frame range type: #{frame_range_type}"

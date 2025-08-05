@@ -2,7 +2,7 @@ class Check < ApplicationRecord
   include Workflowable
 
   def render_type
-    RenderType.new(name: :single_frame)
+    RenderType.new(name: :image)
   end
 
   def make_workflow_start_message

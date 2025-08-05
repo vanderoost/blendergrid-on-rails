@@ -3,6 +3,10 @@ require "aws-sdk-s3"
 class Render < ApplicationRecord
   include Workflowable
 
+  def cycles_samples=(cycles_samples)
+    @cycles_samples = cycles_samples.to_i
+  end
+
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
@@ -16,9 +20,16 @@ class Render < ApplicationRecord
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     # Settings
-    frame_start = project.settings.output.frame_range.start
-    frame_end = project.settings.output.frame_range.end
-    frame_step = project.settings.output.frame_range.step
+    if settings.frame_range_type == :animation
+      frame_start = project.settings.output.frame_range.start
+      frame_end = project.settings.output.frame_range.end
+      frame_step = project.settings.output.frame_range.step
+      frame_params = { start: frame_start, end: frame_end, step: frame_step }
+    elsif settings.frame_range_type == :image
+      frame_params = settings.output.frame_range.single
+    else
+      raise "Unknown frame range type: #{settings.frame_range_type}"
+    end
 
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
     blender_version = "latest"
@@ -50,11 +61,11 @@ class Render < ApplicationRecord
             "--settings-file",
             "/tmp/settings/integrity-check.json",
             "--project-dir",
-            "/tmp/project"
+            "/tmp/project",
+            "--cycles-samples",
+            settings.render.sampling.max_samples.to_s
           ],
-          parameters: {
-            frame: { start: frame_start, end: frame_end, step: frame_step }
-          },
+          parameters: { frame: frame_params },
           image: "blendergrid/blender:#{blender_version}"
         }
       ],
@@ -85,6 +96,8 @@ class Render < ApplicationRecord
   private
     def start_workflow
       project.start_rendering
-      create_workflow
+      create_workflow(settings: {
+        render: { sampling: { max_samples: @cycles_samples } }
+      })
     end
 end

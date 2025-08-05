@@ -46,7 +46,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
           resolution_y: 1080,
           resolution_percentage: 50
         },
-        output: { frame_range: { type: "single_frame" } }
+        output: { frame_range: { type: "image" } }
       }
     })
 
@@ -63,7 +63,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
           resolution_y: 1080,
           resolution_percentage: 50
         },
-        output: { frame_range: { type: "single_frame" } }
+        output: { frame_range: { type: "image" } }
       }
     })
     project.quotes.new.build_workflow(settings: {

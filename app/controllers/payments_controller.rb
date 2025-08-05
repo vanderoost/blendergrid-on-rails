@@ -10,7 +10,10 @@ class PaymentsController < ApplicationController
       mode: "payment",
       customer_email: "suzanne@blender.org", # So it's prefilled (use nil if unknown)
       line_items: projects.map { |p| create_line_item_from_project p },
-      metadata: { project_uuid: projects.first.uuid }, # TODO: Something else to identify a collection of projects
+      metadata: {
+        project_uuid: projects.first.uuid,
+        cycles_samples: params[:cycles_samples]
+      }, # TODO: Something else to identify a collection of projects
       success_url: project_url(@project),
       cancel_url: project_url(@project)
     )

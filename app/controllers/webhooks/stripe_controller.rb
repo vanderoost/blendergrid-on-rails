@@ -28,6 +28,6 @@ class Webhooks::StripeController < Webhooks::BaseController
       return unless project
 
       logger.info "STARTING RENDER FOR PROJECT: #{project.inspect}"
-      project.renders.create
+      project.renders.create(cycles_samples: session.metadata["cycles_samples"])
     end
 end

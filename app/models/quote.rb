@@ -42,7 +42,7 @@ class Quote < ApplicationRecord
       frame_end = project.settings.output.frame_range.end
       frame_step = project.settings.output.frame_range.step
       all_frames = (frame_start..frame_end).step(frame_step).to_a
-    elsif project.settings.frame_range_type == :single_frame
+    elsif project.settings.frame_range_type == :image
       all_frames = [ project.settings.output.frame_range.single ]
     end
 

@@ -9,6 +9,6 @@ class FrameRangeType
   end
 
   def self.all
-    [ :single_frame, :animation ].map { |id| new(id: id) }
+    [ :image, :animation ].map { |id| new(id: id) }
   end
 end
