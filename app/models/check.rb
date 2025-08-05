@@ -1,6 +1,10 @@
 class Check < ApplicationRecord
   include Workflowable
 
+  def render_type
+    RenderType.new(name: :single_frame)
+  end
+
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?

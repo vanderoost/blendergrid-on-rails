@@ -6,7 +6,7 @@ module Workflowable
     has_one :workflow, as: :workflowable
     after_create :start_workflow
     delegate :status, to: :workflow
-    delegate :settings, to: :workflow
+    delegate :settings, to: :project
 
     # broadcasts_to :project
 

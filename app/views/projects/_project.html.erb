@@ -12,9 +12,17 @@
   </p>
 
   <% if project.checked? %>
+
     <%= form_with model: [project, project.quotes.new] do |form| %>
-      <%= form.submit %>
+      <div>
+        <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name %>
+      </div>
+      <br>
+      <div>
+        <%= form.submit %>
+      </div>
     <% end %>
+
   <% elsif project.quoted? %>
     <%= render project.quote %>
     <%= form_with url: project_payments_path(project), method: :post,

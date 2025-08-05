@@ -4,6 +4,12 @@ class Quote < ApplicationRecord
 
   include Workflowable
 
+  delegate :frame_range_type, to: :settings
+
+  def frame_range_type=(frame_range_type)
+    @frame_range_type = frame_range_type
+  end
+
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
@@ -31,11 +37,16 @@ class Quote < ApplicationRecord
     end
 
     # Frames
-    frame_start = project.settings.output.frame_range.start
-    frame_end = project.settings.output.frame_range.end
-    frame_step = project.settings.output.frame_range.step
-    all_frames = (frame_start..frame_end).step(frame_step).to_a
-    if all_frames.length > 3
+    if project.settings.frame_range_type == :animation
+      frame_start = project.settings.output.frame_range.start
+      frame_end = project.settings.output.frame_range.end
+      frame_step = project.settings.output.frame_range.step
+      all_frames = (frame_start..frame_end).step(frame_step).to_a
+    elsif project.settings.frame_range_type == :single_frame
+      all_frames = [ project.settings.output.frame_range.single ]
+    end
+
+    if project.settings.frame_count > 3
       sample_frames = [
         all_frames[0],
         all_frames[all_frames.length / 2],
@@ -56,9 +67,7 @@ class Quote < ApplicationRecord
         frame_range: sample_frames
       },
       render: {
-        sampling: {
-          max_samples: sample_spp
-        }
+        sampling: { max_samples: sample_spp }
       }
     })
 
@@ -218,6 +227,10 @@ class Quote < ApplicationRecord
   private
     def start_workflow
       project.start_quoting
-      create_workflow
+      create_workflow(settings: create_settings)
+    end
+
+    def create_settings
+      { output: { frame_range: { type: @frame_range_type } } }
     end
 end

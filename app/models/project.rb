@@ -55,14 +55,24 @@ end
 
 class Project::Settings
   def self.for_project(project)
-    new(snapshots: [
-      project.checks.last&.settings,
-      project.quotes.last&.settings,
-      project.renders.last&.settings
-    ])
+    snapshots = [
+      project.checks.last&.workflow&.settings,
+      project.quotes.last&.workflow&.settings,
+      project.renders.last&.workflow&.settings
+    ].compact
+
+    new(data: deep_merge_snapshots(snapshots))
   end
 
   def self.for_sample(project)
-    new(snapshots: [ project.quotes.last&.sample_settings ])
+    data = project.quotes.last&.sample_settings || {}
+    new(data: data)
   end
+
+  def self.deep_merge_snapshots(snapshots)
+    snapshots
+      .map { |h| h.deep_symbolize_keys }
+      .reduce({}) { |acc, h| acc.deep_merge(h) }
+  end
+  private_class_method :deep_merge_snapshots
 end

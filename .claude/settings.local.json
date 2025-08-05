@@ -3,7 +3,8 @@
     "allow": [
       "Bash(grep:*)",
       "Bash(rails test:*)",
-      "Bash(rails routes)"
+      "Bash(rails routes)",
+      "Bash(rails runner:*)"
     ],
     "deny": []
   }
