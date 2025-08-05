@@ -12,7 +12,9 @@
   </p>
 
   <% if project.checked? %>
-    <%= button_to "Calculate price", project_quotes_path(project), method: :post %>
+    <%= form_with model: [project, project.quotes.new] do |form| %>
+      <%= form.submit %>
+    <% end %>
   <% elsif project.quoted? %>
     <%= render project.quote %>
     <%= form_with url: project_payments_path(project), method: :post,

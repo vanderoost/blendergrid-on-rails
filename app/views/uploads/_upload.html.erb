@@ -1,14 +1,10 @@
 <% full = local_assigns.fetch(:full, false) %>
 
-<% title = "Upload - #{upload.created_at.localtime.iso8601}" %>
+<% title = "Upload - #{upload.created_at.to_fs(:short)}" %>
 
 <% if full %>
   <h1><%= title %></h1>
-<% else %>
-  <h2><%= link_to(title, upload) %></h2>
-<% end %>
 
-<% if full %>
   <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
 
     <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
@@ -30,4 +26,14 @@
 
     <%= form.submit "Create Projects" %>
   <% end %>
+
+  <% if upload.projects.any? %>
+    <br><hr>
+
+    <h2>Created Projects</h2>
+    <%= render upload.projects %>
+
+  <% end %>
+<% else %>
+  <h2><%= link_to(title, upload) %></h2>
 <% end %>

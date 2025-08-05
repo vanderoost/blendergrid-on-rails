@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/vanderoost/rails.git
-  revision: 50adca736ab2f76c714fb17eb3b0bd6e5186b774
+  revision: f06cb9d45857458d60ee0446dc815763b86a44a9
   branch: 8-0-multipart-direct-uploads
   specs:
     actioncable (8.0.2)
