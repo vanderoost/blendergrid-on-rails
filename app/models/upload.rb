@@ -35,6 +35,7 @@ class Upload < ApplicationRecord
   private
     def analyze_zip_files
       zip_files.each do |zip_file|
+        next if zip_file.blob.byte_size > 1.gigabyte
         blend_entries = Zip::File.open_buffer(zip_file.blob.download)
           .select { |entry| is_blend_entry? entry }
         zip_file.blob.metadata[:blend_filepaths] = blend_entries.map(&:name)
