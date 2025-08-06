@@ -8,10 +8,10 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     assert project.settings.foo == "fighters"
   end
 
-  test "project merges check and quote settings" do
+  test "project merges check and benchmark settings" do
     project = Project.new
     project.checks.new.build_workflow(settings: { foo: "fighters" })
-    project.quotes.new.build_workflow(settings: { bar: "bighters" })
+    project.benchmarks.new.build_workflow(settings: { bar: "bighters" })
 
     assert project.settings.foo == "fighters"
     assert project.settings.bar == "bighters"
@@ -26,10 +26,10 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     assert project.settings.bar == "bighters"
   end
 
-  test "project merges check, quote and render settings" do
+  test "project merges check, benchmark and render settings" do
     project = Project.new
     project.checks.new.build_workflow(settings: { foo: "fighters" })
-    project.quotes.new.build_workflow(settings: { bar: "bighters" })
+    project.benchmarks.new.build_workflow(settings: { bar: "bighters" })
     project.renders.new.build_workflow(settings: { baz: "bighterz" })
 
     assert project.settings.foo == "fighters"
@@ -54,7 +54,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     assert project.settings.res_y == 540
   end
 
-  test "quote overrides check settings" do
+  test "benchmark overrides check settings" do
     project = Project.new
     project.checks.new.build_workflow(settings: {
       output: {
@@ -66,7 +66,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
         output: { frame_range: { type: "image" } }
       }
     })
-    project.quotes.new.build_workflow(settings: {
+    project.benchmarks.new.build_workflow(settings: {
       output: { frame_range: { type: "animation" } }
     })
 

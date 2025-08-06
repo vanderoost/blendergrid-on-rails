@@ -26,7 +26,7 @@ class PaymentsController < ApplicationController
       {
         price_data: {
           currency: "usd",
-          unit_amount: project.quotes.last.price_cents,
+          unit_amount: project.benchmarks.last.price_cents,
           product_data: { name: project.blend_filepath }
         },
         quantity: 1

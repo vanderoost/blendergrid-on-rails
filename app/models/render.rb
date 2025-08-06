@@ -10,7 +10,7 @@ class Render < ApplicationRecord
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
-    expected_render_time = project.quotes.last.expected_render_time
+    expected_render_time = project.benchmarks.last.expected_render_time
     if expected_render_time.nil?
       raise "The price calculation's expected_render_time is nil"
     end
@@ -96,8 +96,10 @@ class Render < ApplicationRecord
   private
     def start_workflow
       project.start_rendering
-      create_workflow(settings: {
-        render: { sampling: { max_samples: @cycles_samples } }
-      })
+      create_workflow(settings: create_settings)
+    end
+
+    def create_settings
+      { render: { sampling: { max_samples: @cycles_samples } } }
     end
 end

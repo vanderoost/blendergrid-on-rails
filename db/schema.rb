@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -59,6 +59,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "project_id"
+    t.json "render_settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["project_id"], name: "index_order_items_on_project_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.string "stripe_session_id"
+    t.string "receipt_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "projects", force: :cascade do |t|
     t.integer "upload_id"
     t.string "uuid"
@@ -70,7 +87,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
 
-  create_table "quotes", force: :cascade do |t|
+  create_table "benchmarks", force: :cascade do |t|
     t.integer "project_id"
     t.string "node_provider_id"
     t.string "node_type_name"
@@ -80,11 +97,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_quotes_on_project_id"
+    t.index ["project_id"], name: "index_benchmarks_on_project_id"
   end
 
   create_table "renders", force: :cascade do |t|
     t.integer "project_id"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_renders_on_project_id"

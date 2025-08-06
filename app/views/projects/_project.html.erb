@@ -13,32 +13,13 @@
 
   <% if project.checked? %>
 
-    <%= form_with model: [project, project.quotes.new] do |form| %>
+    <%= form_with model: [project, project.benchmarks.new] do |form| %>
       <div>
         <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name %>
       </div>
       <br>
       <div>
         <%= form.submit %>
-      </div>
-    <% end %>
-
-  <% elsif project.quoted? %>
-    <%= render project.quote %>
-    <br>
-    <%= form_with url: project_payments_path(project), method: :post,
-      data: { turbo: false } do |form| %>
-      <div>
-        <%= form.label :cycles_samples %><br>
-        <%= form.number_field :cycles_samples,
-                          step: 1,
-                          min: 8,
-                          max: project.check.settings.spp * 4,
-                          value: project.settings.spp %>
-      </div>
-      <br>
-      <div>
-        <%= form.submit "Pay and Render" %>
       </div>
     <% end %>
 

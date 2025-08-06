@@ -16,12 +16,14 @@ Rails.application.routes.draw do
   resources :uploads, param: :uuid do
     resources :project_batches
   end
+  resources :orders
   resources :projects, param: :uuid do
-    resources :quotes
+    resources :benchmarks
 
     # TODO: Think of a better name than 'Payments'
     # TODO: For multi-project support, this should move somewhere else
     resources :payments, only: :create
+    resources :renders
   end
 
   namespace :api do

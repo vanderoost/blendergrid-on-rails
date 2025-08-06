@@ -33,7 +33,7 @@ module Project::States
 
   class Quoting < BaseState
     def finish
-      @project.quoted!
+      @project.benchmarked!
     end
 
     def fail
@@ -41,7 +41,7 @@ module Project::States
     end
   end
 
-  class Quoted < BaseState
+  class Benchmarked < BaseState
     def start_rendering
       @project.rendering!
     end

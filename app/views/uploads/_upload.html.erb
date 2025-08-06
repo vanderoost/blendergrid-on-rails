@@ -24,14 +24,41 @@
       <% end %>
     <% end %>
 
-    <%= form.submit "Create Projects" %>
+    <div>
+      <%= form.submit "Create Projects" %>
+    </div>
   <% end %>
 
   <% if upload.projects.any? %>
     <br><hr>
 
     <h2>Created Projects</h2>
-    <%= render upload.projects %>
+
+    <%= render upload.projects.select { |project| !project.benchmarked? } %>
+
+    <% benchmarked_projects = upload.projects.select { |project| project.benchmarked? } %>
+    <% if benchmarked_projects.any? %>
+      <hr>
+
+      <h3>Ready to render</h3>
+      <p>
+        <%= "#{pluralize(benchmarked_projects.count, "project")} ready to render" %>
+      </p>
+
+      <%= form_with model: @order, data: { turbo: false } do |form| %>
+        <% benchmarked_projects.each do |project| %>
+          <%= render project %>
+          <%= form.fields_for :project_settings, index: project.uuid do |pf| %>
+            <%= pf.number_field :cycles_samples, value: project.settings.spp %>
+          <% end %>
+        <% end %>
+        <br>
+        <div>
+          <%= form.submit %>
+        </div>
+      <% end %>
+
+    <% end %>
 
   <% end %>
 <% else %>

@@ -8,7 +8,7 @@ class ProjectMailer < ApplicationMailer
     )
   end
 
-  def project_quote_finished(project)
+  def project_benchmark_finished(project)
     @project = project
     @user = @project.user
     mail(

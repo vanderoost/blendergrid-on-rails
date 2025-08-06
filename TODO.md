@@ -8,8 +8,8 @@
     - [ ]  Send sign-up confirmation email
     - [ ]  Send password reset emails
 - [ ]  Edit project settings
-    - [ ]  Between first check and price quote
-    - [ ]  Between price quote and render
+    - [ ]  Between first check and benchmark
+    - [ ]  Between benchmark and render
 - [ ]  Support >20GB uploads through the website
 - [ ]  Use an external database (AWS RDS? Mysql / Postgres)
 - [ ]  UI/UX

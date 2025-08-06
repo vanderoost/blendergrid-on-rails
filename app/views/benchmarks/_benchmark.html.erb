@@ -1,0 +1,9 @@
+<%= tag.div id: dom_id(benchmark) do %>
+  <%# "Price Calculation Status: #{benchmark.status}" %>
+  <%# "Node Type: #{benchmark.node_type_name}" %>
+  <%= "Price: #{benchmark.price}" %>
+
+  <%# unless benchmark.timing.blank? %>
+  <%#= debug benchmark.timing %>
+  <%# end %>
+<% end %>

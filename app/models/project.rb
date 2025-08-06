@@ -4,7 +4,7 @@ class Project < ApplicationRecord
     checking
     checked
     quoting
-    quoted
+    benchmarked
     rendering
     rendered
     finished
@@ -17,8 +17,9 @@ class Project < ApplicationRecord
 
   belongs_to :upload
   has_many :checks
-  has_many :quotes
+  has_many :benchmarks
   has_many :renders
+  has_one :order_item
 
   delegate :user, to: :upload
 
@@ -36,7 +37,7 @@ class Project < ApplicationRecord
   end
 
   def check = latest(:check)
-  def quote = latest(:quote)
+  def benchmark = latest(:benchmark)
   def render = latest(:render)
 
   private
@@ -57,7 +58,7 @@ class Project::Settings
   def self.for_project(project)
     snapshots = [
       project.checks.last&.workflow&.settings,
-      project.quotes.last&.workflow&.settings,
+      project.benchmarks.last&.workflow&.settings,
       project.renders.last&.workflow&.settings
     ].compact
 
@@ -65,7 +66,7 @@ class Project::Settings
   end
 
   def self.for_sample(project)
-    data = project.quotes.last&.sample_settings || {}
+    data = project.benchmarks.last&.sample_settings || {}
     new(data: data)
   end
 

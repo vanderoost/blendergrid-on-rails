@@ -1,11 +1,11 @@
-class QuotesController < ApplicationController
+class RendersController < ApplicationController
   include ProjectScoped
 
   allow_unauthenticated_access only: %i[ create ]
 
   def create
-    @quote = @project.quotes.new(quote_params)
-    if @quote.save
+    @render = @project.renders.new(render_params)
+    if @render.save
       redirect_back fallback_location: @project
     else
       render :new, status: :unprocessable_entity
@@ -13,7 +13,7 @@ class QuotesController < ApplicationController
   end
 
   private
-    def quote_params
-      params.expect(quote: [ :frame_range_type ])
+    def render_params
+      params.expect(render: [ :cycles_samples ])
     end
 end
