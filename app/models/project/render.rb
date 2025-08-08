@@ -96,7 +96,8 @@ class Project::Render < ApplicationRecord
   private
     def start_workflow
       project.start_rendering
-      create_workflow(settings: create_settings)
+      project.settings_revisions.create(settings: create_settings)
+      create_workflow
     end
 
     def create_settings

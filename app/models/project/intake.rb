@@ -7,11 +7,6 @@ class Project::Intake
   validates :upload, presence: true
   validates :blend_filepaths, length: { minimum: 1 }
 
-  # def initialize(upload: nil, blend_filepaths: nil)
-  #   @upload = upload
-  #   @blend_filepaths = blend_filepaths
-  # end
-
   def save
     return false unless valid?
 

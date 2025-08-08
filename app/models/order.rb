@@ -2,6 +2,7 @@
 # On fulfillment, each Project gets a Render
 class Order < ApplicationRecord
   has_many :items, class_name: "Order::Item"
+  belongs_to :user, optional: true
 
   attr_accessor :project_settings, :success_url, :cancel_url, :redirect_url
 

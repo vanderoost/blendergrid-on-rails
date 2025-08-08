@@ -1,3 +1,4 @@
+# DEPRECATED
 class Project::Settings
   def initialize(data:)
     @data = (data || {}).deep_symbolize_keys

@@ -1,3 +1,4 @@
+# DEPRECATED
 class BenchmarksController < ApplicationController
   include ProjectScoped
 

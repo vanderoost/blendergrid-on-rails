@@ -45,7 +45,7 @@ class Project::Check < ApplicationRecord
 
   def handle_result(result)
     update(stats: result.dig("stats"))
-    self.workflow.update(settings: result.dig("settings"))
+    project.settings_revisions.create(settings: result.dig("settings"))
   end
 
   private

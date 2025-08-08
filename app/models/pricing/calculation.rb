@@ -1,38 +1,43 @@
 class Pricing::Calculation < ApplicationRecord
-  def initialize(benchmark:, settings:, node_supplies:)
-    @benchmark = benchmark
-    @settings = settings
-    @node_supplies = node_supplies
+  def initialize(project:)
+    @settings = project.settings
+    @benchmark = project.benchmark
 
     @api_time_per_node = 20.seconds
     @boot_time = 5.minutes
     @min_jobs_per_server = 3
-    @target_margin = 0.7
+    @target_margin = 0.4
     @min_price_cents = 69
   end
 
   def calculate_price
     # Scene specific
-    orig_pixel_count = settings.res_x * settings.res_y
-    sample_pixel_count = project.sample_settings.res_x * project.sample_settings.res_y
+    orig_pixel_count = @settings.res_x * @settings.res_y
+    sample_pixel_count = @benchmark.sample_settings.res_x *
+      @benchmark.sample_settings.res_y
     pixel_factor = orig_pixel_count.to_f / sample_pixel_count
     logger.info "Pixel factor: #{pixel_factor}"
 
-    orig_sample_count = settings.spp * orig_pixel_count
-    sample_sample_count = project.sample_settings.spp * sample_pixel_count
+    orig_sample_count = @settings.spp * orig_pixel_count
+    sample_sample_count = @benchmark.sample_settings.spp * sample_pixel_count
     sample_factor = orig_sample_count.to_f / sample_sample_count
     logger.info "SPP factor: #{sample_factor}"
 
     # Calculate
-    job_count = settings.frame_count # TODO: Take subframes into account
+    job_count = @settings.frame_count # TODO: Take subframes into account
     node_count = Math.sqrt(job_count).ceil
     # max_server_count = [ 1, job_count / @min_jobs_per_server ].max
 
     # Server cost
-    # TODO: Sort the node supplies by price
     nodes_remaining = node_count
     total_hourly_cost = 0
-    @node_supplies.each do |supply|
+    supplies = NodeSupply
+      .where(provider_id: node_provider_id, type_name: node_type_name)
+      .order(:millicents_per_hour)
+    if supplies.empty?
+      raise "No supplies found for #{node_provider_id}:#{node_type_name}"
+    end
+    supplies.each do |supply|
       nodes_to_use = [ nodes_remaining, supply.capacity ].min
       total_hourly_cost += supply.millicents_per_hour * nodes_to_use
       nodes_remaining -= nodes_to_use

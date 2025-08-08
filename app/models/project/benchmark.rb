@@ -4,11 +4,7 @@ class Project::Benchmark < ApplicationRecord
 
   include Workflowable
 
-  delegate :frame_range_type, to: :settings
-
-  def frame_range_type=(frame_range_type)
-    @frame_range_type = frame_range_type
-  end
+  attr_accessor :settings
 
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
@@ -226,11 +222,12 @@ class Project::Benchmark < ApplicationRecord
 
   private
     def start_workflow
-      project.start_quoting
-      create_workflow(settings: create_settings)
+      project.start_benchmarking
+      project.settings_revisions.create(settings: create_settings)
+      create_workflow
     end
 
     def create_settings
-      { output: { frame_range: { type: @frame_range_type } } }
+      { output: { frame_range: { type: @settings[:frame_range_type] } } }
     end
 end

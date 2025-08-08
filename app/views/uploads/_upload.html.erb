@@ -1,18 +1,12 @@
 <% full = local_assigns.fetch(:full, false) %>
 
-<% title = "Upload - #{upload.created_at.to_fs(:short)}" %>
+<% title = "upload from #{time_ago_in_words(upload.created_at)} ago" %>
 
 <% if full %>
   <h1><%= title %></h1>
 
   <%= form_with model: [@upload, @project_intake] do |form| %>
-    <% if form.object.errors.any? %>
-      <div class="error-explanation">
-        <% @project_intake.errors.full_messages.each do |message| %>
-          <p><%= message %></p>
-        <% end %>
-      </div>
-    <% end %>
+    <%= render "shared/form_errors", form: form %>
 
     <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
     <% upload.blend_files.each.map(&:blob).map(&:filename).each do |filepath| %>

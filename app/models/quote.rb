@@ -11,6 +11,8 @@ class Quote
     @project_settings.each do |uuid, settings|
       project = Project.find_by(uuid: uuid)
       next if project.nil?
+
+      # TODO: Actually pass through the settings
       project.benchmarks.create(settings: settings)
     end
   end

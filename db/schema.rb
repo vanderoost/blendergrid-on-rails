@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_08_165758) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -119,6 +119,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "settings_revisions", force: :cascade do |t|
+    t.integer "project_id"
+    t.json "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_settings_revisions_on_project_id"
+  end
+
   create_table "uploads", force: :cascade do |t|
     t.string "uuid"
     t.integer "user_id"
@@ -142,7 +150,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
   create_table "workflows", force: :cascade do |t|
     t.string "uuid"
     t.string "status"
-    t.json "settings"
     t.string "workflowable_type"
     t.integer "workflowable_id"
     t.datetime "created_at", null: false

@@ -1,7 +1,6 @@
 class Order::Checkout
   def initialize(order)
     @order = order
-    @projects = []
   end
 
   def handle

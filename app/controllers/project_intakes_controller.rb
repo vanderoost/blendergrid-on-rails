@@ -6,14 +6,17 @@ class ProjectIntakesController < ApplicationController
     @project_intake = Project::Intake.new project_intake_params
 
     if @project_intake.save
-      redirect_to @upload, notice: "Projects created successfully!"
+      redirect_back fallback_location: projects_path, notice: "Projects created!"
     else
-      redirect_to @upload, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity
     end
   end
 
   private
     def project_intake_params
-      params.expect(project_intake: [ blend_filepaths: [] ]).merge(upload: @upload)
+      # params.expect(project_intake: [ blend_filepaths: [] ]).merge(upload: @upload)
+      params.fetch(:project_intake, {})
+        .permit(blend_filepaths: [])
+        .merge(upload: @upload)
     end
 end
