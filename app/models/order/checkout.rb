@@ -27,7 +27,7 @@ class Order::Checkout
         {
           price_data: {
             currency: "usd",
-            unit_amount: item.project.benchmark.price_cents, # TODO: Grab the price a different way
+            unit_amount: item.project.price_cents,
             product_data: { name: item.project.blend_filepath }
           },
           quantity: 1

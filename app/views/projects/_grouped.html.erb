@@ -37,10 +37,10 @@
 
         <% projects.each do |project| %>
           <%= render project %>
-          <%= form.fields_for :project_settings,
-            project.settings,
-            index: project.uuid do |pf| %>
-            <%= pf.number_field :cycles_samples, value: project.settings.spp %>
+
+          <%= form.fields_for :project_settings, project.settings,
+            index: project.uuid do |fields| %>
+            <%= fields.number_field :cycles_samples, value: project.settings.spp %>
           <% end %>
         <% end %>
 

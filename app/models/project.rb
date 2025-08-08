@@ -33,6 +33,15 @@ class Project < ApplicationRecord
     # )
     Project::ResolvedSettings.new(revisions: settings_revisions.map(&:settings))
   end
+  def benchmark_settings
+    Project::ResolvedSettings.new(
+      revisions: settings_revisions.map(&:settings) + [ benchmark.sample_settings ]
+    )
+  end
+
+  def price_cents
+    Pricing::Calculation.new(self).price_cents
+  end
 
   def check = latest(:check)
   def benchmark = latest(:benchmark)

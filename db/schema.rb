@@ -55,7 +55,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_165758) do
     t.integer "order_id"
     t.integer "project_id"
     t.integer "price_cents"
-    t.json "render_settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_order_items_on_order_id"

@@ -23,7 +23,12 @@ class Order < ApplicationRecord
       project_settings.each do |uuid, settings|
         project = Project.find_by(uuid: uuid)
         next if project.nil?
-        items.create(project: project, render_settings: settings)
+
+        project.settings_revisions.create(settings: { render: { sampling:
+          { max_samples: settings["cycles_samples"].to_i }
+        } })
+
+        items.create(project: project, price_cents: project.price_cents)
       end
     end
 end

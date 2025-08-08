@@ -1,6 +1,7 @@
-class Pricing::Calculation < ApplicationRecord
-  def initialize(project:)
+class Pricing::Calculation
+  def initialize(project)
     @settings = project.settings
+    @benchmark_settings = project.benchmark_settings
     @benchmark = project.benchmark
 
     @api_time_per_node = 20.seconds
@@ -10,18 +11,20 @@ class Pricing::Calculation < ApplicationRecord
     @min_price_cents = 69
   end
 
-  def calculate_price
+  def price_cents
     # Scene specific
     orig_pixel_count = @settings.res_x * @settings.res_y
-    sample_pixel_count = @benchmark.sample_settings.res_x *
-      @benchmark.sample_settings.res_y
-    pixel_factor = orig_pixel_count.to_f / sample_pixel_count
-    logger.info "Pixel factor: #{pixel_factor}"
+    sample_pixel_count = @benchmark_settings.res_x *
+      @benchmark_settings.res_y
+    pixel_factor = orig_pixel_count.fdiv(sample_pixel_count)
+    puts "Pixel factor: #{pixel_factor}"
 
     orig_sample_count = @settings.spp * orig_pixel_count
-    sample_sample_count = @benchmark.sample_settings.spp * sample_pixel_count
-    sample_factor = orig_sample_count.to_f / sample_sample_count
-    logger.info "SPP factor: #{sample_factor}"
+    puts "Orig sample count: #{orig_sample_count}"
+    benchmark_sample_count = @benchmark_settings.spp * sample_pixel_count
+    puts "Benchmark sample count: #{benchmark_sample_count}"
+    sample_factor = orig_sample_count.fdiv(benchmark_sample_count)
+    puts "SPP factor: #{sample_factor}"
 
     # Calculate
     job_count = @settings.frame_count # TODO: Take subframes into account
@@ -32,7 +35,7 @@ class Pricing::Calculation < ApplicationRecord
     nodes_remaining = node_count
     total_hourly_cost = 0
     supplies = NodeSupply
-      .where(provider_id: node_provider_id, type_name: node_type_name)
+      .where(provider_id: @benchmark.node_provider_id, type_name: @benchmark.node_type_name)
       .order(:millicents_per_hour)
     if supplies.empty?
       raise "No supplies found for #{node_provider_id}:#{node_type_name}"
@@ -46,21 +49,21 @@ class Pricing::Calculation < ApplicationRecord
       total_hourly_cost += @node_supplies.last.millicents_per_hour * nodes_remaining
     end
     avg_node_hour_cost = total_hourly_cost.to_f / node_count / 100_000
-    logger.info "Total hourly cost: #{total_hourly_cost}"
-    logger.info "Average hourly cost: #{avg_node_hour_cost}"
+    puts "Total hourly cost: #{total_hourly_cost}"
+    puts "Average hourly cost: #{avg_node_hour_cost}"
 
     # TODO: Put this into a "timing/timeline" PORO?
     api_time = @api_time_per_node * node_count
-    download_time = (timing["download"]["max"] / 1000).seconds
+    download_time = (@benchmark.timing["download"]["max"] / 1000).seconds
     server_prep_time = @boot_time + download_time
-    frame_init_time = ((timing["init"]["mean"] + timing["init"]["std"]) / 1000).seconds
+    frame_init_time = ((@benchmark.timing["init"]["mean"] + @benchmark.timing["init"]["std"]) / 1000).seconds
     frame_sampling_time = (
-      (timing["sampling"]["mean"] + timing["sampling"]["std"]) / 1000).seconds
+      (@benchmark.timing["sampling"]["mean"] + @benchmark.timing["sampling"]["std"]) / 1000).seconds
     frame_sampling_time *= sample_factor
-    frame_post_time = ((timing["post"]["mean"] + timing["post"]["std"]) / 1000).seconds
+    frame_post_time = ((@benchmark.timing["post"]["mean"] + @benchmark.timing["post"]["std"]) / 1000).seconds
     frame_post_time *= pixel_factor
     frame_upload_time = (
-      (timing["upload"]["mean"] + timing["upload"]["std"]) / 1000).seconds
+      (@benchmark.timing["upload"]["mean"] + @benchmark.timing["upload"]["std"]) / 1000).seconds
     frame_upload_time *= pixel_factor
 
     time_per_frame = frame_init_time + frame_sampling_time + frame_post_time
@@ -73,13 +76,13 @@ class Pricing::Calculation < ApplicationRecord
     # Optional: Zipping and encoding
 
     total_time = api_time + server_prep_time + total_frame_time
-    logger.info "Total time: #{total_time}"
+    puts "Total time: #{total_time}"
 
     # TODO: Does this attriburte belong to the price calculation? Or project? Or render?
     @expected_render_time = total_time
 
     cost = total_time.in_hours * avg_node_hour_cost
 
-    @price_cents = @min_price_cents + (cost / (1 - @target_margin) * 100).round
+    @min_price_cents + (cost / (1 - @target_margin) * 100).round
   end
 end

@@ -10,10 +10,11 @@ class Project::Render < ApplicationRecord
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
-    expected_render_time = project.benchmarks.last.expected_render_time
-    if expected_render_time.nil?
-      raise "The price calculation's expected_render_time is nil"
-    end
+    expected_render_time = 1800 # TODO: Figure out where to calculate and store this
+    # expected_render_time = project.benchmarks.last.expected_render_time
+    # if expected_render_time.nil?
+    #   raise "The price calculation's expected_render_time is nil"
+    # end
 
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
     bucket = Rails.configuration.swarm_engine[:bucket]
@@ -63,7 +64,7 @@ class Project::Render < ApplicationRecord
             "--project-dir",
             "/tmp/project",
             "--cycles-samples",
-            settings.render.sampling.max_samples.to_s
+            settings.spp.to_s
           ],
           parameters: { frame: frame_params },
           image: "blendergrid/blender:#{blender_version}"
@@ -96,11 +97,6 @@ class Project::Render < ApplicationRecord
   private
     def start_workflow
       project.start_rendering
-      project.settings_revisions.create(settings: create_settings)
       create_workflow
-    end
-
-    def create_settings
-      { render: { sampling: { max_samples: @cycles_samples } } }
     end
 end

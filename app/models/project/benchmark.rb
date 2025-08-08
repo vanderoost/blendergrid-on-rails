@@ -15,21 +15,21 @@ class Project::Benchmark < ApplicationRecord
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     # Resolution
-    sample_res_x = project.settings.res_x
-    sample_res_y = project.settings.res_y
-    orig_pixel_count = sample_res_x * sample_res_y
+    benchmark_res_x = project.settings.res_x
+    benchmark_res_y = project.settings.res_y
+    orig_pixel_count = benchmark_res_x * benchmark_res_y
     if orig_pixel_count > MAX_PIXEL_COUNT
       pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
-      sample_res_x = (sample_res_x * pixel_factor).round
-      sample_res_y = (sample_res_y * pixel_factor).round
-      logger.info "Custom resolution: #{sample_res_x}x#{sample_res_y}"
+      benchmark_res_x = (benchmark_res_x * pixel_factor).round
+      benchmark_res_y = (benchmark_res_y * pixel_factor).round
+      logger.info "Custom resolution: #{benchmark_res_x}x#{benchmark_res_y}"
     end
 
     # Sample count
-    sample_spp = project.settings.spp
-    if sample_spp > MAX_SPP
-      sample_spp = MAX_SPP
-      logger.info "Custom SPP: #{sample_spp}"
+    benchmark_spp = project.settings.spp
+    if benchmark_spp > MAX_SPP
+      benchmark_spp = MAX_SPP
+      logger.info "Custom SPP: #{benchmark_spp}"
     end
 
     # Frames
@@ -56,14 +56,14 @@ class Project::Benchmark < ApplicationRecord
     update(sample_settings: {
       output: {
         format: {
-          resolution_x: sample_res_x,
-          resolution_y: sample_res_y,
+          resolution_x: benchmark_res_x,
+          resolution_y: benchmark_res_y,
           resolution_percentage: 100
         },
         frame_range: sample_frames
       },
       render: {
-        sampling: { max_samples: sample_spp }
+        sampling: { max_samples: benchmark_spp }
       }
     })
 
@@ -97,11 +97,11 @@ class Project::Benchmark < ApplicationRecord
               "$frame",
               "--",
               "--resolution-width",
-              sample_res_x.to_s,
+              benchmark_res_x.to_s,
               "--resolution-height",
-              sample_res_y.to_s,
+              benchmark_res_y.to_s,
               "--cycles-samples",
-              sample_spp.to_s,
+              benchmark_spp.to_s,
               "--settings-file",
               "/tmp/settings/integrity-check.json",
               "--project-dir",
