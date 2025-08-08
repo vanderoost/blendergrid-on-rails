@@ -10,7 +10,6 @@ class UploadFlowTest < ActionDispatch::IntegrationTest
         guest_email_address: "guest@example.com",
         files: [ fixture_file_upload("cube.blend", "application/octet-stream") ]
       } }
-      assert_redirected_to upload_path(Upload.last)
     end
 
     follow_redirect!

@@ -38,7 +38,7 @@ class Pricing::Calculation
       .where(provider_id: @benchmark.node_provider_id, type_name: @benchmark.node_type_name)
       .order(:millicents_per_hour)
     if supplies.empty?
-      raise "No supplies found for #{node_provider_id}:#{node_type_name}"
+      raise "No supplies found for #{@benchmark.node_provider_id}:#{@benchmark.node_type_name}"
     end
     supplies.each do |supply|
       nodes_to_use = [ nodes_remaining, supply.capacity ].min
@@ -46,7 +46,7 @@ class Pricing::Calculation
       nodes_remaining -= nodes_to_use
     end
     if nodes_remaining > 0
-      total_hourly_cost += @node_supplies.last.millicents_per_hour * nodes_remaining
+      total_hourly_cost += supplies.last.millicents_per_hour * nodes_remaining
     end
     avg_node_hour_cost = total_hourly_cost.to_f / node_count / 100_000
     puts "Total hourly cost: #{total_hourly_cost}"

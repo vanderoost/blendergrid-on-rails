@@ -8,5 +8,18 @@
       "Bash(bin/rails:*)"
     ],
     "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/post-edit-hook.rb"
+          }
+        ]
+      }
+    ]
   }
 }

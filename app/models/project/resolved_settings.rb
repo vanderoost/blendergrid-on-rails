@@ -11,7 +11,6 @@ class Project::ResolvedSettings
     output.frame_range.type.to_sym
   end
   def frame_range_type
-    puts "FRAME RANGE TYPE: #{output.frame_range.type}"
     output.frame_range.type.to_sym
   end
   def frame_count
