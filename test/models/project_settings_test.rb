@@ -1,45 +1,25 @@
 require "test_helper"
 
 class ProjectSettingsTest < ActiveSupport::TestCase
-  test "project has check settings" do
+  test "project handles one settings revision" do
     project = Project.new
-    project.checks.new.build_workflow(settings: { foo: "fighters" })
+    project.settings_revisions.new(settings: { foo: "fighters" })
 
     assert project.settings.foo == "fighters"
   end
 
-  test "project merges check and benchmark settings" do
+  test "project merges multiple settings revisions" do
     project = Project.new
-    project.checks.new.build_workflow(settings: { foo: "fighters" })
-    project.benchmarks.new.build_workflow(settings: { bar: "bighters" })
+    project.settings_revisions.new(settings: { foo: "fighters" })
+    project.settings_revisions.new(settings: { bar: "bighters" })
 
     assert project.settings.foo == "fighters"
     assert project.settings.bar == "bighters"
-  end
-
-  test "project merges check and render settings" do
-    project = Project.new
-    project.checks.new.build_workflow(settings: { foo: "fighters" })
-    project.renders.new.build_workflow(settings: { bar: "bighters" })
-
-    assert project.settings.foo == "fighters"
-    assert project.settings.bar == "bighters"
-  end
-
-  test "project merges check, benchmark and render settings" do
-    project = Project.new
-    project.checks.new.build_workflow(settings: { foo: "fighters" })
-    project.benchmarks.new.build_workflow(settings: { bar: "bighters" })
-    project.renders.new.build_workflow(settings: { baz: "bighterz" })
-
-    assert project.settings.foo == "fighters"
-    assert project.settings.bar == "bighters"
-    assert project.settings.baz == "bighterz"
   end
 
   test "resolution helpers are working" do
     project = Project.new
-    project.checks.new.build_workflow(settings: {
+    project.settings_revisions.new(settings: {
       output: {
         format: {
           resolution_x: 1920,
@@ -54,9 +34,9 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     assert project.settings.res_y == 540
   end
 
-  test "benchmark overrides check settings" do
+  test "later settings revision overrides earlier ones" do
     project = Project.new
-    project.checks.new.build_workflow(settings: {
+    project.settings_revisions.new(settings: {
       output: {
         format: {
           resolution_x: 1920,
@@ -66,7 +46,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
         output: { frame_range: { type: "image" } }
       }
     })
-    project.benchmarks.new.build_workflow(settings: {
+    project.settings_revisions.new(settings: {
       output: { frame_range: { type: "animation" } }
     })
 
