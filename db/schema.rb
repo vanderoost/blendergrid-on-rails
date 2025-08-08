@@ -39,14 +39,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "checks", force: :cascade do |t|
-    t.integer "project_id"
-    t.json "stats"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_checks_on_project_id"
-  end
-
   create_table "node_supplies", force: :cascade do |t|
     t.string "provider_id"
     t.string "region"
@@ -62,6 +54,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id"
     t.integer "project_id"
+    t.integer "price_cents"
     t.json "render_settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -70,10 +63,40 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
   end
 
   create_table "orders", force: :cascade do |t|
+    t.integer "user_id"
     t.string "stripe_session_id"
     t.string "receipt_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "project_benchmarks", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "node_provider_id"
+    t.string "node_type_name"
+    t.json "sample_settings"
+    t.json "timing"
+    t.integer "expected_render_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_benchmarks_on_project_id"
+  end
+
+  create_table "project_checks", force: :cascade do |t|
+    t.integer "project_id"
+    t.json "stats"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_checks_on_project_id"
+  end
+
+  create_table "project_renders", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_renders_on_project_id"
   end
 
   create_table "projects", force: :cascade do |t|
@@ -85,27 +108,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_06_113731) do
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
-  end
-
-  create_table "benchmarks", force: :cascade do |t|
-    t.integer "project_id"
-    t.string "node_provider_id"
-    t.string "node_type_name"
-    t.json "sample_settings"
-    t.json "timing"
-    t.integer "expected_render_time"
-    t.integer "price_cents"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_benchmarks_on_project_id"
-  end
-
-  create_table "renders", force: :cascade do |t|
-    t.integer "project_id"
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_renders_on_project_id"
   end
 
   create_table "sessions", force: :cascade do |t|

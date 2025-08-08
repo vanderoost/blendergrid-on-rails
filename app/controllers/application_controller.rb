@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_guest_uploads
-    return Upload.none unless session[:guest_email_address] # Can we skip this
+    return Upload.none unless session[:guest_email_address] # TODO: Can we skip this?
     Upload.where(
       guest_email_address: session[:guest_email_address],
       guest_session_id: session.id.to_s,

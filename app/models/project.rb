@@ -3,11 +3,10 @@ class Project < ApplicationRecord
     uploaded
     checking
     checked
-    quoting
+    benchmarking
     benchmarked
     rendering
     rendered
-    finished
     cancelled
     failed].freeze
   ACTIONS = %i[start_checking start_quoting start_rendering finish cancel fail].freeze
@@ -16,10 +15,16 @@ class Project < ApplicationRecord
   include Statusable
 
   belongs_to :upload
-  has_many :checks
-  has_many :benchmarks
-  has_many :renders
+  has_many :checks, class_name: "Project::Check"
+  has_many :benchmarks, class_name: "Project::Benchmark"
+  has_many :renders, class_name: "Project::Render"
   has_one :order_item
+
+  scope :created, -> { where(status: [ :uploaded, :checking ]) }
+  scope :ready_for_benchmark, -> { where(status: :checked) }
+  scope :benchmarking, -> { where(status: :benchmarking) }
+  scope :ready_for_render, -> { where(status: :benchmarked) }
+  scope :rendering, -> { where(status: :rendering) }
 
   delegate :user, to: :upload
 

@@ -16,9 +16,9 @@ class Upload < ApplicationRecord
                                   if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
-  def new_project_batch(blend_filepaths)
-    ProjectBatch.new(upload: self, blend_filepaths:)
-  end
+  # def new_project_intake(blend_filepaths:)
+  #   Project::Intake.new(upload: self, blend_filepaths: blend_filepaths)
+  # end
 
   def blend_files
     files.select { |file|

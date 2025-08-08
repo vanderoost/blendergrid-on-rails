@@ -14,17 +14,11 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resources :email_address_verifications, param: :token
   resources :uploads, param: :uuid do
-    resources :project_batches
+    resources :project_intakes
   end
+  resources :quotes
   resources :orders
-  resources :projects, param: :uuid do
-    resources :benchmarks
-
-    # TODO: Think of a better name than 'Payments'
-    # TODO: For multi-project support, this should move somewhere else
-    resources :payments, only: :create
-    resources :renders
-  end
+  resources :projects, param: :uuid
 
   namespace :api do
     namespace :v1 do

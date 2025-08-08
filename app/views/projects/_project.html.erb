@@ -13,16 +13,7 @@
 
   <% if project.checked? %>
 
-    <%= form_with model: [project, project.benchmarks.new] do |form| %>
-      <div>
-        <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name %>
-      </div>
-      <br>
-      <div>
-        <%= form.submit %>
-      </div>
-    <% end %>
-
+    all checked
   <% elsif project.render.present? %>
     <%= render project.render %>
   <% end %>

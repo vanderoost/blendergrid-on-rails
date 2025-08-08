@@ -1,4 +1,4 @@
-class Benchmark < ApplicationRecord
+class Project::Benchmark < ApplicationRecord
   MAX_PIXEL_COUNT = 1280 * 720
   MAX_SPP = 128
 

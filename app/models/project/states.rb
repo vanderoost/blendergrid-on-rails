@@ -26,12 +26,12 @@ module Project::States
   end
 
   class Checked < BaseState
-    def start_quoting
-      @project.quoting!
+    def start_benchmarking
+      @project.benchmarking!
     end
   end
 
-  class Quoting < BaseState
+  class Benchmarking < BaseState
     def finish
       @project.benchmarked!
     end
@@ -62,9 +62,6 @@ module Project::States
   end
 
   class Rendered < BaseState
-  end
-
-  class Finished < BaseState
   end
 
   class Cancelled < BaseState

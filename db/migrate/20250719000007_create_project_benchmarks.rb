@@ -1,6 +1,6 @@
-class CreateBenchmarks < ActiveRecord::Migration[8.0]
+class CreateProjectBenchmarks < ActiveRecord::Migration[8.0]
   def change
-    create_table :benchmarks do |t|
+    create_table :project_benchmarks do |t|
       t.references :project
       t.string :node_provider_id
       t.string :node_type_name

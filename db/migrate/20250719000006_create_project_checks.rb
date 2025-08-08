@@ -1,6 +1,6 @@
-class CreateChecks < ActiveRecord::Migration[8.0]
+class CreateProjectChecks < ActiveRecord::Migration[8.0]
   def change
-    create_table :checks do |t|
+    create_table :project_checks do |t|
       t.references :project
       t.json :stats
       t.timestamps

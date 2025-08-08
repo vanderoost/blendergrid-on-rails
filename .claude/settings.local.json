@@ -4,7 +4,8 @@
       "Bash(grep:*)",
       "Bash(rails test:*)",
       "Bash(rails routes)",
-      "Bash(rails runner:*)"
+      "Bash(rails runner:*)",
+      "Bash(bin/rails:*)"
     ],
     "deny": []
   }

@@ -1,6 +1,6 @@
 require "aws-sdk-s3"
 
-class Render < ApplicationRecord
+class Project::Render < ApplicationRecord
   include Workflowable
 
   def cycles_samples=(cycles_samples)

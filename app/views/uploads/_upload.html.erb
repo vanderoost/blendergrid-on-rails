@@ -5,7 +5,14 @@
 <% if full %>
   <h1><%= title %></h1>
 
-  <%= form_with url: upload_project_batches_path(upload), method: :post do |form| %>
+  <%= form_with model: [@upload, @project_intake] do |form| %>
+    <% if form.object.errors.any? %>
+      <div class="error-explanation">
+        <% @project_intake.errors.full_messages.each do |message| %>
+          <p><%= message %></p>
+        <% end %>
+      </div>
+    <% end %>
 
     <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
     <% upload.blend_files.each.map(&:blob).map(&:filename).each do |filepath| %>
@@ -29,38 +36,47 @@
     </div>
   <% end %>
 
-  <% if upload.projects.any? %>
+  <% if upload.projects.created.any? %>
     <br><hr>
-
     <h2>Created Projects</h2>
-
-    <%= render upload.projects.select { |project| !project.benchmarked? } %>
-
-    <% benchmarked_projects = upload.projects.select { |project| project.benchmarked? } %>
-    <% if benchmarked_projects.any? %>
-      <hr>
-
-      <h3>Ready to render</h3>
-      <p>
-        <%= "#{pluralize(benchmarked_projects.count, "project")} ready to render" %>
-      </p>
-
-      <%= form_with model: @order, data: { turbo: false } do |form| %>
-        <% benchmarked_projects.each do |project| %>
-          <%= render project %>
-          <%= form.fields_for :project_settings, index: project.uuid do |pf| %>
-            <%= pf.number_field :cycles_samples, value: project.settings.spp %>
-          <% end %>
-        <% end %>
-        <br>
-        <div>
-          <%= form.submit %>
-        </div>
-      <% end %>
-
-    <% end %>
-
+    <%= render upload.projects.created %>
   <% end %>
+
+  <% if upload.projects.checked.any? %>
+    <br><hr>
+    <h2>Checked Projects</h2>
+    <%= render upload.projects.checked %>
+    <%= form_with model: @quote do |form| %>
+      <% upload.projects.checked.each do |project| %>
+        <%= render project %>
+        <%= form.fields_for :project_settings, index: project.uuid do |pf| %>
+          <%= pf.number_field :cycles_samples, value: project.settings.spp %>
+        <% end %>
+      <% end %>
+      <br>
+      <div>
+        <%= form.submit %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if upload.projects.benchmarked.any? %>
+    <br><hr>
+    <h3>Benchmarked Projects</h3>
+    <%= form_with model: @order, data: { turbo: false } do |form| %>
+      <% upload.projects.benchmarked.each do |project| %>
+        <%= render project %>
+        <%= form.fields_for :project_settings, index: project.uuid do |pf| %>
+          <%= pf.number_field :cycles_samples, value: project.settings.spp %>
+        <% end %>
+      <% end %>
+      <br>
+      <div>
+        <%= form.submit %>
+      </div>
+    <% end %>
+  <% end %>
+
 <% else %>
   <h2><%= link_to(title, upload) %></h2>
 <% end %>

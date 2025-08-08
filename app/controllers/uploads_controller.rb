@@ -9,6 +9,8 @@ class UploadsController < ApplicationController
   end
 
   def show
+    @project_intake = Project::Intake.new
+    @quote = Quote.new
     @order = Order.new
   end
 

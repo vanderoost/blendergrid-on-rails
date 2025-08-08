@@ -1,4 +1,4 @@
-class Check < ApplicationRecord
+class Project::Check < ApplicationRecord
   include Workflowable
 
   def render_type
