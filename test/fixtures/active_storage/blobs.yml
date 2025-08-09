@@ -1,0 +1,1 @@
+cube_blend_blob: <%= ActiveStorage::FixtureSet.blob filename: "cube.blend" %>

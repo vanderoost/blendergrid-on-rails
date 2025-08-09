@@ -5,6 +5,10 @@ development:
   <<: *default
   account_id: "000000000000"
 
+test:
+  <<: *default
+  account_id: "000000000000"
+
 production:
   <<: *default
   account_id: "987682347645"

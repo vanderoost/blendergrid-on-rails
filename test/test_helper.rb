@@ -2,6 +2,10 @@ ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
 
+# Stub AWS services in tests
+require "aws-sdk-sns"
+Aws.config[:stub_responses] = true
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
@@ -23,6 +27,10 @@ module ActionDispatch
         cookie_jar.signed[:session_id] = Current.session.id
         cookies[:session_id] = cookie_jar[:session_id]
       end
+    end
+
+    def root_referrer_header
+      { "HTTP_REFERER" => root_url }
     end
   end
 end

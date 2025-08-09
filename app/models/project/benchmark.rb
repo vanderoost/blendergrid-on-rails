@@ -86,7 +86,7 @@ class Project::Benchmark < ApplicationRecord
           {
             job_id:  "sample-frame-$frame",
             command: [
-              "/tmp/project/#{project.blend_filepath}",
+              "/tmp/project/#{project.blend_file}",
               "--python",
               "/tmp/scripts/init.py",
               "--python",

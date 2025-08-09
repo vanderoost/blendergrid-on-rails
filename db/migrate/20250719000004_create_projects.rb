@@ -4,7 +4,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.references :upload
       t.string :uuid, index: { unique: true }
       t.string :status
-      t.string :blend_filepath
+      t.string :blend_file
       t.timestamps
     end
   end

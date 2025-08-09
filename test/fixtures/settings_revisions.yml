@@ -1,11 +1,38 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+checked_project_settings:
+  project: checked_project
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "image"
+        start: 1
+        end: 1
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 128
 
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
+benchmarked_project_settings:
+  project: benchmarked_project
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "image"
+        start: 1
+        end: 1
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 256
+
 one: {}
-# column: value
-#
 two: {}
-# column: value

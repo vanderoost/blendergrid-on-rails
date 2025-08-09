@@ -10,17 +10,17 @@
 
     <h3><%= "Found #{pluralize(upload.blend_files.count, ".blend file")}" %></h3>
     <% upload.blend_files.each.map(&:blob).map(&:filename).each do |filepath| %>
-      <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
-      <%= form.label :blend_filepaths, filepath, value: filepath %>
+      <%= form.check_box :blend_files, { multiple: true }, filepath, nil %>
+      <%= form.label :blend_files, filepath, value: filepath %>
       <br>
     <% end %>
 
     <h3><%= "Found #{pluralize(upload.zip_files.count, ".zip file")}" %></h3>
     <% upload.zip_files.each.map(&:blob).each do |blob| %>
       <h4><%= blob.filename %></h4>
-      <% blob.metadata[:blend_filepaths]&.each do |filepath| %>
-        <%= form.check_box :blend_filepaths, { multiple: true }, filepath, nil %>
-        <%= form.label :blend_filepaths, filepath, value: filepath %>
+      <% blob.metadata[:blend_files]&.each do |filepath| %>
+        <%= form.check_box :blend_files, { multiple: true }, filepath, nil %>
+        <%= form.label :blend_files, filepath, value: filepath %>
         <br>
       <% end %>
     <% end %>

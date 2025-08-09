@@ -10,7 +10,7 @@ class SignupsController < ApplicationController
     if @signup.save
       redirect_to root_path, notice: "Check your email inbox for a verification link."
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

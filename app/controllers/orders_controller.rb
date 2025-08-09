@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
     if order.save
       redirect_to order.redirect_url, allow_other_host: true
     else
-      redirect_back fallback_location :projects, status: :unprocessable_entity
+      redirect_back fallback_location :projects, status: :unprocessable_content
     end
   end
 

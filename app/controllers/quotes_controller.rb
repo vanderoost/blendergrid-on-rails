@@ -6,7 +6,7 @@ class QuotesController < ApplicationController
     if @quote.save
       redirect_back fallback_location: projects_path
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

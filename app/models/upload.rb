@@ -16,8 +16,8 @@ class Upload < ApplicationRecord
                                   if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
-  # def new_project_intake(blend_filepaths:)
-  #   Project::Intake.new(upload: self, blend_filepaths: blend_filepaths)
+  # def new_project_intake(blend_files:)
+  #   Project::Intake.new(upload: self, blend_files: blend_files)
   # end
 
   def blend_files
@@ -38,7 +38,7 @@ class Upload < ApplicationRecord
         next if zip_file.blob.byte_size > 256.megabytes
         blend_entries = Zip::File.open_buffer(zip_file.blob.download)
           .select { |entry| is_blend_entry? entry }
-        zip_file.blob.metadata[:blend_filepaths] = blend_entries.map(&:name)
+        zip_file.blob.metadata[:blend_files] = blend_entries.map(&:name)
         zip_file.blob.save
       end
     end

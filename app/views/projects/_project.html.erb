@@ -2,9 +2,9 @@
 
 <%= tag.div id: dom_id(project) do %>
   <% if full %>
-    <h1><%= project.blend_filepath %></h1>
+    <h1><%= project.blend_file %></h1>
   <% else %>
-    <h2><%= link_to(project.blend_filepath, project) %></h2>
+    <h2><%= link_to(project.blend_file, project) %></h2>
   <% end %>
 
   <p>

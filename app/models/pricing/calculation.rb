@@ -17,14 +17,10 @@ class Pricing::Calculation
     sample_pixel_count = @benchmark_settings.res_x *
       @benchmark_settings.res_y
     pixel_factor = orig_pixel_count.fdiv(sample_pixel_count)
-    puts "Pixel factor: #{pixel_factor}"
 
     orig_sample_count = @settings.spp * orig_pixel_count
-    puts "Orig sample count: #{orig_sample_count}"
     benchmark_sample_count = @benchmark_settings.spp * sample_pixel_count
-    puts "Benchmark sample count: #{benchmark_sample_count}"
     sample_factor = orig_sample_count.fdiv(benchmark_sample_count)
-    puts "SPP factor: #{sample_factor}"
 
     # Calculate
     job_count = @settings.frame_count # TODO: Take subframes into account
@@ -49,8 +45,6 @@ class Pricing::Calculation
       total_hourly_cost += supplies.last.millicents_per_hour * nodes_remaining
     end
     avg_node_hour_cost = total_hourly_cost.to_f / node_count / 100_000
-    puts "Total hourly cost: #{total_hourly_cost}"
-    puts "Average hourly cost: #{avg_node_hour_cost}"
 
     # TODO: Put this into a "timing/timeline" PORO?
     api_time = @api_time_per_node * node_count
@@ -76,7 +70,6 @@ class Pricing::Calculation
     # Optional: Zipping and encoding
 
     total_time = api_time + server_prep_time + total_frame_time
-    puts "Total time: #{total_time}"
 
     # TODO: Does this attriburte belong to the price calculation? Or project? Or render?
     @expected_render_time = total_time

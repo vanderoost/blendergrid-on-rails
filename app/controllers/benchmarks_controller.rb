@@ -9,7 +9,7 @@ class BenchmarksController < ApplicationController
     if @benchmark.save
       redirect_back fallback_location: @project
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

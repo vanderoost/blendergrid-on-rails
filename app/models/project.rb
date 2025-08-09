@@ -27,6 +27,8 @@ class Project < ApplicationRecord
 
   after_create :start_check
 
+  validates :blend_file, presence: true
+
   def settings
     # @settings ||= Project::ResolvedSettings.new(
     #   revisions: settings_revisions.map(&:settings)

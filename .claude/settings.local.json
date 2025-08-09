@@ -2,10 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(grep:*)",
-      "Bash(rails test:*)",
-      "Bash(rails routes)",
-      "Bash(rails runner:*)",
-      "Bash(bin/rails:*)"
+      "Bash(rails:*)",
+      "Bash(bin/rails:*)",
+      "Bash(ruby:*)"
     ],
     "deny": []
   },
