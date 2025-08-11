@@ -42,7 +42,7 @@ class AutoTest
 
     def run_tests
       system("clear")
-      system("bin/rails test --fail-fast")
+      system("bin/rails test test:system --fail-fast")
     end
 end
 
