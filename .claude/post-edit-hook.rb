@@ -30,11 +30,18 @@ begin
     exit 2
   else
     debug_log.write("Edited file: #{edited_file}\n\n")
+    `rubocop -a #{edited_file}`
   end
 
   test_output = `rails test test:system --fail-fast`
   is_success = $?.success?
   log.write(test_output + "\n\n")
+
+  if is_success
+    brakeman_output = `brakeman --no-pager --no-color`
+    is_success = $?.success?
+    log.write(brakeman_output + "\n\n")
+  end
 ensure
   log&.close
   debug_log&.close
@@ -44,7 +51,7 @@ end
 unless is_success
   prompt = {
     decision: "block",
-    reason: "Something is broken. See @#{log_filepath} for details."
+    reason: "Something is broken. See @#{log_filepath} for details.",
   }
   puts prompt.to_json
 end
