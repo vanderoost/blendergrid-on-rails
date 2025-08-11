@@ -1,4 +1,6 @@
 require "test_helper"
+require "ostruct"
+require "minitest/mock"
 
 class OrdersControllerTest < ActionDispatch::IntegrationTest
   setup do
@@ -6,6 +8,13 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create order" do
+    Stripe::Checkout::Session.define_singleton_method(:create) do |*args|
+      OpenStruct.new(
+        id: "cs_test_fake_session_id",
+        url: "https://checkout.stripe.com/fake"
+      )
+    end
+
     assert_difference("Order.count", 1) do
       post orders_url, params: {
         order: { project_settings: {
