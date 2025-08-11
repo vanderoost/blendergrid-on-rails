@@ -3,66 +3,59 @@ class Project < ApplicationRecord
     uploaded
     checking
     checked
-    quoting
-    quoted
+    benchmarking
+    benchmarked
     rendering
     rendered
-    finished
     cancelled
     failed].freeze
-  ACTIONS = %i[start_checking start_quoting start_rendering finish cancel fail].freeze
+  ACTIONS = %i[start_checking start_benchmarking start_rendering finish cancel fail].freeze
 
   include Uuidable
   include Statusable
 
   belongs_to :upload
-  has_many :checks
-  has_many :quotes
-  has_many :renders
+  has_many :blend_checks, class_name: "Project::BlendCheck"
+  has_many :benchmarks, class_name: "Project::Benchmark"
+  has_many :renders, class_name: "Project::Render"
+  has_many :settings_revisions
+  has_one :order_item
 
   delegate :user, to: :upload
 
   broadcasts_to ->(project) { :projects }
 
-  after_create :start_check
-  after_create :send_test_email
+  after_create :start_blend_check
+
+  validates :blend_file, presence: true
 
   def settings
-    @settings ||= Project::Settings.for_project(self)
+    # TODO: Figure out cache invalidation for this one
+    # @settings ||= Project::ResolvedSettings.new(
+    #   revisions: settings_revisions.map(&:settings)
+    # )
+    Project::ResolvedSettings.new(revisions: settings_revisions.map(&:settings))
+  end
+  def benchmark_settings
+    Project::ResolvedSettings.new(
+      revisions: settings_revisions.map(&:settings) + [ benchmark.sample_settings ]
+    )
   end
 
-  def sample_settings
-    @sample_settings ||= Project::Settings.for_sample(self)
+  def price_cents
+    Pricing::Calculation.new(self).price_cents
   end
 
   def check = latest(:check)
-  def quote = latest(:quote)
+  def benchmark = latest(:benchmark)
   def render = latest(:render)
 
   private
-    def start_check
-      checks.create
-    end
-
-    def send_test_email
-      ProjectMailer.project_created(self).deliver_later
+    def start_blend_check
+      blend_checks.create
     end
 
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
     end
-end
-
-class Project::Settings
-  def self.for_project(project)
-    new(snapshots: [
-      project.checks.last&.settings,
-      project.quotes.last&.settings,
-      project.renders.last&.settings
-    ])
-  end
-
-  def self.for_sample(project)
-    new(snapshots: [ project.quotes.last&.sample_settings ])
-  end
 end

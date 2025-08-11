@@ -9,6 +9,9 @@ class UploadsController < ApplicationController
   end
 
   def show
+    @project_intake = Project::Intake.new
+    @quote = Quote.new
+    @order = Order.new
   end
 
   def new
@@ -24,9 +27,9 @@ class UploadsController < ApplicationController
     end
 
     if @upload.save
-      redirect_to @upload
+      redirect_back fallback_location: projects_path
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 

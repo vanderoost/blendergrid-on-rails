@@ -1,0 +1,15 @@
+<%# Created by a helper upload_workflow %>
+<%= turbo_frame_tag "upload_workflow" do %>
+  <%= render "uploads/form", upload: @upload || new_upload %>
+
+  <% if created_upload.present? %>
+    <%= render "projects/intake_form",
+    upload: created_upload,
+    project_intake: @project_intake || new_project_intake %>
+  <% end %>
+
+  <%= render "projects/grouped",
+  projects_by_status: projects_by_status,
+  new_quote: @quote || new_quote,
+  new_order: @order || new_order %>
+<% end %>

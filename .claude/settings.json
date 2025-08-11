@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep:*)",
+      "Bash(rails:*)",
+      "Bash(bin/rails:*)",
+      "Bash(ruby:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/post-edit-hook.rb"
+          }
+        ]
+      }
+    ]
+  }
+}

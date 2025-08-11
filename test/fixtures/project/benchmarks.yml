@@ -1,0 +1,31 @@
+benchmarked_project_benchmark:
+  project: benchmarked_project
+  node_provider_id: "aws"
+  node_type_name: "g4dn.xlarge"
+  timing:
+    download:
+      max: 10000
+    init:
+      mean: 5000
+      std: 1000
+    sampling:
+      mean: 120000
+      std: 10000
+    post:
+      mean: 2000
+      std: 500
+    upload:
+      mean: 3000
+      std: 800
+  sample_settings:
+    output:
+      format:
+        resolution_x: 512
+        resolution_y: 512
+        resolution_percentage: 100
+    render:
+      sampling:
+        max_samples: 64
+
+one: {}
+two: {}

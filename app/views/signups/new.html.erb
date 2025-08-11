@@ -1,14 +1,8 @@
 <h1>Sign up</h1>
 
-<% if @signup.errors.any? %>
-  <div class="error-explanation">
-    <% @signup.errors.full_messages.each do |message| %>
-      <p><%= message %></p>
-    <% end %>
-  </div>
-<% end %>
-
 <%= form_with model: @signup do |form| %>
+  <%= render "shared/form_errors", form: form %>
+
   <fieldset>
     <div>
       <%= form.label :email_address %><br>

@@ -19,14 +19,14 @@ class Api::V1::WorkflowsController < Api::BaseController
     # TODO: So ugly - Update the Swarm Engine to send us better data
     def workflow_params
       workflow_params = params[:result].merge({
-        timing: params.dig(:timing)
+        timing: params.dig(:timing),
       })
 
       if params.dig(:node_type).present?
         node_provider_id, node_type_name = params[:node_type].split(":")
         workflow_params = workflow_params.merge({
           node_provider_id: node_provider_id,
-          node_type_name: node_type_name
+          node_type_name: node_type_name,
         })
       end
 

@@ -1,14 +1,17 @@
 class QuotesController < ApplicationController
-  include ProjectScoped
-
-  allow_unauthenticated_access only: %i[ create ]
+  allow_unauthenticated_access
 
   def create
-    @quote = @project.quotes.new # Option to pass in any custom data from the user
+    @quote = Quote.new(quote_params)
     if @quote.save
-      redirect_to @project
+      redirect_back fallback_location: projects_path
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
+
+  private
+    def quote_params
+      params.expect(quote: [ project_settings: {} ])
+    end
 end

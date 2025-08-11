@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_11_000013) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,14 +39,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "checks", force: :cascade do |t|
-    t.integer "project_id"
-    t.json "stats"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_checks_on_project_id"
-  end
-
   create_table "node_supplies", force: :cascade do |t|
     t.string "provider_id"
     t.string "region"
@@ -59,35 +51,62 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
-  create_table "projects", force: :cascade do |t|
-    t.integer "upload_id"
-    t.string "uuid"
-    t.string "status"
-    t.string "blend_filepath"
+  create_table "order_items", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "project_id"
+    t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["upload_id"], name: "index_projects_on_upload_id"
-    t.index ["uuid"], name: "index_projects_on_uuid", unique: true
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["project_id"], name: "index_order_items_on_project_id"
   end
 
-  create_table "quotes", force: :cascade do |t|
+  create_table "orders", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "stripe_session_id"
+    t.string "receipt_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "project_benchmarks", force: :cascade do |t|
     t.integer "project_id"
     t.string "node_provider_id"
     t.string "node_type_name"
     t.json "sample_settings"
     t.json "timing"
     t.integer "expected_render_time"
-    t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_quotes_on_project_id"
+    t.index ["project_id"], name: "index_project_benchmarks_on_project_id"
   end
 
-  create_table "renders", force: :cascade do |t|
+  create_table "project_blend_checks", force: :cascade do |t|
     t.integer "project_id"
+    t.json "stats"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_renders_on_project_id"
+    t.index ["project_id"], name: "index_project_blend_checks_on_project_id"
+  end
+
+  create_table "project_renders", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_project_renders_on_project_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.integer "upload_id"
+    t.string "uuid"
+    t.string "status"
+    t.string "blend_file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upload_id"], name: "index_projects_on_upload_id"
+    t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -97,6 +116,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
+  create_table "settings_revisions", force: :cascade do |t|
+    t.integer "project_id"
+    t.json "settings"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_settings_revisions_on_project_id"
+  end
+
+  create_table "upload_zip_checks", force: :cascade do |t|
+    t.integer "upload_id"
+    t.string "status"
+    t.string "zip_file"
+    t.json "zip_contents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upload_id"], name: "index_upload_zip_checks_on_upload_id"
   end
 
   create_table "uploads", force: :cascade do |t|
@@ -122,7 +159,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_22_000009) do
   create_table "workflows", force: :cascade do |t|
     t.string "uuid"
     t.string "status"
-    t.json "settings"
     t.string "workflowable_type"
     t.integer "workflowable_id"
     t.datetime "created_at", null: false

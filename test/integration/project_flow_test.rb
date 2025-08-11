@@ -1,1 +1,1 @@
-# Go from Upload -> Project -> Project Check -> Project Quote -> Project Render
+# Go from Upload -> Project -> Project BlendCheck -> Project Benchmark -> Project Render

@@ -14,7 +14,7 @@ class SwarmEngine
       message: message.to_json,
       topic_arn: self.topic_arn,
       message_attributes: {
-        event_type: { data_type: "String", string_value: "workflow_started" }
+        event_type: { data_type: "String", string_value: "workflow_started" },
       }
     )
   end

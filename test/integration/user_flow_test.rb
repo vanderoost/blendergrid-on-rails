@@ -11,7 +11,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
       post signups_path, params: { signup: {
         email_address: "foo@fighter.bar",
         password: "password",
-        password_confirmation: "password"
+        password_confirmation: "password",
       } }
       assert_response :redirect
     end
@@ -42,7 +42,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
 
     # Log in
     post session_path, params: {
-      email_address: user.email_address, password: "password"
+      email_address: user.email_address, password: "password",
     }
     assert_response :redirect
     follow_redirect!
@@ -63,7 +63,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
 
     assert_emails 1 do
       post session_path, params: {
-        email_address: user.email_address, password: "password"
+        email_address: user.email_address, password: "password",
       }
       assert_response :redirect
     end
@@ -97,7 +97,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
 
     put password_path(user.password_reset_token), params: {
       password: "new_password",
-      password_confirmation: "new_password"
+      password_confirmation: "new_password",
     }
     assert_response :redirect
     follow_redirect!
@@ -109,7 +109,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
     # Log in with the new password
     assert cookies[:session_id].blank?
     post session_path, params: {
-      email_address: user.email_address, password: "new_password"
+      email_address: user.email_address, password: "new_password",
     }
     assert_response :redirect
     follow_redirect!

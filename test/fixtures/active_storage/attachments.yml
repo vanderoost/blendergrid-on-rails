@@ -1,0 +1,4 @@
+cube_blend_attachment:
+  name: files
+  record: guest_upload (Upload)
+  blob: cube_blend_blob

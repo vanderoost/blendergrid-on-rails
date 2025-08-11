@@ -9,7 +9,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should login verified users" do
     assert_difference("Session.count", 1) do
       post session_url, params: {
-        email_address: "one@example.com", password: "password"
+        email_address: "one@example.com", password: "password",
       }
     end
     assert_redirected_to root_url
@@ -19,7 +19,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should redirect non-verified users to the verification page" do
     assert_difference("Session.count", 0) do
       post session_url, params: {
-        email_address: "two@example.com", password: "password"
+        email_address: "two@example.com", password: "password",
       }
     end
     assert_response :redirect
@@ -28,7 +28,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   test "should block wrong credentials" do
     assert_difference("Session.count", 0) do
       post session_url, params: {
-        email_address: "two@example.com", password: "wrong-password"
+        email_address: "two@example.com", password: "wrong-password",
       }
     end
     assert_response :redirect

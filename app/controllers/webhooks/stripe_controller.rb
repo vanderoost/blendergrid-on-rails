@@ -24,10 +24,10 @@ class Webhooks::StripeController < Webhooks::BaseController
     def handle_successful_checkout(session)
       logger.info "SUCCESSFUL CHECKOUT"
 
-      project = Project.find_by(uuid: session.metadata["project_uuid"])
-      return unless project
+      order = Order.find_by(stripe_session_id: session.id)
+      return if order.nil?
 
-      logger.info "STARTING RENDER FOR PROJECT: #{project.inspect}"
-      project.renders.create
+      order.fulfill # TODO: Make this a fulfill_later job
+      order.save
     end
 end

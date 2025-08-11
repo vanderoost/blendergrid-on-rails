@@ -24,3 +24,12 @@ ap_south_1a:
   type_name: macbook-pro
   capacity: 4
   millicents_per_hour: 35000
+
+aws_g4dn_xlarge:
+  id: 4
+  provider_id: aws
+  region: us-east-1
+  zone: a
+  type_name: g4dn.xlarge
+  capacity: 10
+  millicents_per_hour: 50000

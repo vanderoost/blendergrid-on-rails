@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :uploads
   has_many :projects, through: :uploads
+  has_many :orders
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
