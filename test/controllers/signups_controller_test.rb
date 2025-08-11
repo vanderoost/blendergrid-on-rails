@@ -11,7 +11,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_url, params: { signup: {
         email_address: "foo@fighters.bar",
         password: "secretly",
-        password_confirmation: "secretly"
+        password_confirmation: "secretly",
       } }
     end
     assert_response :redirect

@@ -28,9 +28,9 @@ class Order::Checkout
           price_data: {
             currency: "usd",
             unit_amount: item.project.price_cents,
-            product_data: { name: item.project.blend_file }
+            product_data: { name: item.project.blend_file },
           },
-          quantity: 1
+          quantity: 1,
         }
       end
     end

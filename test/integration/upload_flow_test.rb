@@ -8,7 +8,7 @@ class UploadFlowTest < ActionDispatch::IntegrationTest
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
         guest_email_address: "guest@foo.bar",
-        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ]
+        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }
     end
 

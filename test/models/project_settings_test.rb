@@ -24,10 +24,10 @@ class ProjectSettingsTest < ActiveSupport::TestCase
         format: {
           resolution_x: 1920,
           resolution_y: 1080,
-          resolution_percentage: 50
+          resolution_percentage: 50,
         },
-        output: { frame_range: { type: "image" } }
-      }
+        output: { frame_range: { type: "image" } },
+      },
     })
 
     assert project.settings.res_x == 960
@@ -41,13 +41,13 @@ class ProjectSettingsTest < ActiveSupport::TestCase
         format: {
           resolution_x: 1920,
           resolution_y: 1080,
-          resolution_percentage: 50
+          resolution_percentage: 50,
         },
-        output: { frame_range: { type: "image" } }
-      }
+        output: { frame_range: { type: "image" } },
+      },
     })
     project.settings_revisions.new(settings: {
-      output: { frame_range: { type: "animation" } }
+      output: { frame_range: { type: "animation" } },
     })
 
     assert project.settings.res_x == 960

@@ -5,7 +5,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
         guest_email_address: "foo@fighters.bar",
-        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ]
+        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }, headers: root_referrer_header
     end
     assert_redirected_to root_url
@@ -19,7 +19,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as users(:verified_user)
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
-        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ]
+        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }, headers: root_referrer_header
     end
     assert_redirected_to root_url
@@ -32,7 +32,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
   test "should pick files" do
     assert_difference("Upload.count", 0) do
       post uploads_url, params: { upload: {
-        guest_email_address: "foo@fighters.bar"
+        guest_email_address: "foo@fighters.bar",
       } }, headers: root_referrer_header
     end
     assert_response :unprocessable_content
@@ -41,7 +41,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
   test "guests should enter an email address" do
     assert_difference("Upload.count", 0) do
       post uploads_url, params: { upload: {
-        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ]
+        files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }, headers: root_referrer_header
     end
     assert_response :unprocessable_content

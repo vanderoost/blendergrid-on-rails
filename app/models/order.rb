@@ -25,7 +25,7 @@ class Order < ApplicationRecord
         next if project.nil?
 
         project.settings_revisions.create(settings: { render: { sampling:
-          { max_samples: settings["cycles_samples"].to_i }
+          { max_samples: settings["cycles_samples"].to_i },
         } })
 
         items.create(project: project, price_cents: project.price_cents)
