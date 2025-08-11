@@ -1,24 +1,23 @@
 require "zip"
 
 class Upload < ApplicationRecord
+  BIG_FILE_SIZE = 1.gigabyte
+
   include Uuidable
   include EmailValidatable
 
   belongs_to :user, optional: true
   has_many_attached :files
+  has_many :zip_checks, class_name: "Upload::ZipCheck"
   has_many :projects
 
-  after_create :analyze_zip_files
+  after_create :check_zip_files
 
   validates :files, presence: true
   validates :guest_email_address, presence: true,
                                   format: EmailValidatable::VALID_EMAIL_REGEX,
                                   if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
-
-  # def new_project_intake(blend_files:)
-  #   Project::Intake.new(upload: self, blend_files: blend_files)
-  # end
 
   def blend_files
     files.select { |file|
@@ -32,15 +31,38 @@ class Upload < ApplicationRecord
     }
   end
 
-  private
-    def analyze_zip_files
-      zip_files.each do |zip_file|
-        next if zip_file.blob.byte_size > 256.megabytes
-        blend_entries = Zip::File.open_buffer(zip_file.blob.download)
-          .select { |entry| is_blend_entry? entry }
-        zip_file.blob.metadata[:blend_files] = blend_entries.map(&:name)
+  def zip_check_done(zip_check)
+    zip_files.each do |zip_file|
+      next unless zip_file.blob.filename.to_s == zip_check.zip_file
+        blend_paths = zip_check.zip_contents
+          .select { |path| path.end_with?(".blend") }
+        zip_file.blob.metadata[:blend_files] = blend_paths
         zip_file.blob.save
+      return
+    end
+    raise "No zip file found in Upload #{id} for #{zip_check.zip_file}"
+  end
+
+  private
+    def check_zip_files
+      zip_files.each do |zip_file|
+        if zip_file.blob.byte_size < BIG_FILE_SIZE
+          internal_zip_check zip_file
+        else
+          external_zip_check zip_file
+        end
       end
+    end
+
+    def internal_zip_check(zip_file)
+      blend_entries = Zip::File.open_buffer(zip_file.blob.download)
+        .select { |entry| is_blend_entry? entry }
+      zip_file.blob.metadata[:blend_files] = blend_entries.map(&:name)
+      zip_file.blob.save
+    end
+
+    def external_zip_check(zip_file)
+      zip_checks.create(zip_file: zip_file.blob.filename.to_s)
     end
 end
 

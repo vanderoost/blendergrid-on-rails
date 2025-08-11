@@ -1,5 +1,10 @@
-class Project::Check < ApplicationRecord
+class Project::BlendCheck < ApplicationRecord
   include Workflowable
+
+  belongs_to :project
+  delegate :settings, to: :project
+
+  def owner = project
 
   def render_type
     RenderType.new(name: :image)
@@ -19,10 +24,10 @@ class Project::Check < ApplicationRecord
       files: {
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}"
+          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
         },
       output: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-      logs: "s3://#{bucket}/projects/#{project.uuid}/logs"
+      logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
       },
       executions: [
         {
@@ -31,15 +36,15 @@ class Project::Check < ApplicationRecord
             "/tmp/project/#{project.blend_file}",
             "--python", "/tmp/scripts/integrity_check.py",
             "--",
-            "--output-dir", "/tmp/output"
+            "--output-dir", "/tmp/output",
           ],
           image: Rails.env.production? ? {
             command: [ "python", "/tmp/scripts/get_blender_image.py",
-            "/tmp/project/#{project.blend_file}" ]
-          } : "blendergrid/blender:latest"
-        }
+            "/tmp/project/#{project.blend_file}" ],
+          } : "blendergrid/blender:latest",
+        },
       ],
-      metadata: { type: "integrity-check", created_by: "blendergrid-on-rails" }
+      metadata: { type: "integrity-check", created_by: "blendergrid-on-rails" },
     }
   end
 

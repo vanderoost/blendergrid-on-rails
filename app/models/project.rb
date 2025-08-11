@@ -15,7 +15,7 @@ class Project < ApplicationRecord
   include Statusable
 
   belongs_to :upload
-  has_many :checks, class_name: "Project::Check"
+  has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
   has_many :settings_revisions
@@ -25,11 +25,12 @@ class Project < ApplicationRecord
 
   broadcasts_to ->(project) { :projects }
 
-  after_create :start_check
+  after_create :start_blend_check
 
   validates :blend_file, presence: true
 
   def settings
+    # TODO: Figure out cache invalidation for this one
     # @settings ||= Project::ResolvedSettings.new(
     #   revisions: settings_revisions.map(&:settings)
     # )
@@ -50,8 +51,8 @@ class Project < ApplicationRecord
   def render = latest(:render)
 
   private
-    def start_check
-      checks.create
+    def start_blend_check
+      blend_checks.create
     end
 
     def latest(model_sym)

@@ -6,7 +6,7 @@ class Workflow < ApplicationRecord
   include Uuidable
 
   belongs_to :workflowable, polymorphic: true
-  delegate :project, to: :workflowable
+  delegate :owner, to: :workflowable
 
   after_create :publish_start
 
@@ -15,8 +15,9 @@ class Workflow < ApplicationRecord
   end
 
   def handle_result(result)
+    # TODO: This is super ugly - FIgure out a better way
     finish
-    project.finish
+    owner.finish if owner.respond_to? :finish
     return if result.nil?
     workflowable.handle_result(result)
   end

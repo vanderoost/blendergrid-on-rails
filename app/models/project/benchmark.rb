@@ -4,7 +4,12 @@ class Project::Benchmark < ApplicationRecord
 
   include Workflowable
 
+  belongs_to :project
+  delegate :settings, to: :project
+
   attr_accessor :settings
+
+  def owner = project
 
   def make_workflow_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
@@ -46,7 +51,7 @@ class Project::Benchmark < ApplicationRecord
       sample_frames = [
         all_frames[0],
         all_frames[all_frames.length / 2],
-        all_frames[-1]
+        all_frames[-1],
       ]
     else
       sample_frames = all_frames
@@ -58,13 +63,13 @@ class Project::Benchmark < ApplicationRecord
         format: {
           resolution_x: benchmark_res_x,
           resolution_y: benchmark_res_y,
-          resolution_percentage: 100
+          resolution_percentage: 100,
         },
-        frame_range: sample_frames
+        frame_range: sample_frames,
       },
       render: {
-        sampling: { max_samples: benchmark_spp }
-      }
+        sampling: { max_samples: benchmark_spp },
+      },
     })
 
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
@@ -77,10 +82,10 @@ class Project::Benchmark < ApplicationRecord
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
           settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}"
+          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
         },
         logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
-        output: "s3://#{bucket}/projects/#{project.uuid}/output"
+        output: "s3://#{bucket}/projects/#{project.uuid}/output",
       },
       executions: [
           {
@@ -105,17 +110,17 @@ class Project::Benchmark < ApplicationRecord
               "--settings-file",
               "/tmp/settings/integrity-check.json",
               "--project-dir",
-              "/tmp/project"
+              "/tmp/project",
             ],
             parameters: { frame: sample_frames },
-            image: "blendergrid/blender:#{blender_version}"
-          }
+            image: "blendergrid/blender:#{blender_version}",
+          },
       ],
       metadata: {
         type: "price-calculation",
         created_by: "blendergrid-on-rails",
-        project_uuid: project.uuid
-      }
+        project_uuid: project.uuid,
+      },
     }
   end
 
@@ -193,8 +198,8 @@ class Project::Benchmark < ApplicationRecord
       (timing["upload"]["mean"] + timing["upload"]["std"]) / 1000).seconds
     frame_upload_time *= pixel_factor
 
-    time_per_frame = frame_init_time + frame_sampling_time + frame_post_time
-      + frame_upload_time
+    time_per_frame = frame_init_time + frame_sampling_time + frame_post_time +
+      frame_upload_time
 
     total_frame_time = time_per_frame * job_count
 

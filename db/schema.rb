@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_08_165758) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_11_000013) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -82,12 +82,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_165758) do
     t.index ["project_id"], name: "index_project_benchmarks_on_project_id"
   end
 
-  create_table "project_checks", force: :cascade do |t|
+  create_table "project_blend_checks", force: :cascade do |t|
     t.integer "project_id"
     t.json "stats"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_project_checks_on_project_id"
+    t.index ["project_id"], name: "index_project_blend_checks_on_project_id"
   end
 
   create_table "project_renders", force: :cascade do |t|
@@ -124,6 +124,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_08_165758) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_settings_revisions_on_project_id"
+  end
+
+  create_table "upload_zip_checks", force: :cascade do |t|
+    t.integer "upload_id"
+    t.string "status"
+    t.string "zip_file"
+    t.json "zip_contents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["upload_id"], name: "index_upload_zip_checks_on_upload_id"
   end
 
   create_table "uploads", force: :cascade do |t|

@@ -3,6 +3,11 @@ require "aws-sdk-s3"
 class Project::Render < ApplicationRecord
   include Workflowable
 
+  belongs_to :project
+  delegate :settings, to: :project
+
+  def owner = project
+
   def cycles_samples=(cycles_samples)
     @cycles_samples = cycles_samples.to_i
   end
@@ -42,10 +47,10 @@ class Project::Render < ApplicationRecord
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
           settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}"
+          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
         },
         logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
-        output: "s3://#{bucket}/projects/#{project.uuid}/output"
+        output: "s3://#{bucket}/projects/#{project.uuid}/output",
       },
       executions: [
         {
@@ -64,18 +69,18 @@ class Project::Render < ApplicationRecord
             "--project-dir",
             "/tmp/project",
             "--cycles-samples",
-            settings.spp.to_s
+            settings.spp.to_s,
           ],
           parameters: { frame: frame_params },
-          image: "blendergrid/blender:#{blender_version}"
-        }
+          image: "blendergrid/blender:#{blender_version}",
+        },
       ],
       metadata: {
         type: "render",
         created_by: "blendergrid-on-rails",
         project_uuid: project.uuid,
-        project_name: project.blend_file
-      }
+        project_name: project.blend_file,
+      },
     }
   end
 

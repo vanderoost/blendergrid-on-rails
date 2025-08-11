@@ -30,10 +30,10 @@
     </div>
   <% end %>
 
-  <% if upload.projects.created.any? %>
+  <% if upload.projects.uploaded.any? %>
     <br><hr>
     <h2>Created Projects</h2>
-    <%= render upload.projects.created %>
+    <%= render upload.projects.uploaded %>
   <% end %>
 
   <% if upload.projects.checked.any? %>
