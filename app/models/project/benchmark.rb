@@ -1,13 +1,12 @@
 class Project::Benchmark < ApplicationRecord
-  include Workflowable
   MAX_PIXEL_COUNT = 1280 * 720
   MAX_SPP = 128
 
+  include Workflowable
 
   belongs_to :project
   attr_accessor :settings
   delegate :settings, to: :project
-
 
   def owner = project
 

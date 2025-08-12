@@ -1,11 +1,11 @@
 class Project < ApplicationRecord
-  include Uuidable
-  include Statusable
-
   STATES = %i[ uploaded checking checked benchmarking benchmarked rendering rendered
     cancelled failed ].freeze
   ACTIONS = %i[ start_checking start_benchmarking start_rendering finish cancel
     fail ].freeze
+
+  include Uuidable
+  include Statusable
 
   belongs_to :upload
   has_many :blend_checks, class_name: "Project::BlendCheck"
