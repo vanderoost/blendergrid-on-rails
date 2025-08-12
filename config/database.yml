@@ -30,7 +30,7 @@ production:
     port: <%= Rails.application.credentials.dig(:database, :port) %>
     database: <%= Rails.application.credentials.dig(:database, :name) %>
     username: <%= Rails.application.credentials.dig(:database, :username) %>
-    password: <%= Rails.application.credentials.database.password %>
+    password: <%= Rails.application.credentials.dig(:database, :password) %>
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cache:
     <<: *default
