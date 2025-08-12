@@ -30,11 +30,11 @@ class Pricing::Calculation
     # Server cost
     nodes_remaining = node_count
     total_hourly_cost = 0
-    supplies = NodeSupply
-      .where(provider_id: @benchmark.node_provider_id, type_name: @benchmark.node_type_name)
-      .order(:millicents_per_hour)
+    supplies = NodeSupply.where(provider_id: @benchmark.node_provider_id,
+type_name: @benchmark.node_type_name).order(:millicents_per_hour)
     if supplies.empty?
-      raise "No supplies found for #{@benchmark.node_provider_id}:#{@benchmark.node_type_name}"
+      raise "No supplies found for #{@benchmark.node_provider_id}:"+
+        "#{@benchmark.node_type_name}"
     end
     supplies.each do |supply|
       nodes_to_use = [ nodes_remaining, supply.capacity ].min
@@ -50,18 +50,22 @@ class Pricing::Calculation
     api_time = @api_time_per_node * node_count
     download_time = (@benchmark.timing["download"]["max"] / 1000).seconds
     server_prep_time = @boot_time + download_time
-    frame_init_time = ((@benchmark.timing["init"]["mean"] + @benchmark.timing["init"]["std"]) / 1000).seconds
+    frame_init_time = ((@benchmark.timing["init"]["mean"] +
+      @benchmark.timing["init"]["std"]) / 1000).seconds
     frame_sampling_time = (
-      (@benchmark.timing["sampling"]["mean"] + @benchmark.timing["sampling"]["std"]) / 1000).seconds
+      (@benchmark.timing["sampling"]["mean"] + @benchmark.timing["sampling"]["std"]) /
+      1000).seconds
     frame_sampling_time *= sample_factor
-    frame_post_time = ((@benchmark.timing["post"]["mean"] + @benchmark.timing["post"]["std"]) / 1000).seconds
+    frame_post_time = ((@benchmark.timing["post"]["mean"] +
+      @benchmark.timing["post"]["std"]) / 1000).seconds
     frame_post_time *= pixel_factor
     frame_upload_time = (
-      (@benchmark.timing["upload"]["mean"] + @benchmark.timing["upload"]["std"]) / 1000).seconds
+      (@benchmark.timing["upload"]["mean"] + @benchmark.timing["upload"]["std"]) /
+      1000).seconds
     frame_upload_time *= pixel_factor
 
-    time_per_frame = frame_init_time + frame_sampling_time + frame_post_time
-      + frame_upload_time
+    time_per_frame = frame_init_time + frame_sampling_time + frame_post_time +
+      frame_upload_time
 
     total_frame_time = time_per_frame * job_count
 

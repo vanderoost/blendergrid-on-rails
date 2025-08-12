@@ -1,9 +1,9 @@
 class Workflow < ApplicationRecord
+  include Statusable
+  include Uuidable
   STATES = %i[created started finished stopped failed].freeze
   ACTIONS = %i[start finish stop fail].freeze
 
-  include Statusable
-  include Uuidable
 
   belongs_to :workflowable, polymorphic: true
   delegate :owner, to: :workflowable

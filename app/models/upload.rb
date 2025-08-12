@@ -1,10 +1,10 @@
 require "zip"
 
 class Upload < ApplicationRecord
-  BIG_FILE_SIZE = 512.megabytes
-
   include Uuidable
   include EmailValidatable
+  BIG_FILE_SIZE = 512.megabytes
+
 
   belongs_to :user, optional: true
   has_many_attached :files
