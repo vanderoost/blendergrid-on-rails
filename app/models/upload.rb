@@ -1,7 +1,7 @@
 require "zip"
 
 class Upload < ApplicationRecord
-  BIG_FILE_SIZE = 1.gigabyte
+  BIG_FILE_SIZE = 512.megabytes
 
   include Uuidable
   include EmailValidatable
