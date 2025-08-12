@@ -1,15 +1,8 @@
 class Project < ApplicationRecord
-  STATES = %i[
-    uploaded
-    checking
-    checked
-    benchmarking
-    benchmarked
-    rendering
-    rendered
-    cancelled
-    failed].freeze
-  ACTIONS = %i[start_checking start_benchmarking start_rendering finish cancel fail].freeze
+  STATES = %i[ uploaded checking checked benchmarking benchmarked rendering rendered
+    cancelled failed ].freeze
+  ACTIONS = %i[ start_checking start_benchmarking start_rendering finish cancel
+    fail ].freeze
 
   include Uuidable
   include Statusable

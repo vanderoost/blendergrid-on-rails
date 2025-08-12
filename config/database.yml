@@ -21,12 +21,17 @@ test:
   database: storage/test.sqlite3
 
 
-# Store production database in the storage/ directory, which by default
-# is mounted as a persistent Docker volume in config/deploy.yml.
+# Production database configuration for PostgreSQL RDS
 production:
   primary:
-    <<: *default
-    database: storage/production.sqlite3
+    adapter: postgresql
+    encoding: unicode
+    host: <%= Rails.application.credentials.dig(:database, :host) %>
+    port: <%= Rails.application.credentials.dig(:database, :port) %>
+    database: <%= Rails.application.credentials.dig(:database, :name) %>
+    username: <%= Rails.application.credentials.dig(:database, :username) %>
+    password: <%= Rails.application.credentials.dig(:database, :password) %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cache:
     <<: *default
     database: storage/production_cache.sqlite3

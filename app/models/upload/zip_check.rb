@@ -25,11 +25,11 @@ class Upload::ZipCheck < ActiveRecord::Base
         {
           job_id: "zip-check",
           command: [
-                    "python3",
-                    "/tmp/scripts/zip_check.py",
-                    "/tmp/upload/#{zip_file}",
-                    "--output",
-                    "/tmp/output/zip_contents.json",
+            "python3",
+            "/tmp/scripts/zip_check.py",
+            "/tmp/upload/#{zip_file}",
+            "--output",
+            "/tmp/output/zip_contents.json",
           ],
           image: "blendergrid/tools",
         },
@@ -39,7 +39,6 @@ class Upload::ZipCheck < ActiveRecord::Base
   end
 
   def handle_result(result)
-    # result = {"zip_contents" => ["subfolder/", "subfolder/cube.blend", "subfolder/sub-sub-folder/", "subfolder/sub-sub-folder/veve.blend"], "timing" => #<ActionController::Parameters {"download" => {"min" => 1949, "max" => 1949, "mean" => 1949, "std" => 0}, "unpack" => {"min" => 18, "max" => 18, "mean" => 18, "std" => 0}, "execute" => {"min" => 263, "max" => 263, "mean" => 263, "std" => 0}, "process_docker_log" => {"min" => 1, "max" => 1, "mean" => 1, "std" => 0}, "upload" => {"min" => 1944, "max" => 1944, "mean" => 1944, "std" => 0}} permitted: false>}
     update(zip_contents: result.dig("zip_contents"))
     upload.zip_check_done(self)
   end

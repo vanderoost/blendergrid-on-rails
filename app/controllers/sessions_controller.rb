@@ -19,7 +19,8 @@ class SessionsController < ApplicationController
         # Automatically send a new verification email (if we haven't already sent one
         # recently)
         EmailAddressVerification.new(user).save
-        redirect_to root_path, notice: "Check your email inbox for a NEW verification link."
+        redirect_to root_path,
+notice: "Check your email inbox for a NEW verification link."
       end
     else
       logger.info "AUTHENTICATION FAILED #{params[:email_address]}"

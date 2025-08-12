@@ -42,6 +42,8 @@ class AutoTest
 
     def run_tests
       system("clear")
+      system("bin/rubocop") &&
+      system("bin/brakeman", "--no-pager") &&
       system("bin/rails test test:system --fail-fast")
     end
 end

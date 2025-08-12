@@ -4,11 +4,10 @@ class FrameRangeType
 
   attribute :id, :string
 
-  def name
-    id.to_s.humanize.titleize
-  end
-
   def self.all
     [ :image, :animation ].map { |id| new(id: id) }
+  end
+  def name
+    id.to_s.humanize.titleize
   end
 end

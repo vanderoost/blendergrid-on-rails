@@ -40,7 +40,7 @@ class Project::BlendCheck < ApplicationRecord
           ],
           image: Rails.env.production? ? {
             command: [ "python", "/tmp/scripts/get_blender_image.py",
-            "/tmp/project/#{project.blend_file}" ],
+              "/tmp/project/#{project.blend_file}" ],
           } : "blendergrid/blender:latest",
         },
       ],

@@ -5,9 +5,8 @@ class Project::Benchmark < ApplicationRecord
   include Workflowable
 
   belongs_to :project
-  delegate :settings, to: :project
-
   attr_accessor :settings
+  delegate :settings, to: :project
 
   def owner = project
 
