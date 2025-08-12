@@ -30,7 +30,7 @@ begin
     exit 2
   else
     debug_log.write("Edited file: #{edited_file}\n\n")
-    `rubocop -a #{edited_file}`
+    `rubocop -a #{edited_file}` if File.extname(edited_file) == ".rb"
   end
 
   test_output = `rails test test:system --fail-fast`

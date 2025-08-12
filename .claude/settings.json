@@ -15,7 +15,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/post-edit-hook.rb"
+            "command": "~/git/blendergrid-on-rails/.claude/post-edit-hook.rb"
           }
         ]
       }
