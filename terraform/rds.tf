@@ -1,8 +1,8 @@
 resource "aws_db_instance" "blendergrid_db" {
   identifier            = "blendergrid-on-rails"
   engine                = "postgres"
-  engine_version        = "15.4"
-  instance_class        = "db.t3.micro"
+  engine_version        = "17.4"
+  instance_class        = "db.t4g.micro"
   allocated_storage     = 20
   max_allocated_storage = 1000
   storage_type          = "gp2"
@@ -44,7 +44,5 @@ resource "aws_security_group" "rds" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "Blendergrid RDS Security Group"
-  }
+  tags = { Name = "Blendergrid RDS Security Group" }
 }

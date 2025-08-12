@@ -12,8 +12,8 @@ Layout/ArrayAlignment:
 Layout/ClassStructure:
   Enabled: true
   ExpectedOrder:
-   - module_inclusion
    - constants
+   - module_inclusion
    - association
    - public_attribute_macros
    - public_delegate
