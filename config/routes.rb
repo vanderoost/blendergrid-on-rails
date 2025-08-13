@@ -6,10 +6,8 @@ Rails.application.routes.draw do
   # TODO: Narrow the methods down to only the ones implemented in controllers
 
   resource :signups, path: "signup", only: %w[new create]
-  # TODO: Think about making it `resources :sessions, path: "session"`
   resource :session
 
-  # resource :signups, only: %w[new create]
   resources :users
   resources :passwords, param: :token
   resources :email_address_verifications, param: :token
@@ -20,6 +18,11 @@ Rails.application.routes.draw do
   resources :orders
   resources :projects, param: :uuid
 
+  # Static pages
+  resources :articles, param: :slug
+  get "learn/articles/:slug", to: redirect("articles/%{slug}")
+
+  # API
   namespace :api do
     namespace :v1 do
       resources :workflows, param: :uuid
@@ -29,7 +32,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Webhooks
   namespace :webhooks do
+    # TODO: Consider making it more RESTful (events/stripe, POST event)
     post "stripe", to: "stripe#handle"
   end
 end

@@ -74,3 +74,6 @@ gem "aws-sdk-sns"
 
 # Payments
 gem "stripe", "~> 15.4"
+
+# Markdown parsing
+gem "redcarpet", "~> 3.6"

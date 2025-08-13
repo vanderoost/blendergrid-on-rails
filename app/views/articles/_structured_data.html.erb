@@ -1,0 +1,10 @@
+<script type="application/ld+json">
+  <%= {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": article.title,
+    "datePublished": article.published_at&.iso8601,
+    "author": { "@type": "Person", "name": article.author_name },
+    "mainEntityOfPage": article_url(article)
+  }.to_json.html_safe %>
+</script>

@@ -1,0 +1,13 @@
+<article id="<%= dom_id article %>">
+  <h1><%= article.title %></h1>
+  <p>
+    <time datetime="<%= article.published_at&.iso8601 %>">
+      <%= @article.published_at&.to_date %>
+    </time>
+    · By <%= @article.author_name %>
+  </p>
+
+  <%= raw @article.body_html %>
+
+  <%= render "structured_data", article: article %>
+</article>

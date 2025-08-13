@@ -1,0 +1,90 @@
+one: 
+  id: 1
+  user: author
+  slug: render-pigs
+  title: The Three Render Pigs
+  body: |
+    Once upon a time in Pixel Valley, there were three little pigs who weren’t interested in building houses. No, they were render pigs, hardworking artists of the farm.
+
+    The first pig, Porky, was impatient. “I want my frames done now!” he squealed, spinning up a cluster of tiny Raspberry Pi nodes. They chugged and wheezed, producing frames so slowly that even the clouds in his animations drifted out of sync.
+
+    The second pig, Pixie, went for something fancier: a sleek rack of second-hand gaming PCs. “Plenty of power for my stylized short film,” she said. But when she tried to render at 4K with volumetric lighting, the fans roared like a hurricane, and the GPUs squealed for mercy.
+
+    The third pig, Primo, was quiet and methodical. He built his farm in the cloud, with autoscaling nodes, redundant storage, and a clever render queue. He even optimized tile sizes so no core sat idle. His frames came back crisp, on time, and under budget.
+
+    One day, the Big Bad Deadline came knocking.
+    He huffed, he puffed, and he demanded final renders by tomorrow morning.
+
+    Porky’s Pi farm sputtered to a halt.
+    Pixie’s gaming rigs overheated.
+    But Primo? His render pigs in the cloud just scaled up and finished the shots before bedtime.
+
+    The next morning, the Deadline stomped away, defeated. And from that day on, all three pigs worked together on Primo’s farm. Because in rendering, teamwork and smart infrastructure always beat rushing or cutting corners.
+
+    And they all rendered happily ever after.
+  published_at: 2025-08-12 15:58:49
+
+two: 
+  id: 2
+  user: author
+  slug: render-wars
+  title: Render Wars
+  body: |
+    After the Big Bad Deadline was defeated, the three render pigs were famous in Pixel Valley. Studios came from far and wide to use Primo’s efficient cloud farm.
+
+    One day, a mysterious email arrived:
+
+    “Dear Render Pigs,
+    We challenge you to the Annual Render Wars.
+    Winner gets the Golden GPU.
+    The Shady Fox VFX Co.”
+
+    Porky’s ears perked up. “Golden GPU! Imagine the power!”
+    Pixie rubbed her hooves together. “Imagine the ray tracing!”
+    Primo just smiled. “Imagine the maintenance savings.”
+
+    The competition had three rounds:
+        1.	Speed Rendering, one minute to render the most frames.
+        2.	Quality Pass, render a shot with flawless global illumination.
+        3.	Budget Challenge, render a scene with the lowest cost.
+
+    In round one, Porky’s Pi farm tried its best but barely finished one frame. Primo’s cloud scaled up instantly, flooding the scoreboard with completed shots.
+
+    In round two, Pixie’s gaming rigs actually won, her GPUs handled the lighting with style, and the judges loved her artistry.
+
+    In round three, the budget challenge, Primo pulled out his secret weapon: spot instances and automatic job pausing when the queue was empty. The render costs were so low that the judges’ calculators overheated.
+
+    The Render Pigs won the Golden GPU together. Primo slotted it into Pixie’s rig for even better quality, and Porky used it as a mirror to admire himself.
+
+    From that day on, the Render Pigs became not just farmers, but champions, proving that speed, quality, and thriftiness are all part of a true rendering legend.
+  published_at: 2025-08-12 15:58:49
+
+three:
+  id: 3
+  user: author
+  slug: pigly-blenders
+  title: The Pigly Blenders
+  body: |
+    In the gritty industrial heart of Framehampton, the streets smelled of coal dust, coffee, and freshly baked pies. By day, the factories belched steam. By night, the gangs ruled. And none were feared more than the Pigly Blenders.
+
+    A crew of sharply dressed pigs in flat caps, each with a razor blade sewn into the brim. Their leader, Tommy Trotter, was the sharpest snout in the city.
+
+    But unlike the other gangs, the Pigly Blenders didn’t deal in smuggling or gambling. Their business was… 3D rendering. Illegal, underground rendering. Studios that missed their deadlines would quietly send them encrypted USB drives, and by morning, the frames would be delivered — no questions asked.
+
+    Tommy ran his farm in a dimly lit warehouse, rows of overclocked GPUs humming like bees. They ran night and day, fueled by stolen electricity siphoned from the tram lines. The crew worked in silence, except for the occasional squeal of victory when a render finished under budget.
+
+    One evening, a desperate animator stumbled in.
+
+    > “My studio’s final episode is due at dawn,”
+    
+    she said, shaking.
+
+    > “If we miss this, we’re ruined.”
+
+    Tommy took a long drag from his carrot cigar.
+
+    > “We’ll do it… but you owe us.”
+
+    The Pigly Blenders worked through the night, machines glowing like embers. At 5:59 AM, the final frame spat out of the farm. The animator left with tears in her eyes, and Tommy tipped his cap.
+
+    No one knew where the Pigly Blenders came from. But in Framehampton, everyone knew: if your deadline was doomed, you called the pigs.

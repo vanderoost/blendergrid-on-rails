@@ -8,3 +8,8 @@ verified_user:
 unverified_user:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+
+author:
+  name: Billy Kimber
+  email_address: tyler@durden.co
+  password_digest: <%= password_digest %>
