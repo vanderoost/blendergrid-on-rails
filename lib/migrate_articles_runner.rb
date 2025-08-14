@@ -4,7 +4,7 @@
 # MySQL connection configuration
 # Update these with your actual MySQL database credentials
 mysql_config = {
-  adapter: 'mysql2',
+  adapter: "mysql2",
   host: Rails.application.credentials.dig(:old_database, :host),
   username: Rails.application.credentials.dig(:old_database, :username),
   password: Rails.application.credentials.dig(:old_database, :password),
@@ -48,7 +48,8 @@ def migrate_articles(mysql_config)
     # Reconnect to Rails app database
     config = Rails.application.config.database_configuration[Rails.env]
     # Handle multi-database production config
-    production_config = config.is_a?(Hash) && config['primary'] ? config['primary'] : config
+    production_config = config.is_a?(Hash) && config["primary"] ?
+      config["primary"] : config
     ActiveRecord::Base.establish_connection(production_config)
 
     results.each_with_index do |row, index|
@@ -56,7 +57,8 @@ def migrate_articles(mysql_config)
 
       begin
         # Check if article already exists (by slug or title)
-        existing_article = Article.find_by(slug: row[2]) || Article.find_by(title: row[1])
+        existing_article = Article.find_by(slug: row[2]) ||
+          Article.find_by(title: row[1])
 
         if existing_article
           skipped_count += 1
@@ -67,7 +69,8 @@ def migrate_articles(mysql_config)
         user = User.find_by(id: row[9]) || User.first
 
         unless user
-          puts "\n✗ No user found for article '#{row[1]}' (team_member_id: #{row[9]}) - skipping"
+          puts "\n✗ No user found for article '#{row[1]}' (team_member_id: #{row[9]})"\
+            " - skipping"
           skipped_count += 1
           next
         end
@@ -91,7 +94,8 @@ def migrate_articles(mysql_config)
         if article.save
           migrated_count += 1
         else
-          puts "\n✗ Failed to save article '#{row[1]}': #{article.errors.full_messages.join(', ')}"
+          puts "\n✗ Failed to save article '#{row[1]}':"\
+            " #{article.errors.full_messages.join(', ')}"
           skipped_count += 1
         end
 
@@ -110,7 +114,8 @@ def migrate_articles(mysql_config)
   ensure
     # Restore Rails database connection
     config = Rails.application.config.database_configuration[Rails.env]
-    production_config = config.is_a?(Hash) && config['primary'] ? config['primary'] : config
+    production_config = config.is_a?(Hash) && config["primary"] ? config["primary"] :
+      config
     ActiveRecord::Base.establish_connection(production_config)
   end
 end

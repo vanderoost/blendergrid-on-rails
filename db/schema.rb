@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_12_155849) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -52,6 +52,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_155849) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "landing_pages", force: :cascade do |t|
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_landing_pages_on_slug", unique: true
+  end
+
   create_table "node_supplies", force: :cascade do |t|
     t.string "provider_id"
     t.string "region"
@@ -81,6 +88,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_12_155849) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "page_variants", force: :cascade do |t|
+    t.integer "landing_page_id"
+    t.json "sections"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["landing_page_id"], name: "index_page_variants_on_landing_page_id"
   end
 
   create_table "project_benchmarks", force: :cascade do |t|

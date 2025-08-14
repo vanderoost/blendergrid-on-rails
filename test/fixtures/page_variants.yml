@@ -1,0 +1,11 @@
+home_default:
+  landing_page: home
+  sections:
+    upload:
+      heading: "Upload your blend file"
+
+youtuber_default:
+  landing_page: youtuber
+  sections:
+    upload:
+      heading: "Youtuber recommends Blendergrid"

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root "home#index"
+  root "landing_pages#show" # Default landing page
 
   get "up" => "rails/health#show", as: :rails_health_check
 
@@ -18,10 +18,6 @@ Rails.application.routes.draw do
   resources :orders
   resources :projects, param: :uuid
 
-  # Static pages
-  resources :articles, param: :slug
-  get "learn/articles/:slug", to: redirect("articles/%{slug}")
-
   # API
   namespace :api do
     namespace :v1 do
@@ -37,4 +33,12 @@ Rails.application.routes.draw do
     # TODO: Consider making it more RESTful (events/stripe, POST event)
     post "stripe", to: "stripe#handle"
   end
+
+  # Articles
+  get "learn/articles/:slug", to: redirect("articles/%{slug}")
+  resources :articles, param: :slug
+
+  # Landing pages
+  get "start/:slug", to: redirect("%{slug}")
+  get ":slug", to: "landing_pages#show", as: :landing_page
 end
