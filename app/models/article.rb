@@ -16,9 +16,7 @@ class Article < ApplicationRecord
   end
 
   def body_html
-    markdown = Redcarpet::Markdown.new(
-      Redcarpet::Render::HTML, autolink: true, tables: true
-    )
+    markdown = Redcarpet::Markdown.new(MarkdownRenderer, autolink: true, tables: true)
     markdown.render(body)
   end
 end
