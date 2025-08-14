@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gem uninstall:*)",
+      "Bash(gem install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

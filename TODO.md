@@ -2,18 +2,18 @@
 
 ## essentials
 
-- [ ]  Emails
-    - [ ]  Capture email address of guests
-    - [ ]  Send project status emails
-    - [ ]  Send sign-up confirmation email
-    - [ ]  Send password reset emails
-- [ ]  Edit project settings
-    - [ ]  Between first check and benchmark
-    - [ ]  Between benchmark and render
-- [ ]  Support >20GB uploads through the website
-- [ ]  Use an external database (AWS RDS? Mysql / Postgres)
+- [x]  Emails
+    - [x]  Capture email address of guests
+    - [x]  Send project status emails
+    - [x]  Send sign-up confirmation email
+    - [x]  Send password reset emails
+- [x]  Edit project settings
+    - [x]  Between first check and benchmark
+    - [x]  Between benchmark and render
+- [x]  Support >20GB uploads through the website
+- [x]  Use an external database (AWS RDS? Mysql / Postgres)
 - [ ]  UI/UX
-    - [ ]  Pay once for multiple projects
+    - [x]  Pay once for multiple projects
     - [ ]  Show simple render progress and ETA
     - [ ]  Basic style so it doesn’t look like a 90’s primary school website
 - [ ]  Transfer over articles and affiliate landing pages

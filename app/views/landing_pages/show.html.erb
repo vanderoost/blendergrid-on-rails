@@ -1,0 +1,11 @@
+<% if @landing_page&.sections&.any? %>
+  <% @landing_page.sections.each do |key, content| %>
+    <section>
+      <%= render key, content: content %>
+    </section>
+  <% end %>
+<% else %>
+  <section>
+    <%= render "upload" %>
+  </section>
+<% end %>
