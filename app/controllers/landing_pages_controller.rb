@@ -1,8 +1,12 @@
 class LandingPagesController < ApplicationController
   allow_unauthenticated_access
+  before_action :set_landing_page, only: :show
 
   def show
-    landing_page = LandingPage.find_by(slug: params.fetch(:slug, "/"))
-    @page_variant = landing_page.page_variants.last
   end
+
+  private
+    def set_landing_page
+      @landing_page = LandingPage.find_by(slug: params.fetch(:slug, "/"))
+    end
 end

@@ -1,3 +1,5 @@
-<h1><%= content&.dig("heading") || "Blendergrid" %></h1>
+<% content = local_assigns.fetch(:content, {}) %>
+
+<h1><%= content&.dig("heading") || "Upload your blend file" %></h1>
 
 <%= upload_workflow %>

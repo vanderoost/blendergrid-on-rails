@@ -41,7 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "articles", force: :cascade do |t|
     t.integer "user_id"
-    t.string "slug"
+    t.string "slug", null: false
     t.string "title"
     t.text "excerpt"
     t.text "body"
@@ -49,6 +49,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.datetime "published_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_articles_on_slug", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
@@ -128,7 +129,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "projects", force: :cascade do |t|
     t.integer "upload_id"
-    t.string "uuid"
+    t.string "uuid", null: false
     t.string "status"
     t.string "blend_file"
     t.datetime "created_at", null: false
@@ -186,7 +187,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
   end
 
   create_table "workflows", force: :cascade do |t|
-    t.string "uuid"
+    t.string "uuid", null: false
     t.string "status"
     t.string "workflowable_type"
     t.integer "workflowable_id"
