@@ -12,6 +12,9 @@ one:
 
     The third pig, Primo, was quiet and methodical. He built his farm in the cloud, with autoscaling nodes, redundant storage, and a clever render queue. He even optimized tile sizes so no core sat idle. His frames came back crisp, on time, and under budget.
 
+    ![Before Output](cloudinary:articles/exporting-images-from-blender-the-proper-way/defaultcube-exr)
+    ![After Output](cloudinary:articles/exporting-images-from-blender-the-proper-way/defaultcube-jpg)
+
     One day, the Big Bad Deadline came knocking.
     He huffed, he puffed, and he demanded final renders by tomorrow morning.
 
@@ -20,6 +23,8 @@ one:
     Porky’s Pi farm sputtered to a halt.
     Pixie’s gaming rigs overheated.
     But Primo? His render pigs in the cloud just scaled up and finished the shots before bedtime.
+
+    {% youtube H5i1gdwe1Ls %}
 
     The next morning, the Deadline stomped away, defeated. And from that day on, all three pigs worked together on Primo’s farm. Because in rendering, teamwork and smart infrastructure always beat rushing or cutting corners.
 
