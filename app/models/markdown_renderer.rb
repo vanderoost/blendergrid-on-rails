@@ -1,15 +1,51 @@
 class MarkdownRenderer < Redcarpet::Render::HTML
+  YOUTUBE_EMBED_PATTERN = %r{
+    !\[([^\]]*)\]                           # Alt text
+    \(
+      (https?://(?:www\.)?
+        (?:youtube\.com/watch\?v=|youtu\.be/)
+        ([\w-]+)
+        [^)]*)                               # Optional extra params (fixed)
+    \)
+  }x
+
+  VIMEO_EMBED_PATTERN = %r{
+    !\[([^\]]*)\]                           # Alt text
+    \(
+      (https?://(?:www\.)?
+        vimeo\.com/
+        (\d+)
+        [^)]*)                               # Optional extra params (fixed)
+    \)
+  }x
+
   def preprocess(text)
-    # Match tags like {% youtube dQw4w9WgXcQ %}
-    text.gsub!(/{%\s*youtube\s+([\w-]+)\s*%}/) do
-      %(<iframe src="https://www.youtube.com/embed/#{$1}" frameborder="0"
-      allowfullscreen></iframe>)
+    text.gsub!(YOUTUBE_EMBED_PATTERN) do
+      caption = $1
+      youtube_id = $3
+
+      html = %(<figure class="video-wrapper">)
+      html += %(<div class="video-container">)
+      html += %(<iframe src="https://www.youtube.com/embed/#{youtube_id}"
+        frameborder="0" allowfullscreen></iframe>)
+      html += %(</div>)
+      html += %(<figcaption>#{caption}</figcaption>) unless caption.empty?
+      html += %(</figure>)
+      html
     end
 
-    # Match tags like {% vimeo 123456789 %}
-    text.gsub!(/{%\s*vimeo\s+(\d+)\s*%}/) do
-      %(<iframe src="https://player.vimeo.com/video/#{$1}" frameborder="0"
-      allowfullscreen></iframe>)
+    text.gsub!(VIMEO_EMBED_PATTERN) do
+      caption = $1
+      vimeo_id = $3
+
+      html = %(<figure class="video-wrapper">)
+      html += %(<div class="video-container">)
+      html += %(<iframe src="https://player.vimeo.com/video/#{vimeo_id}"
+        frameborder="0" allowfullscreen></iframe>)
+      html += %(</div>)
+      html += %(<figcaption>#{caption}</figcaption>) unless caption.empty?
+      html += %(</figure>)
+      html
     end
 
     # Then handle image grouping (both standard and Cloudinary images)
