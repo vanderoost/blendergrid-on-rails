@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+
+require_relative '../config/environment'
+require 'tempfile'
+
+# Use fzf to select article
+articles = Article.order(updated_at: :desc)
+article_list = articles.map do |a|
+  status = a.published_at? ? "✓" : "draft"
+  # Clean and truncate title
+  clean_title = a.title.gsub(/\s+/, ' ').strip.truncate(50)
+  "#{a.id}|#{status}|#{clean_title}|#{a.slug}|#{a.updated_at.strftime('%Y-%m-%d')}"
+end
+puts "Select article to edit:"
+selected = `echo "#{article_list.join("\n")}" | column -t -s'|' | fzf`.strip
+exit if selected.empty?
+
+article_id = selected.split(/\s+/).first.to_i
+article = Article.find(article_id)
+
+# Create temp file with YAML frontmatter for metadata
+temp_file = Tempfile.new([ 'article', '.md' ])
+temp_file.write(<<~CONTENT)
+  ---
+  title: #{article.title}
+  slug: #{article.slug}
+  published_at: #{article.published_at}
+  excerpt: #{article.excerpt}
+  ---
+
+  #{article.body}
+CONTENT
+temp_file.close
+
+# Edit in neovim
+system("nvim #{temp_file.path}")
+
+# Parse the edited content
+content = File.read(temp_file.path)
+if content =~ /^---\n(.*?)\n---\n(.*)/m
+  frontmatter = YAML.load($1)
+  body = $2.strip
+
+  # Update article - this automatically handles cache invalidation!
+  article.update!(
+    title: frontmatter['title'],
+    slug: frontmatter['slug'],
+    body: body,
+    excerpt: frontmatter['excerpt'],
+    published_at: frontmatter['published_at']
+  )
+
+  puts "✅ Updated: #{article.title}"
+  puts "📝 Cache automatically cleared"
+  puts "🔗 View at: https://rails.blendergrid.com/articles/#{article.slug}"
+else
+  puts "❌ Error parsing frontmatter"
+end
+
+temp_file.unlink
