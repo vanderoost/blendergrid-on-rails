@@ -10,7 +10,7 @@ class Project::Benchmark < ApplicationRecord
 
   def owner = project
 
-  def make_workflow_start_message
+  def make_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
 

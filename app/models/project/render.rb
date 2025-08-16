@@ -98,10 +98,4 @@ class Project::Render < ApplicationRecord
     logger.info "Render result: #{result}"
     ProjectMailer.project_render_finished(project).deliver_later
   end
-
-  private
-    def start_workflow
-      project.start_rendering
-      create_workflow
-    end
 end

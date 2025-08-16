@@ -10,7 +10,7 @@ class Project::BlendCheck < ApplicationRecord
     RenderType.new(name: :image)
   end
 
-  def make_workflow_start_message
+  def make_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
 
@@ -49,13 +49,7 @@ class Project::BlendCheck < ApplicationRecord
   end
 
   def handle_result(result)
-    update(stats: result.dig("stats"))
-    project.settings_revisions.create(settings: result.dig("settings"))
+    update(stats: result&.dig("stats"))
+    project.settings_revisions.create(settings: result&.dig("settings"))
   end
-
-  private
-    def start_workflow
-      project.start_checking
-      create_workflow
-    end
 end

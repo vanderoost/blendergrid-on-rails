@@ -1,11 +1,11 @@
 class Project < ApplicationRecord
-  STATES = %i[ uploaded checking checked benchmarking benchmarked rendering rendered
+  STATES = %i[ created checking checked benchmarking benchmarked rendering rendered
     cancelled failed ].freeze
-  ACTIONS = %i[ start_checking start_benchmarking start_rendering finish cancel
+  EVENTS = %i[ start_checking start_benchmarking start_rendering finish cancel
     fail ].freeze
 
   include Uuidable
-  include Statusable
+  include Statable
 
   belongs_to :upload
   has_many :blend_checks, class_name: "Project::BlendCheck"
@@ -18,9 +18,9 @@ class Project < ApplicationRecord
 
   broadcasts_to ->(project) { :projects }
 
-  after_create :start_blend_check
-
   validates :blend_file, presence: true
+
+  after_create :start_checking
 
   def settings
     # TODO: Figure out cache invalidation for this one
@@ -29,6 +29,7 @@ class Project < ApplicationRecord
     # )
     Project::ResolvedSettings.new(revisions: settings_revisions.map(&:settings))
   end
+
   def benchmark_settings
     Project::ResolvedSettings.new(
       revisions: settings_revisions.map(&:settings) + [ benchmark.sample_settings ]
@@ -44,10 +45,6 @@ class Project < ApplicationRecord
   def render = latest(:render)
 
   private
-    def start_blend_check
-      blend_checks.create
-    end
-
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
     end

@@ -2,16 +2,17 @@ module Project::States
   class BaseState
     def initialize(project) = @project = project
 
-    Project::ACTIONS.each do |action|
-      define_method(action) do |*|
-        raise ForbiddenTransition.new(status: @project.status, action:)
+    Project::EVENTS.each do |event|
+      define_method(event) do |*|
+        raise Error::ForbiddenTransition.new(state: @project.status, event: event)
       end
     end
   end
 
-  class Uploaded < BaseState
+  class Created < BaseState
     def start_checking
       @project.checking!
+      @project.fail unless @project.blend_checks.create
     end
   end
 
@@ -58,6 +59,7 @@ module Project::States
 
     def fail
       @project.failed!
+      # TODO: Here we should send an email to the user
     end
   end
 
@@ -68,13 +70,5 @@ module Project::States
   end
 
   class Failed < BaseState
-  end
-
-  class ForbiddenTransition < StandardError
-    def initialize(status:, action:)
-      human_status = status.to_s.humanize.downcase
-      human_action = action.to_s.humanize.downcase
-      super "Can't #{human_action} this project because it's #{human_status}."
-    end
   end
 end

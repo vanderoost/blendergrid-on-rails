@@ -5,7 +5,7 @@ class Upload::ZipCheck < ActiveRecord::Base
 
   def owner = upload
 
-  def make_workflow_start_message
+  def make_start_message
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
@@ -42,9 +42,4 @@ class Upload::ZipCheck < ActiveRecord::Base
     update(zip_contents: result.dig("zip_contents"))
     upload.zip_check_done(self)
   end
-
-  private
-    def start_workflow
-      create_workflow
-    end
 end

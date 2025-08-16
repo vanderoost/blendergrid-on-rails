@@ -1,9 +1,9 @@
-module Statusable
+module Statable
   extend ActiveSupport::Concern
 
   included do
     enum :status, self::STATES.index_with(&:to_s), default: self::STATES.first
-    delegate(*self::ACTIONS, to: :state)
+    delegate(*self::EVENTS, to: :state)
   end
 
   private

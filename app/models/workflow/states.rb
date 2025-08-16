@@ -2,9 +2,9 @@ module Workflow::States
   class BaseState
     def initialize(workflow) = @workflow = workflow
 
-    Workflow::ACTIONS.each do |action|
-      define_method(action) do |*|
-        raise ForbiddenTransition.new(status: @workflow.status, action:)
+    Workflow::EVENTS.each do |event|
+      define_method(event) do |*|
+        raise Error::ForbiddenTransition.new(state: @workflow.status, event: event)
       end
     end
   end
@@ -12,12 +12,18 @@ module Workflow::States
   class Created < BaseState
     def start
       @workflow.started!
+      @workflow.start_on_swarm_engine
     end
   end
 
   class Started < BaseState
-    def finish
+    def finish(result: nil)
       @workflow.finished!
+      @workflow.handle_result(result)
+    end
+
+    def stop
+      @workflow.stopped!
     end
 
     def fail
@@ -28,14 +34,9 @@ module Workflow::States
   class Finished < BaseState
   end
 
-  class Failed < BaseState
+  class Stopped < BaseState
   end
 
-  class ForbiddenTransition < StandardError
-    def initialize(status:, action:)
-      human_status = status.to_s.humanize.downcase
-      human_action = action.to_s.humanize.downcase
-      super "Can't #{human_action} this workflow because it's #{human_status}."
-    end
+  class Failed < BaseState
   end
 end
