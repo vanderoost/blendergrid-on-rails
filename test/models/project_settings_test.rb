@@ -5,7 +5,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     project = Project.new
     project.settings_revisions.new(settings: { foo: "fighters" })
 
-    assert project.settings.foo == "fighters"
+    assert_equal project.settings.foo, "fighters"
   end
 
   test "project merges multiple settings revisions" do
@@ -13,8 +13,8 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     project.settings_revisions.new(settings: { foo: "fighters" })
     project.settings_revisions.new(settings: { bar: "bighters" })
 
-    assert project.settings.foo == "fighters"
-    assert project.settings.bar == "bighters"
+    assert_equal project.settings.foo, "fighters"
+    assert_equal project.settings.bar, "bighters"
   end
 
   test "resolution helpers are working" do
@@ -30,8 +30,8 @@ class ProjectSettingsTest < ActiveSupport::TestCase
       },
     })
 
-    assert project.settings.res_x == 960
-    assert project.settings.res_y == 540
+    assert_equal project.settings.res_x, 960
+    assert_equal project.settings.res_y, 540
   end
 
   test "later settings revision overrides earlier ones" do
@@ -50,8 +50,8 @@ class ProjectSettingsTest < ActiveSupport::TestCase
       output: { frame_range: { type: "animation" } },
     })
 
-    assert project.settings.res_x == 960
-    assert project.settings.res_y == 540
-    assert project.settings.frame_range_type == :animation
+    assert_equal project.settings.res_x, 960
+    assert_equal project.settings.res_y, 540
+    assert_equal project.settings.frame_range_type, :animation
   end
 end

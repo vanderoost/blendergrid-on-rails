@@ -22,8 +22,9 @@ class UploadsController < ApplicationController
     if authenticated?
       @upload = Current.user.uploads.new upload_params
     else
-      session[:guest_email_address] = upload_params[:guest_email_address]
-      @upload = Upload.new upload_params
+      # TODO: Set the session somewhere else (concern?)
+      session[:guest_email_address] = guest_upload_params[:guest_email_address]
+      @upload = Upload.new guest_upload_params
     end
 
     if @upload.save
@@ -40,8 +41,11 @@ class UploadsController < ApplicationController
     end
 
     def upload_params
-      params.expect(
-        upload: [ :uuid, :guest_email_address, files: [] ]
-      ).merge(guest_session_id: session.id.to_s)
+      params.expect(upload: [ :uuid, files: [] ])
+    end
+
+    def guest_upload_params
+      params.expect(upload: [ :uuid, :guest_email_address, files: [] ]).merge(
+        guest_session_id: session.id.to_s)
     end
 end

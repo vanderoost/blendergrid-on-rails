@@ -3,10 +3,14 @@ class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[ create ]
 
   def create
-    order = Order.new(order_params)
+    if authenticated?
+      @order = Current.user.orders.new order_params
+    else
+      @order = Order.new guest_order_params
+    end
 
-    if order.save
-      redirect_to_safe_url order.redirect_url
+    if @order.save
+      redirect_to_safe_url @order.redirect_url
     else
       redirect_back fallback_location :projects, status: :unprocessable_content
     end
@@ -17,6 +21,10 @@ class OrdersController < ApplicationController
       params.expect(order: [ project_settings: {} ]).merge(
         user: Current.user, success_url: projects_url, cancel_url: projects_url
       )
+    end
+
+    def guest_order_params
+      params.expect(order: [ project_settings: {}, redirect_url: projects_url ])
     end
 
     def redirect_to_safe_url(url)

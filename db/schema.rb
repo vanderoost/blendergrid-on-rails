@@ -84,6 +84,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "orders", force: :cascade do |t|
     t.integer "user_id"
+    t.string "guest_email_address"
+    t.string "guest_session_id"
     t.string "stripe_session_id"
     t.string "receipt_url"
     t.datetime "created_at", null: false
@@ -189,6 +191,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
   create_table "workflows", force: :cascade do |t|
     t.string "uuid", null: false
     t.string "status"
+    t.json "result"
+    t.json "timing"
+    t.string "node_type"
     t.string "workflowable_type"
     t.integer "workflowable_id"
     t.datetime "created_at", null: false

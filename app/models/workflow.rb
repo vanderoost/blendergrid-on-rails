@@ -1,11 +1,11 @@
 class Workflow < ApplicationRecord
   STATES = %i[created started finished stopped failed].freeze
-  EVENTS = %i[start finish stop fail].freeze
 
-  include Statable
   include Uuidable
 
   belongs_to :workflowable, polymorphic: true
+
+  enum :status, self::STATES.index_with(&:to_s), default: self::STATES.first
 
   delegate :owner, to: :workflowable
   delegate :handle_result, to: :workflowable
@@ -13,11 +13,11 @@ class Workflow < ApplicationRecord
 
   after_create :start
 
-  def start_on_swarm_engine
+  def start
     SwarmEngine.new.start_workflow self
   end
 
-  def start_on_swarm_engine_later
+  def start_later
     # TODO
   end
 end

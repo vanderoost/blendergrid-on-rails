@@ -16,7 +16,7 @@ class Project::StatesTest < ActiveSupport::TestCase
         project.start_checking
       end
 
-      assert project.status == status, "Project status is not #{status}"
+      assert_equal project.status, status, "Project status is not #{status}"
     end
   end
 
@@ -85,7 +85,7 @@ class Project::StatesTest < ActiveSupport::TestCase
         project.fail
       end
 
-      assert project.status == status, "Project status is not #{status}"
+      assert_equal project.status, status, "Project status is not #{status}"
     end
   end
 
