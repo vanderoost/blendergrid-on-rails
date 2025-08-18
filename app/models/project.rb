@@ -40,7 +40,7 @@ class Project < ApplicationRecord
     Pricing::Calculation.new(self).price_cents
   end
 
-  def check = latest(:check)
+  def blend_check = latest(:blend_check)
   def benchmark = latest(:benchmark)
   def render = latest(:render)
 

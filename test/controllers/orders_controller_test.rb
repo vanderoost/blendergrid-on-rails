@@ -4,7 +4,7 @@ require "minitest/mock"
 
 class OrdersControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @project = projects(:benchmarked_project)
+    @project = projects(:benchmarked)
   end
 
   test "should create order" do
@@ -17,9 +17,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference("Order.count", 1) do
       post orders_url, params: {
-        order: { project_settings: {
-            @project.uuid => { "cycles_samples" => "64" },
-          } },
+        order: { project_settings: { @project.uuid => { "cycles_samples" => "64" } } },
       }, headers: root_referrer_header
     end
     assert_response :redirect

@@ -1,34 +1,34 @@
-created_project:
+created:
   upload: guest_upload
   uuid: created-1234
   status: created
   blend_file: monkey.blend
 
-checking_project:
+checking:
   upload: guest_upload
   uuid: checking-1234
   status: checking
   blend_file: monkey.blend
 
-checked_project:
+checked:
   upload: guest_upload
   uuid: checked-1234
   status: checked
   blend_file: monkey.blend
 
-benchmarking_project:
+benchmarking:
   upload: guest_upload
   uuid: benchmarking-1234
   status: benchmarking
   blend_file: monkey.blend
 
-benchmarked_project:
+benchmarked:
   upload: guest_upload
   uuid: benchmarked-1234
   status: benchmarked
   blend_file: suzanne.blend
 
-rendering_project:
+rendering:
   upload: guest_upload
   uuid: rendering-1234
   status: rendering

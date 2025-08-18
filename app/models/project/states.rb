@@ -27,8 +27,9 @@ module Project::States
   end
 
   class Checked < BaseState
-    def start_benchmarking
+    def start_benchmarking(settings:)
       @project.benchmarking!
+      @project.fail unless @project.benchmarks.create(settings: settings)
     end
   end
 

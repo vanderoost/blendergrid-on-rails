@@ -1,5 +1,5 @@
 checked_project_settings:
-  project: checked_project
+  project: checked
   settings:
     output:
       format:
@@ -17,7 +17,7 @@ checked_project_settings:
         max_samples: 128
 
 benchmarked_project_settings:
-  project: benchmarked_project
+  project: benchmarked
   settings:
     output:
       format:
@@ -33,6 +33,3 @@ benchmarked_project_settings:
     render:
       sampling:
         max_samples: 256
-
-one: {}
-two: {}

@@ -2,7 +2,7 @@ require "test_helper"
 
 class Project::StatesTest < ActiveSupport::TestCase
   test "a created project can start a blend check" do
-    project = projects(:created_project)
+    project = projects(:created)
     assert project.created?
     project.start_checking
     assert project.checking?
@@ -21,49 +21,49 @@ class Project::StatesTest < ActiveSupport::TestCase
   end
 
   test "a project can finish checking" do
-    project = projects(:checking_project)
+    project = projects(:checking)
     assert project.checking?
     project.finish_checking
     assert project.checked?
   end
 
   test "a checked project can start benchmarking" do
-    project = projects(:checked_project)
+    project = projects(:checked)
     assert project.checked?
-    project.start_benchmarking
+    project.start_benchmarking(settings: {})
     assert project.benchmarking?
   end
 
   test "a project can finish benchmarking" do
-    project = projects(:benchmarking_project)
+    project = projects(:benchmarking)
     assert project.benchmarking?
     project.finish_benchmarking
     assert project.benchmarked?
   end
 
   test "a benchmarked project can start rendering" do
-    project = projects(:benchmarked_project)
+    project = projects(:benchmarked)
     assert project.benchmarked?
     project.start_rendering
     assert project.rendering?
   end
 
   test "a project can finish rendering" do
-    project = projects(:rendering_project)
+    project = projects(:rendering)
     assert project.rendering?
     project.finish_rendering
     assert project.rendered?
   end
 
   test "a rendering project can be cancelled" do
-    project = projects(:rendering_project)
+    project = projects(:rendering)
     assert project.rendering?
     project.cancel
     assert project.cancelled?
   end
 
   test "an active project can fail" do
-    project = projects(:created_project)
+    project = projects(:created)
     active_states.each do |status|
       project.update(status: status)
       project.fail

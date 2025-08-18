@@ -225,12 +225,6 @@ class Project::Benchmark < ApplicationRecord
   end
 
   private
-    def start_workflow
-      project.start_benchmarking
-      project.settings_revisions.create(settings: create_settings)
-      create_workflow
-    end
-
     def create_settings
       { output: { frame_range: { type: @settings[:frame_range_type] } } }
     end
