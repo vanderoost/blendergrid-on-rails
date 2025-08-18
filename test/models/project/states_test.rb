@@ -20,10 +20,10 @@ class Project::StatesTest < ActiveSupport::TestCase
     end
   end
 
-  test "a checking project can finish" do
+  test "a project can finish checking" do
     project = projects(:checking_project)
     assert project.checking?
-    project.finish
+    project.finish_checking
     assert project.checked?
   end
 
@@ -34,10 +34,10 @@ class Project::StatesTest < ActiveSupport::TestCase
     assert project.benchmarking?
   end
 
-  test "a benchmarking project can finish" do
+  test "a project can finish benchmarking" do
     project = projects(:benchmarking_project)
     assert project.benchmarking?
-    project.finish
+    project.finish_benchmarking
     assert project.benchmarked?
   end
 
@@ -48,10 +48,10 @@ class Project::StatesTest < ActiveSupport::TestCase
     assert project.rendering?
   end
 
-  test "a rendering project can finish" do
+  test "a project can finish rendering" do
     project = projects(:rendering_project)
     assert project.rendering?
-    project.finish
+    project.finish_rendering
     assert project.rendered?
   end
 
@@ -71,13 +71,10 @@ class Project::StatesTest < ActiveSupport::TestCase
     end
   end
 
-  test "a non-active project can not finish or fail or be stopped" do
+  test "a non-active project can not fail or be stopped" do
     Project.statuses.except(*active_states).keys.each do |status|
       project = Project.new(status: status)
 
-      assert_raises(Error::ForbiddenTransition) do
-        project.finish
-      end
       assert_raises(Error::ForbiddenTransition) do
         project.cancel
       end

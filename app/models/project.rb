@@ -1,8 +1,8 @@
 class Project < ApplicationRecord
   STATES = %i[ created checking checked benchmarking benchmarked rendering rendered
     cancelled failed ].freeze
-  EVENTS = %i[ start_checking start_benchmarking start_rendering finish cancel
-    fail ].freeze
+  EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
+    finish_benchmarking finish_rendering cancel fail ].freeze
 
   include Uuidable
   include Statable

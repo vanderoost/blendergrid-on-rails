@@ -48,8 +48,9 @@ class Project::BlendCheck < ApplicationRecord
     }
   end
 
-  def handle_result(result)
-    update(stats: result&.dig("stats"))
-    project.settings_revisions.create(settings: result&.dig("settings"))
+  def handle_completion
+    settings = workflow.result&.dig("settings")
+    project.settings_revisions.create(settings: settings)
+    project.finish_checking
   end
 end

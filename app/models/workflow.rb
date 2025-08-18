@@ -8,16 +8,23 @@ class Workflow < ApplicationRecord
   enum :status, self::STATES.index_with(&:to_s), default: self::STATES.first
 
   delegate :owner, to: :workflowable
-  delegate :handle_result, to: :workflowable
+  delegate :project, to: :workflowable
   delegate :make_start_message, to: :workflowable
+  delegate :handle_completion, to: :workflowable
 
   after_create :start
+  after_update :handle_completion, if: :just_finished?
 
-  def start
-    SwarmEngine.new.start_workflow self
-  end
+  private
+    def start
+      SwarmEngine.new.start_workflow self
+    end
 
-  def start_later
-    # TODO
-  end
+    def start_later
+      # TODO
+    end
+
+    def just_finished?
+      status_previously_changed? && finished?
+    end
 end

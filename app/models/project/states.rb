@@ -17,7 +17,7 @@ module Project::States
   end
 
   class Checking < BaseState
-    def finish
+    def finish_checking
       @project.checked!
     end
 
@@ -33,7 +33,7 @@ module Project::States
   end
 
   class Benchmarking < BaseState
-    def finish
+    def finish_benchmarking
       @project.benchmarked!
     end
 
@@ -49,7 +49,7 @@ module Project::States
   end
 
   class Rendering < BaseState
-    def finish
+    def finish_rendering
       @project.rendered!
     end
 
