@@ -9,3 +9,9 @@ started_blend_check:
   status: started
   workflowable: active
   workflowable_type: Project::BlendCheck
+
+started_benchmark:
+  uuid: active-benchmark-1234
+  status: started
+  workflowable: active
+  workflowable_type: Project::Benchmark

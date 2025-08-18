@@ -2,8 +2,10 @@ require "test_helper"
 
 class WorkflowsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @project = projects(:checking)
-    @blend_check_workflow = @project.blend_check.workflow
+    @checking_project = projects(:checking)
+    @blend_check_workflow = @checking_project.blend_check.workflow
+    @benchmarking_project = projects(:benchmarking)
+    @benchmark_workflow = @benchmarking_project.benchmark.workflow
   end
 
   test "should set status, result, timing, and node type" do
@@ -35,11 +37,11 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
       }, as: :json
     end
 
-    assert_equal("bar", @blend_check_workflow.project.settings.foo)
+    assert_equal("bar", @checking_project.settings.foo)
   end
 
   test "blend check completion should change the project status to checked" do
-    assert @project.checking?, "status should be checking"
+    assert @checking_project.checking?, "status should be checking"
 
     patch api_v1_workflow_path(@blend_check_workflow), params: {
       workflow: {
@@ -50,7 +52,29 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
       },
     }, as: :json
 
-    @project.reload
-    assert @project.checked?, "status should be checked"
+    @checking_project.reload
+    assert @checking_project.checked?, "status should be checked"
+  end
+
+  test "benchmark completion should change the project status to benchmarked" do
+    assert @benchmarking_project.benchmarking?, "status should be benchmarking"
+
+    patch api_v1_workflow_path(@benchmark_workflow), params: {
+      workflow: {
+        status: "finished",
+        result: { "settings" => { "foo" => "bar" } },
+        timing: {
+          "download" => { "max" => 10000 },
+          "init" => { "mean" => 5000, "std" => 1000 },
+          "sampling" => { "mean" => 120000, "std" => 10000 },
+          "post" => { "mean" => 2000, "std" => 500 },
+          "upload" => { "mean" => 3000, "std" => 800 },
+        },
+        node_type: "aws_t3.micro",
+      },
+    }, as: :json
+
+    @benchmarking_project.reload
+    assert @benchmarking_project.benchmarked?, "status should be benchmarked"
   end
 end

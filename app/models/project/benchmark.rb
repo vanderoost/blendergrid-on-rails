@@ -26,14 +26,12 @@ class Project::Benchmark < ApplicationRecord
       pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
       benchmark_res_x = (benchmark_res_x * pixel_factor).round
       benchmark_res_y = (benchmark_res_y * pixel_factor).round
-      logger.info "Custom resolution: #{benchmark_res_x}x#{benchmark_res_y}"
     end
 
     # Sample count
     benchmark_spp = project.settings.spp
     if benchmark_spp > MAX_SPP
       benchmark_spp = MAX_SPP
-      logger.info "Custom SPP: #{benchmark_spp}"
     end
 
     # Frames
@@ -123,31 +121,24 @@ class Project::Benchmark < ApplicationRecord
     }
   end
 
-  def handle_result(result)
-    logger.info "Benchmark#handle_result(#{result}"
-    update(
-      node_provider_id: result.dig(:node_provider_id),
-      node_type_name: result.dig(:node_type_name),
-      timing: result.dig(:timing),
-    )
-
-    # TODO: This should be kicked off somewhere else (state machine?)
-    calculate_price
-
-    ProjectMailer.project_benchmark_finished(project).deliver_later
+  def handle_completion
+    project.finish_benchmarking
   end
 
   def calculate_price
+    return # TODO: OR let a price calculater model do this?
     # Scene specific
     orig_pixel_count = project.settings.res_x * project.settings.res_y
-    sample_pixel_count = project.sample_settings.res_x * project.sample_settings.res_y
+    sample_pixel_count = sample_settings["output"]["format"]["resolution_x"] *
+      sample_settings["output"]["format"]["resolution_y"]
     pixel_factor = orig_pixel_count.to_f / sample_pixel_count
-    logger.info "Pixel factor: #{pixel_factor}"
+    puts "Pixel factor: #{pixel_factor}"
 
     orig_sample_count = project.settings.spp * orig_pixel_count
-    sample_sample_count = project.sample_settings.spp * sample_pixel_count
+    sample_sample_count = sample_settings["render"]["sampling"]["max_samples"] *
+      sample_pixel_count
     sample_factor = orig_sample_count.to_f / sample_sample_count
-    logger.info "SPP factor: #{sample_factor}"
+    puts "SPP factor: #{sample_factor}"
 
     # Variables
     api_time_per_node = 20.seconds
@@ -180,8 +171,8 @@ class Project::Benchmark < ApplicationRecord
       total_hourly_cost += supplies.last.millicents_per_hour * nodes_remaining
     end
     avg_node_hour_cost = total_hourly_cost.to_f / node_count / 100_000
-    logger.info "Total hourly cost: #{total_hourly_cost}"
-    logger.info "Average hourly cost: #{avg_node_hour_cost}"
+    puts "Total hourly cost: #{total_hourly_cost}"
+    puts "Average hourly cost: #{avg_node_hour_cost}"
 
     # TODO: Put this into a "timing/timeline" PORO?
     api_time = api_time_per_node * node_count
@@ -207,15 +198,15 @@ class Project::Benchmark < ApplicationRecord
     # Optional: Zipping and encoding
 
     total_time = api_time + server_prep_time + total_frame_time
-    logger.info "Total time: #{total_time}"
+    puts "Total time: #{total_time}"
 
     # TODO: Does this attriburte belong to the price calculation? Or project? Or render?
     self.expected_render_time = total_time
 
     cost = total_time.in_hours * avg_node_hour_cost
 
-    self.price_cents = min_price_cents + (cost / (1 - target_margin) * 100).round
-    self.save
+    # self.price_cents = min_price_cents + (cost / (1 - target_margin) * 100).round
+    # self.save
   end
 
   # TODO: Move this to a view helper?

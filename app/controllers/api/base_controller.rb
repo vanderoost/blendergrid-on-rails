@@ -1,4 +1,6 @@
 class Api::BaseController < ActionController::API
+  # TODO: Authentication with some kind of token
+
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from StandardError, with: :internal_server_error
 
@@ -18,7 +20,8 @@ class Api::BaseController < ActionController::API
           backtrace: error.backtrace&.first(10),
         }, status: :internal_server_error
       else
-        render json: { error: "Internal server error" }, status: :internal_server_error
+        render json: { error: "Internal server error" },
+        status: :internal_server_error
       end
     end
 end

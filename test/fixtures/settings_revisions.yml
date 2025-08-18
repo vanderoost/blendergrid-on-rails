@@ -16,6 +16,24 @@ checked_project_settings:
       sampling:
         max_samples: 128
 
+benchmarking_project_settings:
+  project: benchmarking
+  settings:
+    output:
+      format:
+        resolution_x: 1280
+        resolution_y: 720
+        resolution_percentage: 100
+      frame_range:
+        type: "image"
+        start: 1
+        end: 1
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 128
+
 benchmarked_project_settings:
   project: benchmarked
   settings:
