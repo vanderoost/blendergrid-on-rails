@@ -3,13 +3,16 @@ class Order::Checkout
     @order = order
   end
 
-  def handle
-    start_stripe_session
+  def start_checkout_session
+    stripe_session = create_stripe_session
+    @order.stripe_session_id = stripe_session.id
+    @order.redirect_url = stripe_session.url
+    @order.save
   end
 
   private
-    def start_stripe_session
-      stripe_session = Stripe::Checkout::Session.create(
+    def create_stripe_session
+      Stripe::Checkout::Session.create(
         mode: "payment",
         customer_email: customer_email_address,
         line_items: create_line_items,
@@ -17,9 +20,6 @@ class Order::Checkout
         success_url: @order.success_url,
         cancel_url: @order.cancel_url
       )
-      @order.stripe_session_id = stripe_session.id
-      @order.redirect_url = stripe_session.url
-      @order.save
     end
 
     def create_line_items

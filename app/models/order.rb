@@ -8,6 +8,8 @@ class Order < ApplicationRecord
 
   after_create :checkout
 
+  # TODO: Add validations
+
   def fulfill
     Order::Fulfillment.new(self).handle
   end
@@ -16,7 +18,7 @@ class Order < ApplicationRecord
     def checkout
       create_line_items
       @checkout = Order::Checkout.new(self)
-      @checkout.handle
+      @checkout.start_checkout_session
     end
 
     def create_line_items

@@ -95,6 +95,5 @@ class Project::Render < ApplicationRecord
   end
   # def handle_result(result)
   #   logger.info "Render result: #{result}"
-  #   ProjectMailer.project_render_finished(project).deliver_later
   # end
 end

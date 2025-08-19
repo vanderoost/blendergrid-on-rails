@@ -3,13 +3,7 @@ class OrdersController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[ create ]
 
   def create
-    if authenticated?
-      @order = Current.user.orders.new order_params.merge(user: Current.user)
-    else
-      @order = Order.new order_params.merge(
-        guest_email_address: session.dig(:guest_email_address)
-      )
-    end
+    @order = Order.new(order_params)
 
     if @order.save
       redirect_to_safe_url @order.redirect_url
@@ -20,11 +14,22 @@ class OrdersController < ApplicationController
 
   private
     def order_params
-      params.expect(order: [ project_settings: {} ]).merge(redirect_urls)
+      resume_session # Manually resume session to set Current.user if logged in
+      params.expect(order: [ project_settings: {} ])
+        .merge(redirect_urls)
+        .merge(
+          user: Current.user,
+          guest_email_address: guest_email_address,
+          guest_session_id: session[:guest_session_id]
+        )
     end
 
     def redirect_urls
       { success_url: projects_url, cancel_url: projects_url }
+    end
+
+    def guest_email_address
+      params.dig(:order, :guest_email_address) || session[:guest_email_address]
     end
 
     def redirect_to_safe_url(url)

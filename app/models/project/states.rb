@@ -54,6 +54,7 @@ module Project::States
   class Rendering < BaseState
     def finish_rendering
       @project.rendered!
+      ProjectMailer.project_render_finished(@project).deliver_later
     end
 
     def cancel
@@ -62,7 +63,6 @@ module Project::States
 
     def fail
       @project.failed!
-      # TODO: Here we should send an email to the user
     end
   end
 
