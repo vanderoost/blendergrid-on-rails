@@ -6,6 +6,8 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
     @blend_check_workflow = @checking_project.blend_check.workflow
     @benchmarking_project = projects(:benchmarking)
     @benchmark_workflow = @benchmarking_project.benchmark.workflow
+    @rendering_project = projects(:rendering)
+    @render_workflow = @rendering_project.render.workflow
   end
 
   test "should set status, result, timing, and node type" do
@@ -14,7 +16,6 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
         status: "finished",
         result: { "foo" => "fight" },
         timing: { "init" => 134 },
-        node_type: "aws_t3.micro",
       },
     }, as: :json
 
@@ -22,7 +23,6 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
     assert_equal("finished", @blend_check_workflow.status)
     assert_equal({ "foo" => "fight" }, @blend_check_workflow.result)
     assert_equal({ "init" => 134 }, @blend_check_workflow.timing)
-    assert_equal("aws_t3.micro", @blend_check_workflow.node_type)
   end
 
   test "blend check completion should create a settings revision" do
@@ -32,7 +32,8 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
           status: "finished",
           result: { "settings" => { "foo" => "bar" } },
           timing: { "init" => 134 },
-          node_type: "aws_t3.micro",
+        node_provider_id: "aws",
+        node_type_name: "t3.micro",
         },
       }, as: :json
     end
@@ -48,7 +49,8 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
         status: "finished",
         result: { "settings" => { "foo" => "bar" } },
         timing: { "init" => 134 },
-        node_type: "aws_t3.micro",
+        node_provider_id: "aws",
+        node_type_name: "t3.micro",
       },
     }, as: :json
 
@@ -70,11 +72,27 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
           "post" => { "mean" => 2000, "std" => 500 },
           "upload" => { "mean" => 3000, "std" => 800 },
         },
-        node_type: "aws_t3.micro",
+        node_provider_id: "aws",
+        node_type_name: "t3.micro",
       },
     }, as: :json
 
+    @benchmark_workflow.reload
+    assert_equal("aws", @benchmark_workflow.node_provider_id)
+    assert_equal("t3.micro", @benchmark_workflow.node_type_name)
+
     @benchmarking_project.reload
     assert @benchmarking_project.benchmarked?, "status should be benchmarked"
+  end
+
+  test "render completion should change the project status to rendered" do
+    assert @rendering_project.rendering?, "status should be rendering"
+
+    patch api_v1_workflow_path(@render_workflow), params: {
+      workflow: { status: "finished" },
+    }, as: :json
+
+    @rendering_project.reload
+    assert @rendering_project.rendered?, "status should be rendered"
   end
 end

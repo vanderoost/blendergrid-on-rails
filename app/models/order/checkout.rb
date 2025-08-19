@@ -11,7 +11,7 @@ class Order::Checkout
     def start_stripe_session
       stripe_session = Stripe::Checkout::Session.create(
         mode: "payment",
-        customer_email: "suzanne@blender.org", # So it's prefilled (use nil if unknown)
+        customer_email: customer_email_address,
         line_items: create_line_items,
         metadata: { order_id: @order.id.to_s },
         success_url: @order.success_url,
@@ -33,5 +33,9 @@ class Order::Checkout
           quantity: 1,
         }
       end
+    end
+
+    def customer_email_address
+      @order.user ? @order.user.email_address : @order.guest_email_address
     end
 end

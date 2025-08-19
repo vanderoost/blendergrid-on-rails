@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(gem uninstall:*)",
-      "Bash(gem install:*)"
+      "Bash(gem install:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

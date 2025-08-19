@@ -8,11 +8,7 @@ class Project::Render < ApplicationRecord
 
   def owner = project
 
-  def cycles_samples=(cycles_samples)
-    @cycles_samples = cycles_samples.to_i
-  end
-
-  def make_workflow_start_message
+  def make_start_message
     # TODO: Should this be the concern of this model? Or let some outside control
     # (SwarmEngine) handle this kind of logic?
     expected_render_time = 1800 # TODO: Figure out where to calculate and store this
@@ -94,8 +90,11 @@ class Project::Render < ApplicationRecord
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
   end
 
-  def handle_result(result)
-    logger.info "Render result: #{result}"
-    ProjectMailer.project_render_finished(project).deliver_later
+  def handle_completion
+    project.finish_rendering
   end
+  # def handle_result(result)
+  #   logger.info "Render result: #{result}"
+  #   ProjectMailer.project_render_finished(project).deliver_later
+  # end
 end

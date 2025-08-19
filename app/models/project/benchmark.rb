@@ -125,6 +125,7 @@ class Project::Benchmark < ApplicationRecord
     project.finish_benchmarking
   end
 
+  # Deprecated
   def calculate_price
     return # TODO: OR let a price calculater model do this?
     # Scene specific

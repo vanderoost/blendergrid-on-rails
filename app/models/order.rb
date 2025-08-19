@@ -14,21 +14,27 @@ class Order < ApplicationRecord
 
   private
     def checkout
-      make_line_items
+      create_line_items
       @checkout = Order::Checkout.new(self)
       @checkout.handle
     end
 
-    def make_line_items
+    def create_line_items
       project_settings.each do |uuid, settings|
         project = Project.find_by(uuid: uuid)
         next if project.nil?
 
-        project.settings_revisions.create(settings: { render: { sampling:
-          { max_samples: settings["cycles_samples"].to_i },
-        } })
+        project.settings_revisions.create(settings: {
+          render: { sampling: { max_samples: settings["cycles_samples"].to_i } },
+        })
 
-        items.create(project: project, price_cents: project.price_cents)
+        items.create(
+          project: project,
+          price_cents: project.price_cents,
+          settings: project.settings, # All settings revisions frozen
+        )
       end
+
+      raise "No line items" if items.empty?
     end
 end

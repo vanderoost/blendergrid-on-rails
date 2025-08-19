@@ -1,17 +1,32 @@
 created_blend_check:
-  uuid: created-1234
+  uuid: created-blend-check-1234
   status: created
   workflowable: active
   workflowable_type: Project::BlendCheck
   
 started_blend_check:
-  uuid: active-blend-check-1234
+  uuid: started-blend-check-1234
   status: started
   workflowable: active
   workflowable_type: Project::BlendCheck
 
 started_benchmark:
-  uuid: active-benchmark-1234
+  uuid: started-benchmark-1234
   status: started
   workflowable: active
   workflowable_type: Project::Benchmark
+
+finished_benchmark:
+  uuid: finished-benchmark-1234
+  status: finished
+  workflowable: finished
+  workflowable_type: Project::Benchmark
+  node_provider_id: localstack
+  node_type_name: macbook-pro
+  timing: { "download": { "max": 1000 }, "init": { "mean": 200, "std": 100 }, "sampling": { "mean": 300, "std": 100 }, "post": { "mean": 400, "std": 100 }, "upload": { "mean": 500, "std": 100 } }
+
+started_render:
+  uuid: started-render-1234
+  status: started
+  workflowable: active
+  workflowable_type: Project::Render

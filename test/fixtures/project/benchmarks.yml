@@ -1,7 +1,5 @@
 active:
   project: benchmarking
-  node_provider_id: "aws"
-  node_type_name: "g4dn.xlarge"
   sample_settings:
     output:
       format:
@@ -14,8 +12,6 @@ active:
 
 finished:
   project: benchmarked
-  node_provider_id: "aws"
-  node_type_name: "g4dn.xlarge"
   timing:
     download:
       max: 10000

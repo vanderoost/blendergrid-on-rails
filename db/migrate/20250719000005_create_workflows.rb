@@ -5,7 +5,11 @@ class CreateWorkflows < ActiveRecord::Migration[8.0]
       t.string :status
       t.json :result
       t.json :timing
-      t.string :node_type
+
+      # TODO: Consider creating a NodeType model and referencing that
+      t.string :node_provider_id
+      t.string :node_type_name
+
       t.references :workflowable, polymorphic: true
       t.timestamps
     end

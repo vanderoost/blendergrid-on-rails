@@ -4,9 +4,11 @@ class OrdersController < ApplicationController
 
   def create
     if authenticated?
-      @order = Current.user.orders.new order_params
+      @order = Current.user.orders.new order_params.merge(user: Current.user)
     else
-      @order = Order.new guest_order_params
+      @order = Order.new order_params.merge(
+        guest_email_address: session.dig(:guest_email_address)
+      )
     end
 
     if @order.save
@@ -18,13 +20,11 @@ class OrdersController < ApplicationController
 
   private
     def order_params
-      params.expect(order: [ project_settings: {} ]).merge(
-        user: Current.user, success_url: projects_url, cancel_url: projects_url
-      )
+      params.expect(order: [ project_settings: {} ]).merge(redirect_urls)
     end
 
-    def guest_order_params
-      params.expect(order: [ project_settings: {}, redirect_url: projects_url ])
+    def redirect_urls
+      { success_url: projects_url, cancel_url: projects_url }
     end
 
     def redirect_to_safe_url(url)

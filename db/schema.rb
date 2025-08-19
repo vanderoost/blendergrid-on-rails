@@ -75,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id"
     t.integer "project_id"
+    t.json "settings"
     t.integer "price_cents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -103,8 +104,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "project_benchmarks", force: :cascade do |t|
     t.integer "project_id"
-    t.string "node_provider_id"
-    t.string "node_type_name"
     t.json "sample_settings"
     t.json "timing"
     t.integer "expected_render_time"
@@ -123,7 +122,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "project_renders", force: :cascade do |t|
     t.integer "project_id"
-    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_project_renders_on_project_id"
@@ -193,7 +191,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.string "status"
     t.json "result"
     t.json "timing"
-    t.string "node_type"
+    t.string "node_provider_id"
+    t.string "node_type_name"
     t.string "workflowable_type"
     t.integer "workflowable_id"
     t.datetime "created_at", null: false

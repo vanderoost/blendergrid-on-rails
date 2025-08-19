@@ -12,7 +12,7 @@ class Project < ApplicationRecord
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
   has_many :settings_revisions
-  has_one :order_item
+  has_one :order_item, class_name: "Order::Item"
 
   delegate :user, to: :upload
 
@@ -27,7 +27,12 @@ class Project < ApplicationRecord
     # @settings ||= Project::ResolvedSettings.new(
     #   revisions: settings_revisions.map(&:settings)
     # )
-    Project::ResolvedSettings.new(revisions: settings_revisions.map(&:settings))
+    if order_item&.settings
+      revisions = [ order_item.settings ]
+    else
+      revisions = settings_revisions.map(&:settings)
+    end
+    Project::ResolvedSettings.new(revisions: revisions)
   end
 
   def benchmark_settings

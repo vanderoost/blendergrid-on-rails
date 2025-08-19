@@ -47,6 +47,7 @@ module Project::States
   class Benchmarked < BaseState
     def start_rendering
       @project.rendering!
+      @project.fail unless @project.renders.create
     end
   end
 
