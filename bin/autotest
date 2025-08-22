@@ -42,9 +42,21 @@ class AutoTest
 
     def run_tests
       system("clear")
-      system("bin/rubocop") &&
-      system("bin/brakeman", "--no-pager") &&
-      system("bin/rails test test:system --fail-fast")
+      @rerun_all = @rubocop_success && @brakeman_success && @test_success
+
+      if @rerun_all || ! @rubocop_success
+        @rubocop_success = system("bin/rubocop")
+        return unless @rubocop_success
+      end
+
+      if @rerun_all || ! @brakeman_success
+        @brakeman_success = system("bin/brakeman", "--no-pager")
+        return unless @brakeman_success
+      end
+
+      if @rerun_all || ! @test_success
+        @test_success = system("bin/rails test test:system --fail-fast")
+      end
     end
 end
 

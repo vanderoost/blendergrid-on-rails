@@ -5,7 +5,7 @@ us_east_1a:
   zone: a
   type_name: macbook-pro
   capacity: 3
-  millicents_per_hour: 40000
+  millicents_per_hour: 80000
 
 us_east_1b:
   id: 2
@@ -14,7 +14,7 @@ us_east_1b:
   zone: b
   type_name: macbook-pro
   capacity: 5
-  millicents_per_hour: 45000
+  millicents_per_hour: 85000
 
 ap_south_1a:
   id: 3
@@ -23,7 +23,7 @@ ap_south_1a:
   zone: a
   type_name: macbook-pro
   capacity: 4
-  millicents_per_hour: 35000
+  millicents_per_hour: 75000
 
 aws_g4dn_xlarge:
   id: 4

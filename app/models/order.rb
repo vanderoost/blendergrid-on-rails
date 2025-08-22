@@ -14,6 +14,10 @@ class Order < ApplicationRecord
     Order::Fulfillment.new(self).handle
   end
 
+  def price_cents
+    items.sum(&:price_cents)
+  end
+
   private
     def checkout
       create_line_items

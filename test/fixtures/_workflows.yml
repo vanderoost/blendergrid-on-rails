@@ -23,7 +23,12 @@ finished_benchmark:
   workflowable_type: Project::Benchmark
   node_provider_id: localstack
   node_type_name: macbook-pro
-  timing: { "download": { "max": 1000 }, "init": { "mean": 200, "std": 100 }, "sampling": { "mean": 300, "std": 100 }, "post": { "mean": 400, "std": 100 }, "upload": { "mean": 500, "std": 100 } }
+  timing:
+    download: { max: 5000 }
+    init: { mean: 3000, std: 300 }
+    sampling: { mean: 80000, std: 10000 }
+    post: { mean: 2000, std: 500 }
+    upload: { mean: 1500, std: 400 }
 
 started_render:
   uuid: started-render-1234

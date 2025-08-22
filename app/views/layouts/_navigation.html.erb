@@ -10,6 +10,11 @@
         Logged in as
         <%= Current.user.email_address %>
       </span>
+      <% if Current.user.render_credit_cents.positive? %>
+      <span>
+        Credit balance: <%= number_to_currency(Current.user.render_credit_cents.fdiv(100)) %>
+      </span>
+      <% end %>
       <%= button_to "Log out", session_path, method: :delete %>
     </div>
   <% else %>

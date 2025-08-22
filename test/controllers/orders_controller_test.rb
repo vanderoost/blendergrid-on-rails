@@ -5,7 +5,9 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @project = projects(:benchmarked)
 
-    Order::Checkout.define_method(:create_stripe_session) do |*args|
+    test_context = self  # Capture the test instance
+    Stripe::Checkout::Session.define_singleton_method(:create) do |params|
+      test_context.instance_variable_set(:@stripe_params, params)
       OpenStruct.new(
         id: "cs_test_fake_session_id",
         url: "https://checkout.stripe.com/fake"
@@ -14,6 +16,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create guest order for a single project" do
+    assert @project.order_item.blank?
     assert_difference("Order.count", 1) do
       post orders_url,
         params: {
@@ -27,6 +30,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "https://checkout.stripe.com/fake"
 
     assert_equal "test@example.com", Order.last.guest_email_address
+    assert_equal "test@example.com", @stripe_params.dig(:customer_email)
   end
 
   test "should create user order for a single project" do
@@ -34,15 +38,58 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     assert_difference("Order.count", 1) do
       post orders_url,
-        params: {
-          order: {
-            project_settings: { @project.uuid => { "cycles_samples" => "64" } },
-          },
-        },
+        params: { order: {
+            project_settings: { @project.uuid => { "cycles_samples" => 64 } },
+          } },
         headers: root_referrer_header
     end
     assert_redirected_to "https://checkout.stripe.com/fake"
 
     assert Order.last.user.present?
+  end
+
+  test "should use render credit with stripe discount if user has a balance" do
+    user = users(:user_with_balance_20)
+    sign_in_as user
+
+    credit_before = user.render_credit_cents
+    orig_spp = @project.settings.spp
+
+    post orders_url,
+      params: { order: {
+          project_settings: { @project.uuid => { "cycles_samples" => orig_spp } },
+        } },
+      headers: root_referrer_header
+    assert_redirected_to "https://checkout.stripe.com/fake"
+
+    user.reload
+
+    credits_used = credit_before - user.render_credit_cents
+    assert_equal 2000, credits_used
+    assert_equal credits_used.fdiv(100),
+      @stripe_params.dig(:total_details, :amount_discount)
+  end
+
+  test "should not create a stripe session if credit covers entire amount" do
+    user = users(:user_with_balance_1000)
+    sign_in_as user
+
+    credit_before = user.render_credit_cents
+    orig_spp = @project.settings.spp
+    project_price_cents = @project.price_cents
+
+    assert_difference("Project::Render.count", 1) do
+      post orders_url,
+        params: { order: {
+            project_settings: { @project.uuid => { "cycles_samples" => orig_spp } },
+          } },
+        headers: root_referrer_header
+      assert_redirected_to projects_url
+    end
+
+    user.reload
+
+    credits_used = credit_before - user.render_credit_cents
+    assert_equal project_price_cents, credits_used
   end
 end
