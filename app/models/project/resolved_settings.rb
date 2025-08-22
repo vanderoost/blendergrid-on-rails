@@ -6,6 +6,10 @@ class Project::ResolvedSettings
     @cache = {}
   end
 
+  def as_json(options = {})
+    @data
+  end
+
   # Helpers
   def frame_range_type
     output.frame_range.type.to_sym

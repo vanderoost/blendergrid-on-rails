@@ -17,7 +17,7 @@ module Project::States
   end
 
   class Checking < BaseState
-    def finish
+    def finish_checking
       @project.checked!
     end
 
@@ -27,14 +27,16 @@ module Project::States
   end
 
   class Checked < BaseState
-    def start_benchmarking
+    def start_benchmarking(settings:)
       @project.benchmarking!
+      @project.fail unless @project.benchmarks.create(settings: settings)
     end
   end
 
   class Benchmarking < BaseState
-    def finish
+    def finish_benchmarking
       @project.benchmarked!
+      @project.benchmark.calculate_price
     end
 
     def fail
@@ -45,12 +47,14 @@ module Project::States
   class Benchmarked < BaseState
     def start_rendering
       @project.rendering!
+      @project.fail unless @project.renders.create
     end
   end
 
   class Rendering < BaseState
-    def finish
+    def finish_rendering
       @project.rendered!
+      ProjectMailer.project_render_finished(@project).deliver_later
     end
 
     def cancel
@@ -59,7 +63,6 @@ module Project::States
 
     def fail
       @project.failed!
-      # TODO: Here we should send an email to the user
     end
   end
 

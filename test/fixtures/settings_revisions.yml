@@ -1,5 +1,5 @@
 checked_project_settings:
-  project: checked_project
+  project: checked
   settings:
     output:
       format:
@@ -16,13 +16,13 @@ checked_project_settings:
       sampling:
         max_samples: 128
 
-benchmarked_project_settings:
-  project: benchmarked_project
+benchmarking_project_settings:
+  project: benchmarking
   settings:
     output:
       format:
-        resolution_x: 1920
-        resolution_y: 1080
+        resolution_x: 1280
+        resolution_y: 720
         resolution_percentage: 100
       frame_range:
         type: "image"
@@ -32,7 +32,22 @@ benchmarked_project_settings:
         single: 1
     render:
       sampling:
-        max_samples: 256
+        max_samples: 128
 
-one: {}
-two: {}
+benchmarked_project_settings:
+  project: benchmarked
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "animation"
+        start: 1
+        end: 100
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 256

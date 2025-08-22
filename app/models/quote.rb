@@ -13,7 +13,8 @@ class Quote
       next if project.nil?
 
       # TODO: Actually pass through the settings
-      project.benchmarks.create(settings: settings)
+      # project.benchmarks.create(settings: settings)
+      project.start_benchmarking(settings: settings)
     end
   end
 end

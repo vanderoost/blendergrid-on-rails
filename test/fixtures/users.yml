@@ -13,3 +13,15 @@ author:
   name: Billy Kimber
   email_address: tyler@durden.co
   password_digest: <%= password_digest %>
+
+user_with_balance_20:
+  email_address: napoleon@dynamite.io
+  password_digest: <%= password_digest %>
+  email_address_verified: true
+  render_credit_cents: 2000
+
+user_with_balance_1000:
+  email_address: richard@blendergrid.com
+  password_digest: <%= password_digest %>
+  email_address_verified: true
+  render_credit_cents: 100000

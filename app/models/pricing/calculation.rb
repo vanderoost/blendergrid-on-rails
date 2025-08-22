@@ -2,7 +2,7 @@ class Pricing::Calculation
   def initialize(project)
     @settings = project.settings
     @benchmark_settings = project.benchmark_settings
-    @benchmark = project.benchmark
+    @workflow = project.benchmark.workflow
 
     @api_time_per_node = 20.seconds
     @boot_time = 5.minutes
@@ -30,11 +30,11 @@ class Pricing::Calculation
     # Server cost
     nodes_remaining = node_count
     total_hourly_cost = 0
-    supplies = NodeSupply.where(provider_id: @benchmark.node_provider_id,
-type_name: @benchmark.node_type_name).order(:millicents_per_hour)
+    supplies = NodeSupply.where(provider_id: @workflow.node_provider_id,
+      type_name: @workflow.node_type_name).order(:millicents_per_hour)
     if supplies.empty?
-      raise "No supplies found for #{@benchmark.node_provider_id}:"+
-        "#{@benchmark.node_type_name}"
+      raise "No supplies found for #{@workflow.node_provider_id}:"+
+        "#{@workflow.node_type_name}"
     end
     supplies.each do |supply|
       nodes_to_use = [ nodes_remaining, supply.capacity ].min
@@ -48,19 +48,19 @@ type_name: @benchmark.node_type_name).order(:millicents_per_hour)
 
     # TODO: Put this into a "timing/timeline" PORO?
     api_time = @api_time_per_node * node_count
-    download_time = (@benchmark.timing["download"]["max"] / 1000).seconds
+    download_time = (@workflow.timing["download"]["max"] / 1000).seconds
     server_prep_time = @boot_time + download_time
-    frame_init_time = ((@benchmark.timing["init"]["mean"] +
-      @benchmark.timing["init"]["std"]) / 1000).seconds
+    frame_init_time = ((@workflow.timing["init"]["mean"] +
+      @workflow.timing["init"]["std"]) / 1000).seconds
     frame_sampling_time = (
-      (@benchmark.timing["sampling"]["mean"] + @benchmark.timing["sampling"]["std"]) /
+      (@workflow.timing["sampling"]["mean"] + @workflow.timing["sampling"]["std"]) /
       1000).seconds
     frame_sampling_time *= sample_factor
-    frame_post_time = ((@benchmark.timing["post"]["mean"] +
-      @benchmark.timing["post"]["std"]) / 1000).seconds
+    frame_post_time = ((@workflow.timing["post"]["mean"] +
+      @workflow.timing["post"]["std"]) / 1000).seconds
     frame_post_time *= pixel_factor
     frame_upload_time = (
-      (@benchmark.timing["upload"]["mean"] + @benchmark.timing["upload"]["std"]) /
+      (@workflow.timing["upload"]["mean"] + @workflow.timing["upload"]["std"]) /
       1000).seconds
     frame_upload_time *= pixel_factor
 

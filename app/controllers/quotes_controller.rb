@@ -3,6 +3,7 @@ class QuotesController < ApplicationController
 
   def create
     @quote = Quote.new(quote_params)
+
     if @quote.save
       redirect_back fallback_location: projects_path
     else

@@ -1,7 +1,7 @@
 require "test_helper"
 
 class UploadsControllerTest < ActionDispatch::IntegrationTest
-  test "should create guest upload" do
+  test "controller should create guest upload" do
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
         guest_email_address: "foo@fighters.bar",
@@ -11,11 +11,11 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_url
 
     assert Upload.last.user.blank?
-    assert Upload.last.guest_email_address == "foo@fighters.bar"
+    assert_equal Upload.last.guest_email_address, "foo@fighters.bar"
     assert Upload.last.guest_session_id.present?
   end
 
-  test "should create user upload" do
+  test "controller should create user upload" do
     sign_in_as users(:verified_user)
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
@@ -29,7 +29,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
     assert Upload.last.guest_session_id.blank?
   end
 
-  test "should pick files" do
+  test "upload should have files" do
     assert_difference("Upload.count", 0) do
       post uploads_url, params: { upload: {
         guest_email_address: "foo@fighters.bar",

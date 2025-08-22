@@ -1,7 +1,17 @@
-benchmarked_project_benchmark:
-  project: benchmarked_project
-  node_provider_id: "aws"
-  node_type_name: "g4dn.xlarge"
+active:
+  project: benchmarking
+  sample_settings:
+    output:
+      format:
+        resolution_x: 512
+        resolution_y: 512
+        resolution_percentage: 100
+    render:
+      sampling:
+        max_samples: 64
+
+finished:
+  project: benchmarked
   timing:
     download:
       max: 10000
@@ -26,6 +36,3 @@ benchmarked_project_benchmark:
     render:
       sampling:
         max_samples: 64
-
-one: {}
-two: {}

@@ -2,10 +2,10 @@ require "test_helper"
 
 class QuotesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @project = projects(:checked_project)
+    @project = projects(:checked)
   end
 
-  test "should create quote" do
+  test "should create benchmark" do
     assert_difference("Project::Benchmark.count", 1) do
       post quotes_url, params: {
         quote: {
@@ -13,6 +13,20 @@ class QuotesControllerTest < ActionDispatch::IntegrationTest
         },
       }, headers: root_referrer_header
     end
+
     assert_redirected_to root_url
+  end
+
+  test "quote creation should change the project statuses to benchmarking" do
+    assert @project.checked?, "project should be checked"
+
+    post quotes_url, params: {
+      quote: {
+        project_settings: { @project.uuid => { "frame_range_type" => "image" } },
+      },
+    }, headers: root_referrer_header
+
+    @project.reload
+    assert @project.benchmarking?, "project should be benchmarking"
   end
 end

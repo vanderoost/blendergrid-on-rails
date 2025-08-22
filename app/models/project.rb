@@ -1,8 +1,8 @@
 class Project < ApplicationRecord
   STATES = %i[ created checking checked benchmarking benchmarked rendering rendered
     cancelled failed ].freeze
-  EVENTS = %i[ start_checking start_benchmarking start_rendering finish cancel
-    fail ].freeze
+  EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
+    finish_benchmarking finish_rendering cancel fail ].freeze
 
   include Uuidable
   include Statable
@@ -12,7 +12,7 @@ class Project < ApplicationRecord
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
   has_many :settings_revisions
-  has_one :order_item
+  has_one :order_item, class_name: "Order::Item"
 
   delegate :user, to: :upload
 
@@ -27,7 +27,12 @@ class Project < ApplicationRecord
     # @settings ||= Project::ResolvedSettings.new(
     #   revisions: settings_revisions.map(&:settings)
     # )
-    Project::ResolvedSettings.new(revisions: settings_revisions.map(&:settings))
+    if order_item&.settings
+      revisions = [ order_item.settings ]
+    else
+      revisions = settings_revisions.map(&:settings)
+    end
+    Project::ResolvedSettings.new(revisions: revisions)
   end
 
   def benchmark_settings
@@ -40,7 +45,7 @@ class Project < ApplicationRecord
     Pricing::Calculation.new(self).price_cents
   end
 
-  def check = latest(:check)
+  def blend_check = latest(:blend_check)
   def benchmark = latest(:benchmark)
   def render = latest(:render)
 

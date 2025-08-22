@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(gem uninstall:*)",
-      "Bash(gem install:*)"
+      "Bash(gem install:*)",
+      "Bash(find:*)",
+      "WebSearch",
+      "WebFetch(domain:docs.stripe.com)"
     ],
     "deny": [],
     "ask": []

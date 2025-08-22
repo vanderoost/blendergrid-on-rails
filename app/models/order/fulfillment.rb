@@ -6,7 +6,7 @@ class Order::Fulfillment
   def handle
     @order.items.each do |item|
       project = item.project
-      project.renders.create
+      project.start_rendering
     end
   end
 end
