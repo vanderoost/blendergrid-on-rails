@@ -17,7 +17,15 @@
 
   <% if project.render.present? %>
     <%= tag.div id: dom_id(project.render) do %>
-      <%= "Render Status: #{project.render.status}" %>
+      <div>
+        <%= "Render Progress: #{number_to_percentage(
+          project.render.workflow.progress_permil.fdiv(10), precision: 1
+        )}" %>
+      </div>
+
+      <div>
+        <%= "ETA: #{time_ago_in_words(project.render.workflow.eta)}" %>
+      </div>
 
       <% project.render.frame_urls.each do |url| %>
         <%= image_tag url, loading: "lazy", width: 240, alt: File.basename(url, ".*") %>

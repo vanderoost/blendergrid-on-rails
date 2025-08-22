@@ -3,6 +3,8 @@ class CreateWorkflows < ActiveRecord::Migration[8.0]
     create_table :workflows do |t|
       t.string :uuid, null: false, index: { unique: true }
       t.string :status
+      t.integer :progress_permil
+      t.timestamp :eta
       t.json :result
       t.json :timing
 

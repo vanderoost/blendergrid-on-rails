@@ -190,6 +190,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
   create_table "workflows", force: :cascade do |t|
     t.string "uuid", null: false
     t.string "status"
+    t.integer "progress_permil"
+    t.datetime "eta"
     t.json "result"
     t.json "timing"
     t.string "node_provider_id"

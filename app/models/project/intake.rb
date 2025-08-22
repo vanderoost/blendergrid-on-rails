@@ -2,8 +2,7 @@
 class Project::Intake
   # TODO: Figure out what the difference is between ::Model and ::API
   # https://guides.rubyonrails.org/active_model_basics.html#model
-  # include ActiveModel::Model
-  include ActiveModel::API
+  include ActiveModel::Model
 
   attr_accessor :upload, :blend_files
 
