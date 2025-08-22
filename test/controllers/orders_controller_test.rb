@@ -7,7 +7,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     test_context = self  # Capture the test instance
     Stripe::Checkout::Session.define_singleton_method(:create) do |params|
-      test_context.instance_variable_set(:@stripe_params, params)
+      test_context.instance_variable_set(:@create_session_params, params)
       OpenStruct.new(
         id: "cs_test_fake_session_id",
         url: "https://checkout.stripe.com/fake"
@@ -30,7 +30,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "https://checkout.stripe.com/fake"
 
     assert_equal "test@example.com", Order.last.guest_email_address
-    assert_equal "test@example.com", @stripe_params.dig(:customer_email)
+    assert_equal "test@example.com", @create_session_params.dig(:customer_email)
   end
 
   test "should create user order for a single project" do
@@ -54,6 +54,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     credit_before = user.render_credit_cents
     orig_spp = @project.settings.spp
+    project_price_cents = @project.price_cents
 
     post orders_url,
       params: { order: {
@@ -63,11 +64,12 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "https://checkout.stripe.com/fake"
 
     user.reload
-
     credits_used = credit_before - user.render_credit_cents
     assert_equal 2000, credits_used
-    assert_equal credits_used.fdiv(100),
-      @stripe_params.dig(:total_details, :amount_discount)
+
+    line_item = @create_session_params[:line_items].first
+    net_amount_cents = line_item[:price_data][:unit_amount]
+    assert_equal(project_price_cents, net_amount_cents + credits_used)
   end
 
   test "should not create a stripe session if credit covers entire amount" do
