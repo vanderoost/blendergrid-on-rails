@@ -1,7 +1,0 @@
-<% content = local_assigns.fetch(:content, {}) %>
-
-<h1 class="text-4xl">
-  <%= content&.dig("heading") || "Upload your blend file" %>
-</h1>
-
-<%= upload_workflow %>

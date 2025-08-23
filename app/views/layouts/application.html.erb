@@ -23,7 +23,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="prose">
+  <body>
     <%= render "layouts/navigation" %>
     <br>
 
@@ -33,9 +33,5 @@
 
     <%= yield %>
     <br>
-
-    <%# debug params if Rails.env.development? %>
-    <%= debug session.id.to_s if Rails.env.development? %>
-    <%= debug session[:guest_email_address] if Rails.env.development? %>
   </body>
 </html>

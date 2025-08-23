@@ -9,15 +9,11 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
-.error-explanation {
-  color: firebrick;
-}
-.field_with_errors {
-  display: inline;
-}
+/* Move to tailwind's config
 .field_with_errors label {
   color: firebrick;
 }
 .field_with_errors input {
   border: 1px solid firebrick;
 }
+*/

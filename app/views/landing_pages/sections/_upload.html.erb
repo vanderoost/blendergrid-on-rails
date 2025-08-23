@@ -1,0 +1,9 @@
+<% content = local_assigns.fetch(:content, {}) %>
+
+<% if content.key?("heading") %>
+  <h1 class="text-3xl lg:text-5xl xl:text-6xl font-bold">
+    <%= content["heading"] %>
+  </h1>
+<% end %>
+
+<%= upload_workflow %>
