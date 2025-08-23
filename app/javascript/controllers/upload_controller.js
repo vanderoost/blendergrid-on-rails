@@ -1,9 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["list", "summary"]
+  static targets = ["list", "summary", "input"]
 
   connect() {
+    console.log("UploadController connected")
+
+    this.fileItemsByName = new Map()
     this.items = new Map()
     this.totalSize = 0
     this.uploadedSizes = new Map()
@@ -11,29 +14,41 @@ export default class extends Controller {
     this.etaCalcDelay = 3000
   }
 
+  showFiles() {
+    const files = this.inputTarget.files
+    console.debug("files:", files)
+
+    for (var i = 0; i < files.length; i++) {
+      const file = files[i]
+      this.totalSize += file.size
+      const wrapper = document.createElement("div")
+      wrapper.dataset.progress = 0
+      // TODO: Consider using a template
+      wrapper.innerHTML = `
+        <progress value="0" max="100" data-progress></progress>
+        <span>${file.name}</span>
+        <span>${humanFileSize(file.size)}</span>
+      `
+      this.listTarget.appendChild(wrapper)
+      this.fileItemsByName.set(file.name, wrapper)
+    }
+  }
+
   uploadsStart() {
     this.startTime = Date.now()
   }
 
-  uploadInit(e) {
-    const { id, file } = e.detail
+  uploadInit(event) {
+    console.log("UploadController uploadInit - event:", event)
+    const { file } = event.detail
     this.totalSize += file.size
-    const wrapper = document.createElement("div")
-    wrapper.className = "upload-progress"
-    wrapper.dataset.uploadId = id
-    wrapper.innerHTML = `
-      <progress value="0" max="100" data-progress></progress>
-      <span>${file.name}</span>
-    `
-    this.listTarget.appendChild(wrapper)
-    this.items.set(id, wrapper)
   }
 
   uploadProgress(e) {
-    const { file, id, progress } = e.detail
+    const { id, file, progress } = e.detail
     this.uploadedSizes.set(id, Math.round(file.size * progress / 100))
-    const el = this.items.get(id)
-    if (el) el.querySelector("[data-progress]").value = progress
+    const item = this.fileItemsByName.get(file.name)
+    if (item) item.querySelector("progress").value = progress
 
     this.trackTotalProgress()
   }
@@ -48,6 +63,7 @@ export default class extends Controller {
     let progressMessage = `Uploading ${percent.toFixed(1)}%`
 
     if (elapsed > this.etaCalcDelay) {
+      console.debug("calculating eta")
       const bytesRemaining = this.totalSize - bytesDone
       const eta = now + elapsed / bytesDone * bytesRemaining
 
@@ -56,7 +72,7 @@ export default class extends Controller {
       } else {
         this.smoothEta = 0.99 * this.smoothEta + 0.01 * eta
       }
-      const remaining = this.smoothEta - Date.now()
+      const remaining = this.smoothEta - now
       progressMessage += ` - ${humanDuration(remaining)} remaining`
     }
 
@@ -82,6 +98,19 @@ export default class extends Controller {
       this.items.delete(id)
     }
   }
+}
+
+const humanFileSize = (bytes) => {
+  const thresh = 1000
+  const units = ["B", "kB", "MB", "GB", "TB", "PB"]
+
+  let u = 0
+  for (; u < units.length && Math.abs(bytes) >= thresh; u++) {
+    bytes /= thresh
+  }
+
+  const decimals = Math.max(0, 1 - ~~Math.log10(bytes))
+  return bytes.toFixed(decimals) + units[u]
 }
 
 function humanDuration(ms) {
