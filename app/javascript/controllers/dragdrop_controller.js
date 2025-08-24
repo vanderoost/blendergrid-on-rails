@@ -3,26 +3,36 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["input"];
   static outlets = ["upload"];
+  static values = { isDragging: Boolean }
 
   connect() {
     console.log("DragDropController connected")
   }
 
   dragOver(event) {
-    console.debug("dragOver")
     event.preventDefault();
+
+    if (!this.isDraggingValue) {
+      this.isDraggingValue = true
+    }
   }
 
   dragLeave(event) {
-    console.debug("dragLeave")
     event.preventDefault();
+
+    if (this.isDraggingValue) {
+      this.isDraggingValue = false
+    }
   }
 
   drop(event) {
-    console.debug("drop")
     event.preventDefault();
 
     this.#updateInputField(event.dataTransfer.files);
+
+    if (this.isDraggingValue) {
+      this.isDraggingValue = false
+    }
 
     this.uploadOutlet.showFiles()
   }
