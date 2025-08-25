@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_163446) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -136,6 +136,29 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
+  end
+
+  create_table "requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "ip_address"
+    t.string "method"
+    t.string "path"
+    t.json "url_params"
+    t.json "form_params"
+    t.string "controller"
+    t.string "action"
+    t.integer "status_code"
+    t.integer "response_time_ms"
+    t.string "trackable_type"
+    t.integer "trackable_id"
+    t.string "referrer"
+    t.string "user_agent"
+    t.string "visitor_id"
+    t.string "uuid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["trackable_type", "trackable_id"], name: "index_requests_on_trackable"
+    t.index ["user_id"], name: "index_requests_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|

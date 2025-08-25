@@ -4,8 +4,9 @@ class Project < ApplicationRecord
   EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
     finish_benchmarking finish_rendering cancel fail ].freeze
 
-  include Uuidable
   include Statable
+  include Trackable
+  include Uuidable
 
   belongs_to :upload
   has_many :blend_checks, class_name: "Project::BlendCheck"

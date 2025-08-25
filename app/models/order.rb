@@ -1,6 +1,8 @@
 # Form object, take multiple Projects and turn it into an Order to be fulfilled
 # On fulfillment, each Project gets a Render
 class Order < ApplicationRecord
+  include Trackable
+
   has_many :items, class_name: "Order::Item"
   belongs_to :user, optional: true
 

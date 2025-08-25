@@ -1,6 +1,8 @@
 require "redcarpet"
 
 class Article < ApplicationRecord
+  include Trackable
+
   scope :draft, -> { where(published_at: nil) }
   scope :scheduled, -> { where("published_at > ?", Time.current) }
   scope :published, -> { where("published_at <= ?", Time.current) }
