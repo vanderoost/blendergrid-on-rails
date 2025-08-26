@@ -2,7 +2,6 @@ class Project::BlendCheck < ApplicationRecord
   include Workflowable
 
   belongs_to :project
-  delegate :settings, to: :project
 
   def owner = project
 
@@ -49,8 +48,7 @@ class Project::BlendCheck < ApplicationRecord
   end
 
   def handle_completion
-    settings = workflow.result&.dig("settings")
-    project.settings_revisions.create(settings: settings)
+    update(settings: workflow.result&.dig("settings"))
     project.finish_checking
   end
 end

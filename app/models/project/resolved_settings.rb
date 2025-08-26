@@ -1,6 +1,7 @@
 class Project::ResolvedSettings
   def initialize(revisions: nil, data: nil)
     @data = data || revisions
+      .reject(&:blank?)
       .map { |h| h.deep_symbolize_keys }
       .reduce({}) { |acc, h| acc.deep_merge(h) }
     @cache = {}

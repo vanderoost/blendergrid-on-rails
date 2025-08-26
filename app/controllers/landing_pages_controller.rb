@@ -3,10 +3,12 @@ class LandingPagesController < ApplicationController
   before_action :set_landing_page, only: :show
 
   def show
+    render status: :not_found unless @landing_page
   end
 
   private
     def set_landing_page
-      @landing_page = LandingPage.find_by(slug: params.fetch(:slug, "/"))
+      slug = params[:slug] || params[:path] || "/"
+      @landing_page = LandingPage.find_by(slug: slug)
     end
 end

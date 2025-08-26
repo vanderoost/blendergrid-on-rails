@@ -5,8 +5,7 @@ class Project::Benchmark < ApplicationRecord
   include Workflowable
 
   belongs_to :project
-  attr_accessor :settings
-  delegate :settings, to: :project
+  before_create :set_sample_settings
 
   def owner = project
 
@@ -54,20 +53,6 @@ class Project::Benchmark < ApplicationRecord
       sample_frames = all_frames
     end
 
-    # TODO: This side effect doesn't really belong here.
-    update(sample_settings: {
-      output: {
-        format: {
-          resolution_x: benchmark_res_x,
-          resolution_y: benchmark_res_y,
-          resolution_percentage: 100,
-        },
-        frame_range: sample_frames,
-      },
-      render: {
-        sampling: { max_samples: benchmark_spp },
-      },
-    })
 
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
     blender_version = "latest"
@@ -217,7 +202,54 @@ class Project::Benchmark < ApplicationRecord
   end
 
   private
-    def create_settings
-      { output: { frame_range: { type: @settings[:frame_range_type] } } }
+    def set_sample_settings
+      benchmark_res_x = project.settings.res_x
+      benchmark_res_y = project.settings.res_y
+      orig_pixel_count = benchmark_res_x * benchmark_res_y
+      if orig_pixel_count > MAX_PIXEL_COUNT
+        pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
+        benchmark_res_x = (benchmark_res_x * pixel_factor).round
+        benchmark_res_y = (benchmark_res_y * pixel_factor).round
+      end
+
+      # Sample count
+      benchmark_spp = project.settings.spp
+      if benchmark_spp > MAX_SPP
+        benchmark_spp = MAX_SPP
+      end
+
+      # Frames
+      if project.settings.frame_range_type == :animation
+        frame_start = project.settings.output.frame_range.start
+        frame_end = project.settings.output.frame_range.end
+        frame_step = project.settings.output.frame_range.step
+        all_frames = (frame_start..frame_end).step(frame_step).to_a
+      elsif project.settings.frame_range_type == :image
+        all_frames = [ project.settings.output.frame_range.single ]
+      end
+
+      if project.settings.frame_count > 3
+        sample_frames = [
+          all_frames[0],
+          all_frames[all_frames.length / 2],
+          all_frames[-1],
+        ]
+      else
+        sample_frames = all_frames
+      end
+
+      self.sample_settings = {
+        output: {
+          format: {
+            resolution_x: benchmark_res_x,
+            resolution_y: benchmark_res_y,
+            resolution_percentage: 100,
+          },
+          frame_range: sample_frames,
+        },
+        render: {
+          sampling: { max_samples: benchmark_spp },
+        },
+      }
     end
 end

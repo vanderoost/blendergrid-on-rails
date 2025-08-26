@@ -1,2 +1,20 @@
 active:
   project: checking
+
+finished:
+  project: checked
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "animation"
+        start: 1
+        end: 100
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 256
