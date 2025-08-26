@@ -11,7 +11,6 @@ class CreateRequests < ActiveRecord::Migration[8.0]
       t.string :action
       t.integer :status_code
       t.integer :response_time_ms
-      t.references :trackable, polymorphic: true
       t.string :referrer
       t.string :user_agent
       t.string :visitor_id

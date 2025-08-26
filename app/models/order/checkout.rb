@@ -58,7 +58,7 @@ class Order::Checkout
           )} of render credit"
         end
         {
-          price_data: {
+            price_data: {
             currency: "usd",
             unit_amount: item.price_cents - discount_cents,
             product_data: product_data,

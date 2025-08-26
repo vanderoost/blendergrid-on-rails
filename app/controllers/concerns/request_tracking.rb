@@ -47,7 +47,7 @@ module RequestTracking
 
       TrackRequestJob.perform_later(
         user: Current.user,
-        trackable: Current.trackable,
+        events: Current.events,
         request_data: Current.request_data,
       )
     end

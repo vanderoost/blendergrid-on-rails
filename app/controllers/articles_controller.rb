@@ -12,6 +12,6 @@ class ArticlesController < ApplicationController
   private
     def set_article
       @article = Article.find_by!(slug: params.expect(:slug))
-      Current.trackable = @article
+      Current.track_event(@article, action: :showed)
     end
 end

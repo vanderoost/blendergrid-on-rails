@@ -6,9 +6,15 @@ class LandingPage < ApplicationRecord
   end
 
   def sections
-    # TODO: Merge multiple page variants into one to enable A/B testing
-    variant = page_variants.last
-    Current.trackable = variant
     variant.sections
   end
+
+  private
+    def variant
+      # TODO: Merge multiple page variants into one to enable A/B testing
+      return @variant if @variant
+      @variant = page_variants.last
+      Current.track_event(@variant, action: :showed)
+      @variant
+    end
 end

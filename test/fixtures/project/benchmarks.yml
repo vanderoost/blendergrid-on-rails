@@ -1,5 +1,20 @@
 active:
   project: benchmarking
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "animation"
+        start: 1
+        end: 100
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 256
   sample_settings:
     output:
       format:
@@ -12,6 +27,30 @@ active:
 
 finished:
   project: benchmarked
+  settings:
+    output:
+      format:
+        resolution_x: 1920
+        resolution_y: 1080
+        resolution_percentage: 100
+      frame_range:
+        type: "animation"
+        start: 1
+        end: 100
+        step: 1
+        single: 1
+    render:
+      sampling:
+        max_samples: 256
+  sample_settings:
+    output:
+      format:
+        resolution_x: 512
+        resolution_y: 512
+        resolution_percentage: 100
+    render:
+      sampling:
+        max_samples: 64
   timing:
     download:
       max: 10000
@@ -27,12 +66,3 @@ finished:
     upload:
       mean: 3000
       std: 800
-  sample_settings:
-    output:
-      format:
-        resolution_x: 512
-        resolution_y: 512
-        resolution_percentage: 100
-    render:
-      sampling:
-        max_samples: 64

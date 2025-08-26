@@ -1,8 +1,8 @@
 class Pricing::Calculation
-  def initialize(project)
-    @settings = project.settings
-    @benchmark_settings = project.benchmark_settings
-    @workflow = project.benchmark.workflow
+  def initialize(settings:, benchmark_settings:, workflow:)
+    @settings = settings
+    @benchmark_settings = benchmark_settings
+    @workflow = workflow
 
     @api_time_per_node = 20.seconds
     @boot_time = 5.minutes
