@@ -33,8 +33,7 @@ class Order::Checkout
 
   private
     def apply_render_credit
-      return unless @order.user
-      return if @order.user.render_credit_cents.zero?
+      return unless @order.user&.render_credit_cents&.positive?
 
       @applied_credit_cents = [ @order.user.render_credit_cents,
         @order.price_cents ].min
