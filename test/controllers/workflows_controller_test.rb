@@ -25,22 +25,6 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "init" => 134 }, @blend_check_workflow.timing)
   end
 
-  test "blend check completion should create a settings revision" do
-    assert_difference("SettingsRevision.count", 1) do
-      patch api_v1_workflow_path(@blend_check_workflow), params: {
-        workflow: {
-          status: "finished",
-          result: { "settings" => { "foo" => "bar" } },
-          timing: { "init" => 134 },
-        node_provider_id: "aws",
-        node_type_name: "t3.micro",
-        },
-      }, as: :json
-    end
-
-    assert_equal("bar", @checking_project.settings.foo)
-  end
-
   test "blend check completion should change the project status to checked" do
     assert @checking_project.checking?, "status should be checking"
 

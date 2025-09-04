@@ -5,7 +5,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @project = projects(:benchmarked)
 
-    test_context = self  # Capture the test instance
+    test_context = self
     Stripe::Checkout::Session.define_singleton_method(:create) do |params|
       test_context.instance_variable_set(:@create_session_params, params)
       OpenStruct.new(

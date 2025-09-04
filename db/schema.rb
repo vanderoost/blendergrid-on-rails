@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_25_222301) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -51,6 +51,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_articles_on_slug", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.integer "request_id"
+    t.string "action"
+    t.string "resource_type"
+    t.integer "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["request_id"], name: "index_events_on_request_id"
+    t.index ["resource_type", "resource_id"], name: "index_events_on_resource"
   end
 
   create_table "landing_pages", force: :cascade do |t|
@@ -104,6 +115,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "project_benchmarks", force: :cascade do |t|
     t.integer "project_id"
+    t.json "settings"
     t.json "sample_settings"
     t.json "timing"
     t.integer "expected_render_time"
@@ -114,6 +126,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
 
   create_table "project_blend_checks", force: :cascade do |t|
     t.integer "project_id"
+    t.json "settings"
     t.json "stats"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -138,6 +151,34 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
 
+  create_table "requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "ip_address"
+    t.string "method"
+    t.string "path"
+    t.json "url_params"
+    t.json "form_params"
+    t.string "controller"
+    t.string "action"
+    t.integer "status_code"
+    t.integer "response_time_ms"
+    t.string "referrer"
+    t.string "user_agent"
+    t.string "visitor_id"
+    t.string "uuid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["controller", "action"], name: "index_requests_on_controller_and_action"
+    t.index ["created_at"], name: "index_requests_on_created_at"
+    t.index ["ip_address"], name: "index_requests_on_ip_address"
+    t.index ["path", "method"], name: "index_requests_on_path_and_method"
+    t.index ["status_code"], name: "index_requests_on_status_code"
+    t.index ["user_id"], name: "index_requests_on_user_id"
+    t.index ["uuid"], name: "index_requests_on_uuid", unique: true
+    t.index ["visitor_id", "created_at"], name: "index_requests_on_visitor_id_and_created_at"
+    t.index ["visitor_id"], name: "index_requests_on_visitor_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "ip_address"
@@ -145,14 +186,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_14_082211) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
-  end
-
-  create_table "settings_revisions", force: :cascade do |t|
-    t.integer "project_id"
-    t.json "settings"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_settings_revisions_on_project_id"
   end
 
   create_table "upload_zip_checks", force: :cascade do |t|

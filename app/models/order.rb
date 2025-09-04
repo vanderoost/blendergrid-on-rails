@@ -1,12 +1,15 @@
 # Form object, take multiple Projects and turn it into an Order to be fulfilled
 # On fulfillment, each Project gets a Render
 class Order < ApplicationRecord
+  include Trackable
+
   has_many :items, class_name: "Order::Item"
   belongs_to :user, optional: true
 
   attr_accessor :project_settings, :success_url, :cancel_url, :redirect_url
 
-  after_create :checkout
+  before_create :start_payment
+  after_create :persist_order_items
 
   # TODO: Add validations
 
@@ -19,6 +22,24 @@ class Order < ApplicationRecord
   end
 
   private
+    def start_payment
+      apply_render_credit
+    end
+
+    def persist_order_items
+    end
+
+    def apply_render_credit
+      return unless @order.user&.render_credit_cents&.positive?
+
+      @applied_credit_cents = [ @order.user.render_credit_cents,
+        @order.price_cents ].min
+
+      # TODO: Make sure this happens in a DB transaction
+      @order.user.render_credit_cents -= @applied_credit_cents
+      @order.user.save
+    end
+
     def checkout
       create_line_items
       @checkout = Order::Checkout.new(self)
@@ -26,18 +47,26 @@ class Order < ApplicationRecord
     end
 
     def create_line_items
+      # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then
+      # we can create OrderItems associated with this Order (by ID) and then we use
+      # those items to create the Stripe line items for the Stripe checkout session.
+      # Instead, we should use a before_create callback on Order. We then create all
+      # line items in memory first, use them for the Stripe checkout session, put the
+      # Stripe related propertiies on the Order, and then persist the Order. Then
+      # persist the OrderItems
+
       project_settings.each do |uuid, settings|
         project = Project.find_by(uuid: uuid)
         next if project.nil?
 
-        project.settings_revisions.create(settings: {
+        settings = {
           render: { sampling: { max_samples: settings["cycles_samples"].to_i } },
-        })
+        }
 
         items.create(
           project: project,
-          price_cents: project.price_cents,
-          settings: project.settings, # All settings revisions frozen
+          price_cents: project.price_cents(override_settings: settings),
+          settings: settings,
         )
       end
 

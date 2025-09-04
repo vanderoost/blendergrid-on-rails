@@ -33,8 +33,7 @@ class Order::Checkout
 
   private
     def apply_render_credit
-      return unless @order.user
-      return if @order.user.render_credit_cents.zero?
+      return unless @order.user&.render_credit_cents&.positive?
 
       @applied_credit_cents = [ @order.user.render_credit_cents,
         @order.price_cents ].min
@@ -58,7 +57,7 @@ class Order::Checkout
           )} of render credit"
         end
         {
-          price_data: {
+            price_data: {
             currency: "usd",
             unit_amount: item.price_cents - discount_cents,
             product_data: product_data,

@@ -12,19 +12,19 @@
   </p>
 
   <% if project.benchmarked? %>
-    <%= "Price: #{number_to_currency(project.price_cents.fdiv(100))}" %>
+    <%= "Price: #{number_to_currency(project.price_cents&.fdiv(100))}" %>
   <% end %>
 
   <% if project.render.present? %>
     <%= tag.div id: dom_id(project.render) do %>
       <div>
         <%= "Render Progress: #{number_to_percentage(
-          project.render.workflow.progress_permil.fdiv(10), precision: 1
+          project.render.workflow.progress_permil&.fdiv(10), precision: 1
         )}" %>
       </div>
 
       <div>
-        <%= "ETA: #{time_ago_in_words(project.render.workflow.eta)}" %>
+        <%= "ETA: #{time_ago_in_words(project.render.workflow.eta || 1.hour.from_now)}" %>
       </div>
 
       <% project.render.frame_urls.each do |url| %>

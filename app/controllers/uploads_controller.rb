@@ -1,6 +1,4 @@
 class UploadsController < ApplicationController
-  include UploadStashable
-
   allow_unauthenticated_access only: %i[ index show new create ]
   before_action :set_upload, only: :show
 

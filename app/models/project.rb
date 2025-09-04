@@ -4,14 +4,13 @@ class Project < ApplicationRecord
   EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
     finish_benchmarking finish_rendering cancel fail ].freeze
 
-  include Uuidable
   include Statable
+  include Uuidable
 
   belongs_to :upload
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
-  has_many :settings_revisions
   has_one :order_item, class_name: "Order::Item"
 
   delegate :user, to: :upload
@@ -22,27 +21,25 @@ class Project < ApplicationRecord
 
   after_create :start_checking
 
-  def settings
-    # TODO: Figure out cache invalidation for this one
-    # @settings ||= Project::ResolvedSettings.new(
-    #   revisions: settings_revisions.map(&:settings)
-    # )
-    if order_item&.settings
-      revisions = [ order_item.settings ]
-    else
-      revisions = settings_revisions.map(&:settings)
-    end
-    Project::ResolvedSettings.new(revisions: revisions)
+  def settings(override: nil)
+    Project::ResolvedSettings.new(revisions: [
+      blend_check&.settings,
+      benchmark&.settings,
+      order_item&.settings,
+      override,
+    ])
   end
 
   def benchmark_settings
-    Project::ResolvedSettings.new(
-      revisions: settings_revisions.map(&:settings) + [ benchmark.sample_settings ]
-    )
+    settings(override: benchmark&.sample_settings)
   end
 
-  def price_cents
-    Pricing::Calculation.new(self).price_cents
+  def price_cents(override_settings: nil)
+    Pricing::Calculation.new(
+      settings: settings(override: override_settings),
+      benchmark_settings: benchmark_settings,
+      workflow: self.benchmark.workflow
+    ).price_cents
   end
 
   def blend_check = latest(:blend_check)

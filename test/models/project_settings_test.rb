@@ -3,15 +3,15 @@ require "test_helper"
 class ProjectSettingsTest < ActiveSupport::TestCase
   test "project handles one settings revision" do
     project = Project.new
-    project.settings_revisions.new(settings: { foo: "fighters" })
+    project.blend_checks.new(settings: { foo: "fighters" })
 
     assert_equal project.settings.foo, "fighters"
   end
 
   test "project merges multiple settings revisions" do
     project = Project.new
-    project.settings_revisions.new(settings: { foo: "fighters" })
-    project.settings_revisions.new(settings: { bar: "bighters" })
+    project.blend_checks.new(settings: { foo: "fighters" })
+    project.benchmarks.new(settings: { bar: "bighters" })
 
     assert_equal project.settings.foo, "fighters"
     assert_equal project.settings.bar, "bighters"
@@ -19,7 +19,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
 
   test "resolution helpers are working" do
     project = Project.new
-    project.settings_revisions.new(settings: {
+    project.blend_checks.new(settings: {
       output: {
         format: {
           resolution_x: 1920,
@@ -36,7 +36,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
 
   test "later settings revision overrides earlier ones" do
     project = Project.new
-    project.settings_revisions.new(settings: {
+    project.blend_checks.new(settings: {
       output: {
         format: {
           resolution_x: 1920,
@@ -46,7 +46,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
         output: { frame_range: { type: "image" } },
       },
     })
-    project.settings_revisions.new(settings: {
+    project.benchmarks.new(settings: {
       output: { frame_range: { type: "animation" } },
     })
 

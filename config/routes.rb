@@ -42,4 +42,7 @@ Rails.application.routes.draw do
   # Landing pages
   get "start/:slug", to: redirect("%{slug}")
   get ":slug", to: "landing_pages#show", as: :landing_page
+
+  # Catch-all route for any remaining paths (must be last)
+  get "*path", to: "landing_pages#show"
 end

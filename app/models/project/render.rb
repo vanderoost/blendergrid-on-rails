@@ -4,7 +4,6 @@ class Project::Render < ApplicationRecord
   include Workflowable
 
   belongs_to :project
-  delegate :settings, to: :project
 
   def owner = project
 
@@ -22,15 +21,15 @@ class Project::Render < ApplicationRecord
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     # Settings
-    if settings.frame_range_type == :animation
+    if project.settings.frame_range_type == :animation
       frame_start = project.settings.output.frame_range.start
       frame_end = project.settings.output.frame_range.end
       frame_step = project.settings.output.frame_range.step
       frame_params = { start: frame_start, end: frame_end, step: frame_step }
-    elsif settings.frame_range_type == :image
-      frame_params = settings.output.frame_range.single
+    elsif project.settings.frame_range_type == :image
+      frame_params = project.settings.output.frame_range.single
     else
-      raise "Unknown frame range type: #{settings.frame_range_type}"
+      raise "Unknown frame range type: #{project.settings.frame_range_type}"
     end
 
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
@@ -65,7 +64,7 @@ class Project::Render < ApplicationRecord
             "--project-dir",
             "/tmp/project",
             "--cycles-samples",
-            settings.spp.to_s,
+            project.settings.spp.to_s,
           ],
           parameters: { frame: frame_params },
           image: "blendergrid/blender:#{blender_version}",

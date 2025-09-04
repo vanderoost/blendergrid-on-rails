@@ -3,7 +3,7 @@
 require "fileutils"
 require "json"
 
-LOG_FILEPATH = ".claude/tdd.log"
+LOG_FILEPATH = "~/git/blendergrid-on-rails/.claude/tdd.log"
 
 input = JSON.parse($stdin.read)
 
@@ -34,7 +34,7 @@ log_file.close
 unless so_far_so_good
   prompt = {
     decision: "block",
-    reason: "Something is broken. See @#{LOG_FILEPATH} for logs and errors."
+    reason: "Something is broken. See @#{LOG_FILEPATH} for logs and errors.",
   }
   puts prompt.to_json
 end
