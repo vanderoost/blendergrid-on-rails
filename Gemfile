@@ -85,5 +85,3 @@ gem "redcarpet", "~> 3.6"
 
 # Tailwind CSS
 gem "tailwindcss-rails"
-
-gem "mysql2", "~> 0.5.6"

@@ -8,7 +8,6 @@ class Order < ApplicationRecord
 
   attr_accessor :project_settings, :success_url, :cancel_url, :redirect_url
 
-
   # TODO: Add validations
 
   def fulfill
@@ -26,7 +25,6 @@ class Order < ApplicationRecord
   end
 
   private
-
     def create_line_items
       # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then
       # we can create OrderItems associated with this Order (by ID) and then we use
