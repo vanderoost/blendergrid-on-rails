@@ -1,12 +1,14 @@
 <% content_for :title, "Articles" %>
 
-<h1>Articles</h1>
+<h1 class="text-3xl font-bold my-12">Articles</h1>
 
-<div id="articles">
+<div id="articles" class="space-y-8">
   <% @articles.each do |article| %>
-    <%= article.title %>
+    <section>
+    <h2 class="text-xl font-bold"><%= article.title %></h2>
     <p>
-      <%= link_to "Read more", article %>
+      <%= link_to "Read more", article, class: "text-blue-500 underline" %>
     </p>
+    </section>
   <% end %>
 </div>

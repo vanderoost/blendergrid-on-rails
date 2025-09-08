@@ -4,11 +4,19 @@ one:
   slug: render-pigs
   title: The Three Render Pigs
   body: |
+    ## Introduction
+
     Once upon a time in Pixel Valley, there were three little pigs who weren’t interested in building houses. No, they were render pigs, hardworking artists of the farm.
+
+    ## Porky
 
     The first pig, Porky, was impatient. “I want my frames done now!” he squealed, spinning up a cluster of tiny Raspberry Pi nodes. They chugged and wheezed, producing frames so slowly that even the clouds in his animations drifted out of sync.
 
+    ## Pixie
+
     The second pig, Pixie, went for something fancier: a sleek rack of second-hand gaming PCs. “Plenty of power for my stylized short film,” she said. But when she tried to render at 4K with volumetric lighting, the fans roared like a hurricane, and the GPUs squealed for mercy.
+
+    ## Primo
 
     The third pig, Primo, was quiet and methodical. He built his farm in the cloud, with autoscaling nodes, redundant storage, and a clever render queue. He even optimized tile sizes so no core sat idle. His frames came back crisp, on time, and under budget.
 
@@ -18,13 +26,13 @@ one:
     One day, the Big Bad Deadline came knocking.
     He huffed, he puffed, and he demanded final renders by tomorrow morning.
 
-    {% vimeo 176633867 %}
+    ![Vimeo Embed](https://vimeo.com/176633867)
 
     Porky’s Pi farm sputtered to a halt.
     Pixie’s gaming rigs overheated.
     But Primo? His render pigs in the cloud just scaled up and finished the shots before bedtime.
 
-    {% youtube H5i1gdwe1Ls %}
+    ![Youtube Embed](https://www.youtube.com/watch?v=H5i1gdwe1Ls)
 
     The next morning, the Deadline stomped away, defeated. And from that day on, all three pigs worked together on Primo’s farm. Because in rendering, teamwork and smart infrastructure always beat rushing or cutting corners.
 

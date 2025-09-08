@@ -25,13 +25,12 @@
 
   <body>
     <%= render "layouts/navigation" %>
-    <br>
 
     <%= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
     <%= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
-    <br>
 
-    <%= yield %>
-    <br>
+    <main class="container mx-auto">
+      <%= yield %>
+    </main>
   </body>
 </html>
