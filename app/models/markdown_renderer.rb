@@ -1,104 +1,167 @@
 class MarkdownRenderer < Redcarpet::Render::HTML
+  CLOUDINARY_BASE_URL = "https://res.cloudinary.com/blendergrid/image/upload"
+  GROUP_IMAGE_WIDTHS = [ 400, 600, 800 ]
+  SINGLE_IMAGE_WIDTHS = [ 580, 960, 1440, 1920 ]
   YOUTUBE_EMBED_PATTERN = %r{
-    !\[([^\]]*)\]                           # Alt text
+    !\[([^\]]*)\]
     \(
       (https?://(?:www\.)?
         (?:youtube\.com/watch\?v=|youtu\.be/)
         ([\w-]+)
-        [^)]*)                               # Optional extra params (fixed)
+        [^)]*)
     \)
   }x
-
   VIMEO_EMBED_PATTERN = %r{
-    !\[([^\]]*)\]                           # Alt text
+    !\[([^\]]*)\]
     \(
       (https?://(?:www\.)?
         vimeo\.com/
         (\d+)
-        [^)]*)                               # Optional extra params (fixed)
+        [^)]*)
     \)
   }x
 
   def preprocess(text)
-    text.gsub!(YOUTUBE_EMBED_PATTERN) do
-      caption = $1
-      youtube_id = $3
-
-      html = %(<figure class="video-wrapper">)
-      html += %(<div class="video-container">)
-      html += %(<iframe src="https://www.youtube.com/embed/#{youtube_id}"
-        frameborder="0" allowfullscreen></iframe>)
-      html += %(</div>)
-      html += %(<figcaption>#{caption}</figcaption>) unless caption.empty?
-      html += %(</figure>)
-      html
-    end
-
-    text.gsub!(VIMEO_EMBED_PATTERN) do
-      caption = $1
-      vimeo_id = $3
-
-      html = %(<figure class="video-wrapper">)
-      html += %(<div class="video-container">)
-      html += %(<iframe src="https://player.vimeo.com/video/#{vimeo_id}"
-        frameborder="0" allowfullscreen></iframe>)
-      html += %(</div>)
-      html += %(<figcaption>#{caption}</figcaption>) unless caption.empty?
-      html += %(</figure>)
-      html
-    end
-
-    # Then handle image grouping (both standard and Cloudinary images)
-    # This regex now matches both formats
-    text.gsub!(/^(!\[([^\]]*)\]\(([^)]+)\)(?:\n!\[([^\]]*)\]\(([^)]+)\))+)/m) do |match|
-      lines = match.strip.split("\n")
-
-      html = %(<div class="image-group image-group-#{lines.size}">)
-
-      lines.each do |line|
-        if line =~ /!\[([^\]]*)\]\(cloudinary:([^)]+)\)/
-          # It's a Cloudinary image
-          alt_text = $1
-          public_id = $2
-          html += render_cloudinary_image(alt_text, public_id)
-        elsif line =~ /!\[([^\]]*)\]\(([^)]+)\)/
-          # It's a regular image
-          alt_text = $1
-          src = $2
-          html += %(<img src="#{src}" alt="#{alt_text}" loading="lazy" />)
-        end
-      end
-
-      html += %(</div>)
-      html
-    end
-
-    # Finally, handle standalone Cloudinary images (not in groups)
-    text.gsub!(/^!\[([^\]]*)\]\(cloudinary:([^)]+)\)$/m) do
-      alt_text = $1
-      public_id = $2
-      render_cloudinary_image(alt_text, public_id)
-    end
-
+    text = process_youtube_embeds(text)
+    text = process_vimeo_embeds(text)
+    text = process_image_groups(text)
+    text = process_standalone_cloudinary_images(text)
     text
   end
 
   private
-    def render_cloudinary_image(alt_text, public_id)
-      base_url = "https://res.cloudinary.com/blendergrid/image/upload"
+    def process_youtube_embeds(text)
+      text.gsub(YOUTUBE_EMBED_PATTERN) do
+        create_video_figure("https://www.youtube.com/embed/#{$3}", $1)
+      end
+    end
 
-      srcset = [
-        "#{base_url}/f_auto,q_auto,w_580/#{public_id} 580w",
-        "#{base_url}/f_auto,q_auto,w_960/#{public_id} 960w",
-        "#{base_url}/f_auto,q_auto,w_1440/#{public_id} 1440w",
-      ].join(", ")
+    def process_vimeo_embeds(text)
+      text.gsub(VIMEO_EMBED_PATTERN) do
+        create_video_figure("https://player.vimeo.com/video/#{$3}", $1)
+      end
+    end
 
-      %{<img
-        src="#{base_url}/f_auto,q_auto,w_960/#{public_id}"
-        srcset="#{srcset}"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 960px"
-        alt="#{alt_text}"
-        loading="lazy"
-      />}.gsub(/\s+/, " ")
+    def create_video_figure(embed_url, caption)
+      <<~HTML.gsub(/\s+/, " ")
+        <figure>
+          <div class="relative aspect-video overflow-hidden">
+            <iframe src="#{embed_url}"
+              class="absolute inset-0 w-full h-full"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen></iframe>
+          </div>
+          #{caption.empty? ? "" : %(<figcaption class="text-center">#{caption}</figcaption>)}
+        </figure>
+      HTML
+    end
+
+    # Image group processing
+    def process_image_groups(text)
+      pattern = /^(!\[([^\]]*)\]\(([^)]+)\)(?:\n!\[([^\]]*)\]\(([^)]+)\))+)/m
+
+      text.gsub(pattern) do |match|
+        images = extract_images(match)
+        create_image_grid(images)
+      end
+    end
+
+    def extract_images(markdown_block)
+      markdown_block.strip.split("\n").map do |line|
+        case line
+        when /!\[([^\]]*)\]\(cloudinary:([^)]+)\)/
+          { type: :cloudinary, alt: $1, id: $2 }
+        when /!\[([^\]]*)\]\(([^)]+)\)/
+          { type: :standard, alt: $1, src: $2 }
+        end
+      end.compact
+    end
+
+    def create_image_grid(images)
+      return create_captioned_pair(images) if images.size == 2
+
+      <<~HTML.gsub(/\s+/, " ")
+        <figure>
+          <div class="#{grid_class_for(images.size)}">
+            #{images.map { |img| render_grid_image(img) }.join}
+          </div>
+        </figure>
+      HTML
+    end
+
+    def create_captioned_pair(images)
+      <<~HTML.gsub(/\s+/, " ")
+        <figure>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            #{images.map { |img| render_captioned_image(img) }.join}
+          </div>
+        </figure>
+      HTML
+    end
+
+    def render_captioned_image(image)
+      <<~HTML.gsub(/\s+/, " ")
+        <div>
+          #{render_grid_image(image)}
+          #{image[:alt].empty? ? "" : %(<figcaption class="text-center">#{image[:alt]}</figcaption>)}
+        </div>
+      HTML
+    end
+
+    def render_grid_image(image)
+      case image[:type]
+      when :cloudinary
+        cloudinary_image_tag(image[:id], image[:alt], grouped: true)
+      when :standard
+        %(<img src="#{image[:src]}" alt="#{image[:alt]}" loading="lazy"
+      class="w-full h-auto" />)
+      end
+    end
+
+    def grid_class_for(count)
+      case count
+      when 3 then "grid grid-cols-1 md:grid-cols-3 gap-3"
+      when 4 then "grid grid-cols-2 gap-3"
+      else        "grid grid-cols-2 md:grid-cols-3 gap-3"
+      end
+    end
+
+    # Standalone Cloudinary images
+    def process_standalone_cloudinary_images(text)
+      text.gsub(/^!\[([^\]]*)\]\(cloudinary:([^)]+)\)$/m) do
+        alt_text, public_id = $1, $2
+
+        <<~HTML.gsub(/\s+/, " ")
+          <figure>
+            #{cloudinary_image_tag(public_id, alt_text, grouped: false)}
+            #{alt_text.empty? ? "" : %(<figcaption class="text-center">#{alt_text}</figcaption>)}
+          </figure>
+        HTML
+      end
+    end
+
+    # Cloudinary helper
+    def cloudinary_image_tag(public_id, alt_text, grouped:)
+      widths = grouped ? GROUP_IMAGE_WIDTHS : SINGLE_IMAGE_WIDTHS
+      srcset = widths.map { |w|
+   "#{CLOUDINARY_BASE_URL}/f_auto,q_auto,w_#{w}/#{public_id} #{w}w" }.join(", ")
+
+      sizes = grouped ?
+        "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw" :
+        "(max-width: 768px) 100vw, (max-width: 1536px) 80vw, 768px"
+
+      classes = grouped ? "max-h-64" : "max-h-80"
+
+      <<~HTML.gsub(/\s+/, " ")
+        <img
+          src="#{CLOUDINARY_BASE_URL}/f_auto,q_auto,w_960/#{public_id}"
+          srcset="#{srcset}"
+          sizes="#{sizes}"
+          alt="#{alt_text}"
+          loading="lazy"
+          class="#{classes} w-full object-contain h-auto not-prose"
+        />
+      HTML
     end
 end

@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Form field with errors */
+.input_group:has(.field_with_errors) {
+	@apply bg-red-100 dark:bg-red-950 outline-red-800/50 dark:outline-red-300 border-red-800/50 dark:border-red-300;
+}
+.field_with_errors > label {
+	@apply text-red-900 dark:text-red-100;
+}
+.field_with_errors > input {
+	@apply text-red-900 dark:text-red-100 placeholder-red-900/50 dark:placeholder-red-100/50;
+}

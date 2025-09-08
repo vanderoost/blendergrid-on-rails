@@ -25,17 +25,12 @@
 
   <body>
     <%= render "layouts/navigation" %>
-    <br>
 
     <%= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
     <%= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
-    <br>
 
-    <%= yield %>
-    <br>
-
-    <%# debug params if Rails.env.development? %>
-    <%= debug session.id.to_s if Rails.env.development? %>
-    <%= debug session[:guest_email_address] if Rails.env.development? %>
+    <main class="container mx-auto">
+      <%= yield %>
+    </main>
   </body>
 </html>

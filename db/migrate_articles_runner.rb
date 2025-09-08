@@ -1,4 +1,4 @@
-# Run with: rails runner migrate_articles_runner.rb
+# Run with: rails runner RAILS_ENV=production migrate_articles_runner.rb
 # No additional gems needed - uses Rails' database connection
 
 # MySQL connection configuration
@@ -12,7 +12,7 @@ mysql_config = {
 }
 
 def migrate_articles(mysql_config)
-  puts "Starting article migration from MySQL to Rails app..."
+  puts "Starting article migration from MySQL to Rails app in #{Rails.env}..."
 
   # Create MySQL connection using ActiveRecord
   ActiveRecord::Base.establish_connection(mysql_config)

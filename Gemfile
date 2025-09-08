@@ -60,6 +60,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Live reloading
+  gem "hotwire-spark"
 end
 
 group :test do
@@ -79,3 +82,8 @@ gem "stripe", "~> 15.4"
 
 # Markdown parsing
 gem "redcarpet", "~> 3.6"
+
+# Tailwind CSS
+gem "tailwindcss-rails"
+
+gem "mysql2", "~> 0.5.6"

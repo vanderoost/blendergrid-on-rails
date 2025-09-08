@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-ENV['RAILS_ENV'] ||= 'production'
+# ENV['RAILS_ENV'] ||= 'production'
+ENV['RAILS_ENV'] ||= 'development'
 require_relative '../config/environment'
 
 puts "Migrating Cloudinary images and video embeds in #{Rails.env}..."
