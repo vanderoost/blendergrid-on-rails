@@ -114,7 +114,8 @@ class MarkdownRenderer < Redcarpet::Render::HTML
       when :cloudinary
         cloudinary_image_tag(image[:id], image[:alt], grouped: true)
       when :standard
-        %(<img src="#{image[:src]}" alt="#{image[:alt]}" loading="lazy" class="w-full h-auto" />)
+        %(<img src="#{image[:src]}" alt="#{image[:alt]}" loading="lazy"
+      class="w-full h-auto" />)
       end
     end
 
