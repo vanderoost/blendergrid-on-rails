@@ -6,6 +6,7 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
 
     if @order.save
+      @order.checkout
       redirect_to_safe_url @order.redirect_url
     else
       redirect_back fallback_location :projects, status: :unprocessable_content

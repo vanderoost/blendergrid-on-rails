@@ -6,7 +6,7 @@ require "json"
 LOG_FILENAME = "post-edit-hook.log"
 DEBUG_LOG_FILENAME = "post-edit-hook.debug.log"
 DEBUG_JSON_FILENAME = "post-edit-hook.debug.json"
-TMP_DIR = ".claude/tmp"
+TMP_DIR = "#{ENV["HOME"]}/git/blendergrid-on-rails/.claude/tmp"
 
 log = nil
 debug_log = nil

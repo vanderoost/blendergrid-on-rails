@@ -8,8 +8,6 @@ class Order < ApplicationRecord
 
   attr_accessor :project_settings, :success_url, :cancel_url, :redirect_url
 
-  before_create :start_payment
-  after_create :persist_order_items
 
   # TODO: Add validations
 
@@ -21,30 +19,13 @@ class Order < ApplicationRecord
     items.sum(&:price_cents)
   end
 
+  def checkout
+    create_line_items
+    @checkout = Order::Checkout.new(self)
+    @checkout.start_checkout_session
+  end
+
   private
-    def start_payment
-      apply_render_credit
-    end
-
-    def persist_order_items
-    end
-
-    def apply_render_credit
-      return unless @order.user&.render_credit_cents&.positive?
-
-      @applied_credit_cents = [ @order.user.render_credit_cents,
-        @order.price_cents ].min
-
-      # TODO: Make sure this happens in a DB transaction
-      @order.user.render_credit_cents -= @applied_credit_cents
-      @order.user.save
-    end
-
-    def checkout
-      create_line_items
-      @checkout = Order::Checkout.new(self)
-      @checkout.start_checkout_session
-    end
 
     def create_line_items
       # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then
