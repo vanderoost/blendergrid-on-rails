@@ -1,14 +1,16 @@
 class OldApp < ActiveRecord::Base
   self.abstract_class = true
 
-  mysql_config = {
-    adapter: "mysql2",
-    host: Rails.application.credentials.dig(:old_database, :host),
-    username: Rails.application.credentials.dig(:old_database, :username),
-    password: Rails.application.credentials.dig(:old_database, :password),
-    database: Rails.application.credentials.dig(:old_database, :name),
-  }
-  establish_connection(mysql_config)
+  if ENV["ENABLE_OLD_DATABASE"] == "true"
+    mysql_config = {
+      adapter: "mysql2",
+      host: Rails.application.credentials.dig(:old_database, :host),
+      username: Rails.application.credentials.dig(:old_database, :username),
+      password: Rails.application.credentials.dig(:old_database, :password),
+      database: Rails.application.credentials.dig(:old_database, :name),
+    }
+    establish_connection(mysql_config)
+  end
 
   # Don't write to the old database!
   def readonly?
