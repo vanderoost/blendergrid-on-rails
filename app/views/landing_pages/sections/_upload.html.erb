@@ -2,7 +2,7 @@
 
 <% if content.key?("heading") %>
   <h1 class="text-3xl lg:text-5xl xl:text-6xl font-bold">
-    <%= content["heading"] %>
+    <%= content["heading"].html_safe %>
   </h1>
 <% end %>
 

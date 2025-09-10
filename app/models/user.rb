@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :projects, through: :uploads
   has_many :orders
   has_many :articles
+  has_many :credit_entries
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
