@@ -4,7 +4,7 @@ class ProjectMailer < ApplicationMailer
     @user = @project.user
     mail(
       to: @user.email_address,
-      subject: "you created project '#{@project.blend_file}'"
+      subject: "you created project '#{@project.blend_filepath}'"
     )
   end
 
@@ -13,7 +13,7 @@ class ProjectMailer < ApplicationMailer
     @user = @project.user
     mail(
       to: @user.email_address,
-      subject: "project '#{@project.blend_file}' is ready to render"
+      subject: "project '#{@project.blend_filepath}' is ready to render"
     )
   end
 
@@ -22,7 +22,7 @@ class ProjectMailer < ApplicationMailer
     @user = @project.user
     mail(
       to: @user.email_address,
-      subject: "project '#{@project.blend_file}' has finished rendering"
+      subject: "project '#{@project.blend_filepath}' has finished rendering"
     )
   end
 end

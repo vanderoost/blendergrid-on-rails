@@ -2,34 +2,34 @@ created:
   upload: guest_upload
   uuid: created-1234
   status: created
-  blend_file: monkey.blend
+  blend_filepath: monkey.blend
 
 checking:
   upload: guest_upload
   uuid: checking-1234
   status: checking
-  blend_file: monkey.blend
+  blend_filepath: monkey.blend
 
 checked:
   upload: guest_upload
   uuid: checked-1234
   status: checked
-  blend_file: monkey.blend
+  blend_filepath: monkey.blend
 
 benchmarking:
   upload: guest_upload
   uuid: benchmarking-1234
   status: benchmarking
-  blend_file: monkey.blend
+  blend_filepath: monkey.blend
 
 benchmarked:
   upload: guest_upload
   uuid: benchmarked-1234
   status: benchmarked
-  blend_file: suzanne.blend
+  blend_filepath: suzanne.blend
 
 rendering:
   upload: guest_upload
   uuid: rendering-1234
   status: rendering
-  blend_file: suzanne.blend
+  blend_filepath: suzanne.blend

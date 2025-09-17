@@ -8,7 +8,7 @@ class ProjectIntakeControllerTest < ActionDispatch::IntegrationTest
   test "should create project intake" do
     assert_difference("Project.count", 1) do
       post upload_project_intakes_url(@upload), params: {
-        project_intake: { blend_files: [ @upload.files.first.blob.filename ] },
+        project_intake: { blend_filepaths: [ @upload.files.first.filename.to_s ] },
       }, headers: root_referrer_header
     end
     assert_redirected_to root_url
@@ -17,7 +17,7 @@ class ProjectIntakeControllerTest < ActionDispatch::IntegrationTest
   test "should choose files" do
     assert_difference("Project.count", 0) do
       post upload_project_intakes_url(@upload), params: {
-        project_intake: { blend_files: [] },
+        project_intake: { blend_filepaths: [] },
       }, headers: root_referrer_header
     end
     assert_response :unprocessable_content

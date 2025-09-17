@@ -51,7 +51,7 @@ export default class extends Controller {
               fill="transparent"
             ></circle>
             <circle
-              class="text-indigo-600 dark:text-indigo-500 stroke-current progress_donut"
+              class="text-primary-600 dark:text-primary-500 stroke-current progress_donut"
               stroke-width="14"
               cx="32"
               cy="32"

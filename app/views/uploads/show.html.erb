@@ -1,1 +1,15 @@
-<%= render @upload %>
+<h1 class="text-lg">
+  <%= "upload from #{time_ago_in_words(@upload.created_at)} ago" %>
+</h1>
+
+<% unless @upload.projects.any? %>
+  <%= render "project_intakes/form",
+    upload: @upload,
+    project_intake: @project_intake %>
+<% end %>
+
+<%= render "projects/grouped",
+  # TODO: Maybe pass in the upload and let the grouped partial figure out the projects?
+  projects_by_status: @upload&.projects&.group_by(&:status)&.symbolize_keys || {},
+  new_quote: @quote,
+  new_order: @order %>

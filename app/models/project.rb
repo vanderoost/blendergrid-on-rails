@@ -17,7 +17,7 @@ class Project < ApplicationRecord
 
   broadcasts_to ->(project) { :projects }
 
-  validates :blend_file, presence: true
+  validates :blend_filepath, presence: true
 
   after_create :start_checking
 
