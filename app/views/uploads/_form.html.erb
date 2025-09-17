@@ -11,7 +11,7 @@
       direct-upload:end->upload#uploadEnd
     ].join(" ")
   },
-  class: "max-w-xs xl:max-w-sm mx-auto border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4" do |form| %>
+  class: "mx-auto mt-16 sm:mt-20 max-w-xs lg:max-w-sm border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4 dark:bg-gray-800/50" do |form| %>
 
   <%= form.hidden_field :uuid, value: upload.uuid %>
     <div
@@ -26,7 +26,7 @@
           <path d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clip-rule="evenodd" fill-rule="evenodd" />
         </svg>
         <div class="mt-4 flex text-sm/6 text-gray-600 dark:text-gray-400">
-          <%= form.label :files, class: "relative cursor-pointer rounded-md bg-transparent in-data-[dragdrop-is-dragging-value=false]:font-semibold in-data-[dragdrop-is-dragging-value=false]:text-primary-600 hover:text-primary-500 in-data-[dragdrop-is-dragging-value=false]:dark:text-primary-400 dark:hover:text-primary-300" do %>
+          <%= form.label :files, class: "relative cursor-pointer rounded-md bg-transparent font-semibold in-data-[dragdrop-is-dragging-value=false]:text-primary-600 hover:text-primary-500 in-data-[dragdrop-is-dragging-value=false]:dark:text-primary-400 dark:hover:text-primary-300" do %>
             <span>Upload a file</span>
             <%= form.file_field :files,
                             multiple: true,
@@ -41,7 +41,7 @@
                               use_multipart: true,
                             } %>
           <% end %>
-          <p class="pl-1">or <span class="in-data-[dragdrop-is-dragging-value=true]:font-semibold in-data-[dragdrop-is-dragging-value=true]:text-primary-600">drag and drop</span></p>
+          <p class="pl-1">or <span class="font-semibold in-data-[dragdrop-is-dragging-value=true]:text-primary-600 dark:in-data-[dragdrop-is-dragging-value=true]:text-primary-400">drag and drop</span></p>
         </div>
         <p class="text-xs/5 text-gray-600 dark:text-gray-400">.blend or .zip up to 100GB</p>
       </div>
@@ -57,7 +57,7 @@
     <% end %>
 
     <div class="flex items-center justify-end gap-x-6">
-      <%= form.submit "Upload Files", data: { upload_target: "submit" }, disabled: true, class: "rounded-md cursor-pointer bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs in-data-[upload-status-value=ready]:hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:in-data-[upload-status-value=ready]:hover:bg-primary-600 dark:shadow-none dark:focus-visible:outline-primary-500 in-data-[upload-status-value=idle]:opacity-50 in-data-[upload-status-value=idle]:cursor-not-allowed in-data-[upload-status-value=uploading]:cursor-wait" %>
+      <%= form.submit "Upload Files", data: { upload_target: "submit" }, disabled: true, class: "rounded-md cursor-pointer bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs in-data-[upload-status-value=ready]:hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:in-data-[upload-status-value=ready]:hover:bg-primary-600 dark:shadow-none dark:focus-visible:outline-primary-500 in-data-[upload-status-value=empty]:opacity-70 in-data-[upload-status-value=empty]:cursor-not-allowed in-data-[upload-status-value=uploading]:cursor-wait" %>
     </div>
 
     <div class="hidden flex-col gap-2" data-upload-target="summary">

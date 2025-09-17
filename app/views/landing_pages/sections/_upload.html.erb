@@ -1,9 +1,12 @@
 <% content = local_assigns.fetch(:content, {}) %>
 
-<% if content.key?("heading") %>
-  <h1 class="text-3xl lg:text-4xl xl:text-5xl my-8 font-bold text-center">
-    <%= content["heading"].html_safe %>
-  </h1>
+<div class="py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8">
+    <% if content.key?("heading") %>
+      <div class="mx-auto max-w-4xl sm:text-center">
+        <h1 class="text-5xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-6xl sm:text-balance dark:text-white"><%= content["heading"].html_safe %></h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">Upload a .blend file to get started.</p>
+      </div>
 <% end %>
 
 <%= render "uploads/form", upload: @upload || Upload.new %>

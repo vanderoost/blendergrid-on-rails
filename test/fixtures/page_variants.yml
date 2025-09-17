@@ -2,7 +2,7 @@ home_default:
   landing_page: home
   sections:
     upload:
-      heading: "Upload your blend file"
+      heading: "Fast rendering for Blender"
 
 youtuber_default:
   landing_page: youtuber
