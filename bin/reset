@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+require "fileutils"
+require_relative "../config/application"
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+Rails.application.initialize!
+
+bucket = Rails.configuration.swarm_engine.dig(:bucket)
+
+FileUtils.chdir Rails.root do
+  puts "\n== Resetting database =="
+  system! "bin/rails db:migrate:reset"
+
+  puts "\n== Cleaning up S3 =="
+  system! "aws --endpoint-url=http://localhost:4566 s3 rm s3://#{bucket} --recursive"
+
+  system! "bin/setup"
+end

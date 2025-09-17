@@ -9,6 +9,6 @@ class TrackRequestJob < ApplicationJob
 
     events.each do |event_data|
       request.events.create(**event_data)
-    end
+    end if events.present?
   end
 end

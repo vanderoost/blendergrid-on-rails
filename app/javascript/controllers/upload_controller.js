@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 const states = {
-  idle: "idle",
+  empty: "empty",
   ready: "ready",
   uploading: "uploading",
   done: "done",
@@ -11,8 +11,6 @@ export default class extends Controller {
   static values = { status: String }
 
   connect() {
-    console.log("UploadController connected")
-
     this.fileItemsByName = new Map()
     this.items = new Map()
     this.totalSize = 0
@@ -34,6 +32,8 @@ export default class extends Controller {
     this.listTarget.innerHTML = ""
     for (var i = 0; i < files.length; i++) {
       const file = files[i]
+      console.debug("adding file:", file.name)
+
       this.totalSize += file.size
       const [filenameHead, filenameTail] = splitFilename(file.name)
 
@@ -51,7 +51,7 @@ export default class extends Controller {
               fill="transparent"
             ></circle>
             <circle
-              class="text-indigo-600 dark:text-indigo-500 stroke-current progress_donut"
+              class="text-primary-600 dark:text-primary-500 stroke-current progress_donut"
               stroke-width="14"
               cx="32"
               cy="32"
@@ -77,6 +77,7 @@ export default class extends Controller {
 
     if (files.length > 0) {
       this.statusValue = states.ready
+      this.listTarget.classList.remove("hidden")
     }
 
     console.debug("statusValue:", this.statusValue)

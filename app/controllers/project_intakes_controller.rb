@@ -14,7 +14,7 @@ class ProjectIntakesController < ApplicationController
 
   private
     def project_intake_params
-      project_intake = params.fetch(:project_intake, {}).permit(blend_files: [])
-      { upload: @upload, blend_files: project_intake[:blend_files] }
+      project_intake = params.fetch(:project_intake, {}).permit(blend_filepaths: [])
+      { upload: @upload, blend_filepaths: project_intake[:blend_filepaths] }
     end
 end

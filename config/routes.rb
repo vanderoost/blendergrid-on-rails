@@ -35,6 +35,9 @@ Rails.application.routes.draw do
     post "stripe", to: "stripe#handle"
   end
 
+  # Static pages
+  get "pricing", to: "pages#pricing"
+
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")
   resources :articles, param: :slug
@@ -43,6 +46,6 @@ Rails.application.routes.draw do
   get "start/:slug", to: redirect("%{slug}")
   get ":slug", to: "landing_pages#show", as: :landing_page
 
-  # Catch-all route for any remaining paths (must be last)
+  # Catch-all
   get "*path", to: "landing_pages#show"
 end

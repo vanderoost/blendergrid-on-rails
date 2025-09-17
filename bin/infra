@@ -7,19 +7,17 @@ ENV["RAILS_ENV"] = "production"
 require "fileutils"
 require_relative "../config/application"
 
-APP_ROOT = File.expand_path("..", __dir__)
+Rails.application.initialize!
 
 def system!(*args)
   system(*args, exception: true)
 end
 
-Rails.application.initialize!
-
 db_password = Rails.application.credentials.dig(:database, :password)
 raise "Missing database password in credentials" unless db_password
 terraform_vars = [ "-var", "db_password=#{db_password}" ]
 
-FileUtils.chdir "#{APP_ROOT}/terraform" do
+FileUtils.chdir Rails.root / "terraform" do
   system! "terraform", "init"
   system! "terraform", "apply", "-auto-approve", *terraform_vars
 end

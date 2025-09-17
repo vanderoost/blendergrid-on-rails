@@ -1,3 +1,7 @@
 <h1>Uploads</h1>
 
-<%= render @uploads %>
+<%= @uploads.each do |upload| %>
+  <div>
+    <%= link_to upload.uuid, upload %>
+  </div>
+<% end %>

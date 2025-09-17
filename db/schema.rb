@@ -155,7 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
     t.integer "upload_id"
     t.string "uuid", null: false
     t.string "status"
-    t.string "blend_file"
+    t.string "blend_filepath"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["upload_id"], name: "index_projects_on_upload_id"

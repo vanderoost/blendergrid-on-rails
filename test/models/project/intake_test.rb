@@ -5,26 +5,26 @@ class Project::IntakeTest < ActiveSupport::TestCase
     @upload = uploads(:guest_upload)
   end
 
-  test "should be valid with upload and blend_files" do
+  test "should be valid with upload and blend_filepaths" do
     intake = Project::Intake.new(
       upload: @upload,
-      blend_files: [ "file1.blend", "file2.blend" ]
+      blend_filepaths: [ "file1.blend", "file2.blend" ]
     )
     assert intake.valid?
   end
 
   test "should be invalid without upload" do
-    intake = Project::Intake.new(blend_files: [ "file1.blend" ])
+    intake = Project::Intake.new(blend_filepaths: [ "file1.blend" ])
     assert_not intake.valid?
   end
 
-  test "should be invalid without blend_files" do
+  test "should be invalid without blend_filepaths" do
     intake = Project::Intake.new(upload: @upload)
     assert_not intake.valid?
   end
 
-  test "should be inalid for empty blend_files array" do
-    intake = Project::Intake.new(upload: @upload, blend_files: [])
+  test "should be inalid for empty blend_filepaths array" do
+    intake = Project::Intake.new(upload: @upload, blend_filepaths: [])
     assert_not intake.valid?
   end
 end
