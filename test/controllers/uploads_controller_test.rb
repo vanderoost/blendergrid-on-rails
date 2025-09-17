@@ -8,7 +8,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
         files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }, headers: root_referrer_header
     end
-    assert_redirected_to root_url
+    assert_redirected_to upload_url(Upload.last)
 
     assert Upload.last.user.blank?
     assert_equal Upload.last.guest_email_address, "foo@fighters.bar"
@@ -22,7 +22,8 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
         files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],
       } }, headers: root_referrer_header
     end
-    assert_redirected_to root_url
+    assert_redirected_to upload_url(Upload.last)
+
 
     assert Upload.last.user.present?
     assert Upload.last.guest_email_address.blank?

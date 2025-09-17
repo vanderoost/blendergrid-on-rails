@@ -5,10 +5,6 @@ export default class extends Controller {
   static outlets = ["upload"];
   static values = { isDragging: Boolean }
 
-  connect() {
-    console.log("DragDropController connected")
-  }
-
   dragOver(event) {
     event.preventDefault();
 
@@ -28,7 +24,7 @@ export default class extends Controller {
   drop(event) {
     event.preventDefault();
 
-    this.#updateInputField(event.dataTransfer.files);
+    this.#addFiles(event.dataTransfer.files);
 
     if (this.isDraggingValue) {
       this.isDraggingValue = false
@@ -37,7 +33,19 @@ export default class extends Controller {
     this.uploadOutlet.showFiles()
   }
 
-  #updateInputField(files) {
-    this.inputTarget.files = files;
+  #addFiles(fileArray) {
+    const dataTransfer = new DataTransfer();
+
+    console.debug("Add the original files to the DataTransfer object")
+    const originalFiles = [...this.inputTarget.files];
+    originalFiles.forEach(file => dataTransfer.items.add(file));
+    console.debug("dataTransfer.files:", dataTransfer.files)
+
+    console.debug("Add the new files to the DataTransfer object")
+    const newFiles = [...fileArray];
+    newFiles.forEach(file => dataTransfer.items.add(file));
+    console.debug("dataTransfer.files:", dataTransfer.files)
+
+    this.inputTarget.files = dataTransfer.files;
   }
 }

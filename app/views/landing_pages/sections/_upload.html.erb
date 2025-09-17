@@ -1,9 +1,9 @@
 <% content = local_assigns.fetch(:content, {}) %>
 
 <% if content.key?("heading") %>
-  <h1 class="text-3xl lg:text-5xl xl:text-6xl font-bold">
+  <h1 class="text-3xl lg:text-4xl xl:text-5xl my-8 font-bold text-center">
     <%= content["heading"].html_safe %>
   </h1>
 <% end %>
 
-<%= upload_workflow %>
+<%= render "uploads/form", upload: @upload || Upload.new %>

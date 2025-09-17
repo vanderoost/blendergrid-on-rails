@@ -2,8 +2,8 @@ module RequestTracking
   extend ActiveSupport::Concern
 
   included do
-    before_action :start_tracking_request
-    after_action :finish_tracking_request
+    before_action :start_tracking_request if Rails.env.production?
+    after_action :finish_tracking_request if Rails.env.production?
 
     rescue_from StandardError do |exception|
       Rails.logger.error("ERROR: #{exception.message}")
@@ -47,8 +47,8 @@ module RequestTracking
 
       TrackRequestJob.perform_later(
         user: Current.user,
-        events: Current.events,
         request_data: Current.request_data,
+        events: Current.events,
       )
     end
 

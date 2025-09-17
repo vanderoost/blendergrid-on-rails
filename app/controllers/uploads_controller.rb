@@ -26,7 +26,7 @@ class UploadsController < ApplicationController
     end
 
     if @upload.save
-      redirect_back fallback_location: projects_path
+      redirect_to @upload
     else
       render :new, status: :unprocessable_content
     end
