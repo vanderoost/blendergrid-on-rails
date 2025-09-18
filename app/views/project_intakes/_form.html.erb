@@ -27,66 +27,70 @@
   }
 </script>
 
-<%= form_with model: [upload, project_intake], class: "bg-white dark:bg-gray-900 max-w-md mx-auto border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4" do |form| %>
-  <%= render "shared/form_errors", form: form %>
+<%= form_with model: [upload, project_intake] do |form| %>
 
-    <div class="sm:flex sm:items-center">
-      <div class="sm:flex-auto">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-white"><%= "Found #{pluralize(upload.all_blend_filepaths.count, ".blend file")}" %></h2>
-        <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">Select the one(s) you want to render.</p>
-      </div>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+        <%= "Found #{pluralize(upload.blend_filepaths.count, ".blend file")}" %>
+        <%= " so far.." if upload.ongoing_zip_checks.any? %>
+      </h2>
+      <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">Select the one(s) you want to render.</p>
     </div>
+  </div>
 
-    <div class="flow-root">
-      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-          <div class="group/table relative">
-            <table id="users-table" class="relative min-w-full table-fixed divide-y divide-gray-300 dark:divide-white/15">
-              <thead>
-                <tr>
-                  <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
+  <div class="flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <div class="group/table relative">
+          <table id="users-table" class="relative min-w-full table-fixed divide-y divide-gray-300 dark:divide-white/15">
+            <thead>
+              <tr>
+                <th scope="col" class="relative px-7 sm:w-12 sm:px-6">
+                  <div class="group absolute top-1/2 left-4 -mt-2 grid size-4 grid-cols-1">
+                    <input id="toggle-all-checkbox" type="checkbox" class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/20 dark:bg-gray-800/50 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/10 dark:disabled:bg-gray-800 dark:disabled:checked:bg-gray-800 forced-colors:appearance-auto" />
+                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+                      <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                      <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                    </svg>
+                  </div>
+                </th>
+                <th scope="col" class="min-w-48 py-3.5 pr-3 text-left font-normal text-sm text-gray-700 dark:text-gray-300">
+                  <label id="toggle-all-label" for="toggle-all-checkbox">select all</label>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
+
+              <% upload.blend_filepaths.each do |filepath| %>
+                <tr class="group has-checked:bg-gray-50 dark:has-checked:bg-gray-800/50">
+                  <td class="relative px-7 sm:w-12 sm:px-6">
+                    <div class="absolute inset-y-0 left-0 hidden w-0.5 bg-primary-600 group-has-checked:block dark:bg-primary-500"></div>
+
                     <div class="group absolute top-1/2 left-4 -mt-2 grid size-4 grid-cols-1">
-                      <input id="toggle-all-checkbox" type="checkbox" class="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/20 dark:bg-gray-800/50 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/10 dark:disabled:bg-gray-800 dark:disabled:checked:bg-gray-800 forced-colors:appearance-auto" />
-                      <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
-                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
-                        <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
-                      </svg>
+                      <%= form.checkbox :blend_filepaths,
+                        { multiple: true, include_hidden: false, class: "col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/20 dark:bg-gray-800/50 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/10 dark:disabled:bg-gray-800 dark:disabled:checked:bg-gray-800 forced-colors:appearance-auto" },
+                        filepath
+                      %>
+                    <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+                      <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+                      <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+                    </svg>
                     </div>
-                  </th>
-                  <th scope="col" class="min-w-48 py-3.5 pr-3 text-left font-normal text-sm text-gray-700 dark:text-gray-300">
-                    <label id="toggle-all-label" for="toggle-all-checkbox">select all</label>
-                  </th>
+                  </td>
+                  <td class="py-4 pr-3 text-sm font-medium whitespace-nowrap text-gray-900 group-has-checked:text-primary-600 dark:text-white dark:group-has-checked:text-primary-400">
+                    <%= filepath %>
+                  </td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
-
-                <% upload.all_blend_filepaths.each do |filepath| %>
-                  <tr class="group has-checked:bg-gray-50 dark:has-checked:bg-gray-800/50">
-                    <td class="relative px-7 sm:w-12 sm:px-6">
-                      <div class="absolute inset-y-0 left-0 hidden w-0.5 bg-primary-600 group-has-checked:block dark:bg-primary-500"></div>
-
-                      <div class="group absolute top-1/2 left-4 -mt-2 grid size-4 grid-cols-1">
-                        <%= form.checkbox :blend_filepaths,
-                          { multiple: true, include_hidden: false, class: "col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/20 dark:bg-gray-800/50 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/10 dark:disabled:bg-gray-800 dark:disabled:checked:bg-gray-800 forced-colors:appearance-auto" },
-                          filepath
-                        %>
-                      <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
-                        <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
-                        <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
-                      </svg>
-                      </div>
-                    </td>
-                    <td class="py-4 pr-3 text-sm font-medium whitespace-nowrap text-gray-900 group-has-checked:text-primary-600 dark:text-white dark:group-has-checked:text-primary-400">
-                      <%= filepath %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
+
+  <%= render "shared/form_errors", form: form %>
 
   <div class="flex items-center justify-end gap-x-6">
     <%= form.submit "Create Projects", class: "rounded-md cursor-pointer bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:focus-visible:outline-primary-500" %>

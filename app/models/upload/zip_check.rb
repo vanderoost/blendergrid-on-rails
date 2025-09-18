@@ -3,7 +3,9 @@ class Upload::ZipCheck < ActiveRecord::Base
 
   belongs_to :upload
 
-  def owner = upload
+  def owner
+    upload
+  end
 
   def make_start_message
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
@@ -27,19 +29,23 @@ class Upload::ZipCheck < ActiveRecord::Base
           command: [
             "python3",
             "/tmp/scripts/zip_check.py",
-            "/tmp/upload/#{zip_file}",
+            "/tmp/upload/#{zip_filename}",
             "--output",
             "/tmp/output/zip_contents.json",
           ],
           image: "blendergrid/tools",
         },
       ],
-      metadata: { type: "zip-check", created_by: "blendergrid-on-rails" },
+      metadata: {
+        type: "zip-check",
+        zip_filename: zip_filename,
+        created_by: "blendergrid-on-rails",
+      },
     }
   end
 
-  def handle_result(result)
-    update(zip_contents: result.dig("zip_contents"))
+  def handle_completion
+    update(zip_contents: workflow.result&.dig("zip_contents"))
     upload.zip_check_done(self)
   end
 end

@@ -54,22 +54,68 @@ class UploadTest < ActiveSupport::TestCase
     assert @guest_upload.errors.key?(:guest_session_id)
   end
 
-  def setup
-    @guest_upload = Upload.new(
-      guest_email_address: "test@example.com",
-      guest_session_id: "1234"
-    )
-    attach_test_file(@guest_upload)
+  test "single blend upload should return all blend filepaths" do
+    upload = Upload.new(user: users(:verified_user))
+    attach_blend_file(upload)
 
-    @user_upload = Upload.new(user: users(:verified_user))
-    attach_test_file(@user_upload)
+    assert_equal [ "cube-1.blend" ], upload.blend_filepaths
   end
 
-  def attach_test_file(upload)
-    upload.files.attach(
-      io: File.open(Rails.root.join("test/fixtures/files/cube.blend")),
-      filename: "cube.blend",
-      content_type: "application/octet-stream"
-    )
+  test "multiple blend upload should return all blend filepaths" do
+    upload = Upload.new(user: users(:verified_user))
+    attach_blend_file(upload, count: 3)
+
+    assert_equal [ "cube-1.blend", "cube-2.blend", "cube-3.blend" ],
+      upload.blend_filepaths
   end
+
+  test "single zip without blends upload should return empty blend filepaths" do
+    upload = Upload.new(user: users(:verified_user))
+    attach_zip_file(upload)
+
+    assert_equal [], upload.blend_filepaths
+  end
+
+  test "single zip with blends upload should return all blend filepaths" do
+    upload = Upload.new(user: users(:verified_user))
+    attach_zip_file(upload)
+    upload.files.first.metadata[:blend_filepaths] = [ "orange.blend", "apple.blend" ]
+
+    assert_equal [ "orange.blend", "apple.blend" ], upload.blend_filepaths
+  end
+
+  private
+    def setup
+      @guest_upload = Upload.new(
+        guest_email_address: "test@example.com",
+        guest_session_id: "1234"
+      )
+      attach_blend_file(@guest_upload)
+
+      @user_upload = Upload.new(user: users(:verified_user))
+      attach_blend_file(@user_upload)
+
+      @zip_upload = Upload.new(user: users(:verified_user))
+      attach_zip_file(@user_upload)
+    end
+
+    def attach_blend_file(upload, count: 1)
+      count.times do |i|
+        upload.files.attach(
+          io: File.open(Rails.root.join("test/fixtures/files/cube.blend")),
+          filename: "cube-#{i+1}.blend",
+          content_type: "application/octet-stream"
+        )
+      end
+    end
+
+    def attach_zip_file(upload, count: 1)
+      count.times do |i|
+        upload.files.attach(
+          io: File.open(Rails.root.join("test/fixtures/files/2-blends.zip")),
+          filename: "2-blends-#{i+1}.zip",
+          content_type: "application/zip"
+        )
+      end
+    end
 end

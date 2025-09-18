@@ -25,6 +25,9 @@
 .input_group:has(.field_with_errors) {
   @apply bg-red-100 dark:bg-red-950 outline-red-800/50 dark:outline-red-300 border-red-800/50 dark:border-red-300;
 }
+.field_with_errors {
+  @apply contents
+}
 .field_with_errors > label {
   @apply text-red-900 dark:text-red-100;
 }

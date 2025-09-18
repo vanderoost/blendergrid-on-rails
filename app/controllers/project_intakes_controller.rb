@@ -8,7 +8,9 @@ class ProjectIntakesController < ApplicationController
     if @project_intake.save
       redirect_back fallback_location: projects_path
     else
-      render :new, status: :unprocessable_content
+      @quote = Quote.new
+      @order = Order.new
+      render "uploads/show", status: :unprocessable_content
     end
   end
 

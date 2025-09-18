@@ -201,8 +201,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
 
   create_table "upload_zip_checks", force: :cascade do |t|
     t.integer "upload_id"
-    t.string "status"
-    t.string "zip_file"
+    t.string "zip_filename"
     t.json "zip_contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

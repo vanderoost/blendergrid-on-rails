@@ -11,5 +11,9 @@ module Workflowable
     def make_start_message
       raise NotImplementedError
     end
+
+    def ongoing?
+      [ :created, :started ].include? status.to_sym
+    end
   end
 end

@@ -1,6 +1,5 @@
-<%# TODO: Replace this with per-field error messages %>
 <% if form.object.errors.any? %>
-  <div class="error-explanation">
+  <div class="text-red-600 dark:text-red-400 my-2 text-sm">
     <% form.object.errors.full_messages.each do |message| %>
       <p><%= message %></p>
     <% end %>

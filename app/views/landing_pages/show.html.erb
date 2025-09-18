@@ -6,9 +6,7 @@
   <% end %>
 <% else %>
   <section>
-    <h1 class="text-3xl lg:text-5xl xl:text-6xl font-bold">
-      Upload a .blend file
-    </h1>
-    <%= render "landing_pages/sections/upload" %>
+    <%= render "landing_pages/sections/upload",
+      content: {"heading" => "Fast rendering for Blender"} %>
   </section>
 <% end %>

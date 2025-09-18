@@ -5,7 +5,9 @@
       "Bash(gem install:*)",
       "Bash(find:*)",
       "WebSearch",
-      "WebFetch(domain:docs.stripe.com)"
+      "WebFetch(domain:docs.stripe.com)",
+      "Bash(bundle exec rails test:*)",
+      "Bash(git show:*)"
     ],
     "deny": [],
     "ask": []
