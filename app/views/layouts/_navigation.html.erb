@@ -6,7 +6,7 @@
           current_page: (current_page?(root_path) || controller_name == "uploads" ||
             controller_name == "project_intakes")
         },
-        {title: "Projects", path: projects_path},
+        {title: "Projects", path: projects_path, current_page: controller_name == "projects"},
         {title: "Pricing", path: "/pricing"},
     ]
 

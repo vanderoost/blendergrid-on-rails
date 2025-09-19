@@ -46,21 +46,25 @@
                   </td>
                   <td class="hidden py-5 pr-6 sm:table-cell">
                     <div class="text-sm/6 text-gray-900 dark:text-white">
-                      <%= form.fields_for :project_settings, project.settings,
-                        index: project.uuid do |fields| %>
-                        <%= fields.collection_radio_buttons :frame_range_type,
-                                                        FrameRangeType.all,
-                                                        :id,
-                                                        :name %>
-                      <% end %>
+
+                      <div class="mt-6 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                        <%= form.fields_for :project_settings, project.settings, index: project.uuid do |fields| %>
+                          <%= fields.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
+                            <div class="flex items-center">
+                              <%= b.radio_button(class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden") %>
+                              <%= b.label(class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white") %>
+                            </div>
+                          <% end %>
+                        <% end %>
+                      </div>
                     </div>
                     <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Frame 3</div>
                   </td>
                   <td class="py-5 text-right">
                     <div class="flex justify-end">
-                      <a href="#" class="text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                      <%= link_to edit_project_path(project), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" do %>
                         Edit<span class="hidden sm:inline"> settings</span>
-                      </a>
+                      <% end %>
                     </div>
                     <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Found warnings</div>
                   </td>

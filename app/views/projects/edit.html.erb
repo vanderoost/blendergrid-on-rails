@@ -1,0 +1,352 @@
+<form class="my-4">
+  <div class="space-y-12">
+
+    <div class="border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <nav aria-label="Breadcrumb" class="flex">
+        <ol role="list" class="flex items-center space-x-4">
+          <li>
+            <div>
+              <%= link_to root_path, { class:"text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"} do %>
+                <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0">
+                  <path d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+                <span class="sr-only">Home</span>
+              <% end %>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
+                <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+              <%= link_to "Projects", :projects, { class: "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" } %>
+            </div>
+          </li>
+          <li>
+            <div class="flex items-center">
+              <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
+                <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+              <span aria-current="page" class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">Settings for <%= @project.name %></span>
+            </div>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+    <!-- Scene section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Scene</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which Scene and Camera to render.</p>
+      </div>
+
+      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Scene name</label>
+          <div class="mt-2 grid grid-cols-1">
+            <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+              <option>Scene</option>
+              <option>House</option>
+              <option>Dog</option>
+            </select>
+            <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+              <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="sm:col-span-3">
+          <label for="country" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Camera</label>
+          <div class="mt-2 grid grid-cols-1">
+            <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+              <option>Camera 1</option>
+              <option>Camera 2</option>
+              <option>Hidden Camera</option>
+            </select>
+            <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+              <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Frame Range section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Frame Range</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which frames to render.</p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+        <fieldset>
+          <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Type</legend>
+          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Render a single image, or an animation.</p>
+          <div class="mt-6 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+            <div class="flex items-center">
+              <input id="email" type="radio" name="notification-method" checked class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="email" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">Image</label>
+            </div>
+            <div class="flex items-center">
+              <input id="sms" type="radio" name="notification-method" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="sms" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">Animation</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-2 sm:col-start-1">
+            <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Start Frame</label>
+            <div class="mt-2">
+              <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="region" class="block text-sm/6 font-medium text-gray-900 dark:text-white">End Frame</label>
+            <div class="mt-2">
+              <input id="region" type="text" name="region" autocomplete="address-level1" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="postal-code" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Frame Step</label>
+            <div class="mt-2">
+              <input id="postal-code" type="text" name="postal-code" autocomplete="postal-code" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-2 sm:col-start-1">
+            <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Frame</label>
+            <div class="mt-2">
+              <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resolution section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Resolution</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the resolution to render at.</p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-2 sm:col-start-1">
+            <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Width (x)</label>
+            <div class="mt-2">
+              <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="region" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Height (y)</label>
+            <div class="mt-2">
+              <input id="region" type="text" name="region" autocomplete="address-level1" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="postal-code" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Percentage (%)</label>
+            <div class="mt-2">
+              <input id="postal-code" type="text" name="postal-code" autocomplete="postal-code" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- File Output section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Output File</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which file format to save as.</p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-3">
+            <label for="country" class="block text-sm/6 font-medium text-gray-900 dark:text-white">File Format</label>
+            <div class="mt-2 grid grid-cols-1">
+              <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+                <option>PNG</option>
+                <option>JPG</option>
+                <option>EXR</option>
+                <option>FFMPEG</option>
+              </select>
+              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color</legend>
+          <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+            <div class="flex items-center">
+              <input id="color_bw" type="radio" name="color" checked class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="color_bw" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">BW</label>
+            </div>
+            <div class="flex items-center">
+              <input id="color_rgb" type="radio" name="color" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="color_bw" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">RGB</label>
+            </div>
+            <div class="flex items-center">
+              <input id="color_rgba" type="radio" name="color" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="color_rgba" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">RGBA</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color Depth</legend>
+          <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+            <div class="flex items-center">
+              <input id="color_bw" type="radio" name="color" checked class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="color_bw" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">8-bit</label>
+            </div>
+            <div class="flex items-center">
+              <input id="color_rgb" type="radio" name="color" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+              <label for="color_bw" class="ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white">16-bit</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-3">
+            <label for="country" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Video Container</label>
+            <div class="mt-2 grid grid-cols-1">
+              <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+                <option>MP4</option>
+                <option>MOV</option>
+                <option>AVI</option>
+              </select>
+              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          <div class="sm:col-span-3">
+            <label for="country" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Video Codec</label>
+            <div class="mt-2 grid grid-cols-1">
+              <select id="country" name="country" autocomplete="country-name" class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500">
+                <option>H264</option>
+                <option>H265</option>
+                <option>AV1</option>
+              </select>
+              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sampling section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Sampling</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the sampling settings for Cycles.</p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+
+        <div class="flex items-center gap-3">
+          <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+            <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+            <input id="use_adaptive_sampling" type="checkbox" name="annual-billing" aria-labelledby="annual-billing-label" aria-describedby="annual-billing-description" class="absolute inset-0 appearance-none focus:outline-hidden" />
+          </div>
+
+          <div class="text-sm space-x-1 sm:space-x-2">
+            <label for="use_adaptive_sampling" id="annual-billing-label" class="font-medium text-gray-900 dark:text-white">Use Adaptive Sampling</label>
+            <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
+          </div>
+        </div>
+
+
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-2 sm:col-start-1">
+            <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Noise Threshold</label>
+            <div class="mt-2">
+              <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="region" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Min. Samples</label>
+            <div class="mt-2">
+              <input id="region" type="text" name="region" autocomplete="address-level1" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label for="postal-code" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Max. Samples</label>
+            <div class="mt-2">
+              <input id="postal-code" type="text" name="postal-code" autocomplete="postal-code" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-2 sm:col-start-1">
+            <label for="city" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Samples</label>
+            <div class="mt-2">
+              <input id="city" type="text" name="city" autocomplete="address-level2" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- General section -->
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">General</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Various other settings.</p>
+      </div>
+
+      <div class="max-w-2xl space-y-10 md:col-span-2">
+
+        <div class="flex items-center gap-3">
+          <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+            <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+            <input id="use_adaptive_sampling" type="checkbox" name="annual-billing" aria-labelledby="annual-billing-label" aria-describedby="annual-billing-description" class="absolute inset-0 appearance-none focus:outline-hidden" />
+          </div>
+
+          <div class="text-sm space-x-1 sm:space-x-2">
+            <label for="use_adaptive_sampling" id="annual-billing-label" class="font-medium text-gray-900 dark:text-white">Transparent</label>
+            <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Make the background transparent.</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+            <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+            <input id="use_adaptive_sampling" type="checkbox" name="annual-billing" aria-labelledby="annual-billing-label" aria-describedby="annual-billing-description" class="absolute inset-0 appearance-none focus:outline-hidden" />
+          </div>
+
+          <div class="text-sm space-x-1 sm:space-x-2">
+            <label for="use_adaptive_sampling" id="annual-billing-label" class="font-medium text-gray-900 dark:text-white">Burn Metadata Into Image</label>
+            <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="mt-6 flex items-center justify-end gap-x-6">
+    <button type="button" class="text-sm/6 font-semibold text-gray-900 dark:text-white">Cancel</button>
+    <button type="submit" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500">Save</button>
+  </div>
+</form>
