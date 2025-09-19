@@ -1,6 +1,8 @@
 module Project::States
   class BaseState
-    def initialize(project) = @project = project
+    def initialize(project)
+      @project = project
+    end
 
     Project::EVENTS.each do |event|
       define_method(event) do |*|

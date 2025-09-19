@@ -28,11 +28,14 @@
     <% if @upload.blend_filepaths.empty? && @upload.ongoing_zip_checks.empty? %>
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-          <h2 class="text-base font-semibold text-gray-900 dark:text-white">No .blend files found!</h2>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+            No .blend files found!
+          </h2>
         </div>
       </div>
     <% end %>
   </div>
 <% end %>
 
-<%= render "projects/grouped", projects: @upload.projects %>
+<%#= render "projects/grouped", projects: @upload.projects %>
+<%= render @upload.projects.in_stages %>

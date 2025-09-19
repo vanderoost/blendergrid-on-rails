@@ -21,6 +21,19 @@ class Project < ApplicationRecord
 
   after_create :start_checking
 
+  def self.in_stages
+    all.group_by(&:stage).map { |stage, projects| stage.new(projects) }.sort_by(&:order)
+  end
+
+  def stage
+    case status.to_sym
+    when :created, :checking, :checked then Project::Stages::Analysis
+    when :benchmarking, :enchmarked then Project::Stages::Pricing
+    when :rendering then Project::Stages::Rendering
+    when :rendered, :cancelled, :failed then Project::Stages::Archive
+    end
+  end
+
   def settings(override: nil)
     Project::ResolvedSettings.new(revisions: [
       blend_check&.settings,
