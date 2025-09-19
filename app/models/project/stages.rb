@@ -8,7 +8,7 @@ module Project::Stages
     end
 
     def to_partial_path
-      "project/stages/#{self.class.name.demodulize.underscore}"
+      "projects/stage_#{self.class.name.demodulize.underscore}"
     end
 
     def status

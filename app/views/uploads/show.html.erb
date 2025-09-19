@@ -1,5 +1,5 @@
-<% if false && @upload.ongoing_zip_checks.any? %>
-  <meta http-equiv="refresh" content="3">
+<% if @upload.ongoing_zip_checks.any? || @upload.projects.select(&:in_progress?).any? %>
+  <meta http-equiv="refresh" content="300">
 <% end %>
 
 <% if @upload.projects.empty? || @upload.ongoing_zip_checks.any? %>
@@ -37,5 +37,5 @@
   </div>
 <% end %>
 
-<%#= render "projects/grouped", projects: @upload.projects %>
+<%= turbo_stream_from :projects %>
 <%= render @upload.projects.in_stages %>

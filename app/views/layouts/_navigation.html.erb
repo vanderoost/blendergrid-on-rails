@@ -4,7 +4,7 @@
           title: "Start",
           path: root_path,
           current_page: (current_page?(root_path) || controller_name == "uploads" ||
-            controller_name = "project_intakes") && ! current_page?(projects_path)
+            controller_name == "project_intakes")
         },
         {title: "Projects", path: projects_path},
         {title: "Pricing", path: "/pricing"},

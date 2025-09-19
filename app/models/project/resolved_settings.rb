@@ -13,12 +13,11 @@ class Project::ResolvedSettings
 
   # Helpers
   def frame_range_type
-    output.frame_range.type.to_sym
-  end
-  def frame_range_type
+    return nil unless output&.frame_range&.type
     output.frame_range.type.to_sym
   end
   def frame_count
+    return nil unless frame_range_type
     if frame_range_type == :animation
       (output.frame_range.start..output.frame_range.end)
         .step(output.frame_range.step).count
@@ -29,12 +28,17 @@ class Project::ResolvedSettings
     end
   end
   def res_x
+    return nil unless output&.format&.resolution_x &&
+      output&.format&.resolution_percentage
     (output.format.resolution_x * output.format.resolution_percentage / 100.0).round
   end
   def res_y
+    return nil unless output&.format&.resolution_y &&
+      output&.format&.resolution_percentage
     (output.format.resolution_y * output.format.resolution_percentage / 100.0).round
   end
   def spp
+    return nil unless render&.sampling&.max_samples
     render.sampling.max_samples
   end
 
@@ -46,7 +50,7 @@ class Project::ResolvedSettings
     value = @data[name]
     return wrap_child(name, value) unless value.nil?
 
-    super
+    nil
   end
 
   private
