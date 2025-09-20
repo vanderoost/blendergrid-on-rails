@@ -13,7 +13,7 @@ class Order::Item < ApplicationRecord
 
     if refund_cents.positive? and user.present?
       puts "TOPPING UP CREDIT"
-      user.update(credit: user.credit + refund_cents)
+      user.update(render_credit_cents: user.render_credit_cents + refund_cents)
     else
       puts "NO USER ASSOCIATED"
       # TODO: Figure out how to handle the refund wihtout a user

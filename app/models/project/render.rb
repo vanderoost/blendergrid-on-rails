@@ -1,4 +1,3 @@
-
 class Project::Render < ApplicationRecord
   include Workflowable
 
@@ -52,6 +51,7 @@ class Project::Render < ApplicationRecord
         {
           job_id: "frame-$frame",
           command: [
+            "--enable-autoexec",
             "/tmp/project/#{project.blend_filepath}",
             "--python",
             "/tmp/scripts/init.py",
@@ -81,7 +81,8 @@ class Project::Render < ApplicationRecord
   end
 
   def handle_completion
-    project.finish_rendering
+    project.finish_rendering if workflow.finished?
+    project.fail if workflow.failed?
   end
 
   private

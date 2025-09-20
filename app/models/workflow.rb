@@ -13,7 +13,7 @@ class Workflow < ApplicationRecord
   delegate :handle_completion, to: :workflowable
 
   after_create :start
-  after_update :handle_completion, if: :just_finished?
+  after_update :handle_completion, if: :just_done?
 
   def stop
     SwarmEngine.new.stop_workflow self
@@ -26,13 +26,14 @@ class Workflow < ApplicationRecord
   private
     def start
       SwarmEngine.new.start_workflow self
+      update! status: :started
     end
 
     def start_later
       # TODO: Use a background job to start the workflow
     end
 
-    def just_finished?
-      status_previously_changed? && finished?
+    def just_done?
+      status_previously_changed? && (finished? || failed?)
     end
 end
