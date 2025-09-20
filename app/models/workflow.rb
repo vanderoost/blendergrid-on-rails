@@ -15,6 +15,11 @@ class Workflow < ApplicationRecord
   after_create :start
   after_update :handle_completion, if: :just_finished?
 
+  def stop
+    # TODO
+    puts "GOING TO STOP WORKFLOW #{self.uuid}"
+  end
+
   private
     def start
       SwarmEngine.new.start_workflow self

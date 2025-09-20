@@ -61,6 +61,7 @@ module Project::States
 
     def cancel
       @project.cancelled!
+      @project.handle_cancellation
     end
 
     def fail

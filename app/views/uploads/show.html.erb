@@ -1,5 +1,5 @@
 <% if @upload.ongoing_zip_checks.any? || @upload.projects.select(&:in_progress?).any? %>
-  <meta http-equiv="refresh" content="300">
+  <meta http-equiv="refresh" content="5">
 <% end %>
 
 <% if @upload.projects.empty? || @upload.ongoing_zip_checks.any? %>

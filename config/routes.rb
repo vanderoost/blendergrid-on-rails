@@ -16,7 +16,9 @@ Rails.application.routes.draw do
   end
   resources :quotes
   resources :orders
-  resources :projects, param: :uuid
+  resources :projects, param: :uuid do
+    resources :renders
+  end
 
   # API
   namespace :api do

@@ -14,6 +14,7 @@ class Project < ApplicationRecord
   has_one :order_item, class_name: "Order::Item"
 
   delegate :user, to: :upload
+  delegate :order, to: :order_item, allow_nil: true
 
   after_create :start_checking
 
@@ -61,6 +62,11 @@ class Project < ApplicationRecord
       benchmark_settings: benchmark_settings,
       workflow: self.benchmark.workflow
     ).price_cents
+  end
+
+  def handle_cancellation
+    render.workflow.stop
+    order_item.partial_refund render.workflow.progress_permil if order_item.present?
   end
 
   def blend_check = latest(:blend_check)

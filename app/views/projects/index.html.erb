@@ -1,5 +1,5 @@
-<% if false && @projects.select(&:in_progress?).any? %>
-  <meta http-equiv="refresh" content="30">
+<% if @projects.select(&:in_progress?).any? %>
+  <meta http-equiv="refresh" content="10">
 <% end %>
 
 <%= turbo_stream_from :projects %>

@@ -24,6 +24,16 @@ class Order < ApplicationRecord
     @checkout.start_checkout_session
   end
 
+  def partial_refund(permil)
+    percent = permil.fdiv(10)
+    refund_cents = price_cents * permil.fdiv(1000)
+    puts "REFUNDING #{percent}% OF $#{refund_cents.fdiv(100)} ="\
+      " $#{refund_cents.fdiv(100)}"
+
+    # First refund in Render credit only.
+    # After a timeout, and the credit hasn't been used, do a full refund.
+  end
+
   private
     def create_line_items
       # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then

@@ -5,6 +5,8 @@ class Project::Render < ApplicationRecord
 
   belongs_to :project
 
+  before_destroy :cancel_project
+
   def owner = project
 
   def make_start_message
@@ -92,7 +94,9 @@ class Project::Render < ApplicationRecord
   def handle_completion
     project.finish_rendering
   end
-  # def handle_result(result)
-  #   logger.info "Render result: #{result}"
-  # end
+
+  private
+    def cancel_project
+      project.cancel
+    end
 end

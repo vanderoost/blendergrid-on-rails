@@ -15,21 +15,6 @@
     <%= "Price: #{number_to_currency(project.price_cents&.fdiv(100))}" %>
   <% end %>
 
-  <% if project.render.present? %>
-    <%= tag.div id: dom_id(project.render) do %>
-      <div>
-        <%= "Render Progress: #{number_to_percentage(
-          project.render.workflow.progress_permil&.fdiv(10), precision: 1
-        )}" %>
-      </div>
+  <%= render partial: "renders/render", object: project.render if project.render.present? %>
 
-      <div>
-        <%= "ETA: #{time_ago_in_words(project.render.workflow.eta || 1.hour.from_now)}" %>
-      </div>
-
-      <% project.render.frame_urls.each do |url| %>
-        <%= image_tag url, loading: "lazy", width: 240, alt: File.basename(url, ".*") %>
-      <% end %>
-    <% end %>
-  <% end %>
 <% end %>
