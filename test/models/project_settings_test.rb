@@ -5,7 +5,7 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     project = Project.new
     project.blend_checks.new(settings: { foo: "fighters" })
 
-    assert_equal project.settings.foo, "fighters"
+    assert_equal "fighters", project.settings.foo
   end
 
   test "project merges multiple settings revisions" do
@@ -13,8 +13,8 @@ class ProjectSettingsTest < ActiveSupport::TestCase
     project.blend_checks.new(settings: { foo: "fighters" })
     project.benchmarks.new(settings: { bar: "bighters" })
 
-    assert_equal project.settings.foo, "fighters"
-    assert_equal project.settings.bar, "bighters"
+    assert_equal "fighters", project.settings.foo
+    assert_equal "bighters", project.settings.bar
   end
 
   test "resolution helpers are working" do
@@ -26,12 +26,12 @@ class ProjectSettingsTest < ActiveSupport::TestCase
           resolution_y: 1080,
           resolution_percentage: 50,
         },
-        output: { frame_range: { type: "image" } },
+        frame_range: { type: "image" },
       },
     })
 
-    assert_equal project.settings.res_x, 960
-    assert_equal project.settings.res_y, 540
+    assert_equal 960, project.settings.res_x
+    assert_equal 540, project.settings.res_y
   end
 
   test "later settings revision overrides earlier ones" do
@@ -43,15 +43,22 @@ class ProjectSettingsTest < ActiveSupport::TestCase
           resolution_y: 1080,
           resolution_percentage: 50,
         },
-        output: { frame_range: { type: "image" } },
+        frame_range: {
+          type: "image",
+          start: 1001,
+          end: 1100,
+          single: 1010,
+        },
       },
     })
     project.benchmarks.new(settings: {
-      output: { frame_range: { type: "animation" } },
+      output: { frame_range: {
+        type: "animation",
+      } },
     })
 
-    assert_equal project.settings.res_x, 960
-    assert_equal project.settings.res_y, 540
-    assert_equal project.settings.frame_range_type, :animation
+    assert_equal 960, project.settings.res_x
+    assert_equal 540, project.settings.res_y
+    assert_equal :animation, project.settings.frame_range_type
   end
 end

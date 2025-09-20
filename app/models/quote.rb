@@ -12,9 +12,10 @@ class Quote
       project = Project.find_by(uuid: uuid)
       next if project.nil?
 
-      # TODO: Actually pass through the settings
-      # project.benchmarks.create(settings: settings)
-      project.start_benchmarking(settings: settings)
+      # TODO: Make this cleaner
+      project.start_benchmarking(settings: {
+        output: { frame_range: { type: settings["frame_range_type"] } },
+      })
     end
   end
 end

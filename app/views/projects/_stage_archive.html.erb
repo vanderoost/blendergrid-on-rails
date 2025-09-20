@@ -1,13 +1,13 @@
 <div class="mt-6">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <h2 class="mx-auto max-w-2xl text-base uppercase text-gray-500 lg:mx-0 lg:max-w-none dark:text-gray-400">
+    <h2 class="mx-auto text-base uppercase text-gray-500 lg:mx-0 dark:text-gray-400">
       Done
     </h2>
   </div>
 
-  <div class="bg-white dark:bg-gray-900 mt-3 overflow-hidden border border-gray-100 dark:border-white/10 rounded-xl">
+  <div class="bg-white dark:bg-gray-800/50 mt-3 overflow-hidden border border-gray-100 dark:border-white/10 rounded-xl">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
+      <div class="mx-auto lg:mx-0">
         <table class="w-full text-left">
           <thead class="sr-only">
             <tr>
@@ -19,7 +19,7 @@
           <tbody>
 
             <% stage_archive.projects.each do |project| %>
-              <tr>
+              <tr class="group/row">
                 <td class="relative py-5 pr-6">
                   <div class="flex gap-x-6">
                     <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="hidden h-6 w-5 flex-none text-gray-400 sm:block dark:text-gray-500">
@@ -37,8 +37,8 @@
                       <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Created <%= time_ago_in_words(project.created_at) %> ago</div>
                     </div>
                   </div>
-                  <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10"></div>
-                  <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10"></div>
+                  <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+                  <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
                 </td>
                 <td class="hidden py-5 pr-6 sm:table-cell">
                   <div class="text-sm/6 text-gray-900 dark:text-white">

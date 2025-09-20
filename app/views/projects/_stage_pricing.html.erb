@@ -1,6 +1,6 @@
 <div class="mt-6">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <h2 class="mx-auto max-w-2xl text-base uppercase text-gray-500 lg:mx-0 lg:max-w-none dark:text-gray-400">
+    <h2 class="mx-auto text-base uppercase text-gray-500 lg:mx-0 dark:text-gray-400">
       Price calculation
     </h2>
   </div>
@@ -8,9 +8,9 @@
   <%= form_with model: @order || Order.new,
     data: { turbo: false } do |form| %>
 
-    <div class="bg-white dark:bg-gray-900 mt-3 overflow-hidden border border-gray-100 dark:border-white/10 rounded-xl">
+    <div class="bg-white dark:bg-gray-800/50 mt-3 overflow-hidden border border-gray-100 dark:border-white/10 rounded-xl">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
+        <div class="mx-auto lg:mx-0">
           <table class="w-full text-left">
             <thead class="sr-only">
               <tr>
@@ -22,7 +22,7 @@
             <tbody>
 
               <% stage_pricing.projects.each do |project| %>
-                <tr>
+                <tr class="group/row">
                   <td class="relative py-5 pr-6">
                     <div class="flex gap-x-6">
                       <% if project.in_progress? %>
@@ -39,22 +39,27 @@
                             <%= project.status.titleize %>
                           </div>
                         </div>
-                        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Created <%= time_ago_in_words(project.created_at) %> ago</div>
+                        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+                          <% if project.in_progress? %>
+                            Created <%= time_ago_in_words(project.created_at) %> ago
+                          <% else %>
+                            <%= number_to_currency(project.price_cents.fdiv(100)) %> USD
+                          <% end %>
+                        </div>
                       </div>
                     </div>
-                    <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10"></div>
-                    <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10"></div>
+                    <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+                    <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
                   </td>
                   <td class="hidden py-5 pr-6 sm:table-cell">
                     <div class="text-sm/6 text-gray-900 dark:text-white">
 
-                      <%= form.fields_for :project_settings, project.settings,
-                        index: project.uuid do |fields| %>
+                      <%= form.fields_for :project_settings, project.settings, index: project.uuid do |fields| %>
                         <%= fields.number_field :cycles_samples, value: project.settings.spp %>
                       <% end %>
 
                     </div>
-                    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Frame 3</div>
+                    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400"><%= frame_description project %></div>
                   </td>
                   <td class="py-5 text-right">
                     <div class="flex justify-end">
@@ -76,8 +81,8 @@
     <%= render "shared/form_errors", form: form %>
 
     <% unless stage_pricing.projects.all?(&:in_progress?) %>
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-end">
-        <%= form.submit "Start Rendering", class: "mt-4 rounded-md bg-primary-600 -mr-3 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
+      <div class="mx-auto max-w-7xl flex justify-end">
+        <%= form.submit "Start Rendering", class: "text-sm lg:text-base mt-4 rounded-xl bg-primary-600 px-4 sm:px-6 lg:px-8 py-2 lg:py-3 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
       </div>
     <% end %>
   <% end %>

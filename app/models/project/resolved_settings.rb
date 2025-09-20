@@ -14,7 +14,17 @@ class Project::ResolvedSettings
   # Helpers
   def frame_range_type
     return nil unless output&.frame_range&.type
+    return :image if start_frame == end_frame
     output.frame_range.type.to_sym
+  end
+  def start_frame
+    output&.frame_range&.start
+  end
+  def end_frame
+    output&.frame_range&.end
+  end
+  def single_frame
+    output&.frame_range&.single
   end
   def frame_count
     return nil unless frame_range_type
