@@ -9,6 +9,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
   test "should create a new user from a signup" do
     assert_difference("User.count", 1) do
       post signups_url, params: { signup: {
+        name: "Nassim Taleb",
         email_address: "foo@fighters.bar",
         password: "secretly",
         password_confirmation: "secretly",

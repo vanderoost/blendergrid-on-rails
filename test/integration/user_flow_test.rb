@@ -9,6 +9,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
 
     assert_emails 1 do
       post signups_path, params: { signup: {
+        name: "Nassim Taleb",
         email_address: "foo@fighter.bar",
         password: "password",
         password_confirmation: "password",

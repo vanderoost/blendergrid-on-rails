@@ -18,6 +18,6 @@ class SignupsController < ApplicationController
 
   def signup_params
     # params.permit(:email, :password, :password_confirmation)
-    params.expect(signup: [ :email_address, :password, :password_confirmation ])
+    params.expect(signup: [ :name, :email_address, :password, :password_confirmation ])
   end
 end
