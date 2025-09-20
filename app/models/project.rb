@@ -1,3 +1,5 @@
+require "aws-sdk-s3"
+
 class Project < ApplicationRecord
   STATES = %i[ created checking checked benchmarking benchmarked rendering rendered
     cancelled failed ].freeze
@@ -62,6 +64,16 @@ class Project < ApplicationRecord
       benchmark_settings: benchmark_settings,
       workflow: self.benchmark.workflow
     ).price_cents
+  end
+
+  def frame_urls
+    bucket_name = Rails.configuration.swarm_engine[:bucket]
+    prefix = "projects/#{uuid}/output/frames/"
+    s3 = Aws::S3::Resource.new
+    bucket = s3.bucket(bucket_name)
+    bucket.objects(prefix: prefix)
+      .sort_by(&:key)
+      .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
   end
 
   def handle_cancellation

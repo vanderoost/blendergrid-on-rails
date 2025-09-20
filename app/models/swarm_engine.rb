@@ -19,6 +19,18 @@ class SwarmEngine
     )
   end
 
+  def stop_workflow(workflow)
+    message = workflow.make_stop_message
+
+    client.publish(
+      message: message.to_json,
+      topic_arn: self.topic_arn,
+      message_attributes: {
+        event_type: { data_type: "String", string_value: "workflow_stopped" },
+      }
+    )
+  end
+
   private
     def client
       @sns ||= Aws::SNS::Client.new

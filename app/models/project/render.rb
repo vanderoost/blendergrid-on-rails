@@ -1,4 +1,3 @@
-require "aws-sdk-s3"
 
 class Project::Render < ApplicationRecord
   include Workflowable
@@ -79,16 +78,6 @@ class Project::Render < ApplicationRecord
         project_name: project.blend_filepath,
       },
     }
-  end
-
-  def frame_urls
-    bucket_name = Rails.configuration.swarm_engine[:bucket]
-    prefix = "projects/#{project.uuid}/output/frames/"
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket(bucket_name)
-    bucket.objects(prefix: prefix)
-      .sort_by(&:key)
-      .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
   end
 
   def handle_completion

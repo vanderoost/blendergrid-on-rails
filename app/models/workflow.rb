@@ -16,8 +16,11 @@ class Workflow < ApplicationRecord
   after_update :handle_completion, if: :just_finished?
 
   def stop
-    # TODO
-    puts "GOING TO STOP WORKFLOW #{self.uuid}"
+    SwarmEngine.new.stop_workflow self
+  end
+
+  def make_stop_message
+    { workflow_id: uuid }
   end
 
   private
@@ -26,7 +29,7 @@ class Workflow < ApplicationRecord
     end
 
     def start_later
-      # TODO
+      # TODO: Use a background job to start the workflow
     end
 
     def just_finished?
