@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit ]
-  allow_unauthenticated_access only: %i[ index show edit ]
+  before_action :set_project, only: %i[ show edit update ]
+  allow_unauthenticated_access only: %i[ index show edit update ]
 
   def index
     # @projects = Project.joins(:upload).merge(accessible_uploads)
@@ -14,13 +14,13 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project.update(project_params)
-    redirect_to @project
+    # TODO
+    redirect_back fallback_location: @project
   end
 
   private
     def project_params
-      params.require(:project).permit(:name, :description, :uuid)
+      params.require(:project).permit(draft_settings: {})
     end
 
     def set_project

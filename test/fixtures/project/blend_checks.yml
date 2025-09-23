@@ -4,17 +4,34 @@ active:
 finished:
   project: checked
   settings:
-    output:
-      format:
-        resolution_x: 1920
-        resolution_y: 1080
-        resolution_percentage: 100
-      frame_range:
-        type: "animation"
-        start: 1
-        end: 100
-        step: 1
-        single: 1
-    render:
-      sampling:
-        max_samples: 256
+    scene_name: Scene
+    scenes:
+      Scene:
+        scene:
+          camera_name: Camera
+        frame_range:
+          type: animation
+          start: 1001
+          end: 1100
+          step: 1
+          single: 1010
+        resolution:
+          x: 1680
+          y: 1080
+          percentage: 50
+        output_file:
+          file_format: PNG
+          color_mode: RGBA
+          color_depth: '8'
+          ffmpeg_format: MPEG1
+          ffmpeg_codec: NONE
+        sampling:
+          use_adaptive_sampling: false
+          noise_threshold: 0.01
+          max_samples: 256
+          min_samples: 0
+        general:
+          film_transparent: true
+          use_stamp: false
+          use_compositing: true
+          use_sequencer: true

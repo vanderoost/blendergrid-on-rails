@@ -22,12 +22,12 @@ class Project::Render < ApplicationRecord
 
     # Settings
     if project.settings.frame_range_type == :animation
-      frame_start = project.settings.output.frame_range.start
-      frame_end = project.settings.output.frame_range.end
-      frame_step = project.settings.output.frame_range.step
+      frame_start = project.settings.start_frame
+      frame_end = project.settings.end_frame
+      frame_step = project.settings.output&.frame_range&.step || 1
       frame_params = { start: frame_start, end: frame_end, step: frame_step }
     elsif project.settings.frame_range_type == :image
-      frame_params = project.settings.output.frame_range.single
+      frame_params = project.settings.single_frame
     else
       raise "Unknown frame range type: #{project.settings.frame_range_type}"
     end

@@ -46,12 +46,17 @@ class Project < ApplicationRecord
   end
 
   def settings(override: nil)
-    Project::ResolvedSettings.new(revisions: [
-      blend_check&.settings,
-      benchmark&.settings,
-      order_item&.settings,
-      override,
-    ])
+    # TODO: Make sure draft settings can't be changed after the order is placed
+    if draft_settings.present?
+      Project::ResolvedSettings.new(revisions: [ draft_settings, override ])
+    else
+      Project::ResolvedSettings.new(revisions: [
+        blend_check&.settings,
+        benchmark&.settings,
+        order_item&.settings,
+        override,
+      ])
+    end
   end
 
   def benchmark_settings
@@ -62,7 +67,7 @@ class Project < ApplicationRecord
     Pricing::Calculation.new(
       settings: settings(override: override_settings),
       benchmark_settings: benchmark_settings,
-      workflow: self.benchmark.workflow
+      workflow: benchmark.workflow
     ).price_cents
   end
 

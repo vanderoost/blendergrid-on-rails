@@ -35,12 +35,12 @@ class Project::Benchmark < ApplicationRecord
 
     # Frames
     if project.settings.frame_range_type == :animation
-      frame_start = project.settings.output.frame_range.start
-      frame_end = project.settings.output.frame_range.end
-      frame_step = project.settings.output.frame_range.step
+      frame_start = project.settings.start_frame
+      frame_end = project.settings.end_frame
+      frame_step = project.settings.output&.frame_range&.step || 1
       all_frames = (frame_start..frame_end).step(frame_step).to_a
     elsif project.settings.frame_range_type == :image
-      all_frames = [ project.settings.output.frame_range.single ]
+      all_frames = [ project.settings.single_frame ]
     end
 
     if project.settings.frame_count > 3
@@ -220,12 +220,12 @@ class Project::Benchmark < ApplicationRecord
 
       # Frames
       if project.settings.frame_range_type == :animation
-        frame_start = project.settings.output.frame_range.start
-        frame_end = project.settings.output.frame_range.end
-        frame_step = project.settings.output.frame_range.step
+        frame_start = project.settings.start_frame
+        frame_end = project.settings.end_frame
+        frame_step = project.settings.output&.frame_range&.step || 1
         all_frames = (frame_start..frame_end).step(frame_step).to_a
       elsif project.settings.frame_range_type == :image
-        all_frames = [ project.settings.output.frame_range.single ]
+        all_frames = [ project.settings.single_frame ]
       end
 
       if project.settings.frame_count > 3

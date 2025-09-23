@@ -37,24 +37,32 @@ class ProjectSettingsTest < ActiveSupport::TestCase
   test "later settings revision overrides earlier ones" do
     project = Project.new
     project.blend_checks.new(settings: {
-      output: {
-        format: {
-          resolution_x: 1920,
-          resolution_y: 1080,
-          resolution_percentage: 50,
-        },
-        frame_range: {
-          type: "image",
-          start: 1001,
-          end: 1100,
-          single: 1010,
+      scene_name: "Scene",
+      scenes: {
+        Scene: {
+          resolution: {
+            x: 1920,
+            y: 1080,
+            percentage: 50,
+          },
+          frame_range: {
+            type: "image",
+            start: 1001,
+            end: 1100,
+            single: 1010,
+          },
         },
       },
     })
     project.benchmarks.new(settings: {
-      output: { frame_range: {
-        type: "animation",
-      } },
+      scene_name: "Scene",
+      scenes: {
+        Scene: {
+          frame_range: {
+            type: "animation",
+          },
+        },
+      },
     })
 
     assert_equal 960, project.settings.res_x

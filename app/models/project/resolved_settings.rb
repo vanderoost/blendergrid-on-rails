@@ -11,26 +11,92 @@ class Project::ResolvedSettings
     @data
   end
 
-  # Helpers
   def frame_range_type
-    return nil unless output&.frame_range&.type
-    return :image if start_frame == end_frame
-    output.frame_range.type.to_sym
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      return nil unless scene&.frame_range&.type
+      return :image if scene.frame_range.start == scene.frame_range.end
+      scene.frame_range.type.to_sym
+    else
+      nil
+    end
   end
   def start_frame
-    output&.frame_range&.start
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      scene&.frame_range&.start
+    # Fallback to old structure
+    else
+      output&.frame_range&.start
+    end
   end
   def end_frame
-    output&.frame_range&.end
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      scene&.frame_range&.end
+    # Fallback to old structure
+    else
+      output&.frame_range&.end
+    end
   end
   def single_frame
-    output&.frame_range&.single
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      scene&.frame_range&.single
+    # Fallback to old structure
+    else
+      output&.frame_range&.single
+    end
   end
   def frame_count
     return nil unless frame_range_type
     if frame_range_type == :animation
-      (output.frame_range.start..output.frame_range.end)
-        .step(output.frame_range.step).count
+      if scenes && scene_name
+        scene_key = scene_name.to_sym
+        if scenes.respond_to?(scene_key)
+          scene = scenes.send(scene_key)
+        elsif scenes.respond_to?(:[]) && scenes[scene_key]
+          scene = wrap_child(scene_key, scenes[scene_key])
+        else
+          scene = nil
+        end
+        (scene.frame_range.start..scene.frame_range.end)
+          .step(scene.frame_range.step).count
+      else
+        (output.frame_range.start..output.frame_range.end)
+          .step(output.frame_range.step).count
+      end
     elsif frame_range_type == :image
       1
     else
@@ -38,21 +104,75 @@ class Project::ResolvedSettings
     end
   end
   def res_x
-    return nil unless output&.format&.resolution_x &&
-      output&.format&.resolution_percentage
-    (output.format.resolution_x * output.format.resolution_percentage / 100.0).round
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      return nil unless scene&.resolution&.x && scene&.resolution&.percentage
+      (scene.resolution.x * scene.resolution.percentage / 100.0).round
+    # Fallback to old structure
+    elsif output&.format&.resolution_x && output&.format&.resolution_percentage
+      (output.format.resolution_x * output.format.resolution_percentage / 100.0).round
+    else
+      nil
+    end
   end
   def res_y
-    return nil unless output&.format&.resolution_y &&
-      output&.format&.resolution_percentage
-    (output.format.resolution_y * output.format.resolution_percentage / 100.0).round
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      return nil unless scene&.resolution&.y && scene&.resolution&.percentage
+      (scene.resolution.y * scene.resolution.percentage / 100.0).round
+    # Fallback to old structure
+    elsif output&.format&.resolution_y && output&.format&.resolution_percentage
+      (output.format.resolution_y * output.format.resolution_percentage / 100.0).round
+    else
+      nil
+    end
   end
   def spp
-    return nil unless render&.sampling&.max_samples
-    render.sampling.max_samples
+    # Try new structure first (scenes-based)
+    if scenes && scene_name
+      scene_key = scene_name.to_sym
+      if scenes.respond_to?(scene_key)
+        scene = scenes.send(scene_key)
+      elsif scenes.respond_to?(:[]) && scenes[scene_key]
+        scene = wrap_child(scene_key, scenes[scene_key])
+      else
+        scene = nil
+      end
+      scene&.sampling&.max_samples
+    # Fallback to old structure
+    elsif render&.sampling&.max_samples
+      render.sampling.max_samples
+    else
+      nil
+    end
   end
 
   def [](key) = @data[key]
+
+  def each(&block)
+    return enum_for(:each) unless block_given?
+    @data.each(&block)
+  end
+
+  def keys
+    @data.keys
+  end
 
   def method_missing(name, *args)
     return super unless args.empty?
