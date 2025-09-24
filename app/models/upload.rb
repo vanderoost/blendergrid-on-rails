@@ -20,7 +20,7 @@ class Upload < ApplicationRecord
                                   if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
-  broadcasts
+  # broadcasts
 
   def ongoing_zip_checks
     zip_checks.select &:ongoing?
@@ -80,7 +80,8 @@ class Upload < ApplicationRecord
 
     def maybe_create_project
       if blend_filepaths.one? && ongoing_zip_checks.empty?
-        projects.create(blend_filepath: blend_filepaths.first)
+        project = projects.create!(blend_filepath: blend_filepaths.first)
+        raise "Project could not be created" unless project.persisted?
       end
     end
 end

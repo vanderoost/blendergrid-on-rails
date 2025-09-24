@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_23_135505) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -51,6 +51,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_articles_on_slug", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "blender_scenes", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name"
+    t.json "frame_range"
+    t.json "resolution"
+    t.json "sampling"
+    t.json "file_output"
+    t.json "camera"
+    t.json "post_processing"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_blender_scenes_on_project_id"
   end
 
   create_table "credit_entries", force: :cascade do |t|
@@ -153,12 +167,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
 
   create_table "projects", force: :cascade do |t|
     t.integer "upload_id"
+    t.integer "current_blender_scene_id"
     t.string "uuid", null: false
     t.string "status"
     t.string "blend_filepath"
     t.json "draft_settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["current_blender_scene_id"], name: "index_projects_on_current_blender_scene_id"
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
   end
@@ -250,5 +266,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_10_104510) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "projects", "blender_scenes", column: "current_blender_scene_id"
   add_foreign_key "sessions", "users"
 end

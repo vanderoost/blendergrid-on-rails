@@ -10,6 +10,8 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
+  belongs_to :current_blender_scene, class_name: "BlenderScene", optional: true
+  has_many :blender_scenes
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
@@ -20,7 +22,7 @@ class Project < ApplicationRecord
 
   after_create :start_checking
 
-  broadcasts_to ->(project) { :projects }
+  # broadcasts_to ->(project) { :projects }
 
   validates :blend_filepath, presence: true
 
