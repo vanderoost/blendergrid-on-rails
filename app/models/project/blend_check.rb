@@ -49,16 +49,9 @@ class Project::BlendCheck < ApplicationRecord
 
   def handle_completion
     current_scene_name = workflow.result&.dig("settings", "scene_name")
-    puts "CURRENT SCENE NAME: #{current_scene_name}"
     workflow.result&.dig("settings", "scenes")&.each do |scene_name, settings|
-      puts "SCENE NAME: #{scene_name}"
       blender_scene = project.blender_scenes.find_or_initialize_by(name: scene_name)
-
-      puts "SETTINGS: #{settings}"
-      sliced_settings = settings.slice(*BlenderScene.column_names)
-      puts "SLICED SETTINGS: #{sliced_settings}"
-
-      blender_scene.update(sliced_settings)
+      blender_scene.update(settings.slice(*BlenderScene.column_names))
       project.current_blender_scene = blender_scene if scene_name == current_scene_name
     end
     project.finish_checking

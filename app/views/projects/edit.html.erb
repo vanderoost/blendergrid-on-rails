@@ -1,18 +1,10 @@
 <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mt-8">Settings for <%= @project.name %></h1>
 
-<%= form_for @project, html: { class: "my-16" } do |form| %>
-  <%= form.fields_for :draft_settings do |setting_fields| %>
-    <%= select_tag :scene_name,
-      options_for_select(@project.settings[:scenes].keys, @current_scene),
-      onchange: "this.form.requestSubmit()" %>
-  <% end %>
-<% end %>
 
-<%= form_for @project, html: { class: "my-16" } do |form| %>
-  <%= form.fields_for :draft_settings do |setting_fields| %>
+<div class="my-16">
+  <div class="space-y-12">
 
-    <div class="space-y-12 group/scene">
-
+    <%= form_for @project, html: { class: "my-16" } do |form| %>
       <!-- Scene section -->
       <div class="grid grid-cols-1 gap-x-8 gap-y-10 pb-12 md:grid-cols-3 -mb-8 md:-mb-4 ">
         <div>
@@ -22,12 +14,11 @@
 
         <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
           <div class="sm:col-span-3">
-            <%= setting_fields.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
+            <%= form.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
             <div class="mt-2 grid grid-cols-1">
-              <%= select_tag :scene_name,
-                options_for_select(@project.settings[:scenes].keys, @current_scene),
-                onchange: "this.form.requestSubmit()",
-                class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" %>
+
+              <%= form.collection_select :current_blender_scene_id,
+                @project.blender_scenes, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
               <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
                 <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
               </svg>
@@ -35,24 +26,21 @@
           </div>
         </div>
       </div>
+    <% end %>
 
+    <%= form_for [@project, @project.current_blender_scene] do |form| %>
       <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
         <div></div>
 
         <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
           <div class="sm:col-span-3">
-            <%= setting_fields.fields_for :scene do |scene_fields| %>
-              <%= scene_fields.label :camera_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2 grid grid-cols-1">
-
-                <%= setting_fields.select :camera_name,
-                  options_for_select([["Camera 1", "Camera 1"], ["Camera 2", "Camera 2"]], "Camera 1"), {},
-                  class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" %>
-                <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-                </svg>
-              </div>
-            <% end %>
+            <%= form.label :frame_range_type, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
+            <div class="mt-2 grid grid-cols-1">
+              <%= form.select :frame_range_type, ["image", "animation"], {}, class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" %>
+              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -325,44 +313,44 @@
           </div>
         </div>
       </div>
-    </div>
-
-  <% end %>
-
-  <div class="mt-6 flex items-center justify-end gap-x-6">
-    <button type="button" class="text-sm/6 font-semibold text-gray-900 dark:text-white">Cancel</button>
-    <button type="submit" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500">Save</button>
   </div>
 
-  <!-- Breadcrumbs -->
-  <nav aria-label="Breadcrumb" class="flex">
-    <ol role="list" class="flex items-center space-x-4">
-      <li>
-        <div>
-          <%= link_to root_path, { class:"text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"} do %>
-            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0">
-              <path d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" fill-rule="evenodd" />
-            </svg>
-            <span class="sr-only">Home</span>
-          <% end %>
-        </div>
-      </li>
-      <li>
-        <div class="flex items-center">
-          <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
-            <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-          </svg>
-          <%= link_to "Projects", :projects, { class: "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" } %>
-        </div>
-      </li>
-      <li>
-        <div class="flex items-center">
-          <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
-            <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-          </svg>
-          <span aria-current="page" class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">Settings for <%= @project.name %></span>
-        </div>
-      </li>
-    </ol>
-  </nav>
 <% end %>
+
+<div class="mt-6 flex items-center justify-end gap-x-6">
+  <button type="button" class="text-sm/6 font-semibold text-gray-900 dark:text-white">Cancel</button>
+  <button type="submit" class="rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500">Save</button>
+</div>
+
+<!-- Breadcrumbs -->
+<nav aria-label="Breadcrumb" class="flex">
+  <ol role="list" class="flex items-center space-x-4">
+    <li>
+      <div>
+        <%= link_to root_path, { class:"text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-300"} do %>
+          <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0">
+            <path d="M9.293 2.293a1 1 0 0 1 1.414 0l7 7A1 1 0 0 1 17 11h-1v6a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-6H3a1 1 0 0 1-.707-1.707l7-7Z" clip-rule="evenodd" fill-rule="evenodd" />
+          </svg>
+          <span class="sr-only">Home</span>
+        <% end %>
+      </div>
+    </li>
+    <li>
+      <div class="flex items-center">
+        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
+          <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+        </svg>
+        <%= link_to "Projects", :projects, { class: "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" } %>
+      </div>
+    </li>
+    <li>
+      <div class="flex items-center">
+        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
+          <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+        </svg>
+        <span aria-current="page" class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">Settings for <%= @project.name %></span>
+      </div>
+    </li>
+  </ol>
+</nav>
+</div>

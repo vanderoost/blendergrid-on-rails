@@ -14,13 +14,13 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    # TODO
-    redirect_back fallback_location: @project
+    flash[:alert] = "Error updating the scene" unless @project.update(project_params)
+    redirect_to edit_project_path(@project)
   end
 
   private
     def project_params
-      params.require(:project).permit(draft_settings: {})
+      params.expect(project: [ :current_blender_scene_id ])
     end
 
     def set_project
