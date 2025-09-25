@@ -1,15 +1,25 @@
 class BlenderScene < ApplicationRecord
+  STORE_ACCESSORS = {
+    frame_range: [ :type, :start, :end, :step, :single ],
+    resolution: [ :x, :y, :percentage ],
+    sampling: [ :use_adaptive, :noise_threshold, :min_samples, :max_samples ],
+    file_output: [ :file_format, :color_mode, :color_depth, :ffmpeg_format,
+      :ffmpeg_codec, :film_transparent ],
+    camera: [ :name, :name_options ],
+    post_processing: [ :use_compositing, :use_sequencer, :use_stamp ],
+  }
+
   belongs_to :project
 
-  store_accessor :frame_range, :type, :start, :end, :step, :single, prefix: true
-  store_accessor :resolution, :x, :y, :percentage, prefix: true
-  store_accessor :sampling, :use_adaptive, :noise_threshold, :min_samples,
-    :max_samples, prefix: true
-  store_accessor :file_output, :file_format, :color_mode, :color_depth, :ffmpeg_format,
-    :ffmpeg_codec, :film_transparent, prefix: true
-  store_accessor :camera, :name, :name_options, prefix: true
-  store_accessor :post_processing, :use_compositing, :use_sequencer, :use_stamp,
-    prefix: true
+  STORE_ACCESSORS.each do |store, attributes|
+    store_accessor store, *attributes, prefix: true
+  end
+
+  def self.permitted_params
+    STORE_ACCESSORS.flat_map do |store, attributes|
+      attributes.map { |attr| "#{store}_#{attr}".to_sym }
+    end
+  end
 
   def file_output_color_mode
     color_mode = self.file_output["color_mode"]
