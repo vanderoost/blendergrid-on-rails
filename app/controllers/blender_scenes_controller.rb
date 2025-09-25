@@ -16,7 +16,9 @@ class BlenderScenesController < ApplicationController
         :resolution_percentage, :sampling_use_adaptive, :sampling_noise_threshold,
         :sampling_min_samples, :sampling_max_samples, :file_output_file_format,
         :file_output_color_mode, :file_output_color_depth, :file_output_ffmpeg_format,
-        :file_output_ffmpeg_codec ])
+        :file_output_ffmpeg_codec, :file_output_film_transparent, :camera_name,
+        :post_processing_use_compositing, :post_processing_use_sequencer,
+        :post_processing_use_stamp ])
     end
 
     def set_blender_scene
