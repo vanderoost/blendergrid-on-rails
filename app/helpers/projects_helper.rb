@@ -14,18 +14,19 @@ module ProjectsHelper
   end
 
   def frame_description(project)
-    if project.settings.frame_range_type == :animation
+    if project.current_blender_scene&.frame_range_type == :animation
       human_frame_range project
-    elsif project.settings.frame_range_type == :image
+    elsif project.current_blender_scene&.frame_range_type == :image
       human_single_frame project
     end
   end
 
   def human_frame_range(project)
-    "Frames #{project.settings.start_frame} - #{project.settings.end_frame}"
+    "Frames #{project.current_blender_scene&.frame_range_start} - "\
+    "#{project.current_blender_scene&.frame_range_end}"
   end
 
   def human_single_frame(project)
-    "Frame #{project.settings.single_frame}"
+    "Frame #{project.current_blender_scene&.frame_range_single}"
   end
 end

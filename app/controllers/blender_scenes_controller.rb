@@ -6,7 +6,7 @@ class BlenderScenesController < ApplicationController
 
   def update
     @blender_scene.update(blender_scene_params)
-    redirect_to edit_project_path(@project)
+    redirect_back fallback_location: edit_project_path(@project)
   end
 
   private

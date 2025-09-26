@@ -27,7 +27,7 @@
 <% end %>
 
 <turbo-frame id="edit_project_current_scene">
-  <%= form_for [@project, @project.current_blender_scene] do |form| %>
+  <%= form_with model: [@project, @project.current_blender_scene] do |form| %>
     <div class="space-y-12">
 
       <!-- Frame Range section -->
