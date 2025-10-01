@@ -76,7 +76,7 @@ gem "aws-sdk-s3", require: false
 gem "aws-sdk-sns"
 
 # Payments
-gem "stripe", "~> 15.5"
+gem "stripe", "~> 16.0"
 
 # Markdown parsing
 gem "redcarpet", "~> 3.6"
