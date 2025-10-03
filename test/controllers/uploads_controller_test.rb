@@ -2,7 +2,7 @@ require "test_helper"
 
 class UploadsControllerTest < ActionDispatch::IntegrationTest
   test "controller should create guest upload" do
-    assert_difference("Upload.count", 1) do
+    assert_difference "Upload.count", 1 do
       post uploads_url, params: { upload: {
         guest_email_address: "foo@fighters.bar",
         files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],

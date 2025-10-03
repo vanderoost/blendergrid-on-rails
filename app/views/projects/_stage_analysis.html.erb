@@ -1,6 +1,6 @@
 <div class="mt-6">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <h2 class="mx-auto text-base uppercase text-gray-500 lg:mx-0 dark:text-gray-400">
+    <h3 class="mx-auto text-base uppercase text-gray-500 lg:mx-0 dark:text-gray-400">
       Settings check
     </h2>
   </div>
@@ -11,6 +11,7 @@
         <table class="w-full text-left">
           <thead class="sr-only">
             <tr>
+              <th class="hidden">Enabled</th>
               <th>Project</th>
               <th class="hidden sm:table-cell">Type</th>
               <th>Edit settings</th>
@@ -19,6 +20,11 @@
           <tbody>
 
             <% stage_analysis.projects.each do |project| %>
+              <tr>
+                <td class="hidden">
+                  <%= checkbox_tag "quote[project_uuids][]", project.uuid, checked: true, form: "quotes_form", class: "hidden" %>
+                </td>
+              </tr>
               <tr class="group/row">
                 <td class="relative py-5 pr-6">
                   <div class="flex gap-x-6">
@@ -86,7 +92,7 @@
   </div>
 
   <% unless stage_analysis.projects.all?(&:in_progress?) %>
-    <%= form_with model: @quote || Quote.new do |form| %>
+    <%= form_with model: @quote || Quote.new, id: "quotes_form" do |form| %>
       <%= render "shared/form_errors", form: form %>
 
       <div class="mx-auto max-w-7xl flex justify-end">

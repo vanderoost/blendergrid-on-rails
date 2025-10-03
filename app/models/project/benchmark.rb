@@ -17,43 +17,6 @@ class Project::Benchmark < ApplicationRecord
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
-    # Resolution
-    benchmark_res_x = project.settings.res_x
-    benchmark_res_y = project.settings.res_y
-    orig_pixel_count = benchmark_res_x * benchmark_res_y
-    if orig_pixel_count > MAX_PIXEL_COUNT
-      pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
-      benchmark_res_x = (benchmark_res_x * pixel_factor).round
-      benchmark_res_y = (benchmark_res_y * pixel_factor).round
-    end
-
-    # Sample count
-    benchmark_spp = project.settings.spp
-    if benchmark_spp > MAX_SPP
-      benchmark_spp = MAX_SPP
-    end
-
-    # Frames
-    if project.settings.frame_range_type == :animation
-      frame_start = project.settings.start_frame
-      frame_end = project.settings.end_frame
-      frame_step = project.settings.output&.frame_range&.step || 1
-      all_frames = (frame_start..frame_end).step(frame_step).to_a
-    elsif project.settings.frame_range_type == :image
-      all_frames = [ project.settings.single_frame ]
-    end
-
-    if project.settings.frame_count > 3
-      sample_frames = [
-        all_frames[0],
-        all_frames[all_frames.length / 2],
-        all_frames[-1],
-      ]
-    else
-      sample_frames = all_frames
-    end
-
-
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
     blender_version = "latest"
 
@@ -84,17 +47,17 @@ class Project::Benchmark < ApplicationRecord
               "$frame",
               "--",
               "--resolution-width",
-              benchmark_res_x.to_s,
+              sample_settings["resolution_x"].to_s,
               "--resolution-height",
-              benchmark_res_y.to_s,
+              sample_settings["resolution_y"].to_s,
               "--cycles-samples",
-              benchmark_spp.to_s,
+              sample_settings["sampling_max_samples"].to_s,
               "--settings-file",
               "/tmp/settings/integrity-check.json",
               "--project-dir",
               "/tmp/project",
             ],
-            parameters: { frame: sample_frames },
+            parameters: { frame: sample_settings["frame_range"] },
             image: "blendergrid/blender:#{blender_version}",
           },
       ],
@@ -198,58 +161,50 @@ class Project::Benchmark < ApplicationRecord
   # TODO: Move this to a view helper?
   def price
     return "Calculating..." if price_cents.blank?
-    "$#{'%.2f' % (price_cents / 100.0)}"
+    "$#{'%.2f' % (price_cents.fdiv(100))}"
   end
 
   private
     def set_sample_settings
-      benchmark_res_x = project.settings.res_x
-      benchmark_res_y = project.settings.res_y
-      orig_pixel_count = benchmark_res_x * benchmark_res_y
+      sample_resolution_x = project.resolution_x
+      sample_resolution_y = project.resolution_y
+      orig_pixel_count = sample_resolution_x * sample_resolution_y
       if orig_pixel_count > MAX_PIXEL_COUNT
         pixel_factor = Math.sqrt(MAX_PIXEL_COUNT.to_f / orig_pixel_count)
-        benchmark_res_x = (benchmark_res_x * pixel_factor).round
-        benchmark_res_y = (benchmark_res_y * pixel_factor).round
+        sample_resolution_x = (sample_resolution_x * pixel_factor).round
+        sample_resolution_y = (sample_resolution_y * pixel_factor).round
       end
 
-      # Sample count
-      benchmark_spp = project.settings.spp
-      if benchmark_spp > MAX_SPP
-        benchmark_spp = MAX_SPP
-      end
+      sample_spp = project.sampling_max_samples
+      sample_spp = MAX_SPP if sample_spp > MAX_SPP
 
-      # Frames
-      if project.settings.frame_range_type == :animation
-        frame_start = project.settings.start_frame
-        frame_end = project.settings.end_frame
-        frame_step = project.settings.output&.frame_range&.step || 1
+      if project.frame_range_type.to_sym == :animation
+        frame_start = project.frame_range_start
+        frame_end = project.frame_range_end
+        frame_step = project.frame_range_step
         all_frames = (frame_start..frame_end).step(frame_step).to_a
-      elsif project.settings.frame_range_type == :image
-        all_frames = [ project.settings.single_frame ]
+      elsif project.frame_range_type.to_sym == :image
+        all_frames = [ project.frame_range_single ]
+      else
+        raise "Unknown frame range type: #{project.frame_range_type}"
       end
 
-      if project.settings.frame_count > 3
-        sample_frames = [
-          all_frames[0],
-          all_frames[all_frames.length / 2],
-          all_frames[-1],
+      if project.frames.count > 3
+        sample_frame_range = [
+          project.frames[0],
+          project.frames[frames.length / 2],
+          project.frames[-1],
         ]
       else
-        sample_frames = all_frames
+        sample_frame_range = all_frames
       end
 
       self.sample_settings = {
-        output: {
-          format: {
-            resolution_x: benchmark_res_x,
-            resolution_y: benchmark_res_y,
-            resolution_percentage: 100,
-          },
-          frame_range: sample_frames,
-        },
-        render: {
-          sampling: { max_samples: benchmark_spp },
-        },
+        resolution_x: sample_resolution_x,
+        resolution_y: sample_resolution_y,
+        resolution_percentage: 100,
+        frame_range: sample_frame_range,
+        sampling_max_samples: sample_spp,
       }
     end
 end

@@ -54,9 +54,10 @@
                   <td class="hidden py-5 pr-6 sm:table-cell">
                     <div class="text-sm/6 text-gray-900 dark:text-white">
 
-                      <%= form.fields_for :project_settings, project.settings, index: project.uuid do |fields| %>
-                        <%= fields.number_field :cycles_samples, value: project.settings.spp %>
-                      <% end %>
+                      <!-- TODO: Create a little form for every project, and the main submit form is not encapsulating this anymore -->
+                      <%#= form.fields_for :project_settings, project.settings, index: project.uuid do |fields| %>
+                        <%#= fields.number_field :cycles_samples, value: project.settings.spp %>
+                      <%# end %>
 
                     </div>
                     <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400"><%= frame_description project %></div>

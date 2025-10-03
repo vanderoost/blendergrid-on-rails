@@ -8,10 +8,9 @@ class Project < ApplicationRecord
 
   include Statable
   include Uuidable
+  include HasSceneSettings
 
   belongs_to :upload
-  belongs_to :current_blender_scene, class_name: "BlenderScene", optional: true
-  has_many :blender_scenes
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
@@ -47,29 +46,15 @@ class Project < ApplicationRecord
     end
   end
 
-  def settings(override: nil)
-    # TODO: Make sure draft settings can't be changed after the order is placed
-    if draft_settings.present?
-      Project::ResolvedSettings.new(revisions: [ draft_settings, override ])
-    else
-      Project::ResolvedSettings.new(revisions: [
-        blend_check&.settings,
-        benchmark&.settings,
-        order_item&.settings,
-        override,
-      ])
-    end
-  end
-
-  def benchmark_settings
-    settings(override: benchmark&.sample_settings)
-  end
-
-  def price_cents(override_settings: nil)
+  def price_cents(tweaks = {})
+    workflow = benchmark.workflow
     Pricing::Calculation.new(
-      settings: settings(override: override_settings),
-      benchmark_settings: benchmark_settings,
-      workflow: benchmark.workflow
+      benchmark: benchmark,
+      node_supplies: NodeSupply.where(
+        provider_id: workflow.node_provider_id, type_name: workflow.node_type_name
+      ),
+      blender_scene: current_blender_scene,
+      tweaks: tweaks,
     ).price_cents
   end
 

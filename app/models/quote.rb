@@ -5,17 +5,9 @@
 class Quote
   include ActiveModel::Model
 
-  attr_accessor :project_settings
+  attr_accessor :project_uuids
 
   def save
-    @project_settings.each do |uuid, settings|
-      project = Project.find_by(uuid: uuid)
-      next if project.nil?
-
-      # TODO: Make this cleaner
-      project.start_benchmarking(settings: {
-        output: { frame_range: { type: settings["frame_range_type"] } },
-      })
-    end
+    @project_uuids.each { |uuid| Project.find_by(uuid: uuid)&.start_benchmarking }
   end
 end

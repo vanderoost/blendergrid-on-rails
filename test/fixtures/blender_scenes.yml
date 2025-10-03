@@ -1,0 +1,32 @@
+one:
+  project: checked
+  name: Scene
+  frame_range:
+    type: animation
+    start: 1
+    end: 10
+    step: 1
+    single: 3
+  resolution:
+    x: 1920
+    y: 1080
+    percentage: 50
+  sampling:
+    use_adaptive: true
+    noise_threshold: 0.1
+    min_samples: 16
+    max_samples: 1024
+  file_output: 
+    file_format: PNG
+    color_mode: RGBA
+    color_depth: "8"
+    ffmpeg_format: MPEG-4
+    ffmpeg_codec: H264
+    film_transparent: true
+  camera: 
+    name: CloseUp
+    name_options: [ FarAway Hidden ]
+  post_processing:
+    use_compositing: true
+    use_sequencer: true
+    use_stamp: false

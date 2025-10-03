@@ -5,6 +5,7 @@ class BlenderScenesController < ApplicationController
   allow_unauthenticated_access only: [ :update ]
 
   def update
+    # TODO: Protect this from being adjusted after a price quote or order is created
     @blender_scene.update(blender_scene_params)
     redirect_back fallback_location: edit_project_path(@project)
   end

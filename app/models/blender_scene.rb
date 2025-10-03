@@ -11,6 +11,8 @@ class BlenderScene < ApplicationRecord
 
   belongs_to :project
 
+  before_update :sanitize_settings
+
   STORE_ACCESSORS.each do |store, attributes|
     store_accessor store, *attributes, prefix: true
   end
@@ -59,4 +61,18 @@ class BlenderScene < ApplicationRecord
   def output_file_format
     @output_file_format ||= OutputFileFormat.find(file_output_file_format)
   end
+
+  def frames
+    @frames ||= if frame_range_type.to_sym == :animation
+      (frame_range_start..frame_range_end).step(frame_range_step).to_a
+    elsif project.frame_range_type.to_sym == :image
+      [ project.frame_range_single ]
+    else
+      raise "Unknown frame range type: #{project.frame_range_type}"
+    end
+  end
+
+  private
+    def sanitize_settings
+    end
 end

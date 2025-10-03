@@ -13,6 +13,6 @@ class QuotesController < ApplicationController
 
   private
     def quote_params
-      params.expect(quote: [ project_settings: {} ])
+      params.expect(quote: [ project_uuids: [] ])
     end
 end
