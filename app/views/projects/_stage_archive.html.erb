@@ -13,7 +13,7 @@
             <tr>
               <th>Project</th>
               <th class="hidden sm:table-cell">Type</th>
-              <th>Edit settings</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
@@ -48,9 +48,7 @@
                 </td>
                 <td class="py-5 text-right">
                   <div class="flex justify-end">
-                    <a href="#" class="text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
-                      Edit<span class="hidden sm:inline"> settings</span>
-                    </a>
+                    <%= link_to "Details", project_path(project), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>
                   </div>
                   <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Found warnings</div>
                 </td>

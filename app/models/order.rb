@@ -6,7 +6,9 @@ class Order < ApplicationRecord
   has_many :items, class_name: "Order::Item"
   belongs_to :user, optional: true
 
-  attr_accessor :project_settings, :success_url, :cancel_url, :redirect_url
+  attr_accessor :project_uuids, :success_url, :cancel_url, :redirect_url
+
+  after_create :checkout
 
   # TODO: Add validations
 
@@ -16,12 +18,6 @@ class Order < ApplicationRecord
 
   def price_cents
     items.sum(&:price_cents)
-  end
-
-  def checkout
-    create_line_items
-    @checkout = Order::Checkout.new(self)
-    @checkout.start_checkout_session
   end
 
   def partial_refund(permil)
@@ -35,6 +31,12 @@ class Order < ApplicationRecord
   end
 
   private
+    def checkout
+      create_line_items
+      @checkout = Order::Checkout.new(self)
+      @checkout.start_checkout_session
+    end
+
     def create_line_items
       # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then
       # we can create OrderItems associated with this Order (by ID) and then we use
@@ -44,21 +46,21 @@ class Order < ApplicationRecord
       # Stripe related propertiies on the Order, and then persist the Order. Then
       # persist the OrderItems
 
-      project_settings.each do |uuid, settings|
+      project_uuids.each do |uuid|
         project = Project.find_by(uuid: uuid)
-        next if project.nil?
-
-        settings = {
-          render: { sampling: { max_samples: settings["cycles_samples"].to_i } },
-        }
+        raise "Project '#{uuid}' not found" if project.nil?
 
         items.create(
           project: project,
-          price_cents: project.price_cents(override_settings: settings),
-          settings: settings,
+          price_cents: project.price_cents,
+          settings: {
+            resolution_percentage: project.resolution_percentage,
+            sampling_max_samples: project.sampling_max_samples,
+            render_duration: project.render_duration,
+          },
         )
       end
 
-      raise "No line items" if items.empty?
+      raise "Order has no line items" if items.empty?
     end
 end

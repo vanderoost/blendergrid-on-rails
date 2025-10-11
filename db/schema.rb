@@ -111,8 +111,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_135505) do
   create_table "order_items", force: :cascade do |t|
     t.integer "order_id"
     t.integer "project_id"
-    t.json "settings"
     t.integer "price_cents"
+    t.json "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_order_items_on_order_id"
@@ -171,7 +171,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_23_135505) do
     t.string "uuid", null: false
     t.string "status"
     t.string "blend_filepath"
-    t.json "draft_settings"
+    t.integer "render_duration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["current_blender_scene_id"], name: "index_projects_on_current_blender_scene_id"

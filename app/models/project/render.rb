@@ -21,15 +21,16 @@ class Project::Render < ApplicationRecord
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     # Settings
-    if project.settings.frame_range_type == :animation
-      frame_start = project.settings.start_frame
-      frame_end = project.settings.end_frame
-      frame_step = project.settings.output&.frame_range&.step || 1
-      frame_params = { start: frame_start, end: frame_end, step: frame_step }
-    elsif project.settings.frame_range_type == :image
-      frame_params = project.settings.single_frame
+    if project.frame_range_type == "animation"
+      frame_params = {
+        start: project.frame_range_start,
+        end: project.frame_range_end,
+        step: project.frame_range_step,
+      }
+    elsif project.frame_range_type == "image"
+      frame_params = project.frame_range_single
     else
-      raise "Unknown frame range type: #{project.settings.frame_range_type}"
+      raise "Unknown frame range type: #{project.frame_range_type}"
     end
 
     # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
@@ -65,7 +66,7 @@ class Project::Render < ApplicationRecord
             "--project-dir",
             "/tmp/project",
             "--cycles-samples",
-            project.settings.spp.to_s,
+            project.sampling_max_samples.to_s,
           ],
           parameters: { frame: frame_params },
           image: "blendergrid/blender:#{blender_version}",

@@ -20,7 +20,6 @@ module Project::States
 
   class Checking < BaseState
     def finish_checking
-      @project.draft_settings = @project.blend_check.settings
       @project.checked!
     end
 

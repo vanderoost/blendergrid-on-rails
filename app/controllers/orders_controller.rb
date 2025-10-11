@@ -6,7 +6,6 @@ class OrdersController < ApplicationController
     @order = Order.new(order_params)
 
     if @order.save
-      @order.checkout
       redirect_to_safe_url @order.redirect_url
     else
       redirect_back fallback_location :projects, status: :unprocessable_content
@@ -16,7 +15,7 @@ class OrdersController < ApplicationController
   private
     def order_params
       resume_session # Manually resume session to set Current.user if logged in
-      params.expect(order: [ project_settings: {} ])
+      params.expect(order: [ project_uuids: [] ])
         .merge(redirect_urls)
         .merge(
           user: Current.user,
