@@ -195,7 +195,7 @@
           <fieldset>
             <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color</legend>
             <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
-              <%= form.collection_radio_buttons :file_output_color_mode, form.object.output_file_format.color_modes, :to_s, :upcase do |b| %>
+              <%= form.collection_radio_buttons :file_output_color_mode, form.object.output_file_format.color_modes, :to_s, :to_s do |b| %>
                 <div class="flex items-center">
                   <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
                   <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>

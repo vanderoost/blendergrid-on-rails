@@ -1,25 +1,62 @@
 class BlenderScene < ApplicationRecord
   STORE_ACCESSORS = {
-    frame_range: [ :type, :start, :end, :step, :single ],
-    resolution: [ :x, :y, :percentage ],
-    sampling: [ :use_adaptive, :noise_threshold, :min_samples, :max_samples ],
-    file_output: [ :file_format, :color_mode, :color_depth, :ffmpeg_format,
-      :ffmpeg_codec, :film_transparent ],
-    camera: [ :name, :name_options ],
-    post_processing: [ :use_compositing, :use_sequencer, :use_stamp ],
+    frame_range: {
+      type: :string,
+      start: :integer,
+      end: :integer,
+      step: :integer,
+      single: :integer,
+    },
+    resolution: {
+      x: :integer,
+      y: :integer,
+      percentage: :integer,
+    },
+    sampling: {
+      use_adaptive: :boolean,
+      noise_threshold: :float,
+      min_samples: :integer,
+      max_samples: :integer,
+    },
+    file_output: {
+      file_format: :string,
+      color_mode: :string,
+      color_depth: :string,
+      ffmpeg_format: :string,
+      ffmpeg_codec: :string,
+      film_transparent: :boolean,
+    },
+    camera: {
+      name: :string,
+      name_options: :string,
+    },
+    post_processing: {
+      use_compositing: :boolean,
+      use_sequencer: :boolean,
+      use_stamp: :boolean,
+    },
   }
 
   belongs_to :project
 
-  before_update :sanitize_settings
-
   STORE_ACCESSORS.each do |store, attributes|
-    store_accessor store, *attributes, prefix: true
+    store_accessor store, *attributes.keys, prefix: true
+
+    attributes.each do |attr, type|
+      define_method("#{store}_#{attr}=") do |value|
+        super case type
+              when :integer then value.to_i
+              when :float then value.to_f
+              when :boolean then ActiveModel::Type::Boolean.new.cast(value)
+              else value
+              end
+      end
+    end
   end
 
   def self.permitted_params
     STORE_ACCESSORS.flat_map do |store, attributes|
-      attributes.map { |attr| "#{store}_#{attr}".to_sym }
+      attributes.keys.map { |attr| "#{store}_#{attr}".to_sym }
     end
   end
 
@@ -71,8 +108,4 @@ class BlenderScene < ApplicationRecord
       raise "Unknown frame range type: #{project.frame_range_type}"
     end
   end
-
-  private
-    def sanitize_settings
-    end
 end

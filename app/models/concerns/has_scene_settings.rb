@@ -7,7 +7,7 @@ module HasSceneSettings
     delegate :frames, to: :current_blender_scene
 
     BlenderScene::STORE_ACCESSORS.each do |store, attributes|
-      attributes.map do |attr|
+      attributes.keys.map do |attr|
         delegate "#{store}_#{attr}".to_sym, to: :current_blender_scene, allow_nil: true
       end
     end
