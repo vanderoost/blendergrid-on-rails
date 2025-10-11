@@ -192,7 +192,7 @@ class Project::Benchmark < ApplicationRecord
       if project.frames.count > 3
         sample_frame_range = [
           project.frames[0],
-          project.frames[frames.length / 2],
+          project.frames[project.frames.length / 2],
           project.frames[-1],
         ]
       else

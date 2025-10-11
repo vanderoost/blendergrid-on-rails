@@ -47,16 +47,16 @@ end
 
 class FfmpegFormat
   FORMATS = [
-    { id: :mpeg4, name: "MPEG-4", codecs: true },
-    { id: :mkv, name: "Matroska", codecs: true },
-    { id: :webm, name: "WebM", codecs: true },
-    { id: :avi, name: "AVI", codecs: true },
-    { id: :dv, name: "DV" },
-    { id: :flash, name: "Flash" },
-    { id: :mpeg1, name: "MPEG-1" },
-    { id: :mpeg2, name: "MPEG-2" },
-    { id: :ogg, name: "Ogg", codecs: true },
-    { id: :quicktime, name: "QuickTime", codecs: true },
+    { id: :MPEG4, name: "MPEG-4", codecs: true },
+    { id: :MKV, name: "Matroska", codecs: true },
+    { id: :WEBM, name: "WebM", codecs: true },
+    { id: :AVI, name: "AVI", codecs: true },
+    { id: :DV, name: "DV" },
+    { id: :FLASH, name: "Flash" },
+    { id: :MPEG1, name: "MPEG-1" },
+    { id: :MPEG2, name: "MPEG-2" },
+    { id: :OGG, name: "Ogg", codecs: true },
+    { id: :QUICKTIME, name: "QuickTime", codecs: true },
   ]
 
   include ActiveModel::Model
@@ -80,21 +80,21 @@ end
 
 class FfmpegCodec
   CODECS = [
-    { id: :av1, name: "AV1", color_depths: [ 8, 10, 12 ] },
-    { id: :h264, name: "H.264", color_depths: [ 8, 10 ] },
-    { id: :h265, name: "H.265 / HEVC", color_depths: [ 8, 10, 12 ] },
-    { id: :webm, name: "WebM / VP9" },
-    { id: :dnxhd, name: "DNxHD" },
-    { id: :ffv1, name: "FFmpeg video codec #1", color_depths: [ 8, 10, 12, 16 ] },
-    { id: :flash, name: "Flash Video" },
-    { id: :huffyuv, name: "HuffYUV" },
-    { id: :mpeg1, name: "MPEG-1" },
-    { id: :mpeg2, name: "MPEG-2" },
-    { id: :mpeg4, name: "MPEG-4 (divx)" },
-    { id: :png, name: "PNG" },
-    { id: :prores, name: "ProRes", color_depths: [ 8, 10 ] },
-    { id: :qtrle, name: "QuickTime Animation" },
-    { id: :theora, name: "Theora" },
+    { id: :AV1, name: "AV1", color_depths: [ 8, 10, 12 ] },
+    { id: :H264, name: "H.264", color_depths: [ 8, 10 ] },
+    { id: :H265, name: "H.265 / HEVC", color_depths: [ 8, 10, 12 ] },
+    { id: :WEBM, name: "WebM / VP9" },
+    { id: :DNXHD, name: "DNxHD" },
+    { id: :FFV1, name: "FFmpeg video codec #1", color_depths: [ 8, 10, 12, 16 ] },
+    { id: :FLASH, name: "Flash Video" },
+    { id: :HUFFYUV, name: "HuffYUV" },
+    { id: :MPEG1, name: "MPEG-1" },
+    { id: :MPEG2, name: "MPEG-2" },
+    { id: :MPEG4, name: "MPEG-4 (divx)" },
+    { id: :PNG, name: "PNG" },
+    { id: :PRORES, name: "ProRes", color_depths: [ 8, 10 ] },
+    { id: :QTRLE, name: "QuickTime Animation" },
+    { id: :THEORA, name: "Theora" },
   ]
 
   include ActiveModel::Model

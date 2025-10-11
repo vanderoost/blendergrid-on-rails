@@ -26,6 +26,8 @@ class BlenderScenesControllerTest < ActionDispatch::IntegrationTest
           "file_output_file_format" => "PNG",
           "file_output_color_mode" => "RGBA",
           "file_output_color_depth" => "8",
+          "file_output_ffmpeg_format" => "MPEG4",
+          "file_output_ffmpeg_codec" => "H264",
           "file_output_film_transparent" => "1",
           "camera_name" => "SceneCam",
           "post_processing_use_compositing" => "1",
@@ -54,6 +56,8 @@ class BlenderScenesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "PNG", blender_scene.file_output_file_format
     assert_equal "RGBA", blender_scene.file_output_color_mode
     assert_equal "8", blender_scene.file_output_color_depth
+    assert_equal "MPEG4", blender_scene.file_output_ffmpeg_format
+    assert_equal "H264", blender_scene.file_output_ffmpeg_codec
     assert_equal true, blender_scene.file_output_film_transparent
     assert_equal "SceneCam", blender_scene.camera_name
     assert_equal true, blender_scene.post_processing_use_compositing
