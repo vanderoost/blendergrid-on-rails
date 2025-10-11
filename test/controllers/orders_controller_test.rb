@@ -2,26 +2,13 @@ require "test_helper"
 require "ostruct"
 
 class OrdersControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @project = projects(:benchmarked)
-
-    test_context = self
-    Stripe::Checkout::Session.define_singleton_method(:create) do |params|
-      test_context.instance_variable_set(:@create_session_params, params)
-      OpenStruct.new(
-        id: "cs_test_fake_session_id",
-        url: "https://checkout.stripe.com/fake"
-      )
-    end
-  end
-
   test "should create guest order for a single project" do
     assert @project.order_item.blank?
     assert_difference("Order.count", 1) do
       post orders_url,
         params: {
           order: {
-            project_settings: { @project.uuid => { "cycles_samples" => "64" } },
+            project_uuids: [ @project.uuid ],
             guest_email_address: "test@example.com",
           },
         },
@@ -39,7 +26,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Order.count", 1) do
       post orders_url,
         params: { order: {
-            project_settings: { @project.uuid => { "cycles_samples" => 64 } },
+            project_uuids: [ @project.uuid ],
           } },
         headers: root_referrer_header
     end
@@ -53,12 +40,14 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     sign_in_as user
 
     credit_before = user.render_credit_cents
-    orig_spp = @project.settings.spp
+    assert credit_before > 0, "User has no render credit"
+
     project_price_cents = @project.price_cents
+    assert credit_before < project_price_cents, "Credit should not cover entire amount"
 
     post orders_url,
       params: { order: {
-          project_settings: { @project.uuid => { "cycles_samples" => orig_spp } },
+            project_uuids: [ @project.uuid ],
         } },
       headers: root_referrer_header
     assert_redirected_to "https://checkout.stripe.com/fake"
@@ -77,13 +66,12 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     sign_in_as user
 
     credit_before = user.render_credit_cents
-    orig_spp = @project.settings.spp
     project_price_cents = @project.price_cents
 
     assert_difference("Project::Render.count", 1) do
       post orders_url,
         params: { order: {
-            project_settings: { @project.uuid => { "cycles_samples" => orig_spp } },
+            project_uuids: [ @project.uuid ],
           } },
         headers: root_referrer_header
       assert_redirected_to projects_url
@@ -93,5 +81,18 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
 
     credits_used = credit_before - user.render_credit_cents
     assert_equal project_price_cents, credits_used
+  end
+
+  setup do
+    @project = projects(:benchmarked)
+
+    test_context = self
+    Stripe::Checkout::Session.define_singleton_method(:create) do |params|
+      test_context.instance_variable_set(:@create_session_params, params)
+      OpenStruct.new(
+        id: "cs_test_fake_session_id",
+        url: "https://checkout.stripe.com/fake"
+      )
+    end
   end
 end

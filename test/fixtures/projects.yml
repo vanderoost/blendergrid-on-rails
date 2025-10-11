@@ -15,21 +15,25 @@ checked:
   uuid: checked-1234
   status: checked
   blend_filepath: monkey.blend
+  current_blender_scene: one
 
 benchmarking:
   upload: guest_upload
   uuid: benchmarking-1234
   status: benchmarking
   blend_filepath: monkey.blend
+  current_blender_scene: one
 
 benchmarked:
   upload: guest_upload
   uuid: benchmarked-1234
   status: benchmarked
   blend_filepath: suzanne.blend
+  current_blender_scene: one
 
 rendering:
   upload: guest_upload
   uuid: rendering-1234
   status: rendering
   blend_filepath: suzanne.blend
+  current_blender_scene: one

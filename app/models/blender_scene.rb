@@ -99,6 +99,14 @@ class BlenderScene < ApplicationRecord
     @output_file_format ||= OutputFileFormat.find(file_output_file_format)
   end
 
+  def scaled_resolution_x
+    (resolution_x * resolution_percentage.fdiv(100)).to_i
+  end
+
+  def scaled_resolution_y
+    (resolution_y * resolution_percentage.fdiv(100)).to_i
+  end
+
   def frames
     @frames ||= if frame_range_type.to_sym == :animation
       (frame_range_start..frame_range_end).step(frame_range_step).to_a

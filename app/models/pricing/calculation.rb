@@ -1,8 +1,10 @@
 class Pricing::Calculation
   def initialize(benchmark:, node_supplies:, blender_scene:, tweaks: {})
-    raise "No node supplies provided" if node_supplies.empty?
+    raise "No Benchmark provided" if benchmark.blank?
+    raise "No NodeSupplies provided" if node_supplies.empty?
+    raise "No BlenderScene provided" if blender_scene.blank?
 
-    @sample_settings = benchmark.sample_settings
+    @benchmark = benchmark
     @timing = benchmark.workflow.timing
     @node_supplies = node_supplies.sort_by(&:millicents_per_hour)
     @blender_scene = blender_scene
@@ -16,20 +18,18 @@ class Pricing::Calculation
   end
 
   def price_cents
-    orig_fac = @blender_scene.resolution_percentage.fdiv(100)
-    orig_resolution_x = (@blender_scene.resolution_x * orig_fac).to_i
-    orig_resolution_y = (@blender_scene.resolution_y * orig_fac).to_i
+    orig_resolution_x = @blender_scene.scaled_resolution_x
+    orig_resolution_y = @blender_scene.scaled_resolution_y
     orig_pixel_count = orig_resolution_x * orig_resolution_y
 
-    sample_fac = @sample_settings["resolution_percentage"].fdiv(100)
-    sample_resolution_x = (@sample_settings["resolution_x"] * sample_fac).to_i
-    sample_resolution_y = (@sample_settings["resolution_y"] * sample_fac).to_i
+    sample_resolution_x = @benchmark.scaled_resolution_x
+    sample_resolution_y = @benchmark.scaled_resolution_y
     sample_pixel_count = sample_resolution_x * sample_resolution_y
 
     pixel_factor = orig_pixel_count.fdiv(sample_pixel_count)
 
     orig_sample_count = @blender_scene.sampling_max_samples * orig_pixel_count
-    benchmark_sample_count = @sample_settings["sampling_max_samples"] * sample_pixel_count
+    benchmark_sample_count = @benchmark.sampling_max_samples * sample_pixel_count
     sample_factor = orig_sample_count.fdiv(benchmark_sample_count)
 
     # Calculate

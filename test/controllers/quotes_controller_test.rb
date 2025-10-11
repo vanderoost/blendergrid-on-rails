@@ -9,7 +9,7 @@ class QuotesControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Project::Benchmark.count", 1) do
       post quotes_url, params: {
         quote: {
-          project_settings: { @project.uuid => { "frame_range_type" => "image" } },
+          project_uuids: [ @project.uuid ],
         },
       }, headers: root_referrer_header
     end
@@ -22,7 +22,7 @@ class QuotesControllerTest < ActionDispatch::IntegrationTest
 
     post quotes_url, params: {
       quote: {
-        project_settings: { @project.uuid => { "frame_range_type" => "image" } },
+        project_uuids: [ @project.uuid ],
       },
     }, headers: root_referrer_header
 

@@ -62,8 +62,8 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
     }, as: :json
 
     @benchmark_workflow.reload
-    assert_equal("aws", @benchmark_workflow.node_provider_id)
-    assert_equal("t3.micro", @benchmark_workflow.node_type_name)
+    assert_equal "aws", @benchmark_workflow.node_provider_id
+    assert_equal "t3.micro", @benchmark_workflow.node_type_name
 
     @benchmarking_project.reload
     assert @benchmarking_project.benchmarked?, "status should be benchmarked"

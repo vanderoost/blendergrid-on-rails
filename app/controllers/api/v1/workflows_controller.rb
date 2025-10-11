@@ -2,7 +2,7 @@ class Api::V1::WorkflowsController < Api::BaseController
   before_action :set_workflow
 
   def update
-    if @workflow.update workflow_params
+    if @workflow.update(workflow_params)
       render json: @workflow
     else
       render json: @workflow.errors, status: :unprocessable_entity
@@ -15,7 +15,12 @@ class Api::V1::WorkflowsController < Api::BaseController
     end
 
     def workflow_params
-      params.expect(workflow: [ :status, :node_provider_id, :node_type_name,
-        result: {}, timing: {} ])
+      params.expect(workflow: [
+        :status,
+        :node_provider_id,
+        :node_type_name,
+        result: {},
+        timing: {},
+      ])
     end
 end

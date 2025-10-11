@@ -47,6 +47,8 @@ class Project < ApplicationRecord
   end
 
   def price_cents(tweaks = {})
+    raise "Project has no BlenderScene" if current_blender_scene.blank?
+
     workflow = benchmark.workflow
     Pricing::Calculation.new(
       benchmark: benchmark,

@@ -4,7 +4,6 @@ class BlenderScenesControllerTest < ActionDispatch::IntegrationTest
   test "it sanitizes int values from string to int" do
     blender_scene = blender_scenes(:one)
     blender_scene.project.update(current_blender_scene_id: blender_scene.id)
-    puts blender_scene.project.inspect
 
     assert_equal 1920, blender_scene.resolution_x
 

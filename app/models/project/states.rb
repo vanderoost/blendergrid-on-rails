@@ -38,7 +38,7 @@ module Project::States
   class Benchmarking < BaseState
     def finish_benchmarking
       @project.benchmarked!
-      @project.benchmark.calculate_price
+      # @project.price_cents NOT SURE IF THIS IS NEEDED
     end
 
     def fail

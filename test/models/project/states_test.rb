@@ -30,7 +30,7 @@ class Project::StatesTest < ActiveSupport::TestCase
   test "a checked project can start benchmarking" do
     project = projects(:checked)
     assert project.checked?
-    project.start_benchmarking(settings: {})
+    project.start_benchmarking
     assert project.benchmarking?
   end
 

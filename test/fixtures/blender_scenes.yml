@@ -4,9 +4,9 @@ one:
   frame_range:
     type: animation
     start: 1
-    end: 10
+    end: 100
     step: 1
-    single: 3
+    single: 25 
   resolution:
     x: 1920
     y: 1080

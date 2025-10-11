@@ -17,12 +17,10 @@ active:
         sampling:
           max_samples: 64
   sample_settings:
-    scenes:
-      Scene:
-        resolution:
-          x: 512
-          y: 512
-          percentage: 100
+    resolution_x: 512
+    resolution_y: 512
+    resolution_percentage: 100
+    sampling_max_samples: 256
 
 
 finished:
@@ -44,15 +42,10 @@ finished:
         sampling:
           max_samples: 256
   sample_settings:
-    scene_name: Scene
-    scenes:
-      Scene:
-        resolution:
-          x: 512
-          y: 512
-          percentage: 100
-        sampling:
-          max_samples: 64
+    resolution_x: 512
+    resolution_y: 512
+    resolution_percentage: 100
+    sampling_max_samples: 64
   timing:
     download:
       max: 10000
