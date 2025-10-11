@@ -57,7 +57,8 @@ class AutoTest
       end
 
       if @rerun_all || ! @test_success
-        @test_success = system("bin/rails test test:system --fail-fast")
+        @test_success = system("bin/rails test --fail-fast") &&
+                        system("bin/rails test:system --fail-fast")
       end
     end
 end
