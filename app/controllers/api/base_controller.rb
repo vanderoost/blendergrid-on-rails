@@ -1,5 +1,5 @@
 class Api::BaseController < ActionController::API
-  # TODO: Authentication with some kind of token
+  include ApiAuthentication
 
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
   rescue_from StandardError, with: :internal_server_error

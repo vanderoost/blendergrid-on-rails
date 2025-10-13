@@ -32,5 +32,10 @@ module ActionDispatch
     def root_referrer_header
       { "HTTP_REFERER" => root_url }
     end
+
+    def api_token_header(api_token = nil)
+      api_token ||= ApiToken.create!(name: "Test Token")
+      { "Authorization" => "Bearer #{api_token.token}" }
+    end
   end
 end
