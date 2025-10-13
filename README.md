@@ -41,6 +41,21 @@ In production, Kamal takes care of this.
 
 Run `bin/setup` to create the database and initialize the test database.
 
+### Nuke the database and start from scratch
+
+Useful for when migrations have changed (instead of added).
+
+```bash
+while :
+do RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:drop:primary && break
+sleep 10
+done
+RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:migrate:primary &&
+RAILS_ENV=production caffeinate -id bin/rake etl:users &&
+RAILS_ENV=production caffeinate -id bin/rake etl:articles &&
+say 'The import is done!' || say 'Something went wrong'
+```
+
 ## How to run the test suite
 
 One off tests:

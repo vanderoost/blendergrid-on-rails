@@ -2,6 +2,13 @@
 
 ## essentials
 
+- [ ] Buying render credit through Stripe
+- [ ] Secure the API with some kind of token
+- [ ] Add privacy, terms, cookie policy pages
+- [ ]  UI/UX
+    - [ ]  Show simple render progress and ETA
+    - [x]  Pay once for multiple projects
+    - [x]  Basic style so it doesn’t look like a 90’s primary school website
 - [x]  Emails
     - [x]  Capture email address of guests
     - [x]  Send project status emails
@@ -12,15 +19,11 @@
     - [x]  Between benchmark and render
 - [x]  Support >20GB uploads through the website
 - [x]  Use an external database (AWS RDS? Mysql / Postgres)
-- [ ]  UI/UX
-    - [x]  Pay once for multiple projects
-    - [ ]  Show simple render progress and ETA
-    - [ ]  Basic style so it doesn’t look like a 90’s primary school website
-- [ ]  Transfer over articles and affiliate landing pages
+- [x]  Transfer over articles and affiliate landing pages
 - [x]  Clean up old ECR images
+- [x]  Track visits and affiliate clicks in the backend
 
 ## nice-to-haves
 
 - [ ]  Really nice styling with Tailwind
-- [ ]  Drag ‘n Drop uploads
-- [ ]  Track visits and affiliate clicks in the backend
+- [x]  Drag ‘n Drop uploads
