@@ -22,8 +22,27 @@ class Webhooks::StripeController < Webhooks::BaseController
     end
 
     def handle_successful_checkout(session)
-      logger.info "SUCCESSFUL CHECKOUT"
+      if session.metadata["reason"] == "credit_topup"
+        handle_credit_topup session
+      else
+        handle_order_fulfillment session
+      end
+    end
 
+    def handle_credit_topup(session)
+      logger.info "CREDIT TOPUP: $#{session.amount_subtotal} for"\
+        " #{session.customer_email}"
+
+      user = User.find_by(email_address: session.customer_email)
+      if user.nil?
+        logger.error "User not found for email #{session.customer_email}"
+        return
+      end
+
+      CreditEntry.create(user: user, amount_cents: session.amount_subtotal)
+    end
+
+    def handle_order_fulfillment(session)
       order = Order.find_by(stripe_session_id: session.id)
       return if order.nil?
 

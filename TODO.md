@@ -2,7 +2,7 @@
 
 ## essentials
 
-- [ ] Buying render credit through Stripe
+- [x] Buying render credit through Stripe
 - [ ] Secure the API with some kind of token
 - [ ] Add privacy, terms, cookie policy pages
 - [ ]  UI/UX

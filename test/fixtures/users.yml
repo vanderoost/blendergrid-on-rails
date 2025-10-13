@@ -25,3 +25,9 @@ user_with_balance_1000:
   password_digest: <%= password_digest %>
   email_address_verified: true
   render_credit_cents: 100000
+
+long_email_address:
+  email_address: diesisteineextreemecooleemailalsorlydasschoncool@fake-box.com
+  password_digest: <%= password_digest %>
+  email_address_verified: true
+

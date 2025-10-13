@@ -20,6 +20,10 @@ Rails.application.routes.draw do
     resources :renders
     resources :blender_scenes
   end
+  resources :payment_intents, only: %w[create]
+
+  # Account settings etc.
+  resource :account, only: %w[show]
 
   # API
   namespace :api do

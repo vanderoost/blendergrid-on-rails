@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
     if @order.save
       redirect_to_safe_url @order.redirect_url
     else
-      redirect_back fallback_location :projects, status: :unprocessable_content
+      redirect_back fallback_location: :projects, status: :unprocessable_content
     end
   end
 
@@ -30,18 +30,5 @@ class OrdersController < ApplicationController
 
     def guest_email_address
       params.dig(:order, :guest_email_address) || session[:guest_email_address]
-    end
-
-    def redirect_to_safe_url(url)
-      return redirect_to projects_path if url.blank?
-
-      uri = URI.parse(url)
-      if uri.host == "checkout.stripe.com"
-        redirect_to url, allow_other_host: true
-      else
-        redirect_to projects_path
-      end
-    rescue URI::InvalidURIError
-      redirect_to projects_path
     end
 end
