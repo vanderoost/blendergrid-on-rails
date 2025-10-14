@@ -4,21 +4,17 @@ class PagesController < ApplicationController
   def pricing
   end
 
-  def legal
-    @page_slug = params[:page]
-    markdown_path = Rails.root.join(
-      "app",
-      "views",
-      "pages",
-      "legal",
-      "#{@page_slug}.md"
-    )
+  def policies
+    slug = params[:slug]
 
-    unless File.exist?(markdown_path)
-      raise ActionController::RoutingError.new("Not Found")
-    end
+    return unless slug
 
-    markdown_content = File.read(markdown_path)
+    # TODO: Move this into a model or something
+    md_path = Rails.root / "app" / "views" / "pages" / "policies" / "#{slug}.md"
+
+    raise ActionController::RoutingError.new("Not Found") unless File.exist?(md_path)
+
+    markdown_content = File.read(md_path)
     markdown = Redcarpet::Markdown.new(
       Redcarpet::Render::HTML,
       autolink: true,

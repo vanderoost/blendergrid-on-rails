@@ -44,9 +44,8 @@ Rails.application.routes.draw do
 
   # Static pages
   get "pricing", to: "pages#pricing"
-  get "privacy-policy", to: "pages#legal", defaults: { page: "privacy-policy" }
-  get "terms-of-service", to: "pages#legal", defaults: { page: "terms-of-service" }
-  get "cookie-policy", to: "pages#legal", defaults: { page: "cookie-policy" }
+  get "policies", to: "pages#policies"
+  get "policies/:slug", to: "pages#policies"
 
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")
