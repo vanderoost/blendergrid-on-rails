@@ -2,9 +2,13 @@
 
 ## essentials
 
+This week
 - [x] Buying render credit through Stripe
-- [ ] Secure the API with some kind of token
+- [x] Secure the API with some kind of token
 - [ ] Add privacy, terms, cookie policy pages
+
+---
+
 - [ ]  UI/UX
     - [ ]  Show simple render progress and ETA
     - [x]  Pay once for multiple projects
