@@ -25,17 +25,25 @@ begin
   debug_json.write(input.to_json)
 
   edited_file = input.dig("tool_input", "file_path")
+  is_success = true
   if edited_file.nil?
     puts "No edited file found.."
     exit 2
   else
     debug_log.write("Edited file: #{edited_file}\n\n")
-    `rubocop -a #{edited_file}` if File.extname(edited_file) == ".rb"
+
+    if File.extname(edited_file) == ".rb"
+      rubocop_output = `rubocop -a #{edited_file}`
+      is_success = $?.success?
+      log.write(rubocop_output + "\n\n") if rubocop_output
+    end
   end
 
-  test_output = `rails test test:system --fail-fast`
-  is_success = $?.success?
-  log.write(test_output + "\n\n")
+  if is_success
+    test_output = `rails test test:system --fail-fast`
+    is_success = $?.success?
+    log.write(test_output + "\n\n")
+  end
 
   if is_success
     brakeman_output = `brakeman --no-pager --no-color`
