@@ -23,8 +23,6 @@ class Project < ApplicationRecord
   after_create :start_checking
   after_update_commit :maybe_broadcast
 
-  # broadcasts_to ->(project) { :projects }
-
   validates :blend_filepath, presence: true
 
   def self.in_stages
@@ -82,31 +80,26 @@ class Project < ApplicationRecord
     end
 
     def maybe_broadcast
-      puts "MAYBE BROADCASTING PROJECT #{id}"
       return unless saved_change_to_status?
 
-      puts "STATUS CHANGED: #{status_before_last_save} -> #{status}"
+      puts "PORJECT STATUS CHANGED: #{status_before_last_save} -> #{status}"
       stage_before_last_save = status_to_stage status_before_last_save
+
+      target = "#{stage}-projects"
+      partial = "projects/project"
+      locals = { project: self }
 
       if stage_before_last_save != stage
         puts "STAGE CHANGED: #{stage_before_last_save} -> #{stage}"
 
-        # Remove project item from the projects list (whichever group it was in)
         puts "BROADCASTING REMOVE"
         broadcast_remove_to :projects
 
-        # Then add it back to the new group
         puts "BROADCASTING APPEND"
-        broadcast_append_to :projects,
-          target: "#{stage}-projects",
-          partial: "projects/project",
-          locals: { project: self }
+        broadcast_append_to :projects, target:, partial:, locals:
       else
         puts "BROADCASTING REPLACE"
-        broadcast_replace_to "projects",
-          target: "#{stage}-projects",
-          partial: "projects/project",
-          locals: { project: self }
+        broadcast_replace_to :projects, target:, partial:, locals:
       end
     end
 end
