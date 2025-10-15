@@ -44,6 +44,8 @@ Rails.application.routes.draw do
 
   # Static pages
   get "pricing", to: "pages#pricing"
+  get "policies", to: "pages#policies"
+  get "policies/:slug", to: "pages#policies"
 
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")

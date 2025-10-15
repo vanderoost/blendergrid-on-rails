@@ -1,0 +1,59 @@
+<% if @content_html.blank? %>
+
+  <div class="py-16 sm:py-24">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-4xl sm:text-center">
+        <h1 class="text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-6xl sm:text-balance dark:text-white">
+          Policies, Terms, and General Service Information
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
+          We make our policies as clear, fair, and readable as possible.
+        </p>
+      </div>
+
+      <div class="mx-auto mt-10 max-w-xl text-gray-600 dark:text-gray-400">
+        <ul role="list" class="mt-8 max-w-xl space-y-8 text-gray-600 dark:text-gray-400">
+          <li class="flex gap-x-3 group">
+            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mt-1 size-5 flex-none text-primary-600 dark:text-primary-400">
+              <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+            <a href="policies/terms"><strong class="font-semibold text-gray-900 dark:text-white group-hover:underline">Terms of Service</strong> When you use the Blendergrid render service, you are agreeing to these latest Terms of Service ("Terms").</a>
+          </li>
+          <li class="flex gap-x-3 group">
+            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mt-1 size-5 flex-none text-primary-600 dark:text-primary-400">
+              <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+            <a href="policies/privacy"><strong class="font-semibold text-gray-900 dark:text-white group-hover:underline">Privacy Policy</strong> In this policy, we lay out: what data we collect and why; how your data is handled; and your rights with respect to your data. We never sell your data.
+</a>
+          </li>
+          <li class="flex gap-x-3 group">
+            <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mt-1 size-5 flex-none text-primary-600 dark:text-primary-400">
+              <path d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" fill-rule="evenodd" />
+            </svg>
+            <a href="policies/refund"><strong class="font-semibold text-gray-900 dark:text-white group-hover:underline">Refund Policy</strong> If you're ever unhappy with Blendergrid for any reason, contact our support team. We'll work with you to find a fair solution.
+</a>
+          </li>
+        </ul>
+        <p class="mt-10">We may update these policies as needed to comply with relevant regulations and reflect any new practices. If we make significant changes, we will refresh the date at the top of the page and notify users who have signed up to Blendergrid with an account.</p>
+      </div>
+    </div>
+  </div>
+
+<% else %>
+
+  <div class="py-24 sm:py-32">
+    <div class="mx-auto max-w-4xl px-6 lg:px-8">
+      <div class="prose prose-lg prose-gray max-w-none
+        dark:prose-invert
+        dark:prose-headings:text-white
+        dark:prose-p:text-gray-300
+        dark:prose-a:text-primary-400
+        dark:prose-strong:text-white
+        dark:prose-ol:text-gray-300
+        dark:prose-ul:text-gray-300">
+        <%= @content_html.html_safe %>
+      </div>
+    </div>
+  </div>
+
+<% end %>
