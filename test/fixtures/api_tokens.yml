@@ -1,3 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# Empty fixtures - API tokens should be created programmatically
+# Development token with predictable value
+# Token: dev-token-1234567890
+# Digest is SHA256 hash of the above token
+dev:
+  name: Development Token
+  token_digest: <%= Digest::SHA256.hexdigest("dev-token-1234567890") %>
+  last_used_at: <%= 1.day.ago %>

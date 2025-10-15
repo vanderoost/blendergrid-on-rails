@@ -1,24 +1,61 @@
-<% full = local_assigns.fetch(:full, false) %>
+<tr class="group/row">
+  <td class="hidden">
+    <%= checkbox_tag "quote[project_uuids][]", project.uuid, checked: true, form: "quotes_form", class: "hidden" %>
+  </td>
+  <td class="relative py-5 pr-6">
+    <div class="flex gap-x-6">
+      <% if project.in_progress? %>
+        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="hidden animate-spin h-6 w-5 flex-none text-gray-400 sm:block dark:text-gray-500">
+          <path d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clip-rule="evenodd" fill-rule="evenodd" />
+        </svg>
+      <% end %>
+      <div class="flex-auto">
+        <div class="flex items-start gap-x-3">
+          <div class="text-sm/6 font-medium text-gray-900 dark:text-white">
+            <%= project.name %>
+          </div>
+          <div class="rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 inset-ring inset-ring-amber-600/10 dark:bg-amber-900/30 dark:text-amber-400 dark:inset-ring-amber-500/20">
+            <%= project.status.titleize %>
+          </div>
+        </div>
+        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Created <%= time_ago_in_words(project.created_at) %> ago</div>
+      </div>
+    </div>
+    <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+    <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+  </td>
 
-<%= tag.div id: dom_id(project) do %>
-  <% if full %>
-    <h1><%= project.blend_filepath %></h1>
-  <% else %>
-    <h2><%= link_to(project.blend_filepath, project) %></h2>
-  <% end %>
+  <td class="hidden py-5 pr-6 sm:table-cell group/frame-range-type">
+    <% if project.current_blender_scene.present? %>
 
-  <p>
-    <%= "Project Status: #{project.status}" %>
-  </p>
+      <%= form_with model: [project, project.current_blender_scene], namespace: project.uuid do |form| %>
+        <div class="text-sm/6 text-gray-900 dark:text-white">
+          <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
 
-  <% if project.benchmarked? %>
-    <%= "Price: #{number_to_currency(project.price_cents&.fdiv(100))}" %>
-  <% end %>
+            <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
+              <div class="flex items-center">
+                <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer"  %>
+                <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white cursor-pointer" %>
+              </div>
+            <% end %>
 
-  <% project.frame_urls.each do |url| %>
-    <%= image_tag url, loading: "lazy", width: 240, alt: File.basename(url, ".*") %>
-  <% end %>
+          </div>
+        </div>
+      <% end %>
 
-  <%= render partial: "renders/render", object: project.render if project.render.present? %>
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+        <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:block"><%= human_frame_range project %></span>
+        <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:block"><%= human_single_frame project %></span>
+      </div>
+    <% end %>
+  </td>
 
-<% end %>
+  <td class="py-5 text-right">
+    <div class="flex justify-end">
+      <%= link_to edit_project_path(project), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" do %>
+        Edit<span class="hidden sm:inline"> settings</span>
+      <% end %>
+    </div>
+    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Found warnings</div>
+  </td>
+</tr>

@@ -5,6 +5,7 @@ class Project < ApplicationRecord
     cancelled failed ].freeze
   EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
     finish_benchmarking finish_rendering cancel fail ].freeze
+  STAGES = %i[ uploaded waiting rendering finished stopped ].freeze
 
   include Statable
   include Uuidable
@@ -20,6 +21,7 @@ class Project < ApplicationRecord
   delegate :order, to: :order_item, allow_nil: true
 
   after_create :start_checking
+  after_update_commit :maybe_broadcast
 
   # broadcasts_to ->(project) { :projects }
 
@@ -38,12 +40,7 @@ class Project < ApplicationRecord
   end
 
   def stage
-    case status.to_sym
-    when :created, :checking, :checked then Project::Stages::Analysis
-    when :benchmarking, :benchmarked then Project::Stages::Pricing
-    when :rendering then Project::Stages::Rendering
-    when :rendered, :cancelled, :failed then Project::Stages::Archive
-    end
+    status_to_stage status
   end
 
   def price_cents(tweaks = {})
@@ -83,4 +80,43 @@ class Project < ApplicationRecord
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
     end
+
+    def maybe_broadcast
+      puts "MAYBE BROADCASTING PROJECT #{id}"
+      return unless saved_change_to_status?
+
+      puts "STATUS CHANGED: #{status_before_last_save} -> #{status}"
+      stage_before_last_save = status_to_stage status_before_last_save
+
+      if stage_before_last_save != stage
+        puts "STAGE CHANGED: #{stage_before_last_save} -> #{stage}"
+
+        # Remove project item from the projects list (whichever group it was in)
+        puts "BROADCASTING REMOVE"
+        broadcast_remove_to :projects
+
+        # Then add it back to the new group
+        puts "BROADCASTING APPEND"
+        broadcast_append_to :projects,
+          target: "#{stage}-projects",
+          partial: "projects/project",
+          locals: { project: self }
+      else
+        puts "BROADCASTING REPLACE"
+        broadcast_replace_to "projects",
+          target: "#{stage}-projects",
+          partial: "projects/project",
+          locals: { project: self }
+      end
+    end
+end
+
+def status_to_stage(status)
+  case status.to_sym
+  when :created, :checking, :checked then :uploaded
+  when :benchmarking, :benchmarked then :waiting
+  when :rendering then :rendering
+  when :rendered then :finished
+  when :cancelled, :failed then :stopped
+  end
 end
