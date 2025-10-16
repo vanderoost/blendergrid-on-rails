@@ -21,7 +21,7 @@ class Project < ApplicationRecord
   delegate :order, to: :order_item, allow_nil: true
 
   after_create :start_checking
-  after_update_commit :maybe_broadcast
+  after_update_commit :broadcast, if: :saved_change_to_status?
 
   validates :blend_filepath, presence: true
 
@@ -31,6 +31,10 @@ class Project < ApplicationRecord
 
   def in_progress?
     %w[created checking benchmarking rendering].include?(status)
+  end
+
+  def to_key
+    [ uuid ]
   end
 
   def name
@@ -79,28 +83,17 @@ class Project < ApplicationRecord
       public_send(model_sym.to_s.pluralize).last
     end
 
-    def maybe_broadcast
-      return unless saved_change_to_status?
-
-      puts "PORJECT STATUS CHANGED: #{status_before_last_save} -> #{status}"
-      stage_before_last_save = status_to_stage status_before_last_save
-
-      target = "#{stage}-projects"
-      partial = "projects/project"
-      locals = { project: self }
-
-      if stage_before_last_save != stage
-        puts "STAGE CHANGED: #{stage_before_last_save} -> #{stage}"
-
-        puts "BROADCASTING REMOVE"
+    def broadcast
+      if saved_change_to_stage?
         broadcast_remove_to :projects
-
-        puts "BROADCASTING APPEND"
-        broadcast_append_to :projects, target:, partial:, locals:
+        broadcast_prepend_to :projects, target: "#{stage}-projects"
       else
-        puts "BROADCASTING REPLACE"
-        broadcast_replace_to :projects, target:, partial:, locals:
+        broadcast_replace_to :projects
       end
+    end
+
+    def saved_change_to_stage?
+      status_to_stage(status_before_last_save) != stage
     end
 end
 

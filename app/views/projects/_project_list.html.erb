@@ -2,8 +2,8 @@
 
 <%
   projects_by_stage = projects.group_by(&:stage)
-  Project::STAGES.select { |s| projects_by_stage[s].present? }.each do |stage|
-    stage_projects = projects_by_stage[stage]
+  Project::STAGES.each do |stage|
+    stage_projects = projects_by_stage[stage] || []
 %>
 
   <div class="mt-6">
