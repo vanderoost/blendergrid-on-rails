@@ -34,20 +34,22 @@
 
   <td class="hidden py-5 pr-6 sm:table-cell group/frame-range-type">
     <% if project.current_blender_scene.present? %>
+      <%= turbo_frame_tag "#{dom_id(project)}_frame_range_type" do %>
 
-      <%= form_with model: [project, project.current_blender_scene], namespace: project.uuid do |form| %>
-        <div class="text-sm/6 text-gray-900 dark:text-white">
-          <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
+        <%= form_with model: [project, project.current_blender_scene], namespace: project.uuid do |form| %>
+          <div class="text-sm/6 text-gray-900 dark:text-white">
+            <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
 
-            <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
-              <div class="flex items-center">
-                <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer"  %>
-                <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white cursor-pointer" %>
-              </div>
-            <% end %>
+              <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
+                <div class="flex items-center">
+                  <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer"  %>
+                  <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white cursor-pointer" %>
+                </div>
+              <% end %>
 
+            </div>
           </div>
-        </div>
+        <% end %>
       <% end %>
 
       <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
@@ -63,6 +65,6 @@
         Edit<span class="hidden sm:inline"> settings</span>
       <% end %>
     </div>
-    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Found warnings</div>
+    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">[TODO]</div>
   </td>
 </tr>
