@@ -2,22 +2,48 @@
   <td class="relative py-5 pr-6">
     <div class="flex items-center gap-x-6">
       <% if project.in_progress? %>
-        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="hidden animate-spin h-6 w-5 flex-none text-gray-400 sm:block dark:text-gray-500">
+
+        <!-- SVG Spinner -->
+        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="block animate-spin h-6 w-5 flex-none text-gray-400 dark:text-gray-500">
           <path d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clip-rule="evenodd" fill-rule="evenodd" />
         </svg>
-      <% elsif project.checked? %>
-        <%= checkbox_tag "quote[project_uuids][]", project.uuid,
-          checked: true,
-          id: "checkbox_#{project.uuid}",
-          form: "quotes_form",
-          data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" } %>
-      <% elsif project.benchmarked? %>
-        <%= checkbox_tag "order[project_uuids][]", project.uuid,
-          checked: true,
-          id: "checkbox_#{project.uuid}",
-          form: "orders_form",
-          data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" } %>
+
+      <% elsif project.checked? || project.benchmarked?
+           model = case project.status
+             when "checked" then "quote"
+             when "benchmarked" then "order"
+           end %>
+
+        <div class="group grid size-5 grid-cols-1">
+         <%= checkbox_tag "#{model}[project_uuids][]",
+           project.uuid,
+           checked: true,
+           id: "checkbox_#{project.uuid}",
+           form: "#{model}s_form",
+           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" },
+           class: "col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto" %>
+         <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-4 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+           <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+           <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+         </svg>
+        </div>
+
+      <% elsif project.rendered? %>
+
+        <!-- SVG Download icon - TODO: Make download link -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
+
+      <% else %>
+
+        <!-- SVG Warning icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+
       <% end %>
+
       <div class="flex-auto">
         <div class="flex items-start gap-x-3">
           <div class="text-sm/6 font-medium text-gray-900 dark:text-white">
@@ -34,7 +60,7 @@
           <% end %>
 
         </div>
-        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Created <%= time_ago_in_words(project.created_at) %> ago</div>
+        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Updated <%= time_ago_in_words(project.updated_at) %> ago</div>
       </div>
     </div>
     <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
@@ -42,7 +68,7 @@
   </td>
 
   <td class="hidden py-5 pr-6 sm:table-cell group/frame-range-type">
-    <% if project.current_blender_scene.present? %>
+    <% if project.checked? && project.current_blender_scene.present? %>
       <%= turbo_frame_tag "#{dom_id(project)}_frame_range_type" do %>
 
         <%= form_with model: [project, project.current_blender_scene], namespace: project.uuid do |form| %>
