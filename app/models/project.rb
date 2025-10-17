@@ -30,8 +30,9 @@ class Project < ApplicationRecord
   end
 
   def in_progress?
-    %w[created checking benchmarking rendering].include?(status)
+    %w[created checking benchmarking rendering].include? status
   end
+
 
   def to_key
     [ uuid ]

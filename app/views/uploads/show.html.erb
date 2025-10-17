@@ -1,4 +1,4 @@
-<% if @upload.projects.empty? || @upload.ongoing_zip_checks.any? %>
+<% if @projects.empty? || @upload.ongoing_zip_checks.any? %>
   <div class="bg-white dark:bg-gray-900 max-w-md mx-auto mt-16 sm:mt-20 border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4">
 
     <% if @upload.ongoing_zip_checks.any? %>
@@ -33,4 +33,4 @@
   </div>
 <% end %>
 
-<%= render "projects/project_list", projects: @upload.projects %>
+<%= render "projects/project_list", projects: @projects %>

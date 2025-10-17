@@ -3,8 +3,9 @@ class ProjectsController < ApplicationController
   allow_unauthenticated_access only: %i[ index show edit update ]
 
   def index
+    # TODO: Only show user's or guest's projects
     # @projects = Project.joins(:upload).merge(accessible_uploads)
-    @projects = Project.all
+    @projects = Project.order(updated_at: :desc)
   end
 
   def show

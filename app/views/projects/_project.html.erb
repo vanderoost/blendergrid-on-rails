@@ -21,9 +21,16 @@
           <div class="text-sm/6 font-medium text-gray-900 dark:text-white">
             <%= project.name %>
           </div>
-          <div class="rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 inset-ring inset-ring-amber-600/10 dark:bg-amber-900/30 dark:text-amber-400 dark:inset-ring-amber-500/20">
+
+          <%= tag.div class: %w[rounded-md px-2 py-1 text-xs font-medium inset-ring] + [
+            "bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 inset-ring-amber-600/10 dark:inset-ring-amber-500/20": badge_amber?(project),
+            "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 inset-ring-green-600/10 dark:inset-ring-green-500/20": badge_green?(project),
+            "bg-primary-50 dark:bg-primary-800/20 text-primary-700 dark:text-primary-300 inset-ring-primary-600/10 dark:inset-ring-primary-400/20": badge_blue?(project),
+            "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 inset-ring-red-600/10 dark:inset-ring-red-500/20": badge_red?(project),
+            ] do %>
             <%= project.status.titleize %>
-          </div>
+          <% end %>
+
         </div>
         <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Created <%= time_ago_in_words(project.created_at) %> ago</div>
       </div>

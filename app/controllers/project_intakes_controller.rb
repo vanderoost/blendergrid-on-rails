@@ -4,6 +4,7 @@ class ProjectIntakesController < ApplicationController
 
   def create
     @project_intake = Project::Intake.new(project_intake_params)
+    @projects = @upload.projects.order(updated_at: :desc)
 
     if @project_intake.save
       redirect_back fallback_location: projects_path
