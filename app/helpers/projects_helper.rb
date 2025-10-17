@@ -32,6 +32,10 @@ module ProjectsHelper
     "Frame #{project.current_blender_scene&.frame_range_single}"
   end
 
+  def project_price(project)
+    number_to_currency project.price_cents.fdiv(100)
+  end
+
   # TODO DEPRECATE?
   def state_title(state)
     case state.to_sym

@@ -1,16 +1,24 @@
 # TODOs
 
-## essentials
+## before launch
 
 This week
 - [x] Buying render credit through Stripe
 - [x] Secure the API with some kind of token
-- [ ] Add privacy, terms, cookie policy pages
+- [x] Add privacy, terms, cookie policy pages
 
 ---
 
-- [ ]  UI/UX
-    - [ ]  Show simple render progress and ETA
+- [ ]  Show simple render progress and ETA
+- [ ]  Show scene warnings (in settings?)
+- [ ]  Deleting a project
+- [ ]  Uploaded stage
+    - [ ]  Show resolution at index
+- [ ]  Waiting stage
+    - [ ]  Show price at index
+    - [ ]  Deadline + resolution + samples form at index
+    - [ ]  Edit page with preview renders, deadline+res+samples form
+- [x]  UI/UX
     - [x]  Pay once for multiple projects
     - [x]  Basic style so it doesn’t look like a 90’s primary school website
 - [x]  Emails
@@ -27,7 +35,11 @@ This week
 - [x]  Clean up old ECR images
 - [x]  Track visits and affiliate clicks in the backend
 
-## nice-to-haves
+## after launch
 
-- [ ]  Really nice styling with Tailwind
+- [ ]  Disable checkbox if there's only one Project in a stage
+- [ ]  Add handwritten hints to the UI
+    - [ ]  Select a project
+    - [ ]  Calculate the price
+    - [ ]  Start rendering
 - [x]  Drag ‘n Drop uploads
