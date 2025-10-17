@@ -8,11 +8,13 @@
       <% elsif project.checked? %>
         <%= checkbox_tag "quote[project_uuids][]", project.uuid,
           checked: true,
+          id: "checkbox_#{project.uuid}",
           form: "quotes_form",
           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" } %>
       <% elsif project.benchmarked? %>
         <%= checkbox_tag "order[project_uuids][]", project.uuid,
           checked: true,
+          id: "checkbox_#{project.uuid}",
           form: "orders_form",
           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" } %>
       <% end %>
