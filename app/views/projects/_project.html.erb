@@ -61,7 +61,7 @@
 
   <td class="py-5 text-right">
     <div class="flex justify-end">
-      <%= link_to edit_project_path(project), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" do %>
+      <%= link_to edit_project_path(project, return_path: request.path), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" do %>
         Edit<span class="hidden sm:inline"> settings</span>
       <% end %>
     </div>

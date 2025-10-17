@@ -11,6 +11,7 @@ class ProjectsController < ApplicationController
   end
 
   def edit
+    @return_path = params[:return_path] || projects_path
   end
 
   def update
