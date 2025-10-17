@@ -9,241 +9,203 @@
   <span class="basis-0 grow"></span>
 </div>
 
-<%= form_for @project, html: { class: "my-12" } do |form| %>
-  <div class="space-y-12">
+<turbo-frame id="edit_project">
+  <%= form_for @project, html: { class: "my-12" } do |form| %>
+    <div class="space-y-12">
 
-    <!-- Scene section -->
-    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-      <div>
-        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Scene</h2>
-        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which scene to render.</p>
-      </div>
+      <!-- Scene section -->
+      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+        <div>
+          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Scene</h2>
+          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which scene to render.</p>
+        </div>
 
-      <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-        <div class="sm:col-span-3">
-          <%= form.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
+        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+          <div class="sm:col-span-3">
+            <%= form.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
 
-          <div class="mt-2 grid grid-cols-1">
-            <%= form.collection_select :current_blender_scene_id,
-              @project.blender_scenes, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
-            <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-              <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-            </svg>
+            <div class="mt-2 grid grid-cols-1">
+              <%= form.collection_select :current_blender_scene_id,
+                @project.blender_scenes, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
+              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+              </svg>
+            </div>
+
           </div>
-
         </div>
       </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
 
-<turbo-frame id="edit_project_current_scene">
-  <%= form_with model: [@project, @project.current_blender_scene] do |form| %>
-    <div class="space-y-12">
+  <turbo-frame id="edit_project_current_scene">
+    <%= form_with model: [@project, @project.current_blender_scene], data: {controller: "autosubmit"}  do |form| %>
+      <div class="space-y-12">
 
-      <!-- Frame Range section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Frame Range</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which frames to render.</p>
-        </div>
+        <!-- Frame Range section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Frame Range</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which frames to render.</p>
+          </div>
 
-        <div class="max-w-2xl flex flex-col gap-10 md:col-span-2 group/frame-range">
-          <fieldset>
-            <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Type</legend>
-            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Render a single image, or an animation.</p>
-            <div class="mt-6 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+          <div class="max-w-2xl flex flex-col gap-10 md:col-span-2 group/frame-range">
+            <fieldset>
+              <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Type</legend>
+              <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Render a single image, or an animation.</p>
+              <div class="mt-6 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
 
-              <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
+                <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
 
-                <div class="flex items-center">
-                  <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
-                  <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                  <div class="flex items-center">
+                    <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
+                    <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                  </div>
+
+                <% end %>
+              </div>
+            </fieldset>
+
+            <div class="max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2 hidden group-has-[input[value=animation]:checked]/frame-range:grid">
+              <div class="sm:col-span-2 sm:col-start-1">
+                <%= form.label :frame_range_start, "Start", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :frame_range_start, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
                 </div>
-
-              <% end %>
-            </div>
-          </fieldset>
-
-          <div class="max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2 hidden group-has-[input[value=animation]:checked]/frame-range:grid">
-            <div class="sm:col-span-2 sm:col-start-1">
-              <%= form.label :frame_range_start, "Start", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :frame_range_start, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
               </div>
-            </div>
 
-            <div class="sm:col-span-2">
-              <%= form.label :frame_range_enf, "End", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :frame_range_end, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
-              </div>
-            </div>
-
-            <div class="sm:col-span-2">
-              <%= form.label :frame_range_step, "Step", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :frame_range_step, min: 1, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
-              </div>
-            </div>
-          </div>
-
-          <div class="max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2 hidden group-has-[input[value=image]:checked]/frame-range:grid">
-            <div class="sm:col-span-2 sm:col-start-1">
-              <%= form.label :frame_range_single, "Frame", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :frame_range_single, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Resolution section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Resolution</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the resolution to render at.</p>
-        </div>
-
-        <div class="max-w-2xl space-y-10 md:col-span-2">
-          <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-            <div class="sm:col-span-2 sm:col-start-1">
-              <%= form.label :resolution_x, "Width", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :resolution_x, min: 4, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-
-            <div class="sm:col-span-2">
-              <%= form.label :resolution_y, "Height", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :resolution_y, min: 4, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-
-            <div class="sm:col-span-2">
-              <%= form.label :resolution_percentage, "Percentage", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :resolution_percentage, min: 1, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sampling section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Sampling</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the sampling settings for Cycles.</p>
-        </div>
-
-        <div class="max-w-2xl space-y-10 md:col-span-2 group/sampling">
-          <div class="flex items-center gap-3">
-            <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
-              <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-              <%= form.checkbox :sampling_use_adaptive, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
-            </div>
-
-            <div class="text-sm space-x-1 sm:space-x-2">
-              <%= form.label :sampling_use_adaptive, "Use Adaptive Sampling", class: "font-medium text-gray-900 dark:text-white" %>
-              <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
-            </div>
-          </div>
-
-          <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-            <div class="sm:col-span-2 sm:col-start-1 hidden group-has-checked/sampling:block">
-              <%= form.label :sampling_noise_threshold, "Noise Threshold", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :sampling_noise_threshold, min: 0, step: :any, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-
-            <div class="sm:col-span-2 hidden group-has-checked/sampling:block">
-              <%= form.label :sampling_min_samples, "Min. Samples", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2">
-                <%= form.number_field :sampling_min_samples, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-
-            <div class="sm:col-span-2">
-              <%= form.label :sampling_max_samples, "Max. Samples", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" do %>
-                <span class="hidden group-has-checked/sampling:block">Max. Samples</span>
-                <span class="block group-has-checked/sampling:hidden">Cycles Samples</span>
-              <% end %>
-              <div class="mt-2">
-                <%= form.number_field :sampling_max_samples, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- File Output section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Output File</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose what kind of file to export.</p>
-        </div>
-
-        <div class="max-w-2xl space-y-10 md:col-span-2">
-          <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-            <div class="sm:col-span-3">
-              <%= form.label :file_output_file_format, "File Format", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2 grid grid-cols-1">
-                <%= form.collection_select :file_output_file_format, OutputFileFormat.all, :id, :name, {},
-                  {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
-                <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <fieldset>
-            <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color</legend>
-            <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
-              <%= form.collection_radio_buttons :file_output_color_mode, form.object.output_file_format.color_modes, :to_s, :to_s do |b| %>
-                <div class="flex items-center">
-                  <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
-                  <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+              <div class="sm:col-span-2">
+                <%= form.label :frame_range_enf, "End", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :frame_range_end, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
                 </div>
-              <% end %>
-            </div>
-          </fieldset>
+              </div>
 
-          <% if form.object.output_file_format.video %>
+              <div class="sm:col-span-2">
+                <%= form.label :frame_range_step, "Step", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :frame_range_step, min: 1, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
+                </div>
+              </div>
+            </div>
+
+            <div class="max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2 hidden group-has-[input[value=image]:checked]/frame-range:grid">
+              <div class="sm:col-span-2 sm:col-start-1">
+                <%= form.label :frame_range_single, "Frame", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :frame_range_single, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500"  %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resolution section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Resolution</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the resolution to render at.</p>
+          </div>
+
+          <div class="max-w-2xl space-y-10 md:col-span-2">
+            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+              <div class="sm:col-span-2 sm:col-start-1">
+                <%= form.label :resolution_x, "Width", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :resolution_x, min: 4, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <%= form.label :resolution_y, "Height", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :resolution_y, min: 4, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <%= form.label :resolution_percentage, "Percentage", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :resolution_percentage, min: 1, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sampling section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Sampling</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose the sampling settings for Cycles.</p>
+          </div>
+
+          <div class="max-w-2xl space-y-10 md:col-span-2 group/sampling">
+            <div class="flex items-center gap-3">
+              <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+                <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+                <%= form.checkbox :sampling_use_adaptive, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
+              </div>
+
+              <div class="text-sm space-x-1 sm:space-x-2">
+                <%= form.label :sampling_use_adaptive, "Use Adaptive Sampling", class: "font-medium text-gray-900 dark:text-white" %>
+                <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
+              </div>
+            </div>
+
+            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+              <div class="sm:col-span-2 sm:col-start-1 hidden group-has-checked/sampling:block">
+                <%= form.label :sampling_noise_threshold, "Noise Threshold", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :sampling_noise_threshold, min: 0, step: :any, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+
+              <div class="sm:col-span-2 hidden group-has-checked/sampling:block">
+                <%= form.label :sampling_min_samples, "Min. Samples", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2">
+                  <%= form.number_field :sampling_min_samples, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <%= form.label :sampling_max_samples, "Max. Samples", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" do %>
+                  <span class="hidden group-has-checked/sampling:block">Max. Samples</span>
+                  <span class="block group-has-checked/sampling:hidden">Cycles Samples</span>
+                <% end %>
+                <div class="mt-2">
+                  <%= form.number_field :sampling_max_samples, min: 0, class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Output section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Output File</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose what kind of file to export.</p>
+          </div>
+
+          <div class="max-w-2xl space-y-10 md:col-span-2">
             <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
               <div class="sm:col-span-3">
-                <%= form.label :file_output_ffmpeg_format, "Video Container", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <%= form.label :file_output_file_format, "File Format", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
                 <div class="mt-2 grid grid-cols-1">
-                  <%= form.collection_select :file_output_ffmpeg_format, FfmpegFormat.all, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
+                  <%= form.collection_select :file_output_file_format, OutputFileFormat.all, :id, :name, {},
+                    {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" } %>
                   <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
                     <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
                   </svg>
                 </div>
               </div>
-
-              <% if form.object.output_ffmpeg_format.codecs %>
-                <div class="sm:col-span-3">
-                  <%= form.label :file_output_ffmpeg_codec, "Video Codec", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-                  <div class="mt-2 grid grid-cols-1">
-                    <%= form.collection_select :file_output_ffmpeg_codec, FfmpegCodec.all, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
-                    <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-                      <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-                    </svg>
-                  </div>
-                </div>
-              <% end %>
             </div>
-          <% end %>
 
-          <% if form.object.file_output_color_depth_options.any? %>
             <fieldset>
-              <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color Depth</legend>
+              <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color</legend>
               <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
-                <%= form.collection_radio_buttons :file_output_color_depth, form.object.file_output_color_depth_options, :to_s, ->(b) { "#{b}-bit" } do |b| %>
+                <%= form.collection_radio_buttons :file_output_color_mode, form.object.output_file_format.color_modes, :to_s, :to_s do |b| %>
                   <div class="flex items-center">
                     <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
                     <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>
@@ -251,95 +213,135 @@
                 <% end %>
               </div>
             </fieldset>
-          <% end %>
 
-          <fieldset>
-            <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Film</legend>
-            <div class="mt-3 flex items-center gap-3">
+            <% if form.object.output_file_format.video %>
+              <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+                <div class="sm:col-span-3">
+                  <%= form.label :file_output_ffmpeg_format, "Video Container", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                  <div class="mt-2 grid grid-cols-1">
+                    <%= form.collection_select :file_output_ffmpeg_format, FfmpegFormat.all, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" } %>
+                    <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                      <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+
+                <% if form.object.output_ffmpeg_format.codecs %>
+                  <div class="sm:col-span-3">
+                    <%= form.label :file_output_ffmpeg_codec, "Video Codec", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                    <div class="mt-2 grid grid-cols-1">
+                      <%= form.collection_select :file_output_ffmpeg_codec, FfmpegCodec.all, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" } %>
+                      <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                        <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                      </svg>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <% if form.object.file_output_color_depth_options.any? %>
+              <fieldset>
+                <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Color Depth</legend>
+                <div class="mt-3 space-y-6 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                  <%= form.collection_radio_buttons :file_output_color_depth, form.object.file_output_color_depth_options, :to_s, ->(b) { "#{b}-bit" } do |b| %>
+                    <div class="flex items-center">
+                      <%= b.radio_button class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" %>
+                      <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                    </div>
+                  <% end %>
+                </div>
+              </fieldset>
+            <% end %>
+
+            <fieldset>
+              <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Film</legend>
+              <div class="mt-3 flex items-center gap-3">
+                <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+                  <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+                  <%= form.checkbox :file_output_film_transparent, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
+                </div>
+
+                <div class="text-sm space-x-1 sm:space-x-2">
+                  <%= form.label :file_output_film_transparent, "Transparent", class: "font-medium text-gray-900 dark:text-white" %>
+                  <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Make the background transparent.</span>
+                </div>
+              </div>
+            </fieldset>
+
+          </div>
+        </div>
+
+        <!-- Camera section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Camera</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Camera related settings.</p>
+          </div>
+
+          <div class="max-w-2xl space-y-10 md:col-span-2">
+            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+              <div class="sm:col-span-3">
+                <%= form.label :camera_name, "Camera Name", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+                <div class="mt-2 grid grid-cols-1">
+                  <%= form.select :camera_name, form.object.camera_name_options, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500" } %>
+                  <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                    <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Post Processing section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Post Processing</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Everything that happens after rendering.</p>
+          </div>
+
+          <div class="max-w-2xl space-y-10 md:col-span-2">
+            <div class="flex items-center gap-3">
               <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
                 <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-                <%= form.checkbox :file_output_film_transparent, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
+                <%= form.checkbox :post_processing_use_compositing, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
               </div>
 
               <div class="text-sm space-x-1 sm:space-x-2">
-                <%= form.label :file_output_film_transparent, "Transparent", class: "font-medium text-gray-900 dark:text-white" %>
-                <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Make the background transparent.</span>
+                <%= form.label :post_processing_use_compositing, "Compositing", class: "font-medium text-gray-900 dark:text-white" %>
+                <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Enable Compositing</span>
               </div>
             </div>
-          </fieldset>
 
-        </div>
-      </div>
+            <div class="flex items-center gap-3">
+              <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+                <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+                <%= form.checkbox :post_processing_use_sequencer, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
+              </div>
 
-      <!-- Camera section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Camera</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Camera related settings.</p>
-        </div>
+              <div class="text-sm space-x-1 sm:space-x-2">
+                <%= form.label :post_processing_use_sequencer, "Sequencer", class: "font-medium text-gray-900 dark:text-white" %>
+                <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Enable the Video Sequence Editor</span>
+              </div>
+            </div>
 
-        <div class="max-w-2xl space-y-10 md:col-span-2">
-          <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-            <div class="sm:col-span-3">
-              <%= form.label :camera_name, "Camera Name", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
-              <div class="mt-2 grid grid-cols-1">
-                <%= form.select :camera_name, form.object.camera_name_options, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
-                <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-                </svg>
+            <div class="flex items-center gap-3">
+              <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
+                <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
+                <%= form.checkbox :post_processing_use_stamp, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
+              </div>
+
+              <div class="text-sm space-x-1 sm:space-x-2">
+                <%= form.label :post_processing_use_stamp, "Burn Metadata Into Image", class: "font-medium text-gray-900 dark:text-white" %>
+                <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Post Processing section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Post Processing</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Everything that happens after rendering.</p>
-        </div>
-
-        <div class="max-w-2xl space-y-10 md:col-span-2">
-          <div class="flex items-center gap-3">
-            <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
-              <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-              <%= form.checkbox :post_processing_use_compositing, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
-            </div>
-
-            <div class="text-sm space-x-1 sm:space-x-2">
-              <%= form.label :post_processing_use_compositing, "Compositing", class: "font-medium text-gray-900 dark:text-white" %>
-              <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Enable Compositing</span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
-              <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-              <%= form.checkbox :post_processing_use_sequencer, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
-            </div>
-
-            <div class="text-sm space-x-1 sm:space-x-2">
-              <%= form.label :post_processing_use_sequencer, "Sequencer", class: "font-medium text-gray-900 dark:text-white" %>
-              <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">Enable the Video Sequence Editor</span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <div class="group relative inline-flex w-11 shrink-0 rounded-full bg-gray-200 p-0.5 inset-ring inset-ring-gray-900/5 outline-offset-2 outline-primary-600 transition-colors duration-200 ease-in-out has-checked:bg-primary-600 has-focus-visible:outline-2 dark:bg-white/5 dark:inset-ring-white/10 dark:outline-primary-500 dark:has-checked:bg-primary-500">
-              <span class="size-5 rounded-full bg-white shadow-xs ring-1 ring-gray-900/5 transition-transform duration-200 ease-in-out group-has-checked:translate-x-5"></span>
-              <%= form.checkbox :post_processing_use_stamp, class: "absolute inset-0 appearance-none focus:outline-hidden" %>
-            </div>
-
-            <div class="text-sm space-x-1 sm:space-x-2">
-              <%= form.label :post_processing_use_stamp, "Burn Metadata Into Image", class: "font-medium text-gray-900 dark:text-white" %>
-              <span id="annual-billing-description" class="text-gray-500 dark:text-gray-400">What is this?</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
+    <% end %>
+  </turbo-frame>
 </turbo-frame>
 
 <!-- Breadcrumbs -->
@@ -360,7 +362,7 @@
         <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
           <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
         </svg>
-        <%= link_to "Projects", :projects, { class: "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" } %>
+        <%= link_to "Projects", @return_path, { class: "ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" } %>
       </div>
     </li>
     <li>
