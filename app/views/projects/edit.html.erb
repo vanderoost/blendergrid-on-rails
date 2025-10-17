@@ -10,36 +10,39 @@
 </div>
 
 <turbo-frame id="edit_project">
-  <%= form_for @project, html: { class: "my-12" } do |form| %>
-    <div class="space-y-12">
 
-      <!-- Scene section -->
-      <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-        <div>
-          <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Scene</h2>
-          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which scene to render.</p>
-        </div>
+  <% if @project.blender_scenes.many? %>
+    <%= form_with model: @project, class: "mt-12" do |form| %>
+      <div class="space-y-12">
 
-        <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
-          <div class="sm:col-span-3">
-            <%= form.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
+        <!-- Scene section -->
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+          <div>
+            <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Scene</h2>
+            <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Choose which scene to render.</p>
+          </div>
 
-            <div class="mt-2 grid grid-cols-1">
-              <%= form.collection_select :current_blender_scene_id,
-                @project.blender_scenes, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
-              <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
-                <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
-              </svg>
+          <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+            <div class="sm:col-span-3">
+              <%= form.label :scene_name, class: "block text-sm/7 font-medium text-gray-900 dark:text-white" %>
+
+              <div class="mt-2 grid grid-cols-1">
+                <%= form.collection_select :current_blender_scene_id,
+                  @project.blender_scenes, :id, :name, {}, {class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500", onchange: "this.form.requestSubmit()"} %>
+                <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                  <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                </svg>
+              </div>
+
             </div>
-
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
 
   <turbo-frame id="edit_project_current_scene">
-    <%= form_with model: [@project, @project.current_blender_scene], data: {controller: "autosubmit"}  do |form| %>
+    <%= form_with model: [@project, @project.current_blender_scene], data: {controller: "autosubmit"}, class: "mt-12" do |form| %>
       <div class="space-y-12">
 
         <!-- Frame Range section -->
