@@ -51,8 +51,7 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "benchmark completion should change the project status to benchmarked" do
-    assert @benchmarking_project.benchmarking?,
-           "status should be benchmarking"
+    assert @benchmarking_project.benchmarking?, "status should be benchmarking"
 
     patch api_v1_workflow_path(@benchmark_workflow),
       params: {

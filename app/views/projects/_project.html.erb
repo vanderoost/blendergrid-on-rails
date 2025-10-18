@@ -106,21 +106,21 @@
         <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_deadline_hours, "Deadline" %>
-            <%= form.number_field :tweaks_deadline_hours, in: 2...12 %>
+            <%= form.number_field :tweaks_deadline_hours, in: 2..12 %>
           </div>
 
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_resolution_percentage, "Resolution %" %>
-            <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)...(project.resolution_percentage * 2) %>
+            <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2) %>
           </div>
 
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_sampling_max_samples, "Samples" %>
-            <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)...(project.sampling_max_samples * 2) %>
+            <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)..(project.sampling_max_samples * 2) %>
           </div>
         <% end %>
 
-        <div hidden data-price-cents="<%= project.price_cents %>" data-project-price-target="priceCents"></div>
+        <div data-price-cents="<%= project.price_cents %>" data-project-price-target="priceCents"></div>
       <% end %>
 
     <% end %>

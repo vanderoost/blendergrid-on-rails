@@ -3,7 +3,6 @@ require "ostruct"
 
 class OrdersControllerTest < ActionDispatch::IntegrationTest
   test "should create guest order for a single project" do
-    assert @project.order_item.blank?
     assert_difference("Order.count", 1) do
       post orders_url,
         params: {

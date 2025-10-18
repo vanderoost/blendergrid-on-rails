@@ -20,15 +20,15 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
+  belongs_to :order, optional: true
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
-  has_one :order_item, class_name: "Order::Item"
 
   delegate :user, to: :upload
-  delegate :order, to: :order_item, allow_nil: true
 
   after_create :start_checking
+  before_update :update_price, if: :tweaks_changed?
   after_update_commit :broadcast, if: :saved_change_to_status?
 
   validates :blend_filepath, presence: true
@@ -55,8 +55,6 @@ class Project < ApplicationRecord
   end
 
   def process_benchmark
-    puts "PROCESSING BENCHMARK"
-
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 
     # TODO: Choose a sensible deadline based on the benchmark / exp. server hours
@@ -65,15 +63,7 @@ class Project < ApplicationRecord
     self.tweaks_sampling_max_samples = sampling_max_samples
 
     # Initialize the price
-    workflow = benchmark.workflow
-    self.price_cents = Pricing::Calculation.new(
-      benchmark: benchmark,
-      node_supplies: NodeSupply.where(
-        provider_id: workflow.node_provider_id, type_name: workflow.node_type_name
-      ),
-      blender_scene: current_blender_scene,
-      tweaks: tweaks,
-    ).price_cents
+    update_price
 
     self.save!
   end
@@ -90,7 +80,7 @@ class Project < ApplicationRecord
 
   def handle_cancellation
     render.workflow.stop
-    order_item.partial_refund render.workflow.progress_permil if order_item.present?
+    partial_refund render.workflow.progress_permil
   end
 
   def blend_check = latest(:blend_check)
@@ -103,6 +93,7 @@ class Project < ApplicationRecord
     end
 
     def broadcast
+      puts "BROADCASTING PROJECT UPDATE"
       if saved_change_to_stage?
         broadcast_remove_to :projects
         broadcast_prepend_to :projects, target: "#{stage}-projects"
@@ -111,8 +102,40 @@ class Project < ApplicationRecord
       end
     end
 
+    def update_price
+      workflow = benchmark.workflow
+      self.price_cents = Pricing::Calculation.new(
+        benchmark: benchmark,
+        node_supplies: NodeSupply.where(
+          provider_id: workflow.node_provider_id, type_name: workflow.node_type_name
+        ),
+        blender_scene: current_blender_scene,
+        tweaks: tweaks,
+      ).price_cents
+    end
+
     def saved_change_to_stage?
       status_to_stage(status_before_last_save) != stage
+    end
+
+    # TODO: Refactor to a "refundable" concern
+    def partial_refund(permil)
+      permil ||= 0
+      permil_to_refund = 1000 - permil
+      refund_cents = price_cents * permil_to_refund.fdiv(1000)
+      puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
+        " $#{refund_cents.fdiv(100)}"
+
+      if refund_cents.positive? and user.present?
+        puts "TOPPING UP CREDIT"
+        user.update(render_credit_cents: user.render_credit_cents + refund_cents)
+      else
+        puts "NO USER ASSOCIATED"
+        # TODO: Figure out how to handle the refund wihtout a user
+      end
+
+      # First refund in Render credit only.
+      # After a timeout, and the credit hasn't been used, do a full refund.
     end
 end
 

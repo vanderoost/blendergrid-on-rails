@@ -80,12 +80,12 @@ class BlenderScene < ApplicationRecord
     @output_file_format ||= OutputFileFormat.find(file_output_file_format)
   end
 
-  def scaled_resolution_x
-    (resolution_x * resolution_percentage.fdiv(100)).to_i
+  def scaled_resolution_x(percentage = nil)
+    (resolution_x * (percentage || resolution_percentage).fdiv(100)).to_i
   end
 
-  def scaled_resolution_y
-    (resolution_y * resolution_percentage.fdiv(100)).to_i
+  def scaled_resolution_y(percentage = nil)
+    (resolution_y * (percentage || resolution_percentage).fdiv(100)).to_i
   end
 
   def frames

@@ -30,6 +30,7 @@ benchmarked:
   status: benchmarked
   blend_filepath: suzanne.blend
   current_blender_scene: one
+  price_cents: 3000
 
 rendering:
   upload: guest_upload
@@ -37,3 +38,4 @@ rendering:
   status: rendering
   blend_filepath: suzanne.blend
   current_blender_scene: one
+  price_cents: 3000

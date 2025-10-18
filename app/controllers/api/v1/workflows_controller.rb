@@ -15,12 +15,14 @@ class Api::V1::WorkflowsController < Api::BaseController
     end
 
     def workflow_params
-      params.expect(workflow: [
+      p = params.expect(workflow: [
         :status,
         :node_provider_id,
         :node_type_name,
         result: {},
         timing: {},
       ])
+      puts p
+      p
     end
 end
