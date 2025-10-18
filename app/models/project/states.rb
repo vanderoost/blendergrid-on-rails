@@ -37,8 +37,8 @@ module Project::States
 
   class Benchmarking < BaseState
     def finish_benchmarking
-      @project.benchmarked!
       @project.process_benchmark
+      @project.benchmarked!
     end
 
     def fail

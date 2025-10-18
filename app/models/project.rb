@@ -93,7 +93,6 @@ class Project < ApplicationRecord
     end
 
     def broadcast
-      puts "BROADCASTING PROJECT UPDATE"
       if saved_change_to_stage?
         broadcast_remove_to :projects
         broadcast_prepend_to :projects, target: "#{stage}-projects"
@@ -123,14 +122,14 @@ class Project < ApplicationRecord
       permil ||= 0
       permil_to_refund = 1000 - permil
       refund_cents = price_cents * permil_to_refund.fdiv(1000)
-      puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
-        " $#{refund_cents.fdiv(100)}"
+      # puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
+      #   " $#{refund_cents.fdiv(100)}"
 
       if refund_cents.positive? and user.present?
         puts "TOPPING UP CREDIT"
         user.update(render_credit_cents: user.render_credit_cents + refund_cents)
       else
-        puts "NO USER ASSOCIATED"
+        # puts "NO USER ASSOCIATED"
         # TODO: Figure out how to handle the refund wihtout a user
       end
 

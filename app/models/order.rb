@@ -23,8 +23,8 @@ class Order < ApplicationRecord
   def partial_refund(permil)
     percent = permil.fdiv(10)
     refund_cents = price_cents * permil.fdiv(1000)
-    puts "REFUNDING #{percent}% OF $#{refund_cents.fdiv(100)} ="\
-      " $#{refund_cents.fdiv(100)}"
+
+    # TODO: Actually refund
 
     # First refund in Render credit only.
     # After a timeout, and the credit hasn't been used, do a full refund.
