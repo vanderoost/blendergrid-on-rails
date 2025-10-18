@@ -12,7 +12,9 @@ This week
 - [ ]  Show simple render progress and ETA
 - [ ]  Show scene warnings (in settings?)
 - [ ]  Deleting a project
+- [ ]  Empty projects page (no project yet! message)
 - [ ]  Uploaded stage
+- [ ]  Maybe make all session Uploads belong to the user when they log in?
     - [ ]  Show resolution at index
 - [ ]  Waiting stage
     - [ ]  Show price at index

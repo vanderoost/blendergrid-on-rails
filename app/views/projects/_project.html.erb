@@ -1,6 +1,6 @@
 <tr class="group/row" id="<%= dom_id project %>">
   <td class="relative py-5 pr-6">
-    <div class="flex items-center gap-x-6">
+    <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">
       <% if project.in_progress? %>
 
         <!-- SVG Spinner -->
@@ -82,7 +82,7 @@
 
               <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
                 <div class="flex items-center">
-                  <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer"  %>
+                  <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer" %>
                   <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white cursor-pointer" %>
                 </div>
               <% end %>
@@ -96,6 +96,35 @@
         <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:block"><%= human_frame_range project %></span>
         <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:block"><%= human_single_frame project %></span>
       </div>
+    <% elsif project.benchmarked? %>
+
+      <!--
+        TODO: Add a form object for these to prevent spaghetti
+        Maybe OrderPreferences?
+        - render_duration can remain an attribute on the project
+        - resulution_percentage and sampling_max_samples can stay on BlenderScene
+          Make sure we're not losing the original Blender render settings AND the
+          settings we need to calculate the price.
+      -->
+      <%= turbo_frame_tag "#{dom_id(project)}_pre_render_setting" do %>
+        <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_deadline_hours, "Deadline" %>
+            <%= form.number_field :tweaks_deadline_hours, in: 2...12 %>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_resolution_percentage, "Resolution %" %>
+            <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)...(project.resolution_percentage * 2) %>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_sampling_max_samples, "Samples" %>
+            <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)...(project.sampling_max_samples * 2) %>
+          </div>
+        <% end %>
+      <% end %>
+
     <% end %>
   </td>
 

@@ -18,12 +18,12 @@ class ProjectsController < ApplicationController
 
   def update
     flash[:alert] = "Error updating the scene" unless @project.update(project_params)
-    redirect_to edit_project_path(@project)
+    redirect_back_or_to edit_project_path(@project)
   end
 
   private
     def project_params
-      params.expect(project: [ :current_blender_scene_id ])
+    params.expect(project: [ :current_blender_scene_id ] + Project.permitted_params)
     end
 
     def set_project

@@ -33,7 +33,8 @@ module ProjectsHelper
   end
 
   def project_price(project)
-    number_to_currency project.price_cents.fdiv(100)
+    price = project&.price_cents&.fdiv(100)
+    number_to_currency price unless price.blank?
   end
 
   # TODO DEPRECATE?

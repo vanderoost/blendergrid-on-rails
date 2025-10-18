@@ -6,10 +6,18 @@ class Project < ApplicationRecord
   EVENTS = %i[ start_checking start_benchmarking start_rendering finish_checking
     finish_benchmarking finish_rendering cancel fail ].freeze
   STAGES = %i[ uploaded waiting rendering finished stopped ].freeze
+  STORE_ACCESSORS = {
+    tweaks: {
+      deadline_hours: :integer,
+      resolution_percentage: :integer,
+      sampling_max_samples: :integer,
+    },
+  }
 
+  include HasSceneSettings
+  include JsonAccessible
   include Statable
   include Uuidable
-  include HasSceneSettings
 
   belongs_to :upload
   has_many :blend_checks, class_name: "Project::BlendCheck"
@@ -46,11 +54,19 @@ class Project < ApplicationRecord
     status_to_stage status
   end
 
-  def price_cents(tweaks = {})
+  def process_benchmark
+    puts "PROCESSING BENCHMARK"
+
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 
+    # TODO: Choose a sensible deadline based on the benchmark / exp. server hours
+    self.tweaks_deadline_hours = 8
+    self.tweaks_resolution_percentage = resolution_percentage
+    self.tweaks_sampling_max_samples = sampling_max_samples
+
+    # Initialize the price
     workflow = benchmark.workflow
-    Pricing::Calculation.new(
+    self.price_cents = Pricing::Calculation.new(
       benchmark: benchmark,
       node_supplies: NodeSupply.where(
         provider_id: workflow.node_provider_id, type_name: workflow.node_type_name
@@ -58,6 +74,8 @@ class Project < ApplicationRecord
       blender_scene: current_blender_scene,
       tweaks: tweaks,
     ).price_cents
+
+    self.save!
   end
 
   def frame_urls

@@ -117,17 +117,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_13_152555) do
     t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
-  create_table "order_items", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "order_id"
-    t.integer "price_cents"
-    t.integer "project_id"
-    t.json "settings"
-    t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_order_items_on_order_id"
-    t.index ["project_id"], name: "index_order_items_on_project_id"
-  end
-
   create_table "orders", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "guest_email_address"
@@ -178,8 +167,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_13_152555) do
     t.string "blend_filepath"
     t.datetime "created_at", null: false
     t.integer "current_blender_scene_id"
-    t.integer "render_duration"
+    t.integer "price_cents"
     t.string "status"
+    t.json "tweaks"
     t.datetime "updated_at", null: false
     t.integer "upload_id"
     t.string "uuid", null: false
