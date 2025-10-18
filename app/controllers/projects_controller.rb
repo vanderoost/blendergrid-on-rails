@@ -23,7 +23,7 @@ class ProjectsController < ApplicationController
 
   private
     def project_params
-    params.expect(project: [ :current_blender_scene_id ] + Project.permitted_params)
+      params.expect(project: [ :current_blender_scene_id ] + Project.permitted_params)
     end
 
     def set_project

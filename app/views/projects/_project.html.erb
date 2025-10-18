@@ -1,4 +1,4 @@
-<tr class="group/row" id="<%= dom_id project %>">
+<tr class="group/row" id="<%= dom_id project %>" data-controller="<%= "project-price" if project.benchmarked? %>">
   <td class="relative py-5 pr-6">
     <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">
       <% if project.in_progress? %>
@@ -61,11 +61,7 @@
 
         </div>
 
-        <% if project.benchmarked? %>
-          <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Price: <%= project_price(project) %></div>
-        <% else %>
-          <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Updated <%= time_ago_in_words(project.updated_at) %> ago</div>
-        <% end %>
+        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Updated <%= time_ago_in_words(project.updated_at) %> ago</div>
       </div>
     </div>
     <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
@@ -123,6 +119,8 @@
             <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)...(project.sampling_max_samples * 2) %>
           </div>
         <% end %>
+
+        <div hidden data-price-cents="<%= project.price_cents %>" data-project-price-target="priceCents"></div>
       <% end %>
 
     <% end %>
@@ -134,6 +132,12 @@
         Edit<span class="hidden sm:inline"> settings</span>
       <% end %>
     </div>
-    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">[TODO]</div>
+    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+      <% if project.benchmarked? %>
+        <span data-project-price-target="priceDisplay"></span>
+      <% else %>
+        [TODO]
+      <% end %>
+    </div>
   </td>
 </tr>
