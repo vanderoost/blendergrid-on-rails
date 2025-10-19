@@ -2,18 +2,29 @@
 
 ## before launch
 
-- [ ]  Show simple render progress and ETA
+This week:
+
+- [ ]  Integrate support chat (helpscout?)
+- [ ]  Websockets security (don't send project updates to the wrong user/session)
+- [ ]  Finish the Project List View entirely
+    - [ ]  Empty projects page (no project yet! message)
+    - [ ]  Show simple render progress and ETA
+    - [ ]  Show resolution at the Uploaded projects stage
+    - [ ]  Disable 'Edit' link in all stages where it doesn't make sense
+    - [ ]  Show total price of all checked projects (Stimulus)
+
+---
+
+- [x]  Auto submit Projects settings form: Make sure you can type and don't lose focus.
+- [ ]  Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
+- [ ]  Share invoices / receipts with users?
 - [ ]  Show scene warnings (in settings?)
 - [ ]  Deleting a project
 - [ ]  Duplicating a project
-- [ ]  Empty projects page (no project yet! message)
 - [ ]  Maybe make all session Uploads belong to the user when they log in?
-- [ ] Auto submit Projects settings form: Make sure you can type and don't lose focus.
-- [ ]  Uploaded stage
-    - [ ]  Show resolution at index
+- [ ]  Soft delete feature for certain models (projects, ?)
 - [ ]  Waiting stage
     - [ ]  Edit page with preview renders, deadline+res+samples form
-    - [ ]  Show total price at index
     - [x]  Show price at index per project
     - [x]  Deadline + resolution + samples form at index
 - [x]  UI/UX
@@ -39,6 +50,7 @@
 
 ## after launch
 
+- [ ] Read available Blender versions form DockerHub and make them available to choose from?
 - [ ]  Disable checkbox if there's only one Project in a stage
 - [ ]  Add handwritten hints to the UI with arrows
     - [ ]  Select a project
