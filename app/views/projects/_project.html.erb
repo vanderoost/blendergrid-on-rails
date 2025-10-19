@@ -1,4 +1,7 @@
-<tr class="group/row" id="<%= dom_id project %>" data-controller="<%= "project-price" if project.benchmarked? %>">
+<tr id="<%= dom_id project %>"
+  data-controller="<%= "project-price" if project.benchmarked? %>"
+  data-poll-target="<%= "loadingProject" if project.in_progress? %>"
+  class="group/row">
   <td class="relative py-5 pr-6">
     <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">
       <% if project.in_progress? %>
@@ -20,7 +23,7 @@
            checked: true,
            id: "checkbox_#{project.uuid}",
            form: "#{model}s_form",
-           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh" },
+           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh", turbo_permanent: true },
            class: "col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto" %>
          <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-4 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
            <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
@@ -89,8 +92,10 @@
       <% end %>
 
       <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
-        <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:block"><%= human_frame_range project %></span>
-        <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:block"><%= human_single_frame project %></span>
+        <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:inline"><%= human_frame_range project %></span>
+        <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:inline"><%= human_single_frame project %></span>
+        <span class="px-1.5 lg:px-2">&middot;</span>
+        <span><%= resolution_description project %></span>
       </div>
     <% elsif project.benchmarked? %>
 
@@ -128,16 +133,16 @@
 
   <td class="py-5 text-right">
     <div class="flex justify-end">
-      <%= link_to edit_project_path(project, upload_id: @upload&.uuid), class: "text-sm/6 font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" do %>
-        Edit<span class="hidden sm:inline"> settings</span>
+      <% if project.checked? || project.benchmarked? %>
+        <%= link_to edit_project_path(project, upload_id: @upload&.uuid), class: "font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 flex items-center" do %>
+          <span class="hidden sm:inline">Settings</span>
+        <% end %>
       <% end %>
     </div>
-    <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
-      <% if project.benchmarked? %>
-        <span data-project-price-target="priceDisplay"></span>
-      <% else %>
-        [TODO]
-      <% end %>
-    </div>
+    <% if project.benchmarked? %>
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+          <span data-project-price-target="priceDisplay"></span>
+      </div>
+    <% end %>
   </td>
 </tr>

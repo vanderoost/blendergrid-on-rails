@@ -9,20 +9,22 @@ This week:
 - [ ]  Finish the Project List View entirely
     - [ ]  Empty projects page (no project yet! message)
     - [ ]  Show simple render progress and ETA
-    - [ ]  Show resolution at the Uploaded projects stage
     - [ ]  Disable 'Edit' link in all stages where it doesn't make sense
     - [ ]  Show total price of all checked projects (Stimulus)
+    - [ ]  Fix long project names overflowing the table
+    - [x]  Show resolution at the Uploaded projects stage
 
 ---
 
-- [x]  Auto submit Projects settings form: Make sure you can type and don't lose focus.
-- [ ]  Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
+- [ ]  Add `stage_updated_at` to Projects to make ordering more deterministic
 - [ ]  Share invoices / receipts with users?
 - [ ]  Show scene warnings (in settings?)
 - [ ]  Deleting a project
 - [ ]  Duplicating a project
 - [ ]  Maybe make all session Uploads belong to the user when they log in?
 - [ ]  Soft delete feature for certain models (projects, ?)
+- [ ]  Calculate the deadline range based on the Benchmark and tweaks
+- [ ]  Take deadline into account when submitting an Order
 - [ ]  Waiting stage
     - [ ]  Edit page with preview renders, deadline+res+samples form
     - [x]  Show price at index per project
@@ -47,6 +49,8 @@ This week:
 - [x] Secure the API with some kind of token
 - [x] Add privacy, terms, cookie policy pages
 - [x]  Drag ‘n Drop uploads
+- [x]  Auto submit Projects settings form: Make sure you can type and don't lose focus.
+- [x]  Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
 
 ## after launch
 

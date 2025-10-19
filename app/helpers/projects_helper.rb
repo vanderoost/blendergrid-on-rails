@@ -32,6 +32,10 @@ module ProjectsHelper
     "Frame #{project.current_blender_scene&.frame_range_single}"
   end
 
+  def resolution_description(project)
+    "#{project.scaled_resolution_x} &times; #{project.scaled_resolution_y} px".html_safe
+  end
+
   def project_price(project)
     price = project&.price_cents&.fdiv(100)
     number_to_currency price unless price.blank?
