@@ -33,3 +33,12 @@ aws_g4dn_xlarge:
   type_name: g4dn.xlarge
   capacity: 10
   millicents_per_hour: 50000
+
+aws_t3_micro:
+  id: 5
+  provider_id: aws
+  region: us-east-1
+  zone: a
+  type_name: t3.micro
+  capacity: 5
+  millicents_per_hour: 10000

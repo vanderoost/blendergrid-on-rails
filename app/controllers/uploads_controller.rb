@@ -8,6 +8,7 @@ class UploadsController < ApplicationController
 
   def show
     @project_intake = Project::Intake.new
+    @projects = @upload.projects.order(updated_at: :desc)
     @quote = Quote.new
     @order = Order.new
   end

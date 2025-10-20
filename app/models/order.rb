@@ -3,7 +3,7 @@
 class Order < ApplicationRecord
   include Trackable
 
-  has_many :items, class_name: "Order::Item"
+  has_many :projects
   belongs_to :user, optional: true
 
   attr_accessor :project_uuids, :success_url, :cancel_url, :redirect_url
@@ -17,14 +17,14 @@ class Order < ApplicationRecord
   end
 
   def price_cents
-    items.sum(&:price_cents)
+    projects.sum(&:price_cents)
   end
 
   def partial_refund(permil)
     percent = permil.fdiv(10)
     refund_cents = price_cents * permil.fdiv(1000)
-    puts "REFUNDING #{percent}% OF $#{refund_cents.fdiv(100)} ="\
-      " $#{refund_cents.fdiv(100)}"
+
+    # TODO: Actually refund
 
     # First refund in Render credit only.
     # After a timeout, and the credit hasn't been used, do a full refund.
@@ -32,12 +32,11 @@ class Order < ApplicationRecord
 
   private
     def checkout
-      create_line_items
-      @checkout = Order::Checkout.new(self)
-      @checkout.start_checkout_session
+      associate_projects
+      Order::Checkout.new(self).start_checkout_session
     end
 
-    def create_line_items
+    def associate_projects
       # TODO: Optimize this. Right now, we're persisting the Order (to get an ID) then
       # we can create OrderItems associated with this Order (by ID) and then we use
       # those items to create the Stripe line items for the Stripe checkout session.
@@ -50,17 +49,20 @@ class Order < ApplicationRecord
         project = Project.find_by(uuid: uuid)
         raise "Project '#{uuid}' not found" if project.nil?
 
-        items.create(
-          project: project,
-          price_cents: project.price_cents,
-          settings: {
-            resolution_percentage: project.resolution_percentage,
-            sampling_max_samples: project.sampling_max_samples,
-            render_duration: project.render_duration,
-          },
-        )
+        # TODO: Associate the project with the order
+        projects << project
+
+        # items.create(
+        #   project: project,
+        #   price_cents: project.price_cents,
+        #   settings: {
+        #     resolution_percentage: project.resolution_percentage,
+        #     sampling_max_samples: project.sampling_max_samples,
+        #     render_duration: project.render_duration,
+        #   },
+        # )
       end
 
-      raise "Order has no line items" if items.empty?
+      raise "Order has no projects" if projects.empty?
     end
 end

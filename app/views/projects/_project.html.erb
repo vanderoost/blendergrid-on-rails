@@ -1,24 +1,148 @@
-<% full = local_assigns.fetch(:full, false) %>
+<tr id="<%= dom_id project %>"
+  data-controller="<%= "project-price" if project.benchmarked? %>"
+  data-poll-target="<%= "loadingProject" if project.in_progress? %>"
+  class="group/row">
+  <td class="relative py-5 pr-6">
+    <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">
+      <% if project.in_progress? %>
 
-<%= tag.div id: dom_id(project) do %>
-  <% if full %>
-    <h1><%= project.blend_filepath %></h1>
-  <% else %>
-    <h2><%= link_to(project.blend_filepath, project) %></h2>
-  <% end %>
+        <!-- SVG Spinner -->
+        <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="block animate-spin h-6 w-5 flex-none text-gray-400 dark:text-gray-500">
+          <path d="M15.312 11.424a5.5 5.5 0 0 1-9.201 2.466l-.312-.311h2.433a.75.75 0 0 0 0-1.5H3.989a.75.75 0 0 0-.75.75v4.242a.75.75 0 0 0 1.5 0v-2.43l.31.31a7 7 0 0 0 11.712-3.138.75.75 0 0 0-1.449-.39Zm1.23-3.723a.75.75 0 0 0 .219-.53V2.929a.75.75 0 0 0-1.5 0V5.36l-.31-.31A7 7 0 0 0 3.239 8.188a.75.75 0 1 0 1.448.389A5.5 5.5 0 0 1 13.89 6.11l.311.31h-2.432a.75.75 0 0 0 0 1.5h4.243a.75.75 0 0 0 .53-.219Z" clip-rule="evenodd" fill-rule="evenodd" />
+        </svg>
 
-  <p>
-    <%= "Project Status: #{project.status}" %>
-  </p>
+      <% elsif project.checked? || project.benchmarked?
+           model = case project.status
+             when "checked" then "quote"
+             when "benchmarked" then "order"
+           end %>
 
-  <% if project.benchmarked? %>
-    <%= "Price: #{number_to_currency(project.price_cents&.fdiv(100))}" %>
-  <% end %>
+        <div class="group grid size-5 grid-cols-1">
+         <%= checkbox_tag "#{model}[project_uuids][]",
+           project.uuid,
+           checked: true,
+           id: "checkbox_#{project.uuid}",
+           form: "#{model}s_form",
+           data: { stage_submit_target: "checkbox", action: "stage-submit#refresh", turbo_permanent: true },
+           class: "col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-primary-600 checked:bg-primary-600 indeterminate:border-primary-600 indeterminate:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:indeterminate:border-primary-500 dark:indeterminate:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:checked:bg-white/10 forced-colors:appearance-auto" %>
+         <svg viewBox="0 0 14 14" fill="none" class="pointer-events-none col-start-1 row-start-1 size-4 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25 dark:group-has-disabled:stroke-white/25">
+           <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-checked:opacity-100" />
+           <path d="M3 7H11" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-has-indeterminate:opacity-100" />
+         </svg>
+        </div>
 
-  <% project.frame_urls.each do |url| %>
-    <%= image_tag url, loading: "lazy", width: 240, alt: File.basename(url, ".*") %>
-  <% end %>
+      <% elsif project.rendered? %>
 
-  <%= render partial: "renders/render", object: project.render if project.render.present? %>
+        <!-- SVG Download icon - TODO: Make download link -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+        </svg>
 
-<% end %>
+      <% else %>
+
+        <!-- SVG Warning icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        </svg>
+
+      <% end %>
+
+      <div class="flex-auto">
+        <div class="flex items-start gap-x-3">
+          <div class="text-sm/6 font-medium text-gray-900 dark:text-white">
+            <%= project.name %>
+          </div>
+
+          <%= tag.div class: %w[rounded-md px-2 py-1 text-xs font-medium inset-ring] + [
+            "bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 inset-ring-amber-600/10 dark:inset-ring-amber-500/20": badge_amber?(project),
+            "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 inset-ring-green-600/10 dark:inset-ring-green-500/20": badge_green?(project),
+            "bg-primary-50 dark:bg-primary-800/20 text-primary-700 dark:text-primary-300 inset-ring-primary-600/10 dark:inset-ring-primary-400/20": badge_blue?(project),
+            "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 inset-ring-red-600/10 dark:inset-ring-red-500/20": badge_red?(project),
+            ] do %>
+            <%= project.status.titleize %>
+          <% end %>
+
+        </div>
+
+        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Updated <%= time_ago_in_words(project.updated_at) %> ago</div>
+      </div>
+    </div>
+    <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+    <div class="absolute bottom-0 left-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
+  </td>
+
+  <td class="hidden py-5 pr-6 sm:table-cell group/frame-range-type">
+    <% if project.checked? && project.current_blender_scene.present? %>
+      <%= turbo_frame_tag "#{dom_id(project)}_frame_range_type" do %>
+
+        <%= form_with model: [project, project.current_blender_scene], namespace: project.uuid do |form| %>
+          <div class="text-sm/6 text-gray-900 dark:text-white">
+            <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
+
+              <%= form.collection_radio_buttons :frame_range_type, FrameRangeType.all, :id, :name do |b| %>
+                <div class="flex items-center">
+                  <%= b.radio_button onchange: "this.form.requestSubmit()", class: "relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-primary-600 checked:bg-primary-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-primary-500 dark:checked:bg-primary-500 dark:focus-visible:outline-primary-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden cursor-pointer" %>
+                  <%= b.label class: "ml-3 block text-sm/6 font-medium text-gray-900 dark:text-white cursor-pointer" %>
+                </div>
+              <% end %>
+
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+        <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:inline"><%= human_frame_range project %></span>
+        <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:inline"><%= human_single_frame project %></span>
+        <span class="px-1.5 lg:px-2">&middot;</span>
+        <span><%= resolution_description project %></span>
+      </div>
+    <% elsif project.benchmarked? %>
+
+      <!--
+        TODO: Add a form object for these to prevent spaghetti
+        Maybe OrderPreferences?
+        - render_duration can remain an attribute on the project
+        - resulution_percentage and sampling_max_samples can stay on BlenderScene
+          Make sure we're not losing the original Blender render settings AND the
+          settings we need to calculate the price.
+      -->
+      <%= turbo_frame_tag "#{dom_id(project)}_pre_render_setting" do %>
+        <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_deadline_hours, "Deadline" %>
+            <%= form.number_field :tweaks_deadline_hours, in: 2..12 %>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_resolution_percentage, "Resolution %" %>
+            <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2) %>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <%= form.label :tweaks_sampling_max_samples, "Samples" %>
+            <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)..(project.sampling_max_samples * 2) %>
+          </div>
+        <% end %>
+
+        <div data-price-cents="<%= project.price_cents %>" data-project-price-target="priceCents"></div>
+      <% end %>
+
+    <% end %>
+  </td>
+
+  <td class="py-5 text-right">
+    <div class="flex justify-end">
+      <% if project.checked? || project.benchmarked? %>
+        <%= link_to edit_project_path(project, upload_id: @upload&.uuid), class: "font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 flex items-center" do %>
+          <span class="hidden sm:inline">Settings</span>
+        <% end %>
+      <% end %>
+    </div>
+    <% if project.benchmarked? %>
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+          <span data-project-price-target="priceDisplay"></span>
+      </div>
+    <% end %>
+  </td>
+</tr>

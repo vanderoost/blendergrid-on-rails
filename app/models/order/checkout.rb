@@ -46,18 +46,21 @@ class Order::Checkout
     def create_line_items
       total_cents = @order.price_cents
       credit_ratio = @applied_credit_cents.fdiv(total_cents)
-      @order.items.map do |item|
-        discount_cents = (item.price_cents * credit_ratio).round
-        product_data = { name: item.project.blend_filepath }
+
+      @order.projects.map do |project|
+        discount_cents = (project.price_cents * credit_ratio).round
+        product_data = { name: project.blend_filepath }
+
         if discount_cents.positive?
           product_data[:description] = "Using #{helpers.number_to_currency(
             discount_cents.fdiv(100)
           )} of render credit"
         end
+
         {
             price_data: {
             currency: "usd",
-            unit_amount: item.price_cents - discount_cents,
+            unit_amount: project.price_cents - discount_cents,
             product_data: product_data,
           },
           quantity: 1,

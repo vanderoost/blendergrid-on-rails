@@ -15,12 +15,12 @@ class Api::V1::WorkflowsController < Api::BaseController
     end
 
     def workflow_params
-      params.expect(workflow: [
+      params.require(:workflow).permit(
         :status,
         :node_provider_id,
         :node_type_name,
         result: {},
-        timing: {},
-      ])
+        timing: {}
+      )
     end
 end

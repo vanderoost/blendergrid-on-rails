@@ -18,8 +18,12 @@ class Pricing::Calculation
   end
 
   def price_cents
-    orig_resolution_x = @blender_scene.scaled_resolution_x
-    orig_resolution_y = @blender_scene.scaled_resolution_y
+    orig_resolution_x = @blender_scene.scaled_resolution_x(
+      @tweaks["resolution_percentage"]
+    )
+    orig_resolution_y = @blender_scene.scaled_resolution_y(
+      @tweaks["resolution_percentage"]
+    )
     orig_pixel_count = orig_resolution_x * orig_resolution_y
 
     sample_resolution_x = @benchmark.scaled_resolution_x
@@ -28,7 +32,8 @@ class Pricing::Calculation
 
     pixel_factor = orig_pixel_count.fdiv(sample_pixel_count)
 
-    orig_sample_count = @blender_scene.sampling_max_samples * orig_pixel_count
+    max_samples = @tweaks["sampling_max_samples"] || @blender_scene.sampling_max_samples
+    orig_sample_count = max_samples * orig_pixel_count
     benchmark_sample_count = @benchmark.sampling_max_samples * sample_pixel_count
     sample_factor = orig_sample_count.fdiv(benchmark_sample_count)
 

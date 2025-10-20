@@ -13,7 +13,7 @@ class Workflow < ApplicationRecord
   delegate :handle_completion, to: :workflowable
 
   after_create :start
-  after_update :handle_completion, if: :just_done?
+  after_update_commit :handle_completion, if: :just_done?
 
   def stop
     SwarmEngine.new.stop_workflow self

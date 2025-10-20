@@ -35,7 +35,12 @@
   @apply text-red-900 dark:text-red-100 placeholder-red-900/50 dark:placeholder-red-100/50;
 }
 
-/* Make the cursor a pointer again */
-button, input[type="submit"], input[type="button"], input[type="reset"] {
-  cursor: pointer;
+.progress_donut {
+  transition: stroke-dashoffset 0.37s;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }

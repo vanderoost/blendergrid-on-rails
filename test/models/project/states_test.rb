@@ -37,6 +37,13 @@ class Project::StatesTest < ActiveSupport::TestCase
   test "a project can finish benchmarking" do
     project = projects(:benchmarking)
     assert project.benchmarking?
+
+    # Give the benchmark workflow some data to pretend it finished
+    finished_workflow = workflows(:finished_benchmark)
+    project.benchmark.workflow.delete
+    project.benchmark.workflow = finished_workflow
+    project.benchmark.save!
+
     project.finish_benchmarking
     assert project.benchmarked?
   end

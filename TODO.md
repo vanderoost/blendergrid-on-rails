@@ -1,16 +1,35 @@
 # TODOs
 
-## essentials
+## before launch
 
-This week
-- [x] Buying render credit through Stripe
-- [x] Secure the API with some kind of token
-- [ ] Add privacy, terms, cookie policy pages
+This week:
+
+- [ ]  Integrate support chat (helpscout?)
+- [ ]  Websockets security (don't send project updates to the wrong user/session)
+- [ ]  Finish the Project List View entirely
+    - [ ]  Empty projects page (no project yet! message)
+    - [ ]  Show simple render progress and ETA
+    - [ ]  Disable 'Edit' link in all stages where it doesn't make sense
+    - [ ]  Show total price of all checked projects (Stimulus)
+    - [ ]  Fix long project names overflowing the table
+    - [x]  Show resolution at the Uploaded projects stage
 
 ---
 
-- [ ]  UI/UX
-    - [ ]  Show simple render progress and ETA
+- [ ]  Add `stage_updated_at` to Projects to make ordering more deterministic
+- [ ]  Share invoices / receipts with users?
+- [ ]  Show scene warnings (in settings?)
+- [ ]  Deleting a project
+- [ ]  Duplicating a project
+- [ ]  Maybe make all session Uploads belong to the user when they log in?
+- [ ]  Soft delete feature for certain models (projects, ?)
+- [ ]  Calculate the deadline range based on the Benchmark and tweaks
+- [ ]  Take deadline into account when submitting an Order
+- [ ]  Waiting stage
+    - [ ]  Edit page with preview renders, deadline+res+samples form
+    - [x]  Show price at index per project
+    - [x]  Deadline + resolution + samples form at index
+- [x]  UI/UX
     - [x]  Pay once for multiple projects
     - [x]  Basic style so it doesn’t look like a 90’s primary school website
 - [x]  Emails
@@ -26,8 +45,18 @@ This week
 - [x]  Transfer over articles and affiliate landing pages
 - [x]  Clean up old ECR images
 - [x]  Track visits and affiliate clicks in the backend
-
-## nice-to-haves
-
-- [ ]  Really nice styling with Tailwind
+- [x] Buying render credit through Stripe
+- [x] Secure the API with some kind of token
+- [x] Add privacy, terms, cookie policy pages
 - [x]  Drag ‘n Drop uploads
+- [x]  Auto submit Projects settings form: Make sure you can type and don't lose focus.
+- [x]  Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
+
+## after launch
+
+- [ ] Read available Blender versions form DockerHub and make them available to choose from?
+- [ ]  Disable checkbox if there's only one Project in a stage
+- [ ]  Add handwritten hints to the UI with arrows
+    - [ ]  Select a project
+    - [ ]  Calculate the price
+    - [ ]  Start rendering
