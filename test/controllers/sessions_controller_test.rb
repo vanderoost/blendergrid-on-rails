@@ -7,9 +7,11 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should login verified users" do
+    richard = users(:richard)
+
     assert_difference("Session.count", 1) do
       post session_url, params: {
-        email_address: "one@example.com", password: "password",
+        email_address: richard.email_address, password: "password",
       }
     end
     assert_redirected_to root_url

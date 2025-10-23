@@ -1,4 +1,4 @@
-<%= turbo_stream_from :projects %>
+<%= turbo_stream_from [authenticated? ? Current.user.id : session.id.to_s, :projects] %>
 
 <%
   projects_by_stage = projects.group_by(&:stage)

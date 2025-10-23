@@ -16,7 +16,7 @@ class UploadsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "controller should create user upload" do
-    sign_in_as users(:verified_user)
+    sign_in_as users(:richard)
     assert_difference("Upload.count", 1) do
       post uploads_url, params: { upload: {
         files: [ fixture_file_upload("cube.blend", "application/octet-stream") ],

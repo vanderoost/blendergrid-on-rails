@@ -39,3 +39,21 @@ rendering:
   blend_filepath: suzanne.blend
   current_blender_scene: one
   price_cents: 3000
+
+richards_project:
+  upload: richards_upload
+  uuid: richards-1234
+  status: checking
+  blend_filepath: richard_project.blend
+
+garys_project:
+  upload: garys_upload
+  uuid: garys-1234
+  status: checking
+  blend_filepath: gary_project.blend
+
+guest_project:
+  upload: guest_upload
+  uuid: guest-1234
+  status: checking
+  blend_filepath: guest_project.blend

@@ -87,6 +87,10 @@ class Project < ApplicationRecord
   def benchmark = latest(:benchmark)
   def render = latest(:render)
 
+  def broadcast_channel
+    @broadcast_channel ||= [ upload.user_id || upload.guest_session_id, :projects ]
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
@@ -94,10 +98,10 @@ class Project < ApplicationRecord
 
     def broadcast
       if saved_change_to_stage?
-        broadcast_remove_to :projects
-        broadcast_prepend_to :projects, target: "#{stage}-projects"
+        broadcast_remove_to broadcast_channel
+        broadcast_prepend_to broadcast_channel, target: "#{stage}-projects"
       else
-        broadcast_replace_to :projects
+        broadcast_replace_to broadcast_channel
       end
     end
 

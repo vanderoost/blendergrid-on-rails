@@ -20,7 +20,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should create user order for a single project" do
-    sign_in_as users(:verified_user)
+    sign_in_as users(:richard)
 
     assert_difference("Order.count", 1) do
       post orders_url,

@@ -35,7 +35,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "can log in and out" do
-    user = users(:verified_user)
+    user = users(:richard)
 
     get new_session_path
     assert_response :success
@@ -75,7 +75,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "forgot password sends email" do
-    user = users(:verified_user)
+    user = users(:richard)
 
     get new_password_path
     assert_response :success
@@ -90,7 +90,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
   end
 
   test "password can be reset with a valid token" do
-    user = users(:verified_user)
+    user = users(:richard)
     old_password_digest = user.password_digest
 
     get edit_password_url(user.password_reset_token)

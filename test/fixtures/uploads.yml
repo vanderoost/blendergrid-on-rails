@@ -1,3 +1,11 @@
+richards_upload:
+  uuid: 2345-abcd
+  user: richard
+
+garys_upload:
+  uuid: 3456-abcd
+  user: gary
+
 guest_upload:
   uuid: 1234-abcd
   guest_email_address: guest@example.com
