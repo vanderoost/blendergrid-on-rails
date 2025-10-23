@@ -6,7 +6,9 @@ class ProjectsController < ApplicationController
     if authenticated?
       @projects = Current.user.projects
     else
-      @projects = current_guest_uploads&.flat_map(&:projects)
+      @projects = Project.joins(:upload).where(
+        upload: { id: current_guest_uploads.pluck(:id) }
+      )
     end
   end
 
