@@ -49,7 +49,7 @@
 
       <div class="flex-auto">
         <div class="flex items-start gap-x-3">
-          <div class="text-sm/6 font-medium text-gray-900 dark:text-white">
+          <div class="text-sm/6 font-medium text-gray-900 dark:text-white truncate max-w-48 sm:max-w-42 md:max-w-58 lg:max-w-sm" title="<%= project.name %>">
             <%= project.name %>
           </div>
 
@@ -135,7 +135,7 @@
     <div class="flex justify-end">
       <% if project.checked? || project.benchmarked? %>
         <%= link_to edit_project_path(project, upload_id: @upload&.uuid), class: "font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 flex items-center" do %>
-          <span class="hidden sm:inline">Settings</span>
+          <span class="hidden md:inline mr-2">Settings</span><span class="md-mr-2">&rarr;</span>
         <% end %>
       <% end %>
     </div>

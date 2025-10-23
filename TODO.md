@@ -9,10 +9,10 @@ This week:
     - [ ]  Show simple render progress and ETA
     - [ ]  Disable 'Edit' link in all stages where it doesn't make sense
     - [ ]  Show total price of all checked projects (Stimulus)
-    - [ ]  Fix long project names overflowing the table
     - [ ]  Add `stage_updated_at` to Projects to make ordering more deterministic
     - [x]  Show resolution at the Uploaded projects stage
     - [x]  Empty projects page (no project yet! message)
+    - [x]  Fix long project names overflowing the table
 - [x]  Websockets security (don't send project updates to the wrong user/session)
 
 ---
