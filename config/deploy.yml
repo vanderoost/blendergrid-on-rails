@@ -90,12 +90,6 @@ builder:
 ssh:
   user: ubuntu
 
-# Run commands on servers at different lifecycle stages
-hooks:
-  post-deploy:
-    - path: /usr/bin/docker
-      args: ["system", "prune", "--all", "--force"]
-
 # Use accessory services (secrets come from .kamal/secrets).
 # accessories:
 #   db:
