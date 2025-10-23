@@ -55,14 +55,14 @@ class UploadTest < ActiveSupport::TestCase
   end
 
   test "single blend upload should return all blend filepaths" do
-    upload = Upload.new(user: users(:verified_user))
+    upload = Upload.new(user: users(:richard))
     attach_blend_file(upload)
 
     assert_equal [ "cube-1.blend" ], upload.blend_filepaths
   end
 
   test "multiple blend upload should return all blend filepaths" do
-    upload = Upload.new(user: users(:verified_user))
+    upload = Upload.new(user: users(:richard))
     attach_blend_file(upload, count: 3)
 
     assert_equal [ "cube-1.blend", "cube-2.blend", "cube-3.blend" ],
@@ -70,14 +70,14 @@ class UploadTest < ActiveSupport::TestCase
   end
 
   test "single zip without blends upload should return empty blend filepaths" do
-    upload = Upload.new(user: users(:verified_user))
+    upload = Upload.new(user: users(:richard))
     attach_zip_file(upload)
 
     assert_equal [], upload.blend_filepaths
   end
 
   test "single zip with blends upload should return all blend filepaths" do
-    upload = Upload.new(user: users(:verified_user))
+    upload = Upload.new(user: users(:richard))
     attach_zip_file(upload)
     upload.files.first.metadata[:blend_filepaths] = [ "orange.blend", "apple.blend" ]
 
@@ -92,10 +92,10 @@ class UploadTest < ActiveSupport::TestCase
       )
       attach_blend_file(@guest_upload)
 
-      @user_upload = Upload.new(user: users(:verified_user))
+      @user_upload = Upload.new(user: users(:richard))
       attach_blend_file(@user_upload)
 
-      @zip_upload = Upload.new(user: users(:verified_user))
+      @zip_upload = Upload.new(user: users(:richard))
       attach_zip_file(@user_upload)
     end
 
