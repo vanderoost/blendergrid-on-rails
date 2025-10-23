@@ -177,7 +177,3 @@ jobs:
 
       - name: Kamal Prune
         run: bin/kamal prune all
-
-concurrency:
-  group: continuous-integration
-  cancel-in-progress: true
