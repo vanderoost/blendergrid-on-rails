@@ -173,7 +173,4 @@ jobs:
           echo "KAMAL_REGISTRY_PASSWORD=${{ env.KAMAL_REGISTRY_PASSWORD }}" >> .kamal/secrets
 
       - name: Kamal Deploy
-        run: bin/kamal deploy --skip-push 
-
-      - name: Kamal Prune
-        run: bin/kamal prune all
+        run: bin/kamal deploy --skip-push
