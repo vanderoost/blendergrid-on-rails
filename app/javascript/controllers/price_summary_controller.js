@@ -8,10 +8,8 @@ export default class extends Controller {
   }
 
   projectsTableTargetConnected() {
-    console.debug("projectsTableTargetConnected")
     this.observer = new MutationObserver(this.update)
     this.observer.observe(this.projectsTableTarget, { subtree: true, childList: true })
-    console.debug("created observer", this.observer)
   }
 
   disconnect() {

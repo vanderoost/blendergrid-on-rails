@@ -11,9 +11,11 @@ class Workflow < ApplicationRecord
   delegate :project, to: :workflowable
   delegate :make_start_message, to: :workflowable
   delegate :handle_completion, to: :workflowable
+  delegate :broadcast_update, to: :project
 
   after_create :start
   after_update_commit :handle_completion, if: :just_done?
+  after_update_commit :broadcast_update, if: :saved_change_to_progress_permil?
 
   def stop
     SwarmEngine.new.stop_workflow self

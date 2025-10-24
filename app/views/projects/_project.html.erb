@@ -5,7 +5,30 @@
   class="group/row">
   <td class="relative py-5 pr-6">
     <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">
-      <% if project.in_progress? %>
+      <% if project.rendering? %>
+        <div class="relative size-5 flex-none">
+          <svg class="w-full h-full" viewBox="0 0 64 64">
+            <circle
+              class="text-gray-300 dark:text-white/10 stroke-current"
+              stroke-width="14"
+              cx="32"
+              cy="32"
+              r="24"
+              fill="transparent"
+            ></circle>
+            <circle
+              class="text-primary-600 dark:text-primary-500 stroke-current progress_donut"
+              stroke-width="14"
+              cx="32"
+              cy="32"
+              r="24"
+              fill="transparent"
+              stroke-dasharray="150.8"
+              stroke-dashoffset="<%= (150.8 - (project.render&.workflow&.progress_permil || 0) * 0.1508).round(6) %>"
+            ></circle>
+          </svg>
+        </div>
+      <% elsif project.in_progress? %>
 
         <!-- SVG Spinner -->
         <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="block animate-spin h-6 w-5 flex-none text-gray-400 dark:text-gray-500">
@@ -65,7 +88,17 @@
 
         </div>
 
-        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">Updated <%= time_ago_in_words(project.stage_updated_at || project.created_at) %> ago</div>
+        <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+          <% if project.rendering? %>
+            Rendering <%= number_to_percentage((project.render&.workflow&.progress_permil || 0).fdiv(10), precision: 1) %>
+          &middot;
+          <span>
+            <%= time_ago_in_words(project.render&.workflow&.eta || 30.second.from_now) %> remaining
+          </span>
+          <% else %>
+            Updated <%= time_ago_in_words(project.stage_updated_at || project.created_at) %> ago
+          <% end %>
+        </div>
       </div>
     </div>
     <div class="absolute right-full bottom-0 h-px w-screen bg-gray-100 dark:bg-white/10 group-last/row:hidden"></div>
@@ -143,6 +176,10 @@
     <% if project.benchmarked? %>
       <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
           <span data-project-price-target="priceDisplay"></span>
+      </div>
+    <% elsif project.rendering? %>
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+        <span><%= number_to_percentage((project.render&.workflow&.progress_permil || 0) / 10, precision: 1) %></span>
       </div>
     <% end %>
   </td>
