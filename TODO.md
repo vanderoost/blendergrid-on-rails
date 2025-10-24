@@ -7,12 +7,12 @@ This week:
 - [ ]  Integrate support chat (helpscout?)
 - [ ]  Finish the Project List View entirely
     - [ ]  Show simple render progress and ETA
-    - [ ]  Disable 'Edit' link in all stages where it doesn't make sense
-    - [ ]  Show total price of all checked projects (Stimulus)
-    - [ ]  Add `stage_updated_at` to Projects to make ordering more deterministic
+    - [x]  Show total price of all checked projects (Stimulus)
     - [x]  Show resolution at the Uploaded projects stage
+    - [x]  Disable 'Edit' link in all stages where it doesn't make sense
     - [x]  Empty projects page (no project yet! message)
     - [x]  Fix long project names overflowing the table
+    - [x]  Add `stage_updated_at` to Projects to make ordering more deterministic
 - [x]  Websockets security (don't send project updates to the wrong user/session)
 
 ---
