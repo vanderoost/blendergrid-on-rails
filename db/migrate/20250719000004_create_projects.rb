@@ -9,6 +9,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.string :blend_filepath
       t.json :tweaks
       t.integer :price_cents
+      t.datetime :stage_updated_at
       t.timestamps
     end
   end

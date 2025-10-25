@@ -27,11 +27,14 @@ class Project < ApplicationRecord
 
   delegate :user, to: :upload
 
+  before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
   after_create :start_checking
   before_update :update_price, if: :tweaks_changed?
   after_update_commit :broadcast, if: :saved_change_to_status?
 
   validates :blend_filepath, presence: true
+
+  default_scope { order(stage_updated_at: :desc) }
 
   def self.in_stages
     all.group_by(&:stage).map { |stage, projects| stage.new(projects) }.sort_by(&:order)
@@ -87,8 +90,17 @@ class Project < ApplicationRecord
   def benchmark = latest(:benchmark)
   def render = latest(:render)
 
-  def broadcast_channel
-    @broadcast_channel ||= [ upload.user_id || upload.guest_session_id, :projects ]
+  def broadcast
+    if saved_change_to_stage?
+      broadcast_remove_to broadcast_channel
+      broadcast_prepend_to broadcast_channel, target: "#{stage}-projects"
+    else
+      broadcast_update
+    end
+  end
+
+  def broadcast_update
+      broadcast_replace_to broadcast_channel
   end
 
   private
@@ -96,13 +108,17 @@ class Project < ApplicationRecord
       public_send(model_sym.to_s.pluralize).last
     end
 
-    def broadcast
-      if saved_change_to_stage?
-        broadcast_remove_to broadcast_channel
-        broadcast_prepend_to broadcast_channel, target: "#{stage}-projects"
-      else
-        broadcast_replace_to broadcast_channel
-      end
+    def broadcast_channel
+      @broadcast_channel ||= [ upload.user_id || upload.guest_session_id, :projects ]
+    end
+
+    def update_stage_timestamp
+      self.stage_updated_at = Time.current
+    end
+
+    def stage_changed?
+      return false unless status_changed?
+      status_to_stage(status_was) != stage
     end
 
     def update_price
@@ -143,7 +159,7 @@ class Project < ApplicationRecord
 end
 
 def status_to_stage(status)
-  case status.to_sym
+  case status&.to_sym
   when :created, :checking, :checked then :uploaded
   when :benchmarking, :benchmarked then :waiting
   when :rendering then :rendering

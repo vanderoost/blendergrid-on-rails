@@ -39,7 +39,7 @@ module Authentication
     end
 
     def start_new_session_for(user)
-      Upload.where(guest_email_address: user.email_address).update_all(user_id: user.id)
+      grab_guest_uploads(user)
 
       user.sessions.create!(
         user_agent: request.user_agent,
@@ -54,8 +54,26 @@ module Authentication
       end
     end
 
+    def grab_guest_uploads(user)
+      current_guest_uploads.each { |upload| upload.update!(user: user) }
+    end
+
     def terminate_session
       Current.session.destroy
       cookies.delete(:session_id)
+    end
+
+    # TODO: Consider moving these to a concern
+    def accessible_uploads
+      authenticated? ? Current.user.uploads : current_guest_uploads
+    end
+
+    def current_guest_uploads
+      return Upload.none unless session[:guest_email_address] # TODO: Can we skip this?
+      Upload.where(
+        guest_email_address: session[:guest_email_address],
+        guest_session_id: session.id.to_s,
+        user_id: nil
+      )
     end
 end
