@@ -5,8 +5,8 @@
 This week:
 
 - [ ]  Integrate support chat (helpscout?)
-- [ ]  Finish the Project List View entirely
-    - [ ]  Give projects in each stage a link to the project show/edit page
+- [x]  Finish the Project List View entirely
+    - [x]  Give projects in each stage a link to the project show/edit page
     - [x]  Show total price of all checked projects (Stimulus)
     - [x]  Show resolution at the Uploaded projects stage
     - [x]  Disable 'Edit' link in all stages where it doesn't make sense

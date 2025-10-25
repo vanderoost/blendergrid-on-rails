@@ -13,9 +13,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-  end
-
-  def edit
     @return_path = params.key?(:upload_id) ?
       upload_path(params[:upload_id]) : projects_path
   end
