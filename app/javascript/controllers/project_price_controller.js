@@ -4,15 +4,15 @@ export default class extends Controller {
   static targets = ["priceCents", "priceDisplay"]
 
   connect() {
-    this.element.addEventListener("turbo:frame-render", this.#refreshPrice)
-    this.#refreshPrice()
+    this.element.addEventListener("turbo:frame-render", this.#updatePrice)
+    this.#updatePrice()
   }
 
   disconnect() {
-    this.element.removeEventListener("turbo:frame-render", this.#refreshPrice)
+    this.element.removeEventListener("turbo:frame-render", this.#updatePrice)
   }
 
-  #refreshPrice = () => {
+  #updatePrice = () => {
     if (this.priceCentsTarget.dataset.priceCents > 0) {
       const priceString = (this.priceCentsTarget.dataset.priceCents / 100).toFixed(2);
       this.priceDisplayTarget.innerText = `$${priceString} USD`
