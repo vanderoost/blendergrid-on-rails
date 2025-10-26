@@ -8,6 +8,21 @@ one:
 
     Once upon a time in Pixel Valley, there were three little pigs who weren’t interested in building houses. No, they were render pigs, hardworking artists of the farm.
 
+    ```latex
+      When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+      $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
+    ```
+
+    ```ruby
+    def fib(n)
+      if n < 2
+        1
+      else
+        fib(n - 1) + fib(n - 2)
+      end
+    end
+    ```
+
     ## Porky
 
     The first pig, Porky, was impatient. “I want my frames done now!” he squealed, spinning up a cluster of tiny Raspberry Pi nodes. They chugged and wheezed, producing frames so slowly that even the clouds in his animations drifted out of sync.

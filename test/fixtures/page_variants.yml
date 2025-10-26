@@ -3,6 +3,8 @@ home_default:
   sections:
     upload:
       heading: "Fast rendering for Blender"
+    logo_cloud:
+    testimonials:
 
 youtuber_default:
   landing_page: youtuber

@@ -29,6 +29,16 @@ class MarkdownRenderer < Redcarpet::Render::HTML
     text
   end
 
+  # Add support for LaTeX code blocks with MathJax
+  # https://docs.mathjax.org/en/latest/index.html)
+  def block_code(code, lang)
+    if lang == "latex"
+      code
+    else
+      %(<code class="#{lang}"><pre>#{code}</pre></code>)
+    end
+  end
+
   private
     def process_youtube_embeds(text)
       text.gsub(YOUTUBE_EMBED_PATTERN) do
