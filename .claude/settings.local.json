@@ -1,16 +1,23 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gem uninstall:*)",
-      "Bash(gem install:*)",
-      "Bash(find:*)",
-      "WebSearch",
-      "WebFetch(domain:docs.stripe.com)",
-      "Bash(bundle exec rails test:*)",
-      "Bash(git show:*)",
       "Bash(bin/autotest:*)",
+      "Bash(bin/rubocop:*)",
+      "Bash(brakeman:*)",
+      "Bash(bundle exec rails test:*)",
+      "Bash(bundle exec rubocop:*)",
+      "Bash(bundle info:*)",
+      "Bash(bundle install:*)",
+      "Bash(bundle)",
       "Bash(cat:*)",
-      "Bash(brakeman:*)"
+      "Bash(find:*)",
+      "Bash(gem install:*)",
+      "Bash(gem list:*)",
+      "Bash(gem uninstall:*)",
+      "Bash(git show:*)",
+      "Read(//Users/richard/.cache/**)",
+      "WebFetch(domain:docs.stripe.com)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
