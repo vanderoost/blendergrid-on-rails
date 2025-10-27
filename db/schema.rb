@@ -121,8 +121,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.datetime "created_at", null: false
     t.string "guest_email_address"
     t.string "guest_session_id"
-    t.string "stripe_payment_intent_id"
-    t.string "stripe_receipt_url"
+    t.string "receipt_url"
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
     t.integer "user_id"
