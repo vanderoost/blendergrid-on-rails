@@ -28,7 +28,8 @@ class Project < ApplicationRecord
   delegate :user, to: :upload
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
-  after_create :start_checking
+  after_create :start_checking, if: :created?
+  before_create :set_name
   before_update :update_price, if: :tweaks_changed?
   after_update_commit :broadcast, if: :saved_change_to_status?
 
@@ -47,10 +48,6 @@ class Project < ApplicationRecord
 
   def to_key
     [ uuid ]
-  end
-
-  def name
-    blend_filepath
   end
 
   def stage
@@ -106,6 +103,11 @@ class Project < ApplicationRecord
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
+    end
+
+    def set_name
+      return if name.present?
+      self.name = File.basename(blend_filepath, ".blend")
     end
 
     def broadcast_channel

@@ -167,6 +167,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.string "blend_filepath"
     t.datetime "created_at", null: false
     t.integer "current_blender_scene_id"
+    t.string "name"
     t.integer "order_id"
     t.integer "price_cents"
     t.datetime "stage_updated_at"
