@@ -4,11 +4,12 @@
 
 This week:
 
-- [x]  Share invoices / receipts with users?
-- [ ]  Deleting a project
-- [ ]  Duplicating a project
+- [ ]  Show preview frames and rendered frames in the Project show view
 - [ ]  Calculate the deadline range based on the Benchmark and tweaks
 - [ ]  Consistent Price calculation with the old web app
+- [x]  Share invoices / receipts with users?
+- [x]  Deleting a project
+- [x]  Duplicating a project
 
 ---
 

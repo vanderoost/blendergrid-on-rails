@@ -14,6 +14,23 @@
 <!-- Main -->
 <% if @project.checked? %>
   <%= render "settings_form" %>
+<% elsif @project.benchmarked? %>
+  <!-- Show some sample frames -->
+  <% if @project.sample_frame_urls.any? %>
+    <div class="my-8 flex flex-col gap-4">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Sample Frames</h2>
+      <div class="flex flex-wrap gap-4 flex-col md:flex-row">
+        <% @project.sample_frame_urls.each do |url| %>
+          <%= link_to url, target: "_blank",
+            style: "background: repeating-conic-gradient(#363636 0 25%, #2a2a2a 0 50%) 50% / 32px 32px; background-attachment: fixed;",
+            class: "w-full md:w-48 md:grow rounded-md overflow-clip" do %>
+            <img src="<%= url %>" class="w-full hover:scale-105 transition-transform">
+          <% end %>
+        <% end %>
+      </div>
+      <p class="italic text-sm text-gray-700 dark:text-gray-300">click for big</p>
+    </div>
+  <% end %>
 <% else %>
   TODO: Project details for <%= @project.name %>. 
 <% end %>

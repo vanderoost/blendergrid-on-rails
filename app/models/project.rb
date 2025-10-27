@@ -45,7 +45,6 @@ class Project < ApplicationRecord
     %w[created checking benchmarking rendering].include? status
   end
 
-
   def to_key
     [ uuid ]
   end
@@ -69,13 +68,29 @@ class Project < ApplicationRecord
   end
 
   def frame_urls
-    bucket_name = Rails.configuration.swarm_engine[:bucket]
     prefix = "projects/#{uuid}/output/frames/"
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket(bucket_name)
     bucket.objects(prefix: prefix)
       .sort_by(&:key)
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def sample_frame_urls
+    prefix = "projects/#{uuid}/output/sample-frames/"
+    bucket.objects(prefix: prefix)
+      .sort_by(&:key)
+      .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def bucket_name
+    @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
+  end
+
+  def bucket
+    @bucket ||= s3.bucket(bucket_name)
+  end
+
+  def s3
+    @s3 ||= Aws::S3::Resource.new
   end
 
   def handle_cancellation
