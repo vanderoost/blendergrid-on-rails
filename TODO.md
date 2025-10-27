@@ -4,15 +4,17 @@
 
 This week:
 
-- [ ]  Show preview frames and rendered frames in the Project show view
 - [ ]  Calculate the deadline range based on the Benchmark and tweaks
 - [ ]  Consistent Price calculation with the old web app
 - [x]  Share invoices / receipts with users?
 - [x]  Deleting a project
 - [x]  Duplicating a project
+- [x]  Show preview frames and rendered frames in the Project show view
 
 ---
 
+- [ ]  Don't overwrite the output filename set in the .blend file #Swarm
+- [ ]  Make sure all customized settings are used in the actual rendering #Swarm
 - [ ]  Style the flash messages a bit better
 - [ ]  Show scene warnings (in settings?)
 - [ ]  Soft delete feature for certain models (projects, ?)

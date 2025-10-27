@@ -67,11 +67,28 @@ class Project < ApplicationRecord
     self.save!
   end
 
+  # TODO: Maybe deprecate this and use frame_objects
   def frame_urls
     prefix = "projects/#{uuid}/output/frames/"
     bucket.objects(prefix: prefix)
       .sort_by(&:key)
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def frame_objects
+    prefix = "projects/#{uuid}/output/frames/"
+    objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
+      filename = obj.key.split("/").last
+      extension = File.extname(filename)
+      {
+        basename: File.basename(filename, extension),
+        extension: extension,
+        size: obj.size,
+        url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+      }
+    end
+    puts "FRAME OBJECT: #{objects.first.inspect}"
+    objects
   end
 
   def sample_frame_urls
