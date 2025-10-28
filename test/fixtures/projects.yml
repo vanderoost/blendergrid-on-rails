@@ -36,6 +36,12 @@ benchmarked:
   blend_filepath: suzanne.blend
   current_blender_scene: one
   price_cents: 3000
+  tweaks:
+    deadline_hours: 8
+    deadline_hours_min: 2
+    deadline_hours_max: 24
+    resolution_percentage: 50
+    sampling_max_samples: 1024
 
 rendering:
   upload: guest_upload
@@ -45,6 +51,12 @@ rendering:
   blend_filepath: suzanne.blend
   current_blender_scene: one
   price_cents: 3000
+  tweaks:
+    deadline_hours: 8
+    deadline_hours_min: 2
+    deadline_hours_max: 24
+    resolution_percentage: 50
+    sampling_max_samples: 1024
 
 richards_project:
   upload: richards_upload

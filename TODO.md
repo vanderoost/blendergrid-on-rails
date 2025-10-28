@@ -63,6 +63,7 @@ This week:
 
 ## after launch
 
+- [ ] Allow users to save their credit card details for faster rendering & blender addon
 - [ ] Add the upload-form to the empty state of the projects page
 - [ ] Make a nicer toaster for flash messages
 - [ ] Put helpscout widget in a permanent turbo element?

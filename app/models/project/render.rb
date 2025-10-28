@@ -8,14 +8,6 @@ class Project::Render < ApplicationRecord
   def owner = project
 
   def make_start_message
-    # TODO: Should this be the concern of this model? Or let some outside control
-    # (SwarmEngine) handle this kind of logic?
-    expected_render_time = 1800 # TODO: Figure out where to calculate and store this
-    # expected_render_time = project.benchmarks.last.expected_render_time
-    # if expected_render_time.nil?
-    #   raise "The price calculation's expected_render_time is nil"
-    # end
-
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
@@ -38,7 +30,7 @@ class Project::Render < ApplicationRecord
 
     {
       workflow_id: workflow.uuid,
-      deadline: expected_render_time.seconds.from_now.to_i,
+      deadline: workflow.project.tweaks_deadline_hours.hours.from_now.to_i,
       files: {
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
