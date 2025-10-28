@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   resources :projects, param: :uuid do
     resources :renders
     resources :blender_scenes
+    resources :duplicates
   end
   resources :payment_intents, only: %w[create]
 

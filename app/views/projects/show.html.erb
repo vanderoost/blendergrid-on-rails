@@ -14,10 +14,95 @@
 <!-- Main -->
 <% if @project.checked? %>
   <%= render "settings_form" %>
+<% elsif @project.benchmarked? %>
+
+  <!-- Show some sample frames -->
+  <% if @project.sample_frame_urls.any? %>
+    <div class="my-8 flex flex-col gap-4">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Sample Frames</h2>
+      <div class="flex flex-wrap gap-4 flex-col md:flex-row">
+        <% @project.sample_frame_urls.each do |url| %>
+          <%= link_to url, target: "_blank",
+            style: "background: repeating-conic-gradient(#363636 0 25%, #2a2a2a 0 50%) 50% / 32px 32px; background-attachment: fixed;",
+            class: "w-full md:w-48 max-w-md md:grow rounded-md overflow-clip" do %>
+            <img src="<%= url %>" class="w-full hover:scale-105 transition-transform">
+          <% end %>
+        <% end %>
+      </div>
+      <p class="italic text-sm text-gray-700 dark:text-gray-300">click for big</p>
+    </div>
+  <% end %>
+
+<% elsif @project.rendering? || @project.rendered? %>
+
+  <!-- Show a list of frame download links -->
+  <div class="my-8 flex flex-col gap-4">
+    <% if @project.frame_objects.any? %>
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+        Rendered Frames
+        <span class="ml-4 inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-1.5 py-0.5 text-ss font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+          <%= @project.frame_objects.count %>
+        </span>
+      </h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <% @project.frame_objects.each do |obj| %>
+        <%= link_to obj[:url], target: "_blank", class: "block group border border-gray-200 hover:bg-gray-100 text-gray-700 dark:text-gray-300 bg-white dark:border-white/10 dark:bg-gray-800/50 dark:hover:bg-gray-800 rounded overflow-hidden" do %>
+
+          <% if [".png", ".jpg", ".bmp"].include? obj[:extension] %>
+            <img src="<%= obj[:url] %>" class="">
+          <% else %>
+            <div class="py-3 flex items-center justify-center group-hover:text-gray-950 dark:group-hover:text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="size-8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+            </div>
+          <% end %>
+
+          <div class="px-2 py-1 text-sm flex flex-wrap gap-2 justify-between max-h-7 overflow-hidden">
+            <div class="flex flex-wrap overflow-hidden">
+              <div class="truncate group-hover:text-gray-950 dark:group-hover:text-white"><%= obj[:basename] %></div>
+              <div><%= obj[:extension] %></div>
+            </div>
+            <div><%= number_to_human_size(obj[:size]) %></div>
+          </div>
+
+        <% end %>
+      <% end %>
+      </div>
+
+    <% else %>
+      <p class="italic text-sm text-gray-700 dark:text-gray-300 py-8">No frames have finished rendering yet.</p>
+    <% end %>
+  </div>
+
 <% else %>
   TODO: Project details for <%= @project.name %>. 
 <% end %>
 
+
+<!-- Delete / Duplicate -->
+<div class="flex gap-4 my-8">
+  <%= button_to project_duplicates_path(@project),
+    class: "inline-flex items-center gap-x-2 rounded-md bg-primary-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" do %>
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+    </svg>
+    Duplicate Project
+  <% end %>
+
+  <%= button_to project_path(@project),
+    method: :delete,
+    form: { data: {
+      turbo_confirm: "Are you sure you want to delete '#{@project.name}'?"
+    } },
+    class: "inline-flex items-center gap-x-2 rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-gray-900 dark:text-white hover:text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 dark:bg-white/10 dark:shadow-none dark:hover:bg-red-500 dark:focus-visible:outline-red-500 inset-ring inset-ring-gray-300 dark:inset-ring-white/5" do %>
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+</svg>
+    Delete Project
+  <% end %>
+</div>
 
 <!-- Breadcrumbs -->
 <nav aria-label="Breadcrumb" class="flex mt-8">
@@ -45,7 +130,7 @@
         <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="size-5 shrink-0 text-gray-400 dark:text-gray-500">
           <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
         </svg>
-        <span aria-current="page" class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400">Settings for <%= @project.name %></span>
+        <span aria-current="page" class="ml-4 text-sm font-medium text-gray-500 dark:text-gray-400"><%= @project.name %></span>
       </div>
     </li>
   </ol>

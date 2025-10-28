@@ -1,18 +1,21 @@
 created:
   upload: guest_upload
   uuid: created-1234
+  name: monkey
   status: created
   blend_filepath: monkey.blend
 
 checking:
   upload: guest_upload
   uuid: checking-1234
+  name: monkey
   status: checking
   blend_filepath: monkey.blend
 
 checked:
   upload: guest_upload
   uuid: checked-1234
+  name: monkey
   status: checked
   blend_filepath: monkey.blend
   current_blender_scene: one
@@ -20,6 +23,7 @@ checked:
 benchmarking:
   upload: guest_upload
   uuid: benchmarking-1234
+  name: monkey
   status: benchmarking
   blend_filepath: monkey.blend
   current_blender_scene: one
@@ -27,6 +31,7 @@ benchmarking:
 benchmarked:
   upload: guest_upload
   uuid: benchmarked-1234
+  name: suzanne
   status: benchmarked
   blend_filepath: suzanne.blend
   current_blender_scene: one
@@ -35,6 +40,7 @@ benchmarked:
 rendering:
   upload: guest_upload
   uuid: rendering-1234
+  name: suzanne
   status: rendering
   blend_filepath: suzanne.blend
   current_blender_scene: one
@@ -43,17 +49,20 @@ rendering:
 richards_project:
   upload: richards_upload
   uuid: richards-1234
+  name: richard_project
   status: checking
   blend_filepath: richard_project.blend
 
 garys_project:
   upload: garys_upload
   uuid: garys-1234
+  name: gary_project
   status: checking
   blend_filepath: gary_project.blend
 
 guest_project:
   upload: guest_upload
   uuid: guest-1234
+  name: guest_project
   status: checking
   blend_filepath: guest_project.blend

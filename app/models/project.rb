@@ -28,7 +28,8 @@ class Project < ApplicationRecord
   delegate :user, to: :upload
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
-  after_create :start_checking
+  after_create :start_checking, if: :created?
+  before_create :set_name
   before_update :update_price, if: :tweaks_changed?
   after_update_commit :broadcast, if: :saved_change_to_status?
 
@@ -44,13 +45,8 @@ class Project < ApplicationRecord
     %w[created checking benchmarking rendering].include? status
   end
 
-
   def to_key
     [ uuid ]
-  end
-
-  def name
-    blend_filepath
   end
 
   def stage
@@ -71,14 +67,47 @@ class Project < ApplicationRecord
     self.save!
   end
 
+  # TODO: Maybe deprecate this and use frame_objects
   def frame_urls
-    bucket_name = Rails.configuration.swarm_engine[:bucket]
     prefix = "projects/#{uuid}/output/frames/"
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket(bucket_name)
     bucket.objects(prefix: prefix)
       .sort_by(&:key)
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def frame_objects
+    prefix = "projects/#{uuid}/output/frames/"
+    objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
+      filename = obj.key.split("/").last
+      extension = File.extname(filename)
+      {
+        basename: File.basename(filename, extension),
+        extension: extension,
+        size: obj.size,
+        url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+      }
+    end
+    puts "FRAME OBJECT: #{objects.first.inspect}"
+    objects
+  end
+
+  def sample_frame_urls
+    prefix = "projects/#{uuid}/output/sample-frames/"
+    bucket.objects(prefix: prefix)
+      .sort_by(&:key)
+      .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def bucket_name
+    @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
+  end
+
+  def bucket
+    @bucket ||= s3.bucket(bucket_name)
+  end
+
+  def s3
+    @s3 ||= Aws::S3::Resource.new
   end
 
   def handle_cancellation
@@ -106,6 +135,11 @@ class Project < ApplicationRecord
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
+    end
+
+    def set_name
+      return if name.present?
+      self.name = File.basename(blend_filepath, ".blend")
     end
 
     def broadcast_channel

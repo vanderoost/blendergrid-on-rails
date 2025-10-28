@@ -2,13 +2,22 @@
 
 ## before launch
 
-- [ ]  Share invoices / receipts with users?
-- [ ]  Show scene warnings (in settings?)
-- [ ]  Deleting a project
-- [ ]  Duplicating a project
-- [ ]  Soft delete feature for certain models (projects, ?)
+This week:
+
 - [ ]  Calculate the deadline range based on the Benchmark and tweaks
 - [ ]  Consistent Price calculation with the old web app
+- [x]  Share invoices / receipts with users?
+- [x]  Deleting a project
+- [x]  Duplicating a project
+- [x]  Show preview frames and rendered frames in the Project show view
+
+---
+
+- [ ]  Don't overwrite the output filename set in the .blend file #Swarm
+- [ ]  Make sure all customized settings are used in the actual rendering #Swarm
+- [ ]  Style the flash messages a bit better
+- [ ]  Show scene warnings (in settings?)
+- [ ]  Soft delete feature for certain models (projects, ?)
 - [ ]  Take deadline into account when submitting an Order
 - [ ]  Credit lead magnets: Capture email and give free credit gift.
 - [ ]  Waiting stage
@@ -54,9 +63,12 @@
 
 ## after launch
 
+- [ ] Add the upload-form to the empty state of the projects page
+- [ ] Make a nicer toaster for flash messages
+- [ ] Put helpscout widget in a permanent turbo element?
 - [ ] Read available Blender versions form DockerHub and make them available to choose from?
 - [ ]  Disable checkbox if there's only one Project in a stage
-- [ ]  Add handwritten hints to the UI with arrows
+- [ ]  Add helpful handwritten hints to the UI with arrows
     - [ ]  Select a project
     - [ ]  Calculate the price
     - [ ]  Start rendering

@@ -5,6 +5,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.references :current_blender_scene, foreign_key: { to_table: :blender_scenes }
       t.references :order
       t.string :uuid, null: false, index: { unique: true }
+      t.string :name
       t.string :status
       t.string :blend_filepath
       t.json :tweaks
