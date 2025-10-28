@@ -25,10 +25,11 @@ finished_benchmark:
   node_type_name: macbook-pro
   timing:
     download: { max: 5000 }
+    unzip: { max: 2000 }
     init: { mean: 3000, std: 300 }
     sampling: { mean: 80000, std: 10000 }
     post: { mean: 2000, std: 500 }
-    upload: { mean: 1500, std: 400 }
+    upload: { mean: 1500, std: 400, max: 2000 }
 
 started_render:
   uuid: started-render-1234

@@ -60,10 +60,11 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
           result: { "settings" => { "foo" => "bar" } },
           timing: {
             "download" => { "max" => 10000 },
+            "unzip" => { "max" => 3000 },
             "init" => { "mean" => 5000, "std" => 1000 },
             "sampling" => { "mean" => 120000, "std" => 10000 },
             "post" => { "mean" => 2000, "std" => 500 },
-            "upload" => { "mean" => 3000, "std" => 800 },
+            "upload" => { "mean" => 3000, "std" => 800, "max" => 4000 },
           },
           node_provider_id: "aws",
           node_type_name: "t3.micro",

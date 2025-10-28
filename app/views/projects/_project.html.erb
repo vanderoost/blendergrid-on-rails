@@ -145,7 +145,7 @@
         <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_deadline_hours, "Deadline" %>
-            <%= form.number_field :tweaks_deadline_hours, in: 2..12 %>
+            <%= form.number_field :tweaks_deadline_hours, in: project.tweaks_deadline_hours_min..project.tweaks_deadline_hours_max %>
           </div>
 
           <div class="flex flex-col gap-2">

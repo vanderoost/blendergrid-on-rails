@@ -9,6 +9,8 @@ class Project < ApplicationRecord
   STORE_ACCESSORS = {
     tweaks: {
       deadline_hours: :integer,
+      deadline_hours_min: :integer,
+      deadline_hours_max: :integer,
       resolution_percentage: :integer,
       sampling_max_samples: :integer,
     },
@@ -156,15 +158,28 @@ class Project < ApplicationRecord
     end
 
     def update_price
-      workflow = benchmark.workflow
-      self.price_cents = Pricing::Calculation.new(
+      # Update the deadline range
+      self.tweaks_deadline_hours_min = price_calculation.deadline_hours_min
+      self.tweaks_deadline_hours_max = price_calculation.deadline_hours_max
+      if self.tweaks_deadline_hours < self.tweaks_deadline_hours_min
+        self.tweaks_deadline_hours = self.tweaks_deadline_hours_min
+      elsif self.tweaks_deadline_hours > self.tweaks_deadline_hours_max
+        self.tweaks_deadline_hours = self.tweaks_deadline_hours_max
+      end
+
+      self.price_cents = price_calculation.price_cents
+    end
+
+    def price_calculation
+      @price_calculation ||= Pricing::Calculation.new(
         benchmark: benchmark,
         node_supplies: NodeSupply.where(
-          provider_id: workflow.node_provider_id, type_name: workflow.node_type_name
+          provider_id: benchmark.workflow.node_provider_id,
+          type_name: benchmark.workflow.node_type_name
         ),
         blender_scene: current_blender_scene,
         tweaks: tweaks,
-      ).price_cents
+      )
     end
 
     def saved_change_to_stage?
