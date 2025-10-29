@@ -158,7 +158,6 @@ class Project < ApplicationRecord
     end
 
     def update_price
-      # Update the deadline range
       self.tweaks_deadline_hours_min = price_calculation.deadline_hours_min
       self.tweaks_deadline_hours_max = price_calculation.deadline_hours_max
       if self.tweaks_deadline_hours < self.tweaks_deadline_hours_min
