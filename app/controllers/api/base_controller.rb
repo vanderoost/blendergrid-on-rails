@@ -1,10 +1,10 @@
 class Api::BaseController < ActionController::API
   include ApiAuthentication
 
-  rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
+  rescue_from StandardError, with: :handle_internal_server_error
   rescue_from ActionController::ParameterMissing,
     with: :handle_bad_request
-  rescue_from StandardError, with: :handle_internal_server_error
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
 
   private
     def handle_not_found(exception)
