@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo "Cleaning up Docker..."
-docker system prune --all --force
+echo "Cleaning up Docker on remote servers..."
+ssh ubuntu@rails.blendergrid.com "docker system prune --all --force --volumes"
