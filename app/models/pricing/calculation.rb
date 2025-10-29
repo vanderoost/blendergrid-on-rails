@@ -107,7 +107,8 @@ class Pricing::Calculation
       d = deadline.in_seconds
       b = @node_boot_time.in_seconds
       node_count = (d - b - Math.sqrt((d - b)**2 - 4*a*j)) / (2*a)
-      node_count = [ node_count.ceil, max_node_count ].min
+      puts "NODE COUNT FORMULA: #{node_count.round 4}"
+      node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
       puts "NODE COUNT: #{node_count}"
 
       # What do the nodes cost?
@@ -123,23 +124,23 @@ class Pricing::Calculation
         total_hourly_cost += @node_supplies.last.millicents_per_hour * nodes_remaining
       end
       avg_node_hour_cost = total_hourly_cost.to_f / node_count / 1_000
-      puts "AVG NODE HOUR COST: #{avg_node_hour_cost} cents"
+      puts "AVG NODE HOUR COST: #{avg_node_hour_cost.round 4} cents"
 
       # How long do we expect to run the nodes?
       node_time = (@api_time_per_node + @node_boot_time + download_time + unzip_time) *
         node_count + all_jobs_time + [ zip_time, encode_time ].max
-      puts "NODE TIME: #{node_time}"
+      puts "NODE TIME: #{node_time.round 4}s"
 
       node_cost = node_time.in_hours * avg_node_hour_cost
-      puts "NODE COST: #{node_cost} cents"
+      puts "NODE COST: #{node_cost.round 4} cents"
 
       speed_fac = 1.0 - (deadline_hours - @deadline_hours_min).fdiv(
         @deadline_hours_max - @deadline_hours_min)
       speed_fac = speed_fac ** 1.5
-      puts "SPEED FAC: #{speed_fac}"
+      puts "SPEED FAC: #{speed_fac.round 4}"
 
       margin = speed_fac * @margin_fast + (1 - speed_fac) * @margin_slow
-      puts "MARGIN: #{margin}"
+      puts "MARGIN: #{margin.round 4}"
 
       @price_cents = (node_cost * margin).ceil
       puts "PRICE: #{@price_cents} cents"
