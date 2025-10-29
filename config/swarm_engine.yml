@@ -1,6 +1,7 @@
 default: &defaults
   env: <%= Rails.env %>
   bucket: swarm-engine-dev
+  scripts_bucket: blendergrid-blender-scripts
   key_prefix: uploads
 
 test:

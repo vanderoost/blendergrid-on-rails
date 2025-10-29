@@ -142,7 +142,7 @@ class Pricing::Calculation
       margin = speed_fac * @margin_fast + (1 - speed_fac) * @margin_slow
       puts "MARGIN: #{margin.round 4}"
 
-      @price_cents = (node_cost * margin).ceil
+      @price_cents = @min_price_cents + (node_cost * margin).ceil
       puts "PRICE: #{@price_cents} cents"
     end
 

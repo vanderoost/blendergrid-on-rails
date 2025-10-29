@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: %i[ show edit update destroy ]
-  allow_unauthenticated_access only: %i[ index show edit update ]
+  allow_unauthenticated_access only: %i[ index show edit update destroy ]
 
   def index
     if authenticated?

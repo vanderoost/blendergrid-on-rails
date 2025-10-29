@@ -15,6 +15,7 @@ class Project::BlendCheck < ApplicationRecord
 
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
     bucket = Rails.configuration.swarm_engine[:bucket]
+    scripts_bucket = Rails.configuration.swarm_engine[:scripts_bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     {
@@ -22,7 +23,7 @@ class Project::BlendCheck < ApplicationRecord
       deadline:    Time.current.to_i,
       files: {
         input: {
-          scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
+          scripts: "s3://#{scripts_bucket}/#{swarm_engine_env}",
           project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
         },
       output: "s3://#{bucket}/projects/#{project.uuid}/jsons",
