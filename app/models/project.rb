@@ -60,7 +60,7 @@ class Project < ApplicationRecord
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 
     # TODO: Choose a sensible deadline based on the benchmark / exp. server hours
-    self.tweaks_deadline_hours = self::DEFAULT_DEADLINE_HOURS
+    self.tweaks_deadline_hours = Project::DEFAULT_DEADLINE_HOURS
     self.tweaks_resolution_percentage = resolution_percentage
     self.tweaks_sampling_max_samples = sampling_max_samples
 
