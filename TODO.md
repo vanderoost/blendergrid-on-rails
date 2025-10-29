@@ -63,6 +63,8 @@ This week:
 
 ## after launch
 
+- [ ] Fix upload progress percentage bug (50% seems to be the max)
+- [ ] Fix upload form validation (don't allow upload to start without guest email)
 - [ ] Figure out caching for faster landing pages and article pages
 - [ ] Allow users to save their credit card details for faster rendering & blender addon
 - [ ] Add the upload-form to the empty state of the projects page

@@ -92,7 +92,10 @@ class Pricing::Calculation
       puts "MAX WALL TIME (ONE NODE): #{max_wall_time.round}"
       allowed_max_deadline = max_wall_time * @max_deadline_factor
 
-      @deadline_hours_max = allowed_max_deadline.in_hours.ceil
+      @deadline_hours_max = [
+        @deadline_hours_min + 1,
+        allowed_max_deadline.in_hours.ceil,
+      ].max
       puts "MAX DEADLINE: #{@deadline_hours_max}h"
 
       # ACTUAL PREFERRED DEADLINE

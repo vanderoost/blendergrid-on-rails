@@ -15,6 +15,7 @@ class Project < ApplicationRecord
       sampling_max_samples: :integer,
     },
   }
+  DEFAULT_DEADLINE_HOURS = 5
 
   include HasSceneSettings
   include JsonAccessible
@@ -59,7 +60,7 @@ class Project < ApplicationRecord
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 
     # TODO: Choose a sensible deadline based on the benchmark / exp. server hours
-    self.tweaks_deadline_hours = 8
+    self.tweaks_deadline_hours = self::DEFAULT_DEADLINE_HOURS
     self.tweaks_resolution_percentage = resolution_percentage
     self.tweaks_sampling_max_samples = sampling_max_samples
 
