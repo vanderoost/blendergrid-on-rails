@@ -1,4 +1,5 @@
 #!/bin/sh
 
 echo "Cleaning up Docker on remote servers..."
-ssh ubuntu@rails.blendergrid.com "docker system prune --all --force --volumes"
+
+kamal server exec "docker system prune --all --volumes --force"

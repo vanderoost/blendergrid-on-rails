@@ -40,7 +40,7 @@ begin
   end
 
   if is_success
-    test_output = `rails test --fail-fast`
+    test_output = `bin/rails test --fail-fast`
     is_success = $?.success?
     log.write(test_output + "\n\n")
   end
