@@ -31,7 +31,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resource :workflow_progress, only: %w[update]
       resources :workflows, param: :uuid
-      resources :node_supplies, only: [] do
+      resources :node_supplies do
         patch "/", on: :collection, action: :update
       end
     end
