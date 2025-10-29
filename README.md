@@ -151,6 +151,17 @@ ssh ubuntu@rails.blendergrid.com \
 bin/kamal setup
 ```
 
+## API Security
+
+The API uses tokens to authenticate requests (from the Swarm Engine for example).
+
+A new token can be generated with:
+
+```bash
+rails api_tokens:generate[<name>] # Locally
+RAILS_ENV=production rails api_tokens:generate[<name>] # In production
+```
+
 ## Monitoring
 
 Live tailing production logs:
