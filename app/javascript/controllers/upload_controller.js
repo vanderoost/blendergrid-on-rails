@@ -20,23 +20,16 @@ export default class extends Controller {
     this.startTime = 0
   }
 
+  // Called on file input change
+  // Should just care about presentation, don't keep track of total file size here
   showFiles() {
-    if (this.statusValue === states.uploading) {
-      console.error("Cannot change the files, already uploading")
-      return
-    }
-
+    if (this.statusValue === states.uploading) { return }
     const files = this.inputTarget.files
-    console.debug("files:", files)
 
     this.listTarget.innerHTML = ""
     for (var i = 0; i < files.length; i++) {
       const file = files[i]
-      console.debug("adding file:", file.name)
-
-      this.totalSize += file.size
       const [filenameHead, filenameTail] = splitFilename(file.name)
-
       const fileElement = document.createElement("div")
       fileElement.className = "flex items-center justify-between gap-x-3 p-3 text-sm"
       fileElement.innerHTML = `
@@ -72,15 +65,16 @@ export default class extends Controller {
       this.fileItemsByName.set(file.name, fileElement)
     }
 
-    this.submitTarget.disabled = files.length === 0
-    this.submitTarget.value = `Upload ${pluralize(files.length, "File")}`
-
     if (files.length > 0) {
       this.statusValue = states.ready
       this.listTarget.classList.remove("hidden")
+      this.submitTarget.disabled = false
+      this.submitTarget.value = `Upload ${pluralize(files.length, "File")}`
+    } else {
+      this.submitTarget.disabled = true
+      this.submitTarget.value = "Upload Files"
     }
 
-    console.debug("statusValue:", this.statusValue)
   }
 
   uploadsStart() {
@@ -95,14 +89,18 @@ export default class extends Controller {
     }
   }
 
+  // Called on: direct-upload:initialize
   uploadInit(event) {
     const { file } = event.detail
     this.totalSize += file.size
   }
 
   uploadProgress(e) {
-    const { id, file, progress } = e.detail
-    this.uploadedSizes.set(id, Math.round(file.size * progress / 100))
+    const { id, file, progress } = e.detail // TODO: Let the Rails fork pass bytes
+    const bytes = Math.round(file.size * progress / 100)
+    this.uploadedSizes.set(id, bytes)
+
+    // TODO: Make a donut controller for this?
     const item = this.fileItemsByName.get(file.name)
     if (item) {
       const donutLength = 150.8 * (1.0 - progress / 100.0)
@@ -115,6 +113,7 @@ export default class extends Controller {
   trackTotalProgress() {
     const bytesDone = this.uploadedSizes.values().reduce((acc, n) => acc + n, 0)
     const percent = bytesDone / this.totalSize * 100
+
     this.summaryTarget.querySelector(".percentage").innerHTML = `Uploading: ${percent.toFixed(1)}%`
     this.summaryTarget.querySelector(".upload_progress").style.width = `${percent.toFixed(1)}%`
 
@@ -122,7 +121,6 @@ export default class extends Controller {
     const elapsed = now - this.startTime
 
     if (elapsed > this.etaCalcDelay) {
-      console.debug("calculating eta")
       const bytesRemaining = this.totalSize - bytesDone
       const eta = now + elapsed / bytesDone * bytesRemaining
 
@@ -177,26 +175,22 @@ const humanFileSize = (bytes) => {
 
 function humanDuration(ms) {
   let seconds = Math.ceil(ms / 1000)
+
   let minutes = Math.floor(seconds / 60)
+  seconds = seconds % 60
+
   let hours = Math.floor(minutes / 60)
+  minutes = minutes % 60
+
   let days = Math.floor(hours / 24)
+  hours = hours % 24
 
-  if (days > 1) {
-    return `${days} days`
-  }
-
-  if (hours > 1) {
-    return `${hours} hours`
-  }
-
-  if (minutes > 1) {
-    return `${minutes} minutes`
-  }
-
-  if (seconds > 1) {
-    return `${seconds} seconds`
-  }
-
+  if (days > 1) { return `${days} days` }
+  if (hours > 9) { return `${hours} hours` }
+  if (hours > 0) { return `${hours}:${String(minutes).padStart(2, '0')} h` }
+  if (minutes > 4) { return `${minutes} minutes` }
+  if (minutes > 0) { return `${minutes}:${String(seconds).padStart(2, '0')} m` }
+  if (seconds > 1) { return `${seconds} seconds` }
   return "1 second"
 }
 

@@ -2,26 +2,18 @@
 
 ## before launch
 
-This week:
-
-- [ ]  Calculate the deadline range based on the Benchmark and tweaks
-- [ ]  Consistent Price calculation with the old web app
-- [x]  Share invoices / receipts with users?
-- [x]  Deleting a project
-- [x]  Duplicating a project
-- [x]  Show preview frames and rendered frames in the Project show view
-
----
-
+- [ ] Basic dashboard to see what's going on (created projects, sales)
+- [ ] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
+- [ ] Fix upload progress percentage bug (50% seems to be the max)
+- [ ] Fix upload form validation (don't allow upload to start without guest email)
 - [ ]  Don't overwrite the output filename set in the .blend file #Swarm
 - [ ]  Make sure all customized settings are used in the actual rendering #Swarm
 - [ ]  Style the flash messages a bit better
 - [ ]  Show scene warnings (in settings?)
 - [ ]  Soft delete feature for certain models (projects, ?)
-- [ ]  Take deadline into account when submitting an Order
-- [ ]  Credit lead magnets: Capture email and give free credit gift.
+- [ ]  Initial render ETA shows 'less than a minute' when just started
 - [ ]  Waiting stage
-    - [ ]  Edit page with preview renders, deadline+res+samples form
+    - [ ]  Edit page with deadline+res+samples form
     - [x]  Show price at index per project
     - [x]  Deadline + resolution + samples form at index
 - [x]  UI/UX
@@ -59,12 +51,18 @@ This week:
 - [x]  Websockets security (don't send project updates to the wrong user/session)
 - [x]  Integrate support chat (helpscout?)
 - [x]  Make all session Uploads belong to the user when they log in?
-
+- [x]  Calculate the deadline range based on the Benchmark and tweaks
+- [x]  Consistent Price calculation with the old web app
+- [x]  Share invoices / receipts with users?
+- [x]  Deleting a project
+- [x]  Duplicating a project
+- [x]  Show preview frames and rendered frames in the Project show view
+- [x]  Credit lead magnets: Capture email and give free credit gift.
 
 ## after launch
 
-- [ ] Fix upload progress percentage bug (50% seems to be the max)
-- [ ] Fix upload form validation (don't allow upload to start without guest email)
+- [ ] Going from homepage upload form to upload page doesn't initialize the project link
+properly
 - [ ] Figure out caching for faster landing pages and article pages
 - [ ] Allow users to save their credit card details for faster rendering & blender addon
 - [ ] Add the upload-form to the empty state of the projects page
