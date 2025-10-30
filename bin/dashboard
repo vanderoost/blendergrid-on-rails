@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require_relative "../config/application"
+
+Rails.application.initialize!
+
+project = Project.last
+
+puts "Project: #{project.name} - #{project.stage}"
