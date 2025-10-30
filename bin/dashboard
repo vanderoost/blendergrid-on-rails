@@ -3,6 +3,97 @@ require_relative "../config/application"
 
 Rails.application.initialize!
 
-project = Project.last
+require "curses"
+include Curses
 
-puts "Project: #{project.name} - #{project.stage}"
+# Helpers
+def truncate(str, length)
+  return str if str.length <= length
+  str[0, length - 1] + "…"
+end
+
+# Grab data we want to display
+projects = Project.last(10)
+
+# Initialize Curses
+init_screen # Initializes a standard screen. At this point the present state of our terminal is saved and the alternate screen buffer is turned on
+start_color # Initializes the color attributes for terminals that support it.
+use_default_colors    # Enable transparent background support?
+curs_set(0) # Hides the cursor
+noecho # Disables characters typed by the user to be echoed by Curses.getch as they are typed.
+
+GREEN = 1
+BLUE = 2
+init_pair(GREEN, COLOR_GREEN, -1)
+init_pair(BLUE, COLOR_BLUE, -1)
+
+selectable_cols = %i[name owner]
+selected_col = 0
+selected_row = -1
+
+begin
+  loop do
+    # PROJECTS TABLE
+    setpos(1, 2)
+    attron(A_UNDERLINE)
+    addstr("Projects")
+    attroff(A_UNDERLINE)
+    setpos(3, 2)
+
+    # Calculate column widths
+    start_x = 2
+    name_width = 30
+
+    projects.each_with_index do |p, i|
+      # Highlight the selected project name
+      hl = selectable_cols[selected_col] == :name && i == selected_row
+      attron(color_pair(BLUE))
+      attron(A_REVERSE) if hl
+      addstr(truncate(p.name, name_width - 1))
+      attroff(A_REVERSE) if hl
+      setpos(stdscr.cury, start_x + name_width)
+      attroff(color_pair(BLUE))
+
+      # Status
+      addstr(p.status.ljust(12))
+
+      # Price
+      price_str = p.price_cents ? "$#{p.price_cents&.fdiv(100)}" : ""
+      addstr(price_str.rjust(10) + " ")
+
+      # Owner
+      hl = selectable_cols[selected_col] == :owner && i == selected_row
+      attron(color_pair(GREEN))
+      attron(A_REVERSE) if hl
+      addstr(p.owner.ljust(16))
+      attroff(A_REVERSE) if hl
+      attroff(color_pair(GREEN))
+
+      # Move to the next line
+      y = stdscr.cury
+      setpos(y + 1, 2)
+    end
+    refresh
+
+    # Get input
+    case getch
+    when 'h'
+      selected_col += 1
+      selected_col = 0 if selected_col >= selectable_cols.length
+    when 'l'
+      selected_col -= 1
+      selected_col = selectable_cols.length - 1 if selected_col < 0
+    when 'j'
+      selected_row += 1
+      selected_row = 0 if selected_row >= projects.length
+    when 'k'
+      selected_row -= 1
+      selected_row = projects.length - 1 if selected_row < 0
+    when 27 # Escape
+      selected_row = -1
+    when 'q' then exit 0
+    end
+  end
+ensure
+  close_screen
+end

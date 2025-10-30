@@ -61,6 +61,9 @@ group :development do
 
   # Live reloading
   gem "hotwire-spark"
+
+  # Curses for TUI
+  gem "curses", "~> 1.5"
 end
 
 group :test do
