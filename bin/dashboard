@@ -1,84 +1,201 @@
 #!/usr/bin/env ruby
 require_relative "../config/application"
-
 Rails.application.initialize!
 
 require "curses"
-include Curses
 
-# Helpers
-def truncate(str, length)
-  return str if str.length <= length
-  str[0, length - 1] + "…"
-end
-
-# Debug logging to file
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
-def log(msg)
-  DEBUG_LOG.puts "[#{Time.now}] #{msg}"
-  DEBUG_LOG.flush
-end
 
-# Grab data we want to display
-
-@projects = []
-@data_lock = Mutex.new
-@fetch_error = nil
-
-# Background fetcher
-data_thread = Thread.new do
-  loop do
-    begin
-      fresh_data = Project.first(10)
-      @data_lock.synchronize do
-        @projects = fresh_data
-        @fetch_error = nil
-      end
-      log("Fetched #{fresh_data.length} projects")
-    rescue => e
-      @data_lock.synchronize do
-        @fetch_error = e.message
-      end
-      log("Error fetching projects: #{e.message}")
-    end
-    sleep 5
-  end
-end
-data_thread.abort_on_exception = true
-
-# Project formatting (update column widths when projects change)
-selectable_cols = %i[name owner]
-selected_col = 0
-selected_row = -1
-
-# Initialize Curses
-init_screen
-start_color
-use_default_colors
-curs_set(0)
-noecho
-stdscr.timeout = 1000
-
-# Curses colors
 GREEN = 1
 BLUE = 2
-init_pair(GREEN, COLOR_GREEN, -1)
-init_pair(BLUE, COLOR_BLUE, -1)
+YELLOW = 3
 
-# Main display loopl
-begin
-  loop do
-    # PROJECTS TABLE
+# What to store in state?
+# VIEWS
+#  - Projects Table
+#  - Project Details
+#  - User Details
+#  - Revenue / KPI Stats
+
+class Dashboard
+  include Curses
+
+  def initialize
+    log("Starting dashboard")
+
+    # TODO: Use a better system for state (state machine?)
+    ################ STATE ################
+    @view = :projects_table
+    @data_lock = Mutex.new
+    @fetch_error = nil
+
+    # Projects table
+    @projects = []
+    @project_ix = -1
+    @project_cols = %i[name owner]
+    @project_col = 0
+
+    # Project details
+    @project = nil
+
+    # User details (also has a projects table)
+    @owner_projects = []
+    @owner_project_ix = -1
+
+    ################ STATE ################
+
+    # Initialize Curses
+    init_screen
+    start_color
+    use_default_colors
+    curs_set(0)
+    noecho
+    stdscr.timeout = 1000
+
+    init_pair(GREEN, COLOR_GREEN, -1)
+    init_pair(BLUE, COLOR_BLUE, -1)
+    init_pair(YELLOW, COLOR_YELLOW, -1)
+  end
+
+  def start_polling_projects
+    @projects_poll_thread = Thread.new do
+      loop do
+        begin
+          fresh_data = Project.first 16
+          @data_lock.synchronize do
+            @projects = fresh_data
+            @fetch_error = nil
+          end
+        rescue => e
+          @data_lock.synchronize do
+            @fetch_error = e.message
+          end
+          log("Error fetching projects: #{e.message}")
+        end
+        sleep 5
+      end
+    end
+    @projects_poll_thread.abort_on_exception = true
+  end
+
+  def start_display_loop
+    begin
+      loop do
+        render_view
+
+        refresh # What's in memory will be displayed
+
+        ch = getch
+        case ch
+        when 'h' # Left
+          if @view == :projects_table
+            @project_col -= 1
+            @project_col = 0 if @project_col >= @project_cols.length
+          end
+
+        when 'l' # Right
+          if @view == :projects_table
+            @project_col += 1
+            @project_col = @project_cols.length - 1 if @project_col < 0
+          end
+
+        when 'j' # Down
+          case @view
+          when :projects_table
+            @project_ix += 1
+            @project_ix = 0 if @project_ix >= @projects.length
+          when :owner_details
+            @owner_project_ix += 1
+            @owner_project_ix = 0 if @owner_project_ix >= @owner_projects.length
+          end
+
+        when 'k' # Up
+          case @view
+          when :projects_table
+            @project_ix -= 1
+            @project_ix = @projects.length - 1 if @project_ix < 0
+          when :owner_details
+            @owner_project_ix -= 1
+            @owner_project_ix = @owner_projects.length - 1 if @owner_project_ix < 0
+          end
+
+        when 10 # Enter
+          maybe_change_view
+
+        when 27 # Escape
+          maybe_go_back
+
+        when 'q' then exit 0
+
+        end
+      end
+    ensure
+      close_screen
+    end
+  end
+
+  private
+
+  def render_view
+    active_project = @project_ix >= 0 ? @projects[@project_ix] : nil
+
+    case @view
+    when :projects_table then render_projects_table
+    when :project_details then render_project_details
+    when :owner_details then render_owner_details active_project
+    else
+      log("Unknown view: #{@view}")
+      raise "Unknown view: #{@view}"
+    end
+  end
+
+  def maybe_change_view
+    case @view
+    when :projects_table
+
+      # Figure out what thing was "clicked"
+      if @project_ix >= 0
+        change_view case @project_cols[@project_col]
+        when :name
+          @project = @projects[@project_ix]
+          :project_details
+        when :owner then :owner_details
+        end
+      end
+
+    when :owner_details
+      if @owner_project_ix >= 0
+        @project = @owner_projects[@owner_project_ix]
+        change_view :project_details
+      end
+    end
+  end
+
+  def maybe_go_back
+    if @view == :projects_table
+      @project_ix = -1
+    else
+      change_view :projects_table
+    end
+  end
+
+  def change_view(new_view)
+    return if @view == new_view
+    log("Changing view from #{@view} to #{new_view}")
+
+    @owner_project_ix = -1
+
+    clear
+    @view = new_view
+  end
+
+  def render_projects_table
     setpos(1, 2)
     attron(A_UNDERLINE)
-    addstr("Projects")
+    render_cell("Projects", 64, [ color_pair(GREEN), A_UNDERLINE ])
     attroff(A_UNDERLINE)
     setpos(3, 2)
-
-    # Calculate column widths
-    start_x = 2
-    name_width = 30
 
     @data_lock.synchronize do
       if @fetch_error
@@ -86,61 +203,153 @@ begin
         setpos(1, 2)
         addstr("Error: #{@fetch_error}".ljust(cols - 4, ' '))
       else
-        log("Displaying #{@projects.length} projects")
         @projects.each_with_index do |p, i|
           # Highlight the selected project name
-          name = truncate(p.name, name_width - 1)
-          hl = selectable_cols[selected_col] == :name && i == selected_row
-          attron(color_pair(BLUE))
-          attron(A_REVERSE) if hl
-          addstr(name)
-          attroff(A_REVERSE) if hl
-          setpos(stdscr.cury, start_x + name_width)
-          attroff(color_pair(BLUE))
+          hl = @project_cols[@project_col] == :name && i == @project_ix
+          render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
+          addstr(" ")
 
           # Status
-          addstr(p.status.ljust(12))
+          render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
+          addstr(" ")
 
           # Price
-          price_str = p.price_cents ? "$#{p.price_cents&.fdiv(100)}" : ""
-          addstr(price_str.rjust(10) + " ")
+          price_str = cents_to_dollars(p.price_cents)
+          render_cell(price_str.rjust(12), 12)
+          addstr(" ")
 
           # Owner
-          hl = selectable_cols[selected_col] == :owner && i == selected_row
-          attron(color_pair(GREEN))
-          attron(A_REVERSE) if hl
-          addstr(p.owner.ljust(16))
-          attroff(A_REVERSE) if hl
-          attroff(color_pair(GREEN))
+          hl = @project_cols[@project_col] == :owner && i == @project_ix
+          render_cell(p.owner, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
 
-          # Move to the next line
-          y = stdscr.cury
-          setpos(y + 1, 2)
+          # Move to the next line beginning
+          setpos(stdscr.cury + 1, 2)
         end
       end
     end
+  end
 
-    refresh # What's in memory will be displayed
+  def render_project_details
+    first_col_width = 12
+    row = 0
+    setpos(row += 1, 2)
+    render_cell("#{@project.name}", 64, [ color_pair(GREEN), A_UNDERLINE ])
+    setpos(row += 2, 2)
 
-    # Get input
-    case getch
-    when 'h'
-      selected_col += 1
-      selected_col = 0 if selected_col >= selectable_cols.length
-    when 'l'
-      selected_col -= 1
-      selected_col = selectable_cols.length - 1 if selected_col < 0
-    when 'j'
-      selected_row += 1
-      selected_row = 0 if selected_row >= @projects.length
-    when 'k'
-      selected_row -= 1
-      selected_row = @projects.length - 1 if selected_row < 0
-    when 27 # Escape
-      selected_row = -1
-    when 'q' then exit 0
+    render_cell("ID:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(@project.id, 24)
+    setpos(row += 1, 2)
+
+    render_cell("UUID:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(@project.uuid, 36)
+    setpos(row += 1, 2)
+
+    render_cell("Status:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(status_str(@project), 16)
+    setpos(row += 1, 2)
+  end
+
+  def render_owner_details(project)
+    if project.user.present?
+      render_user_details(project.user)
+    else
+      render_guest_details(project.upload.guest_email_address)
     end
   end
-ensure
-  close_screen
+
+  def render_user_details(user)
+    first_col_width = 12
+    row = 0
+    setpos(row += 1, 2)
+    render_cell(user.name || user.email_address, 32, [ color_pair(GREEN), A_UNDERLINE ])
+    setpos(row += 2, 2)
+
+    render_cell("ID:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(user.id, 24)
+    setpos(row += 1, 2)
+
+    render_cell("Email:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(user.email_address, 24)
+    setpos(row += 2, 2)
+
+    @owner_projects = user.projects.first(12)
+    render_owner_projects_table
+  end
+
+  def render_guest_details(email_address)
+    setpos(1, 2)
+    render_cell("Guest #{email_address}", 64, [ color_pair(GREEN), A_UNDERLINE ])
+    setpos(3, 2)
+
+    @owner_projects = Project.joins(:upload).where(upload: {
+      guest_email_address: email_address,
+    }).first(12)
+
+    render_owner_projects_table
+  end
+
+  def render_owner_projects_table
+    @owner_projects.each_with_index do |p, i|
+      # Highlight the selected project name
+      hl = i == @owner_project_ix
+      render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
+      addstr(" ")
+
+      # Status
+      render_cell(status_str(p), 16)
+      addstr(" ")
+
+      # Price
+      price_str = cents_to_dollars(p.price_cents)
+      render_cell(price_str.rjust(12), 12)
+      addstr(" ")
+
+      # Move to the next line beginning
+      setpos(stdscr.cury + 1, 2)
+    end
+  end
+
+  def render_cell(str, width, attrs = [])
+    str = truncate(str, width)
+    attrs = Array(attrs).flat_map do |attr|
+      attr.is_a?(Hash) ? attr.select { |k, v| v } .keys : attr
+    end
+
+    attrs.each { |attr| attron(attr) }
+    addstr(str)
+    attrs.each { |attr| attroff(attr) }
+
+    addstr(" " * (width - str.length))
+  end
 end
+
+# Helpers
+def truncate(str, length)
+  str = str.to_s
+  return str if str.length <= length
+  str[0, length - 1] + "…"
+end
+
+def cents_to_dollars(cents)
+  return "" if cents.blank?
+  "$#{"%.2f" % cents.fdiv(100)}"
+end
+
+def status_str(project)
+  return project.status unless project.status == "rendering"
+  "rendering %5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+end
+
+def log(msg)
+  DEBUG_LOG.puts "[#{Time.now}] #{msg}"
+  DEBUG_LOG.flush
+end
+
+dash = Dashboard.new
+dash.start_polling_projects
+dash.start_display_loop
