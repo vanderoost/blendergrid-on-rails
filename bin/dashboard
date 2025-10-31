@@ -205,12 +205,14 @@ class Dashboard
     setpos(3, 2)
 
     projects = []
+    revenue_24h = 0
     @data_lock.synchronize do
       if @fetch_error
         log("Error fetching projects: #{@fetch_error}")
         render_cell("Error: #{@fetch_error}", 64, color_pair(RED))
       else
         projects = @projects
+        revenue_24h = @revenue_24h
       end
     end
 
@@ -239,7 +241,7 @@ class Dashboard
 
     setpos(stdscr.cury + 1, 2)
     render_cell("24h revenue:", 16, color_pair(YELLOW))
-    render_cell(cents_to_dollars(@revenue_24h), 12)
+    render_cell(cents_to_dollars(revenue_24h), 12)
   end
 
 
@@ -315,7 +317,7 @@ class Dashboard
       addstr(" ")
 
       # Status
-      render_cell(status_str(p), 16)
+      render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
       addstr(" ")
 
       # Price
