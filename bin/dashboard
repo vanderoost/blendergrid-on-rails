@@ -12,25 +12,61 @@ def truncate(str, length)
   str[0, length - 1] + "…"
 end
 
+# Debug logging to file
+LOG_FILE = Rails.root.join("log", "dashboard.log")
+DEBUG_LOG = File.open(LOG_FILE, "a")
+def log(msg)
+  DEBUG_LOG.puts "[#{Time.now}] #{msg}"
+  DEBUG_LOG.flush
+end
+
 # Grab data we want to display
-projects = Project.last(10)
+
+@projects = []
+@data_lock = Mutex.new
+@fetch_error = nil
+
+# Background fetcher
+data_thread = Thread.new do
+  loop do
+    begin
+      fresh_data = Project.first(10)
+      @data_lock.synchronize do
+        @projects = fresh_data
+        @fetch_error = nil
+      end
+      log("Fetched #{fresh_data.length} projects")
+    rescue => e
+      @data_lock.synchronize do
+        @fetch_error = e.message
+      end
+      log("Error fetching projects: #{e.message}")
+    end
+    sleep 5
+  end
+end
+data_thread.abort_on_exception = true
+
+# Project formatting (update column widths when projects change)
+selectable_cols = %i[name owner]
+selected_col = 0
+selected_row = -1
 
 # Initialize Curses
-init_screen # Initializes a standard screen. At this point the present state of our terminal is saved and the alternate screen buffer is turned on
-start_color # Initializes the color attributes for terminals that support it.
-use_default_colors    # Enable transparent background support?
-curs_set(0) # Hides the cursor
-noecho # Disables characters typed by the user to be echoed by Curses.getch as they are typed.
+init_screen
+start_color
+use_default_colors
+curs_set(0)
+noecho
+stdscr.timeout = 1000
 
+# Curses colors
 GREEN = 1
 BLUE = 2
 init_pair(GREEN, COLOR_GREEN, -1)
 init_pair(BLUE, COLOR_BLUE, -1)
 
-selectable_cols = %i[name owner]
-selected_col = 0
-selected_row = -1
-
+# Main display loopl
 begin
   loop do
     # PROJECTS TABLE
@@ -44,36 +80,47 @@ begin
     start_x = 2
     name_width = 30
 
-    projects.each_with_index do |p, i|
-      # Highlight the selected project name
-      hl = selectable_cols[selected_col] == :name && i == selected_row
-      attron(color_pair(BLUE))
-      attron(A_REVERSE) if hl
-      addstr(truncate(p.name, name_width - 1))
-      attroff(A_REVERSE) if hl
-      setpos(stdscr.cury, start_x + name_width)
-      attroff(color_pair(BLUE))
+    @data_lock.synchronize do
+      if @fetch_error
+        log("Error fetching projects: #{@fetch_error}")
+        setpos(1, 2)
+        addstr("Error: #{@fetch_error}".ljust(cols - 4, ' '))
+      else
+        log("Displaying #{@projects.length} projects")
+        @projects.each_with_index do |p, i|
+          # Highlight the selected project name
+          name = truncate(p.name, name_width - 1)
+          hl = selectable_cols[selected_col] == :name && i == selected_row
+          attron(color_pair(BLUE))
+          attron(A_REVERSE) if hl
+          addstr(name)
+          attroff(A_REVERSE) if hl
+          setpos(stdscr.cury, start_x + name_width)
+          attroff(color_pair(BLUE))
 
-      # Status
-      addstr(p.status.ljust(12))
+          # Status
+          addstr(p.status.ljust(12))
 
-      # Price
-      price_str = p.price_cents ? "$#{p.price_cents&.fdiv(100)}" : ""
-      addstr(price_str.rjust(10) + " ")
+          # Price
+          price_str = p.price_cents ? "$#{p.price_cents&.fdiv(100)}" : ""
+          addstr(price_str.rjust(10) + " ")
 
-      # Owner
-      hl = selectable_cols[selected_col] == :owner && i == selected_row
-      attron(color_pair(GREEN))
-      attron(A_REVERSE) if hl
-      addstr(p.owner.ljust(16))
-      attroff(A_REVERSE) if hl
-      attroff(color_pair(GREEN))
+          # Owner
+          hl = selectable_cols[selected_col] == :owner && i == selected_row
+          attron(color_pair(GREEN))
+          attron(A_REVERSE) if hl
+          addstr(p.owner.ljust(16))
+          attroff(A_REVERSE) if hl
+          attroff(color_pair(GREEN))
 
-      # Move to the next line
-      y = stdscr.cury
-      setpos(y + 1, 2)
+          # Move to the next line
+          y = stdscr.cury
+          setpos(y + 1, 2)
+        end
+      end
     end
-    refresh
+
+    refresh # What's in memory will be displayed
 
     # Get input
     case getch
@@ -85,10 +132,10 @@ begin
       selected_col = selectable_cols.length - 1 if selected_col < 0
     when 'j'
       selected_row += 1
-      selected_row = 0 if selected_row >= projects.length
+      selected_row = 0 if selected_row >= @projects.length
     when 'k'
       selected_row -= 1
-      selected_row = projects.length - 1 if selected_row < 0
+      selected_row = @projects.length - 1 if selected_row < 0
     when 27 # Escape
       selected_row = -1
     when 'q' then exit 0
