@@ -2,6 +2,7 @@
 
 ## before launch
 
+- [ ] Improve Order: Add status, amount paid, amount credited
 - [ ] Make the refunds work as stated in the terms of service
 - [ ] Basic dashboard to see what's going on (created projects, sales)
 - [ ] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
