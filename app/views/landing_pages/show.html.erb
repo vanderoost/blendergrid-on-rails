@@ -1,12 +1,12 @@
 <% if @landing_page&.sections&.any? %>
-  <% @landing_page.sections.each do |key, content| %>
-    <section>
-      <%= render "landing_pages/sections/#{key}", content: content %>
-    </section>
+  <% @landing_page.sections.each do |section| %>
+    <%= render "landing_pages/section", section: section %>
   <% end %>
 <% else %>
-  <section>
-    <%= render "landing_pages/sections/upload",
-      content: {"heading" => "Fast rendering for Blender"} %>
-  </section>
+  <%= render "landing_pages/section", section: {
+    "id" => "heading",
+    "title" => "Fast rendering for Blender",
+    "subtitle" => "Start by uploading a .blend file."
+  } %>
+  <%= render "landing_pages/section", section: {"id" => "upload"} %>
 <% end %>

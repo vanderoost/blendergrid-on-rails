@@ -3,9 +3,7 @@
 ## before launch
 
 This week:
-- [ ] Use the correct Blender version to render
-      Read available Blender versions form DockerHub and make them available to choose
-      from?
+- [x] Use the correct Blender version to render
 - [ ] Make credit gift lead magnets work for affiliate landing pages
 - [ ] Make sure all customized settings are used in the actual rendering
       Create a settings.json file and store it in S3 for the Swarm workers to pick up.
@@ -70,6 +68,7 @@ This week:
 
 ## after launch
 
+- [ ] Read Blender versions form DockerHub, allow users to change versions
 - [ ] Make a pricing page
 - [ ] Make the refunds work as stated in the terms of service
 - [ ] Add more features to the dashboard

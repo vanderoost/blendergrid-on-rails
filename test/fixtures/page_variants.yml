@@ -1,13 +1,18 @@
 home_default:
   landing_page: home
   sections:
-    upload:
-      heading: "Fast rendering for Blender"
-    logo_cloud:
-    testimonials:
+    - id: heading
+      title: "Fast rendering for Blender"
+      subtitle: "Start by uploading a .blend file."
+    - id: upload
+    - id: logo_cloud
+    - id: testimonials
 
 youtuber_default:
   landing_page: youtuber
   sections:
-    upload:
-      heading: "Youtuber recommends Blendergrid"
+    - id: heading
+      title: "Youtuber recommends Blendergrid"
+      subtitle: "Sign up to get a $20 free credit gift."
+    - id: signup
+      gift: true

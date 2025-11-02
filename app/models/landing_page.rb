@@ -11,8 +11,11 @@ class LandingPage < ApplicationRecord
 
   private
     def variant
+      @variant ||= choose_variant
+    end
+
+    def choose_variant
       # TODO: Merge multiple page variants into one to enable A/B testing
-      return @variant if @variant
       @variant = page_variants.last
       Current.track_event(@variant, action: :showed)
       @variant
