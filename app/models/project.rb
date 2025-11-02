@@ -56,6 +56,17 @@ class Project < ApplicationRecord
     status_to_stage status
   end
 
+  def blender_version
+    full_version = blend_check&.workflow&.result&.dig(
+      "stats", "blender_version", "saved"
+    )
+    if full_version
+      full_version.split(".").first(2).join(".")
+    else
+      "latest"
+    end
+  end
+
   def process_benchmark
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 

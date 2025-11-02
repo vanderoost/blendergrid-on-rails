@@ -17,7 +17,8 @@
       "Bash(git show:*)",
       "Read(//Users/richard/.cache/**)",
       "WebFetch(domain:docs.stripe.com)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(bundle list:*)"
     ],
     "deny": [],
     "ask": []

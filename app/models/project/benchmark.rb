@@ -17,9 +17,6 @@ class Project::Benchmark < ApplicationRecord
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
-    # TODO: Put the Blender version in the settings as well (from the Swarm Engine)
-    blender_version = "latest"
-
     {
       workflow_id: workflow.uuid,
       deadline:    10.minutes.from_now.to_i,
@@ -58,7 +55,7 @@ class Project::Benchmark < ApplicationRecord
               "/tmp/project",
             ],
             parameters: { frame: sample_settings["frame_range"] },
-            image: "blendergrid/blender:#{blender_version}",
+            image: "blendergrid/blender:#{project.blender_version}",
           },
       ],
       metadata: {
