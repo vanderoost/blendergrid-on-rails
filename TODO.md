@@ -2,16 +2,20 @@
 
 ## before launch
 
-- [ ] Improve Order: Add status, amount paid, amount credited
-- [ ] Make the refunds work as stated in the terms of service
-- [ ] Basic dashboard to see what's going on (created projects, sales)
-- [ ] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
-- [ ] Fix upload progress percentage bug (50% seems to be the max)
+This week:
+- [ ] Use the correct Blender version to render
+      Read available Blender versions form DockerHub and make them available to choose
+      from?
+- [ ] Make credit gift lead magnets work for affiliate landing pages
+- [ ] Make sure all customized settings are used in the actual rendering
+      Create a settings.json file and store it in S3 for the Swarm workers to pick up.
+
+- [ ] Show scene warnings (in settings?)
+- [ ] Improve Order: Add status, amount paid, amount credited?
+      In order to get the daily revenue easy.
 - [ ] Fix upload form validation (don't allow upload to start without guest email)
 - [ ] Don't overwrite the output filename set in the .blend file #Swarm
-- [ ] Make sure all customized settings are used in the actual rendering #Swarm
 - [ ] Style the flash messages a bit better
-- [ ] Show scene warnings (in settings?)
 - [ ] Soft delete feature for certain models (projects, ?)
 - [ ] Initial render ETA shows 'less than a minute' when just started
 - [ ] Waiting stage
@@ -60,9 +64,22 @@
 - [x] Duplicating a project
 - [x] Show preview frames and rendered frames in the Project show view
 - [x] Credit lead magnets: Capture email and give free credit gift.
+- [x] Basic dashboard to see what's going on (created projects, sales)
+- [x] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
+- [x] Fix upload progress percentage bug (50% seems to be the max)
 
 ## after launch
 
+- [ ] Make a pricing page
+- [ ] Make the refunds work as stated in the terms of service
+- [ ] Add more features to the dashboard
+    - [ ] Download blend/source files
+    - [ ] Download frames
+    - [ ] Download / view logs
+    - [ ] Open S3 project page
+    - [ ] Edit render credit?
+    - [ ] Send email
+    - [ ] Open contact in helpscout
 - [ ] Going from homepage upload form to upload page doesn't initialize the project link
 properly
 - [ ] Figure out caching for faster landing pages and article pages
@@ -70,7 +87,6 @@ properly
 - [ ] Add the upload-form to the empty state of the projects page
 - [ ] Make a nicer toaster for flash messages
 - [ ] Put helpscout widget in a permanent turbo element?
-- [ ] Read available Blender versions form DockerHub and make them available to choose from?
 - [ ]  Disable checkbox if there's only one Project in a stage
 - [ ]  Add helpful handwritten hints to the UI with arrows
     - [ ]  Select a project
