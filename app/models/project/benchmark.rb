@@ -1,3 +1,5 @@
+require "aws-sdk-s3"
+
 class Project::Benchmark < ApplicationRecord
   MAX_PIXEL_COUNT = 1280 * 720
   MAX_SPP = 128
@@ -14,8 +16,13 @@ class Project::Benchmark < ApplicationRecord
     # (SwarmEngine) handle this kind of logic?
 
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
-    bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
+
+    # TODO: Put the settings in the jsons S3 folder
+    bucket.object("projects/#{project.uuid}/jsons/settings.json").put(
+      body: project.settings_hash.to_json,
+      content_type: "application/json"
+    )
 
     {
       workflow_id: workflow.uuid,
@@ -23,17 +30,19 @@ class Project::Benchmark < ApplicationRecord
       files: {
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
-          settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
+          settings: "s3://#{bucket_name}/projects/#{project.uuid}/jsons",
+          project: "s3://#{bucket_name}/#{key_prefix}/#{project.upload.uuid}",
         },
-        logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
-        output: "s3://#{bucket}/projects/#{project.uuid}/output",
+        logs: "s3://#{bucket_name}/projects/#{project.uuid}/logs",
+        output: "s3://#{bucket_name}/projects/#{project.uuid}/output",
       },
       executions: [
           {
             job_id:  "sample-frame-$frame",
             command: [
               "/tmp/project/#{project.blend_filepath}",
+              "--scene",
+              project.current_blender_scene.name,
               "--python",
               "/tmp/scripts/init.py",
               "--python",
@@ -50,7 +59,7 @@ class Project::Benchmark < ApplicationRecord
               "--cycles-samples",
               sample_settings["sampling_max_samples"].to_s,
               "--settings-file",
-              "/tmp/settings/integrity-check.json",
+              "/tmp/settings/settings.json",
               "--project-dir",
               "/tmp/project",
             ],
@@ -101,6 +110,18 @@ class Project::Benchmark < ApplicationRecord
   end
 
   private
+    def bucket
+      @bucket ||= s3.bucket(bucket_name)
+    end
+
+    def bucket_name
+      @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
+    end
+
+    def s3
+      @s3 ||= Aws::S3::Resource.new
+    end
+
     def set_sample_settings
       sample_resolution_x = project.scaled_resolution_x
       sample_resolution_y = project.scaled_resolution_y

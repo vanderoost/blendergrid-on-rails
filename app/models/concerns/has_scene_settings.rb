@@ -14,5 +14,12 @@ module HasSceneSettings
         delegate "#{store}_#{attr}".to_sym, to: :current_blender_scene, allow_nil: true
       end
     end
+
+    def settings_hash
+      {
+        scene_name: current_blender_scene.name,
+        scenes: blender_scenes.to_h { |scene| [ scene.name, scene.settings_hash ] },
+      }
+    end
   end
 end

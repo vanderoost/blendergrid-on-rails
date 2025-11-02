@@ -4,9 +4,11 @@
 
 This week:
 - [x] Use the correct Blender version to render
-- [ ] Make credit gift lead magnets work for affiliate landing pages
-- [ ] Make sure all customized settings are used in the actual rendering
+- [x] Make credit gift lead magnets work for affiliate landing pages
+- [x] Make sure all customized settings are used in the actual rendering
       Create a settings.json file and store it in S3 for the Swarm workers to pick up.
+
+---
 
 - [ ] Show scene warnings (in settings?)
 - [ ] Improve Order: Add status, amount paid, amount credited?

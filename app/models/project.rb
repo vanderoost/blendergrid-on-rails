@@ -120,12 +120,12 @@ class Project < ApplicationRecord
     end
   end
 
-  def bucket_name
-    @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
-  end
-
   def bucket
     @bucket ||= s3.bucket(bucket_name)
+  end
+
+  def bucket_name
+    @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
   end
 
   def s3
