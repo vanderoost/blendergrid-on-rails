@@ -2,8 +2,8 @@ module RequestTracking
   extend ActiveSupport::Concern
 
   included do
-    before_action :start_tracking_request if Rails.env.production?
-    after_action :finish_tracking_request if Rails.env.production?
+    before_action :start_tracking_request
+    after_action :finish_tracking_request
 
     rescue_from StandardError do |exception|
       Rails.logger.error("ERROR: #{exception.message}")

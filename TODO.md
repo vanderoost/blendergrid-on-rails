@@ -2,65 +2,84 @@
 
 ## before launch
 
-- [ ] Basic dashboard to see what's going on (created projects, sales)
-- [ ] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
-- [ ] Fix upload progress percentage bug (50% seems to be the max)
+This week:
+- [ ] Use the correct Blender version to render
+      Read available Blender versions form DockerHub and make them available to choose
+      from?
+- [ ] Make credit gift lead magnets work for affiliate landing pages
+- [ ] Make sure all customized settings are used in the actual rendering
+      Create a settings.json file and store it in S3 for the Swarm workers to pick up.
+
+- [ ] Show scene warnings (in settings?)
+- [ ] Improve Order: Add status, amount paid, amount credited?
+      In order to get the daily revenue easy.
 - [ ] Fix upload form validation (don't allow upload to start without guest email)
-- [ ]  Don't overwrite the output filename set in the .blend file #Swarm
-- [ ]  Make sure all customized settings are used in the actual rendering #Swarm
-- [ ]  Style the flash messages a bit better
-- [ ]  Show scene warnings (in settings?)
-- [ ]  Soft delete feature for certain models (projects, ?)
-- [ ]  Initial render ETA shows 'less than a minute' when just started
-- [ ]  Waiting stage
-    - [ ]  Edit page with deadline+res+samples form
-    - [x]  Show price at index per project
-    - [x]  Deadline + resolution + samples form at index
-- [x]  UI/UX
-    - [x]  Pay once for multiple projects
-    - [x]  Basic style so it doesn’t look like a 90’s primary school website
-- [x]  Emails
-    - [x]  Capture email address of guests
-    - [x]  Send project status emails
-    - [x]  Send sign-up confirmation email
-    - [x]  Send password reset emails
-- [x]  Edit project settings
-    - [x]  Between first check and benchmark
-    - [x]  Between benchmark and render
-- [x]  Support >20GB uploads through the website
-- [x]  Use an external database (AWS RDS? Mysql / Postgres)
-- [x]  Transfer over articles and affiliate landing pages
-- [x]  Clean up old ECR images
-- [x]  Track visits and affiliate clicks in the backend
+- [ ] Don't overwrite the output filename set in the .blend file #Swarm
+- [ ] Style the flash messages a bit better
+- [ ] Soft delete feature for certain models (projects, ?)
+- [ ] Initial render ETA shows 'less than a minute' when just started
+- [ ] Waiting stage
+    - [ ] Edit page with deadline+res+samples form
+    - [x] Show price at index per project
+    - [x] Deadline + resolution + samples form at index
+- [x] UI/UX
+    - [x] Pay once for multiple projects
+    - [x] Basic style so it doesn’t look like a 90’s primary school website
+- [x] Emails
+    - [x] Capture email address of guests
+    - [x] Send project status emails
+    - [x] Send sign-up confirmation email
+    - [x] Send password reset emails
+- [x] Edit project settings
+    - [x] Between first check and benchmark
+    - [x] Between benchmark and render
+- [x] Support >20GB uploads through the website
+- [x] Use an external database (AWS RDS? Mysql / Postgres)
+- [x] Transfer over articles and affiliate landing pages
+- [x] Clean up old ECR images
+- [x] Track visits and affiliate clicks in the backend
 - [x] Buying render credit through Stripe
 - [x] Secure the API with some kind of token
 - [x] Add privacy, terms, cookie policy pages
-- [x]  Drag ‘n Drop uploads
-- [x]  Auto submit Projects settings form: Make sure you can type and don't lose focus.
-- [x]  Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
-- [x]  Finish the Project List View entirely
-    - [x]  Give projects in each stage a link to the project show/edit page
-    - [x]  Show total price of all checked projects (Stimulus)
-    - [x]  Show resolution at the Uploaded projects stage
-    - [x]  Disable 'Edit' link in all stages where it doesn't make sense
-    - [x]  Empty projects page (no project yet! message)
-    - [x]  Fix long project names overflowing the table
-    - [x]  Add `stage_updated_at` to Projects to make ordering more deterministic
-    - [x]  Show simple render progress and ETA
-    - [x]  Give the project index page a minimum height
-- [x]  Websockets security (don't send project updates to the wrong user/session)
-- [x]  Integrate support chat (helpscout?)
-- [x]  Make all session Uploads belong to the user when they log in?
-- [x]  Calculate the deadline range based on the Benchmark and tweaks
-- [x]  Consistent Price calculation with the old web app
-- [x]  Share invoices / receipts with users?
-- [x]  Deleting a project
-- [x]  Duplicating a project
-- [x]  Show preview frames and rendered frames in the Project show view
-- [x]  Credit lead magnets: Capture email and give free credit gift.
+- [x] Drag ‘n Drop uploads
+- [x] Auto submit Projects settings form: Make sure you can type and don't lose focus.
+- [x] Stimulus turbo stream fallback (poll a turbo frame in case we missed a stream)
+- [x] Finish the Project List View entirely
+    - [x] Give projects in each stage a link to the project show/edit page
+    - [x] Show total price of all checked projects (Stimulus)
+    - [x] Show resolution at the Uploaded projects stage
+    - [x] Disable 'Edit' link in all stages where it doesn't make sense
+    - [x] Empty projects page (no project yet! message)
+    - [x] Fix long project names overflowing the table
+    - [x] Add `stage_updated_at` to Projects to make ordering more deterministic
+    - [x] Show simple render progress and ETA
+    - [x] Give the project index page a minimum height
+- [x] Websockets security (don't send project updates to the wrong user/session)
+- [x] Integrate support chat (helpscout?)
+- [x] Make all session Uploads belong to the user when they log in?
+- [x] Calculate the deadline range based on the Benchmark and tweaks
+- [x] Consistent Price calculation with the old web app
+- [x] Share invoices / receipts with users?
+- [x] Deleting a project
+- [x] Duplicating a project
+- [x] Show preview frames and rendered frames in the Project show view
+- [x] Credit lead magnets: Capture email and give free credit gift.
+- [x] Basic dashboard to see what's going on (created projects, sales)
+- [x] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
+- [x] Fix upload progress percentage bug (50% seems to be the max)
 
 ## after launch
 
+- [ ] Make a pricing page
+- [ ] Make the refunds work as stated in the terms of service
+- [ ] Add more features to the dashboard
+    - [ ] Download blend/source files
+    - [ ] Download frames
+    - [ ] Download / view logs
+    - [ ] Open S3 project page
+    - [ ] Edit render credit?
+    - [ ] Send email
+    - [ ] Open contact in helpscout
 - [ ] Going from homepage upload form to upload page doesn't initialize the project link
 properly
 - [ ] Figure out caching for faster landing pages and article pages
@@ -68,7 +87,6 @@ properly
 - [ ] Add the upload-form to the empty state of the projects page
 - [ ] Make a nicer toaster for flash messages
 - [ ] Put helpscout widget in a permanent turbo element?
-- [ ] Read available Blender versions form DockerHub and make them available to choose from?
 - [ ]  Disable checkbox if there's only one Project in a stage
 - [ ]  Add helpful handwritten hints to the UI with arrows
     - [ ]  Select a project

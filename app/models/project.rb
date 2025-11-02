@@ -101,6 +101,14 @@ class Project < ApplicationRecord
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
   end
 
+  def owner
+    @owner ||= if user.present?
+      user.name || user.email_address
+    else
+      "guest #{upload.guest_email_address}"
+    end
+  end
+
   def bucket_name
     @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
   end
