@@ -97,4 +97,15 @@ class BlenderScene < ApplicationRecord
       raise "Unknown frame range type: #{project.frame_range_type}"
     end
   end
+
+  def settings_hash
+    {
+      frame_range: frame_range,
+      resolution: resolution,
+      sampling: sampling,
+      file_output: file_output,
+      camera: camera,
+      post_processing: post_processing,
+    }
+  end
 end

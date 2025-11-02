@@ -1,3 +1,5 @@
+require "aws-sdk-s3"
+
 class Project::Benchmark < ApplicationRecord
   MAX_PIXEL_COUNT = 1280 * 720
   MAX_SPP = 128
@@ -16,6 +18,12 @@ class Project::Benchmark < ApplicationRecord
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
     bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
+
+    # TODO: Put the settings in the jsons S3 folder
+    bucket.object("projects/#{project.uuid}/jsons/settings.json").put(
+      body: project.settings_hash.to_json,
+      content_type: "application/json"
+    )
 
     {
       workflow_id: workflow.uuid,
@@ -101,6 +109,18 @@ class Project::Benchmark < ApplicationRecord
   end
 
   private
+    def bucket
+      @bucket ||= s3.bucket(bucket_name)
+    end
+
+    def bucket_name
+      @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
+    end
+
+    def s3
+      @s3 ||= Aws::S3::Resource.new
+    end
+
     def set_sample_settings
       sample_resolution_x = project.scaled_resolution_x
       sample_resolution_y = project.scaled_resolution_y
