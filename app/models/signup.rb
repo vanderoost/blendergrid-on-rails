@@ -16,13 +16,11 @@ class Signup
   validates :password, length: 8..72, confirmation: true
 
   def save
-    puts "GIFT: #{gift.inspect}"
-
     if valid?
       user = User.new(name:, email_address:, password:)
       if user.save
-        EmailAddressVerification.new(user).save
         give_credit user if gift
+        EmailAddressVerification.new(user).save
         true
       else
         user.errors.each do |error|

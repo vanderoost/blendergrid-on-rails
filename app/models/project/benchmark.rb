@@ -16,7 +16,6 @@ class Project::Benchmark < ApplicationRecord
     # (SwarmEngine) handle this kind of logic?
 
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
-    bucket = Rails.configuration.swarm_engine[:bucket]
     key_prefix = Rails.configuration.swarm_engine[:key_prefix]
 
     # TODO: Put the settings in the jsons S3 folder
@@ -31,17 +30,19 @@ class Project::Benchmark < ApplicationRecord
       files: {
         input: {
           scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
-          settings: "s3://#{bucket}/projects/#{project.uuid}/jsons",
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
+          settings: "s3://#{bucket_name}/projects/#{project.uuid}/jsons",
+          project: "s3://#{bucket_name}/#{key_prefix}/#{project.upload.uuid}",
         },
-        logs: "s3://#{bucket}/projects/#{project.uuid}/logs",
-        output: "s3://#{bucket}/projects/#{project.uuid}/output",
+        logs: "s3://#{bucket_name}/projects/#{project.uuid}/logs",
+        output: "s3://#{bucket_name}/projects/#{project.uuid}/output",
       },
       executions: [
           {
             job_id:  "sample-frame-$frame",
             command: [
               "/tmp/project/#{project.blend_filepath}",
+              "--scene",
+              project.current_blender_scene.name,
               "--python",
               "/tmp/scripts/init.py",
               "--python",
@@ -58,7 +59,7 @@ class Project::Benchmark < ApplicationRecord
               "--cycles-samples",
               sample_settings["sampling_max_samples"].to_s,
               "--settings-file",
-              "/tmp/settings/integrity-check.json",
+              "/tmp/settings/settings.json",
               "--project-dir",
               "/tmp/project",
             ],

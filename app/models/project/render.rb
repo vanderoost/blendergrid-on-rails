@@ -46,6 +46,8 @@ class Project::Render < ApplicationRecord
           command: [
             "--enable-autoexec",
             "/tmp/project/#{project.blend_filepath}",
+            "--scene",
+            project.current_blender_scene.name,
             "--python",
             "/tmp/scripts/init.py",
             "-o",
@@ -54,7 +56,7 @@ class Project::Render < ApplicationRecord
             "$frame",
             "--",
             "--settings-file",
-            "/tmp/settings/integrity-check.json",
+            "/tmp/settings/settings.json",
             "--project-dir",
             "/tmp/project",
             "--cycles-samples",
