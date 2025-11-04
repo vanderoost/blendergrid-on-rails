@@ -6,7 +6,7 @@
     stage_projects = projects_by_stage[stage] || []
 %>
   <div data-controller="<%= "stage-submit" if [:uploaded, :waiting].include?(stage) %> <%= "price-summary" if stage == :waiting %>"
-    class="group/stage hidden has-[tbody>tr]:block">
+    class="group/stage hidden has-[tbody>tr]:block has-[tbody>tr]:my-8">
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h3 class="mx-auto text-base uppercase text-gray-500 lg:mx-0
