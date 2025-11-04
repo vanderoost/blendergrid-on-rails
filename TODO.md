@@ -2,15 +2,6 @@
 
 ## before launch
 
-This week:
-- [x] Use the correct Blender version to render
-- [x] Make credit gift lead magnets work for affiliate landing pages
-- [x] Make sure all customized settings are used in the actual rendering
-      Create a settings.json file and store it in S3 for the Swarm workers to pick up.
-
----
-
-- [ ] Show scene warnings (in settings?)
 - [ ] Improve Order: Add status, amount paid, amount credited?
       In order to get the daily revenue easy.
 - [ ] Fix upload form validation (don't allow upload to start without guest email)
@@ -67,9 +58,18 @@ This week:
 - [x] Basic dashboard to see what's going on (created projects, sales)
 - [x] Improve ETA for upload: Don't show 110 seconds, show 1:50 minutes
 - [x] Fix upload progress percentage bug (50% seems to be the max)
+- [x] Use the correct Blender version to render
+- [x] Make credit gift lead magnets work for affiliate landing pages
+- [x] Make sure all customized settings are used in the actual rendering
+      Create a settings.json file and store it in S3 for the Swarm workers to pick up.
+- [x] Show scene warnings (in settings?)
+    - [x] Missing images / textures
 
 ## after launch
 
+- [ ] Show scene warnings (in settings?)
+    - [ ] Missing fonts
+    - [ ] Unbaked simulations
 - [ ] Read Blender versions form DockerHub, allow users to change versions
 - [ ] Make a pricing page
 - [ ] Make the refunds work as stated in the terms of service

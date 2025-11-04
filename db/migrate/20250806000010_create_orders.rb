@@ -5,7 +5,8 @@ class CreateOrders < ActiveRecord::Migration[8.0]
       t.string :guest_email_address
       t.string :guest_session_id
       t.string :stripe_session_id
-      t.string :receipt_url
+      t.integer :paid_cents
+      t.integer :used_credit_cents
       t.timestamps
     end
   end

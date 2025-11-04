@@ -121,9 +121,10 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.datetime "created_at", null: false
     t.string "guest_email_address"
     t.string "guest_session_id"
-    t.string "receipt_url"
+    t.integer "paid_cents"
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
+    t.integer "used_credit_cents"
     t.integer "user_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end

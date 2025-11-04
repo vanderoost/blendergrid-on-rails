@@ -15,8 +15,12 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     end
     assert_redirected_to "https://checkout.stripe.com/fake"
 
-    assert_equal "test@example.com", Order.last.guest_email_address
+    order = Order.last
+    assert_equal "test@example.com", order.guest_email_address
     assert_equal "test@example.com", @create_session_params.dig(:customer_email)
+
+    # TODO: Test this in a hooks controller test
+    # assert_equal @project.price_cents, order.paid_cents
   end
 
   test "should create user order for a single project" do
@@ -52,8 +56,10 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to "https://checkout.stripe.com/fake"
 
     user.reload
+    order = Order.last
     credits_used = credit_before - user.render_credit_cents
     assert_equal 2000, credits_used
+    assert_equal 2000, order.used_credit_cents
 
     line_item = @create_session_params[:line_items].first
     net_amount_cents = line_item[:price_data][:unit_amount]
