@@ -3,8 +3,6 @@
 ## before launch
 
 - [ ] Fix the duplication of Projects, always put it in status `benchmarked`
-- [ ] Improve Order: Add status, amount paid, amount credited?
-      In order to get the daily revenue easy.
 - [ ] Fix upload form validation (don't allow upload to start without guest email)
 - [ ] Don't overwrite the output filename set in the .blend file #Swarm
 - [ ] Style the flash messages a bit better
@@ -66,9 +64,12 @@
 - [x] Show scene warnings (in settings?)
     - [x] Missing images / textures
 - [x] Improve style of the "found x .blend files" selection form
+- [x] Improve Order: Add status, amount paid, amount credited?
+      In order to get the daily revenue easy.
 
 ## after launch
 
+- [ ] After dropping files, scroll the upload button into view
 - [ ] Show scene warnings (in settings?)
     - [ ] Missing fonts
     - [ ] Unbaked simulations

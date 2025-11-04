@@ -1,6 +1,138 @@
 one:
   project: checked
-  name: Scene
+  name: scene
+  frame_range:
+    type: animation
+    start: 1
+    end: 100
+    step: 1
+    single: 25 
+  resolution:
+    x: 1920
+    y: 1080
+    percentage: 50
+  sampling:
+    use_adaptive: true
+    noise_threshold: 0.1
+    min_samples: 16
+    max_samples: 1024
+  file_output: 
+    file_format: png
+    color_mode: rgba
+    color_depth: "8"
+    ffmpeg_format: mpeg-4
+    ffmpeg_codec: h264
+    film_transparent: true
+  camera: 
+    name: closeup
+    name_options: [ faraway hidden ]
+  post_processing:
+    use_compositing: true
+    use_sequencer: true
+    use_stamp: false
+
+rendering:
+  project: rendering
+  name: scene
+  frame_range:
+    type: animation
+    start: 1
+    end: 100
+    step: 1
+    single: 25 
+  resolution:
+    x: 1920
+    y: 1080
+    percentage: 50
+  sampling:
+    use_adaptive: true
+    noise_threshold: 0.1
+    min_samples: 16
+    max_samples: 1024
+  file_output: 
+    file_format: png
+    color_mode: rgba
+    color_depth: "8"
+    ffmpeg_format: mpeg-4
+    ffmpeg_codec: h264
+    film_transparent: true
+  camera: 
+    name: closeup
+    name_options: [ faraway hidden ]
+  post_processing:
+    use_compositing: true
+    use_sequencer: true
+    use_stamp: false
+
+one_of_three:
+  project: three_scenes
+  name: Scene-1
+  frame_range:
+    type: animation
+    start: 1
+    end: 100
+    step: 1
+    single: 25 
+  resolution:
+    x: 1920
+    y: 1080
+    percentage: 50
+  sampling:
+    use_adaptive: true
+    noise_threshold: 0.1
+    min_samples: 16
+    max_samples: 1024
+  file_output: 
+    file_format: PNG
+    color_mode: RGBA
+    color_depth: "8"
+    ffmpeg_format: MPEG-4
+    ffmpeg_codec: H264
+    film_transparent: true
+  camera: 
+    name: CloseUp
+    name_options: [ FarAway Hidden ]
+  post_processing:
+    use_compositing: true
+    use_sequencer: true
+    use_stamp: false
+
+two_of_three:
+  project: three_scenes
+  name: Scene-2
+  frame_range:
+    type: animation
+    start: 1
+    end: 100
+    step: 1
+    single: 25 
+  resolution:
+    x: 1920
+    y: 1080
+    percentage: 50
+  sampling:
+    use_adaptive: true
+    noise_threshold: 0.1
+    min_samples: 16
+    max_samples: 1024
+  file_output: 
+    file_format: PNG
+    color_mode: RGBA
+    color_depth: "8"
+    ffmpeg_format: MPEG-4
+    ffmpeg_codec: H264
+    film_transparent: true
+  camera: 
+    name: CloseUp
+    name_options: [ FarAway Hidden ]
+  post_processing:
+    use_compositing: true
+    use_sequencer: true
+    use_stamp: false
+
+three_of_three:
+  project: three_scenes
+  name: Scene-3
   frame_range:
     type: animation
     start: 1

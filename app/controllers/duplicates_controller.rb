@@ -1,6 +1,8 @@
 class DuplicatesController < ApplicationController
   include ProjectScoped
 
+  allow_unauthenticated_access
+
   def create
     @duplicate = Project::Duplicate.new(project: @project)
 

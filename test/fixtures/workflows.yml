@@ -10,6 +10,24 @@ started_blend_check:
   workflowable: active
   workflowable_type: Project::BlendCheck
 
+finished_blend_check:
+  uuid: finished-blend-check-1234
+  status: finished
+  workflowable: finished
+  workflowable_type: Project::BlendCheck
+
+finished_blend_check_rendering:
+  uuid: finished-blend-check-rendering-1234
+  status: finished
+  workflowable: finished_rendering
+  workflowable_type: Project::BlendCheck
+
+finished_blend_check_three_scenes:
+  uuid: finished-blend-check-three-scenes-1234
+  status: finished
+  workflowable: finished_three_scenes
+  workflowable_type: Project::BlendCheck
+
 started_benchmark:
   uuid: started-benchmark-1234
   status: started

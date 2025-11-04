@@ -13,7 +13,7 @@ class Workflow < ApplicationRecord
   delegate :handle_completion, to: :workflowable
   delegate :broadcast_update, to: :project
 
-  after_create :start
+  after_create :start, if: :created?
   after_update_commit :handle_completion, if: :just_done?
   after_update_commit :broadcast_update, if: :saved_change_to_progress_permil?
 

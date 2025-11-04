@@ -78,3 +78,11 @@ guest_project:
   name: guest_project
   status: checking
   blend_filepath: guest_project.blend
+
+three_scenes:
+  upload: richards_upload
+  current_blender_scene: one_of_three
+  uuid: three-scenes-1234
+  name: three_scenes
+  status: checked
+  blend_filepath: three_scenes.blend

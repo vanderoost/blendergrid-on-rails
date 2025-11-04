@@ -14,6 +14,7 @@ class Signup
   validates :email_address, presence: true, length: { maximum: 255 }
   validates :email_address, format: EmailValidatable::VALID_EMAIL_REGEX
   validates :password, length: 8..72, confirmation: true
+  # validates :terms_of_service, acceptance: true # TODO: Add this
 
   def save
     if valid?
