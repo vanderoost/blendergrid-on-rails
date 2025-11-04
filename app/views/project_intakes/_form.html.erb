@@ -60,10 +60,10 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
+            <tbody class="divide-y divide-gray-200 dark:divide-white/10">
 
               <% upload.blend_filepaths.each do |filepath| %>
-                <tr class="group has-checked:bg-gray-50 dark:has-checked:bg-gray-800/50">
+                <tr class="group">
                   <td class="relative px-7 sm:w-12 sm:px-6">
                     <div class="absolute inset-y-0 left-0 hidden w-0.5 bg-primary-600 group-has-checked:block dark:bg-primary-500"></div>
 
@@ -79,7 +79,8 @@
                     </div>
                   </td>
                   <td class="py-4 pr-3 text-sm font-medium whitespace-nowrap text-gray-900 group-has-checked:text-primary-600 dark:text-white dark:group-has-checked:text-primary-400">
-                    <%= filepath %>
+                    <!-- TODO: This could be done more elegant -->
+                    <div class="max-w-90 truncate"><%= filepath %></div>
                   </td>
                 </tr>
               <% end %>
@@ -93,7 +94,7 @@
   <%= render "shared/form_errors", form: form %>
 
   <div class="flex items-center justify-end gap-x-6">
-    <%= form.submit "Create Projects", class: "rounded-md cursor-pointer bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:focus-visible:outline-primary-500" %>
+    <%= form.submit "Create Projects", class: "rounded-md cursor-pointer bg-primary-600 mt-4 px-3 py-2 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:focus-visible:outline-primary-500" %>
   </div>
 
 <% end %>

@@ -2,7 +2,6 @@
 
 ## before launch
 
-- [ ] Improve style of the "found x .blend files" selection form
 - [ ] Fix the duplication of Projects, always put it in status `benchmarked`
 - [ ] Improve Order: Add status, amount paid, amount credited?
       In order to get the daily revenue easy.
@@ -66,6 +65,7 @@
       Create a settings.json file and store it in S3 for the Swarm workers to pick up.
 - [x] Show scene warnings (in settings?)
     - [x] Missing images / textures
+- [x] Improve style of the "found x .blend files" selection form
 
 ## after launch
 
