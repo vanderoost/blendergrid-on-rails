@@ -2,14 +2,14 @@
 namespace :etl do
   task all: :environment do
     Rake::Task["etl:users"].invoke
-    # Rake::Task["etl:landing_pages"].invoke
+    Rake::Task["etl:landing_pages"].invoke
     Rake::Task["etl:articles"].invoke
-    # Rake::Task["etl:uploads"].invoke
-    # Rake::Task["etl:projects"].invoke
+    Rake::Task["etl:uploads"].invoke
+    Rake::Task["etl:projects"].invoke
   end
 
   task users: :environment do
-    last_updated_at = User.maximum(:updated_at)
+    last_updated_at = User.maximum(:updated_at) || Time.at(0)
     puts "Users table last updated at: #{last_updated_at}"
 
     scope = OldApp::User.where("updated_at > ?", last_updated_at)

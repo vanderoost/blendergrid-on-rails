@@ -30,9 +30,6 @@ class DuplicatesControllerTest < ActionDispatch::IntegrationTest
     end
     duplicate = Project.where.not(id: existing_project_ids).first
 
-    puts "PROJECT NAME:   #{project.name} #{project.status}"
-    puts "DUPLICATE NAME: #{project.name} #{duplicate.status}"
-
     assert_equal "rendering", project.status
     assert_equal "checked", duplicate.status
   end

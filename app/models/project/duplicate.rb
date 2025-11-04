@@ -46,7 +46,6 @@ class Project::Duplicate
 
   def project_has_blender_scenes
     if project.blender_scenes.empty?
-      puts "PROJECT HAS NO BLENDER SCENES"
       errors.add(:base, "project has no blender scenes")
     end
   end

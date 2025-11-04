@@ -1,6 +1,7 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
 richard:
+  name: Richard
   email_address: richard@blendergrid.com
   password_digest: <%= password_digest %>
   email_address_verified: true

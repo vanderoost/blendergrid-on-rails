@@ -2,10 +2,7 @@
 
 ## before launch
 
-- [ ] Fix the duplication of Projects, always put it in status `benchmarked`
-- [ ] Fix upload form validation (don't allow upload to start without guest email)
-- [ ] Don't overwrite the output filename set in the .blend file #Swarm
-- [ ] Style the flash messages a bit better
+- [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
 - [ ] Initial render ETA shows 'less than a minute' when just started
 - [ ] Waiting stage
@@ -66,9 +63,15 @@
 - [x] Improve style of the "found x .blend files" selection form
 - [x] Improve Order: Add status, amount paid, amount credited?
       In order to get the daily revenue easy.
+- [x] Fix the duplication of Projects, always put it in status `benchmarked`
+- [x] Fix upload form validation (don't allow upload to start without guest email)
+- [x] Style the flash messages a bit better
 
 ## after launch
 
+- [ ] After creating an upload, stay on the start page, show projects in a turbo frame
+- [ ] DRY up the heroicon svg icons
+- [ ] MAYBE Allow custom output file names for frames / animations?
 - [ ] After dropping files, scroll the upload button into view
 - [ ] Show scene warnings (in settings?)
     - [ ] Missing fonts

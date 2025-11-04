@@ -28,13 +28,15 @@
   <body>
     <%= render "layouts/navigation" %>
 
-    <%= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
-    <%= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
+    <%#= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
+    <%#= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
 
     <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-18.5rem-2px)]">
       <%= yield %>
     </main>
 
     <%= render "layouts/footer" %>
+
+    <%= render "layouts/notifications" %>
   </body>
 </html>

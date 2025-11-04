@@ -38,7 +38,6 @@ class Signup
 
   private
     def give_credit(user)
-      puts "GIVING CREDIT GIFT TO: #{user.name}"
       CreditEntry.create(user: user, amount_cents: GIFT_CENTS, reason: :gift)
     end
 end

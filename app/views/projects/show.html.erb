@@ -35,7 +35,12 @@
 
 <% elsif @project.rendering? || @project.rendered? %>
 
-  <!-- Show a list of frame download links -->
+
+  <% if @project.rendered? %>
+    Show download links to the zip(s)
+  <% end %>
+
+  <!-- Show a list of frames -->
   <div class="my-8 flex flex-col gap-4">
     <% if @project.frame_objects.any? %>
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
@@ -50,7 +55,7 @@
         <%= link_to obj[:url], target: "_blank", class: "block group border border-gray-200 hover:bg-gray-100 text-gray-700 dark:text-gray-300 bg-white dark:border-white/10 dark:bg-gray-800/50 dark:hover:bg-gray-800 rounded overflow-hidden" do %>
 
           <% if [".png", ".jpg", ".bmp"].include? obj[:extension] %>
-            <img src="<%= obj[:url] %>" class="">
+            <img src="<%= obj[:url] %>" loading="lazy">
           <% else %>
             <div class="py-3 flex items-center justify-center group-hover:text-gray-950 dark:group-hover:text-white">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="size-8">

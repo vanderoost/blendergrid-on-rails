@@ -41,6 +41,14 @@ In production, Kamal takes care of this.
 
 Run `bin/setup` to create the database and initialize the test database.
 
+### Import old database
+
+Make sure the MySQL gem is installed before running the ETL rake tasks.
+
+```bash
+RAILS_ENV=production caffeinate -id bin/rake etl:users
+```
+
 ### Nuke the database and start from scratch
 
 Useful for when migrations have changed (instead of added).
@@ -51,8 +59,8 @@ do RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:drop:primary &
 sleep 10
 done
 RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:migrate:primary &&
-RAILS_ENV=production caffeinate -id bin/rake etl:users &&
-RAILS_ENV=production caffeinate -id bin/rake etl:articles &&
+RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:users &&
+RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:articles &&
 say 'The import is done!' || say 'Something went wrong'
 ```
 
