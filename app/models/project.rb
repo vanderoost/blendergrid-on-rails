@@ -182,6 +182,11 @@ class Project < ApplicationRecord
       broadcast_replace_to broadcast_channel
   end
 
+  def warnings
+    blend_check.workflow.result.dig("stats", "warnings", "scenes",
+      current_blender_scene.name)
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
