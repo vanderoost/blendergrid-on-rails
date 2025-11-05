@@ -114,7 +114,7 @@ class Project < ApplicationRecord
 
   def output_objects
     prefix = "projects/#{uuid}/output/"
-    objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
+    @output_objects ||= bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
       filename = obj.key.split("/").last
       extension = File.extname(filename)
       {
@@ -124,7 +124,16 @@ class Project < ApplicationRecord
         url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
       }
     end
-    objects
+  end
+
+  def download_link
+    if output_objects.blank?
+      nil
+    elsif output_objects.one?
+      output_objects.first[:url]
+    else
+      nil
+    end
   end
 
   def owner
