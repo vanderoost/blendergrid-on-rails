@@ -90,7 +90,7 @@ class Project < ApplicationRecord
   end
 
   def frame_objects
-    prefix = "projects/#{uuid}/output/frames/"
+    prefix = "projects/#{uuid}/frames/"
     objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
       filename = obj.key.split("/").last
       extension = File.extname(filename)
@@ -106,10 +106,25 @@ class Project < ApplicationRecord
   end
 
   def sample_frame_urls
-    prefix = "projects/#{uuid}/output/sample-frames/"
+    prefix = "projects/#{uuid}/sample-frames/"
     bucket.objects(prefix: prefix)
       .sort_by(&:key)
       .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
+  end
+
+  def output_objects
+    prefix = "projects/#{uuid}/output/"
+    objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
+      filename = obj.key.split("/").last
+      extension = File.extname(filename)
+      {
+        basename: File.basename(filename, extension),
+        extension: extension,
+        size: obj.size,
+        url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+      }
+    end
+    objects
   end
 
   def owner

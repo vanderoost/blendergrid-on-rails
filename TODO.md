@@ -2,6 +2,7 @@
 
 ## before launch
 
+- [ ] Multilayer EXR don't show color mode on project settings
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
 - [ ] Initial render ETA shows 'less than a minute' when just started
@@ -69,6 +70,8 @@
 
 ## after launch
 
+- [ ] Have a CTA button (calculate price, render) on the project show page as well
+- [ ] Project settings form: Edit + tab to next field makes it submit and lose focus
 - [ ] After creating an upload, stay on the start page, show projects in a turbo frame
 - [ ] DRY up the heroicon svg icons
 - [ ] MAYBE Allow custom output file names for frames / animations?

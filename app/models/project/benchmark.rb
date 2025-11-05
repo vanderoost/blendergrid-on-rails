@@ -34,7 +34,9 @@ class Project::Benchmark < ApplicationRecord
           project: "s3://#{bucket_name}/#{key_prefix}/#{project.upload.uuid}",
         },
         logs: "s3://#{bucket_name}/projects/#{project.uuid}/logs",
-        output: "s3://#{bucket_name}/projects/#{project.uuid}/output",
+        output: { "sample-frames" => "s3://#{bucket_name}/projects/#{project.uuid}/"\
+          "sample-frames",
+        },
       },
       executions: [
           {
@@ -48,7 +50,7 @@ class Project::Benchmark < ApplicationRecord
               "--python",
               "/tmp/scripts/sample.py",
               "-o",
-              "/tmp/output/sample-frames/sample-",
+              "/tmp/sample-frames/sample-",
               "-f",
               "$frame",
               "--",
