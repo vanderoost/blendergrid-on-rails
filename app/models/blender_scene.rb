@@ -25,6 +25,7 @@ class BlenderScene < ApplicationRecord
       ffmpeg_format: :string,
       ffmpeg_codec: :string,
       film_transparent: :boolean,
+      fps: :float,
     },
     camera: {
       name: :string,

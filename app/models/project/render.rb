@@ -92,8 +92,27 @@ class Project::Render < ApplicationRecord
       }
     end
 
-    def video_encoding
-      {}
+    def video_encoding(render_ex_id)
+      frame_digits = [ 4, project.frames.last.to_s.length ].max
+      {
+        job_id: "encode-video",
+        files: video_encoding_files,
+        command: [
+          "ffmpeg",
+          "-framerate",
+          "#{project.file_output_fps}",
+          "-start_number",
+          "#{project.frames.first}",
+          "-i",
+          "/tmp/frames/frame-%0#{frame_digits}d.png",
+          "-pix_fmt",
+          "yuv420p",
+          "-y",
+          "/tmp/ffmpeg/#{project.name}#{project.ffmpeg_extension}",
+        ],
+        dependencies: [ render_ex_id ],
+        image: "blendergrid/tools",
+      }
     end
 
     def render_files
@@ -115,6 +134,10 @@ class Project::Render < ApplicationRecord
     end
 
     def video_encoding_files
+      {
+        input: { frames: "#{s3_project_path}/frames" },
+        output: { ffmpeg: "#{s3_project_path}/output" },
+      }
     end
 
     def s3_project_path
@@ -124,6 +147,8 @@ class Project::Render < ApplicationRecord
     def bucket
       @bucket ||= Rails.configuration.swarm_engine[:bucket]
     end
+
+
 
     def frame_params
       if project.frame_range_type == "animation"

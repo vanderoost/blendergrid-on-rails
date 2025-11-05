@@ -47,16 +47,16 @@ end
 
 class FfmpegFormat
   FORMATS = [
-    { id: :MPEG4, name: "MPEG-4", codecs: true },
-    { id: :MKV, name: "Matroska", codecs: true },
-    { id: :WEBM, name: "WebM", codecs: true },
-    { id: :AVI, name: "AVI", codecs: true },
-    { id: :DV, name: "DV" },
-    { id: :FLASH, name: "Flash" },
-    { id: :MPEG1, name: "MPEG-1" },
-    { id: :MPEG2, name: "MPEG-2" },
-    { id: :OGG, name: "Ogg", codecs: true },
-    { id: :QUICKTIME, name: "QuickTime", codecs: true },
+    { id: :MPEG4, name: "MPEG-4", extension: ".mp4", codecs: true },
+    { id: :MKV, name: "Matroska", extension: ".mkv", codecs: true },
+    { id: :WEBM, name: "WebM", extension: ".webm", codecs: true },
+    { id: :AVI, name: "AVI", extension: ".avi", codecs: true },
+    { id: :DV, extension: ".dv", name: "DV" },
+    { id: :FLASH, extension: ".swf", name: "Flash" },
+    { id: :MPEG1, extension: ".mpg", name: "MPEG-1" },
+    { id: :MPEG2, extension: ".mpg", name: "MPEG-2" },
+    { id: :OGG, name: "Ogg", extension: ".ogg", codecs: true },
+    { id: :QUICKTIME, name: "QuickTime", extension: ".mov", codecs: true },
   ]
 
   include ActiveModel::Model
@@ -64,6 +64,7 @@ class FfmpegFormat
 
   attribute :id, :string
   attribute :name, :string
+  attribute :extension, :string
   attribute :codecs, :boolean, default: false
 
   def self.all

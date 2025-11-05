@@ -67,6 +67,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def ffmpeg_extension
+    current_blender_scene&.output_ffmpeg_format&.extension
+  end
+
   def process_benchmark
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 

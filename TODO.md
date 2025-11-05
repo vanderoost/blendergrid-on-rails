@@ -70,6 +70,7 @@
 
 ## after launch
 
+- [ ] Only show "select a project to start rendering" if there are unchecked checkboxes
 - [ ] Have a CTA button (calculate price, render) on the project show page as well
 - [ ] Project settings form: Edit + tab to next field makes it submit and lose focus
 - [ ] After creating an upload, stay on the start page, show projects in a turbo frame
