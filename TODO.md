@@ -2,11 +2,10 @@
 
 ## before launch
 
+- [ ] Refresh the project show page for in_progress projects
 - [ ] Fix up all the transactional emails (style, message, reply-to)
-- [ ] Multilayer EXR don't show color mode on project settings
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
-- [ ] Initial render ETA shows 'less than a minute' when just started
 - [ ] Waiting stage
     - [ ] Edit page with deadline+res+samples form
     - [x] Show price at index per project
@@ -68,6 +67,8 @@
 - [x] Fix the duplication of Projects, always put it in status `benchmarked`
 - [x] Fix upload form validation (don't allow upload to start without guest email)
 - [x] Style the flash messages a bit better
+- [x] Multilayer EXR don't show color mode on project settings
+- [x] Initial render ETA shows 'less than a minute' when just started
 
 ## after launch
 

@@ -105,7 +105,6 @@ class Project < ApplicationRecord
         url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
       }
     end
-    puts "FRAME OBJECT: #{objects.first.inspect}"
     objects
   end
 
