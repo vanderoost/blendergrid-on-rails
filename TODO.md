@@ -2,6 +2,7 @@
 
 ## before launch
 
+- [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Multilayer EXR don't show color mode on project settings
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
