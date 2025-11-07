@@ -20,10 +20,10 @@
           <turbo-frame
             id="<%= stage %>-projects-table"
             target="_top"
-            data-controller="poll"
-            data-poll-path-value="<%= request.path %>"
-            data-poll-is-forced-value="<%= [:finished, :stopped].include?(stage) && projects_by_stage[:rendering].present? %>"
-            data-poll-interval-value="<%= case stage
+            data-controller="project-poll"
+            data-project-poll-path-value="<%= request.path %>"
+            data-project-poll-is-forced-value="<%= [:finished, :stopped].include?(stage) && projects_by_stage[:rendering].present? %>"
+            data-project-poll-interval-value="<%= case stage
                                           when :uploaded then 11.seconds.in_milliseconds
                                           when :waiting then 29.seconds.in_milliseconds
                                           when :rendering, :finished, :stopped then 59.seconds.in_milliseconds

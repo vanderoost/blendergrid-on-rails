@@ -1,7 +1,7 @@
 <tr id="<%= dom_id project %>"
   data-controller="<%= "project-price" if project.benchmarked? %>"
   data-price-summary-target="<%= "project" if project.benchmarked? %>"
-  data-poll-target="<%= "loadingProject" if project.in_progress? %>"
+  data-project-poll-target="<%= "loadingProject" if project.in_progress? %>"
   class="group/row">
   <td class="relative py-5 pr-6">
     <div class="flex items-center gap-x-4 sm:gap-x-6 lg:gap-x-8">

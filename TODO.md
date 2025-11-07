@@ -3,6 +3,8 @@
 ## before launch
 
 - [ ] Refresh the project show page for in_progress projects
+- [ ] Make the refunds work as stated in the terms of service
+- [ ] Cancel render button
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
@@ -84,7 +86,6 @@
     - [ ] Unbaked simulations
 - [ ] Read Blender versions form DockerHub, allow users to change versions
 - [ ] Make a pricing page
-- [ ] Make the refunds work as stated in the terms of service
 - [ ] Add more features to the dashboard
     - [ ] Download blend/source files
     - [ ] Download frames
