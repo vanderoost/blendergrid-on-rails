@@ -12,6 +12,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.integer :price_cents
       t.datetime :stage_updated_at
       t.timestamps
+      t.datetime :deleted_at, index: true
     end
   end
 end

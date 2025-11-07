@@ -134,6 +134,15 @@ Linux:
 sudo apt-get install redis-server
 ```
 
+## Rubocop
+
+Sometimes Rubocop will not start up after being updated because the server of an old
+version is still running. To stop the server, run:
+
+```bash
+bundle exec rubocop --stop-server
+```
+
 ## Deployment instructions
 
 Make sure the infrastructure is up and running.

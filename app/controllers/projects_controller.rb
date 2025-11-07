@@ -25,7 +25,7 @@ class ProjectsController < ApplicationController
   def destroy
     # TODO: Check if we're allowed to delete this project in particular
     @project.cancel if @project.rendering?
-    @project.destroy
+    @project.update(deleted_at: Time.current)
     redirect_to projects_path
   end
 

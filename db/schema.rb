@@ -168,6 +168,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.string "blend_filepath"
     t.datetime "created_at", null: false
     t.integer "current_blender_scene_id"
+    t.datetime "deleted_at"
     t.string "name"
     t.integer "order_id"
     t.integer "price_cents"
@@ -178,6 +179,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.integer "upload_id"
     t.string "uuid", null: false
     t.index ["current_blender_scene_id"], name: "index_projects_on_current_blender_scene_id"
+    t.index ["deleted_at"], name: "index_projects_on_deleted_at"
     t.index ["order_id"], name: "index_projects_on_order_id"
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
