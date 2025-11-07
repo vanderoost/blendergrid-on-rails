@@ -2,9 +2,7 @@
 
 ## before launch
 
-- [ ] Refresh the project show page for in_progress projects
 - [ ] Make the refunds work as stated in the terms of service
-- [ ] Cancel render button
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Soft delete feature for certain models (projects, ?)
@@ -71,6 +69,8 @@
 - [x] Style the flash messages a bit better
 - [x] Multilayer EXR don't show color mode on project settings
 - [x] Initial render ETA shows 'less than a minute' when just started
+- [x] Refresh the project show page for in_progress projects
+- [x] Cancel render button
 
 ## after launch
 
