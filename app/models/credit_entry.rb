@@ -2,7 +2,8 @@ class CreditEntry < ApplicationRecord
   belongs_to :user
   belongs_to :order, optional: true
 
-  enum :reason, %i[ old_balance gift topup pay_order refund ].index_with(&:to_s)
+  enum :reason, %i[ old_balance gift topup pay_order refund refund_to_credit
+    refund_to_cash ].index_with(&:to_s)
 
   after_create :update_user_render_credit
 

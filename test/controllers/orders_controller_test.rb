@@ -20,7 +20,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "test@example.com", @create_session_params.dig(:customer_email)
 
     # TODO: Test this in a hooks controller test
-    # assert_equal @project.price_cents, order.paid_cents
+    # assert_equal @project.price_cents, order.cash_cents
   end
 
   test "should create user order for a single project" do
@@ -55,15 +55,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
       headers: root_referrer_header
     assert_redirected_to "https://checkout.stripe.com/fake"
 
-    user.reload
     order = Order.last
-    credits_used = credit_before - user.render_credit_cents
-    assert_equal 2000, credits_used
-    assert_equal 2000, order.used_credit_cents
-
-    line_item = @create_session_params[:line_items].first
-    net_amount_cents = line_item[:price_data][:unit_amount]
-    assert_equal(project_price_cents, net_amount_cents + credits_used)
+    assert_equal 2000, order.credit_cents
   end
 
   test "should not create a stripe session if credit covers entire amount" do

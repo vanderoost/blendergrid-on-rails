@@ -47,7 +47,7 @@ class Webhooks::StripeController < Webhooks::BaseController
       return if order.nil?
 
       # TODO: Move this to the models, not controllers
-      order.paid_cents = session.amount_total
+      order.cash_cents = session.amount_total
       order.fulfill # TODO: Make this a fulfill_later job
       order.save
     end

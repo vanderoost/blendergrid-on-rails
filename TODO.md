@@ -3,9 +3,10 @@
 ## before launch
 
 - [ ] Make the refunds work as stated in the terms of service
+- [ ] Tighten up the migrations to have everything not nullable where needed
+- [ ] Tighten up the routes to remove any unused routes with `only:`
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
-- [ ] Soft delete feature for certain models (projects, ?)
 - [ ] Waiting stage
     - [ ] Edit page with deadline+res+samples form
     - [x] Show price at index per project
@@ -71,6 +72,7 @@
 - [x] Initial render ETA shows 'less than a minute' when just started
 - [x] Refresh the project show page for in_progress projects
 - [x] Cancel render button
+- [x] Soft delete feature for certain models (projects, ?)
 
 ## after launch
 

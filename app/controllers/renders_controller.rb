@@ -13,6 +13,7 @@ class RendersController < ApplicationController
   end
 
   def destroy
+    # Cancelling a project
     @render = @project.renders.find(params[:id])
     @render.destroy
 

@@ -1,7 +1,7 @@
 class Order::Checkout
   def initialize(order)
     @order = order
-    @order.used_credit_cents = 0
+    @order.credit_cents = 0
   end
 
   def start_checkout_session
@@ -9,7 +9,7 @@ class Order::Checkout
 
     # TODO: See if this can be cleaner, this is kind of the second time we calculate
     # this
-    net_amount_cents = @order.price_cents - @order.used_credit_cents
+    net_amount_cents = @order.price_cents - @order.credit_cents
     if net_amount_cents.zero?
       @order.redirect_url = @order.success_url
       @order.fulfill
@@ -28,7 +28,7 @@ class Order::Checkout
       @order.redirect_url = stripe_session.url
     end
 
-    @order.used_credit_cents = @order.used_credit_cents
+    @order.credit_cents = @order.credit_cents
     @order.save
   end
 
@@ -36,17 +36,17 @@ class Order::Checkout
     def apply_render_credit
       return unless @order.user&.render_credit_cents&.positive?
 
-      @order.used_credit_cents = [ @order.user.render_credit_cents,
+      @order.credit_cents = [ @order.user.render_credit_cents,
         @order.price_cents ].min
 
       # TODO: Make sure this happens in a DB transaction
-      @order.user.render_credit_cents -= @order.used_credit_cents
+      @order.user.render_credit_cents -= @order.credit_cents
       @order.user.save
     end
 
     def create_line_items
       total_cents = @order.price_cents
-      credit_ratio = @order.used_credit_cents.fdiv(total_cents)
+      credit_ratio = @order.credit_cents.fdiv(total_cents)
 
       @order.projects.map do |project|
         discount_cents = (project.price_cents * credit_ratio).round

@@ -160,8 +160,9 @@ class Project < ApplicationRecord
   end
 
   def handle_cancellation
-    render.workflow.stop
-    partial_refund render.workflow.progress_permil
+    workflow = render.workflow
+    workflow.stop
+    partial_refund workflow.progress_permil
   end
 
   def blend_check = latest(:blend_check)
@@ -237,20 +238,51 @@ class Project < ApplicationRecord
       status_to_stage(status_before_last_save) != stage
     end
 
-    # TODO: Refactor to a "refundable" concern
     def partial_refund(permil)
       permil ||= 0
       permil_to_refund = 1000 - permil
       refund_cents = price_cents * permil_to_refund.fdiv(1000)
+
+      unless refund_cents.positive?
+        puts "REFUND IS NOT POSITIVE (#{refund_cents} cents)"
+        return
+      end
+
       # puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
       #   " $#{refund_cents.fdiv(100)}"
 
-      if refund_cents.positive? and user.present?
+      # What we want to do is:
+      # - If the project has a registered user, top up their credit. Set a timer for the
+      # real refund to happen. If they use the credit, cancel the real refund.
+      # - If the project doesn't have a registered user, refund the Strip transaction
+      # directly.
+
+      # Create a Refund
+      refund = Refund.create(
+        project: self,
+        amount_cents: refund_cents,
+      )
+
+
+      if user.present?
+        # Figure out the ration of credit / cash that was paid (from Order)
+        cash_cents = order.cash_cents *
+        credit_cents = order.credit_cents
+
+
         puts "TOPPING UP CREDIT"
-        user.update(render_credit_cents: user.render_credit_cents + refund_cents)
+        # user.update(render_credit_cents: user.render_credit_cents + refund_cents)
+        refund.credit_entries.create(
+          user: user,
+          amount_cents: refund_cents,
+          reason: :refund_to_credit,
+        )
       else
-        # puts "NO USER ASSOCIATED"
-        # TODO: Figure out how to handle the refund wihtout a user
+        puts "NO USER ASSOCIATED"
+
+        # Figure out the Stripe transaction from the Order
+        # Refund the amount from the Stripe transaction
+
       end
 
       # First refund in Render credit only.

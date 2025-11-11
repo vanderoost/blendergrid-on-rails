@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -81,9 +81,11 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.datetime "created_at", null: false
     t.integer "order_id"
     t.string "reason"
+    t.integer "refund_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["order_id"], name: "index_credit_entries_on_order_id"
+    t.index ["refund_id"], name: "index_credit_entries_on_refund_id"
     t.index ["user_id"], name: "index_credit_entries_on_user_id"
   end
 
@@ -117,14 +119,26 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
   end
 
-  create_table "orders", force: :cascade do |t|
+  create_table "order_items", force: :cascade do |t|
+    t.integer "cash_cents", null: false
     t.datetime "created_at", null: false
+    t.integer "credit_cents", null: false
+    t.integer "order_id", null: false
+    t.json "preferences"
+    t.integer "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["project_id"], name: "index_order_items_on_project_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "cash_cents"
+    t.datetime "created_at", null: false
+    t.integer "credit_cents"
     t.string "guest_email_address"
     t.string "guest_session_id"
-    t.integer "paid_cents"
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
-    t.integer "used_credit_cents"
     t.integer "user_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -183,6 +197,14 @@ ActiveRecord::Schema[8.2].define(version: 2025_10_13_152555) do
     t.index ["order_id"], name: "index_projects_on_order_id"
     t.index ["upload_id"], name: "index_projects_on_upload_id"
     t.index ["uuid"], name: "index_projects_on_uuid", unique: true
+  end
+
+  create_table "refunds", force: :cascade do |t|
+    t.integer "amount_cents"
+    t.datetime "created_at", null: false
+    t.integer "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_refunds_on_project_id"
   end
 
   create_table "requests", force: :cascade do |t|
