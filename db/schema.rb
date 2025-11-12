@@ -137,6 +137,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
     t.integer "credit_cents"
     t.string "guest_email_address"
     t.string "guest_session_id"
+    t.string "stripe_payment_intent_id"
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
     t.integer "user_id"
@@ -202,9 +203,10 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
   create_table "refunds", force: :cascade do |t|
     t.integer "amount_cents"
     t.datetime "created_at", null: false
-    t.integer "project_id", null: false
+    t.integer "order_item_id", null: false
+    t.string "stripe_refund_id"
     t.datetime "updated_at", null: false
-    t.index ["project_id"], name: "index_refunds_on_project_id"
+    t.index ["order_item_id"], name: "index_refunds_on_order_item_id"
   end
 
   create_table "requests", force: :cascade do |t|

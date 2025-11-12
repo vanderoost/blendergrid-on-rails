@@ -111,16 +111,17 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, order_item.cash_cents
   end
 
-  setup do
-    @project = projects(:benchmarked)
+  private
+    setup do
+      @project = projects(:benchmarked)
 
-    test_context = self
-    Stripe::Checkout::Session.define_singleton_method(:create) do |params|
-      test_context.instance_variable_set(:@create_session_params, params)
-      OpenStruct.new(
-        id: "cs_test_fake_session_id",
-        url: "https://checkout.stripe.com/fake"
-      )
+      test_context = self
+      Stripe::Checkout::Session.define_singleton_method(:create) do |params|
+        test_context.instance_variable_set(:@create_session_params, params)
+        OpenStruct.new(
+          id: "cs_test_fake_session_id",
+          url: "https://checkout.stripe.com/fake"
+        )
+      end
     end
-  end
 end

@@ -1,4 +1,5 @@
 require "test_helper"
+require "ostruct"
 
 class Project::StatesTest < ActiveSupport::TestCase
   test "a created project can start a blend check" do
@@ -96,5 +97,13 @@ class Project::StatesTest < ActiveSupport::TestCase
   private
     def active_states
       %i[ checking benchmarking rendering ]
+    end
+
+    setup do
+      test_context = self
+      Stripe::Refund.define_singleton_method(:create) do |params|
+        test_context.instance_variable_set(:@create_refund_params, params)
+        OpenStruct.new(id: "fake_refund_id")
+      end
     end
 end

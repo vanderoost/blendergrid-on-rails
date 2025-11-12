@@ -1,4 +1,5 @@
 require "test_helper"
+require "ostruct"
 
 class RendersControllerTest < ActionDispatch::IntegrationTest
   test "it refunds a cancelled user render paid with credit" do
@@ -135,4 +136,13 @@ class RendersControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal refund_amount, user.reload.render_credit_cents
   end
+
+  private
+    setup do
+      test_context = self
+      Stripe::Refund.define_singleton_method(:create) do |params|
+        test_context.instance_variable_set(:@create_refund_params, params)
+        OpenStruct.new(id: "fake_refund_id")
+      end
+    end
 end

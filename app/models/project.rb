@@ -260,7 +260,7 @@ class Project < ApplicationRecord
 
       # Create a Refund
       refund = Refund.create(
-        project: self,
+        order_item: order_item,
         amount_cents: refund_cents,
       )
 

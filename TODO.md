@@ -3,6 +3,9 @@
 ## before launch
 
 - [ ] Make the refunds work as stated in the terms of service
+    - [ ] Handle Stripe refunds after a delay with cron jobs
+    - [x] Handle refund credit
+    - [x] Handle Stripe refunds for guests
 - [ ] Tighten up the migrations to have everything not nullable where needed
 - [ ] Tighten up the routes to remove any unused routes with `only:`
 - [ ] Fix up all the transactional emails (style, message, reply-to)
