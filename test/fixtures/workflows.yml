@@ -54,3 +54,5 @@ started_render:
   status: started
   workflowable: active
   workflowable_type: Project::Render
+  progress_permil: 100
+

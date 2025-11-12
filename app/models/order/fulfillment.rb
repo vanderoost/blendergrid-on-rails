@@ -4,6 +4,5 @@ class Order::Fulfillment
   end
 
   def handle
-    @order.projects.each(&:start_rendering)
   end
 end

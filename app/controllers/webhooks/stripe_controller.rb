@@ -30,9 +30,6 @@ class Webhooks::StripeController < Webhooks::BaseController
     end
 
     def handle_credit_topup(session)
-      logger.info "CREDIT TOPUP: $#{session.amount_subtotal} for"\
-        " #{session.customer_email}"
-
       user = User.find_by(email_address: session.customer_email)
       if user.nil?
         logger.error "User not found for email #{session.customer_email}"
@@ -46,8 +43,9 @@ class Webhooks::StripeController < Webhooks::BaseController
       order = Order.find_by(stripe_session_id: session.id)
       return if order.nil?
 
-      # TODO: Move this to the models, not controllers
-      order.paid_cents = session.amount_total
+      # TODO: Move this into a model instead of controller
+      order.stripe_payment_intent_id = session.payment_intent
+      order.cash_cents = session.amount_total
       order.fulfill # TODO: Make this a fulfill_later job
       order.save
     end

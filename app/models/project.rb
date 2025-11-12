@@ -23,12 +23,13 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
-  belongs_to :order, optional: true
+  has_one :order_item, class_name: "Order::Item"
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
 
   delegate :user, to: :upload
+  delegate :order, to: :order_item
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
   after_create :start_checking, if: :created?
@@ -160,8 +161,9 @@ class Project < ApplicationRecord
   end
 
   def handle_cancellation
-    render.workflow.stop
-    partial_refund render.workflow.progress_permil
+    workflow = render.workflow
+    workflow.stop
+    partial_refund workflow.progress_permil
   end
 
   def blend_check = latest(:blend_check)
@@ -237,20 +239,58 @@ class Project < ApplicationRecord
       status_to_stage(status_before_last_save) != stage
     end
 
-    # TODO: Refactor to a "refundable" concern
     def partial_refund(permil)
       permil ||= 0
       permil_to_refund = 1000 - permil
       refund_cents = price_cents * permil_to_refund.fdiv(1000)
+
+      unless refund_cents.positive?
+        puts "REFUND IS NOT POSITIVE (#{refund_cents} cents)"
+        return
+      end
+
       # puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
       #   " $#{refund_cents.fdiv(100)}"
 
-      if refund_cents.positive? and user.present?
-        puts "TOPPING UP CREDIT"
-        user.update(render_credit_cents: user.render_credit_cents + refund_cents)
+      # What we want to do is:
+      # - If the project has a registered user, top up their credit. Set a timer for the
+      # real refund to happen. If they use the credit, cancel the real refund.
+      # - If the project doesn't have a registered user, refund the Strip transaction
+      # directly.
+
+      # Create a Refund
+      refund = Refund.create(
+        order_item: order_item,
+        amount_cents: refund_cents,
+      )
+
+      if user.present?
+        # Figure out the ratio of credit / cash that was paid (from Order)
+        cash_refund = order_item.cash_cents * permil_to_refund.fdiv(1000)
+        credit_refund = refund.amount_cents - cash_refund
+
+        # Immediately refund the credit
+        if credit_refund.positive?
+          refund.credit_entries.create(
+            user: user,
+            amount_cents: credit_refund,
+            reason: :credit_refund,
+          )
+        end
+
+        # Temporarily refund the cash as credit
+        if cash_refund.positive?
+          refund.credit_entries.create(
+            user: user,
+            amount_cents: cash_refund,
+            reason: :delayed_cash_refund,
+          )
+        end
       else
-        # puts "NO USER ASSOCIATED"
-        # TODO: Figure out how to handle the refund wihtout a user
+
+        # Figure out the Stripe transaction from the Order
+        # Refund the amount from the Stripe transaction
+
       end
 
       # First refund in Render credit only.

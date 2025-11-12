@@ -3,9 +3,11 @@ class CreateCreditEntries < ActiveRecord::Migration[8.0]
     create_table :credit_entries do |t|
       t.references :user, null: false
       t.references :order
+      t.references :refund
       t.integer :amount_cents, null: false
       t.string :reason
       t.timestamps
     end
+    add_index :credit_entries, :created_at
   end
 end
