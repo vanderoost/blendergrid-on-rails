@@ -1,0 +1,6 @@
+one:
+  order: one
+  project: rendering
+  cash_cents: 1234
+  credit_cents: 5678
+  preferences: {}

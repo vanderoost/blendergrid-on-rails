@@ -264,20 +264,28 @@ class Project < ApplicationRecord
         amount_cents: refund_cents,
       )
 
-
       if user.present?
-        # Figure out the ration of credit / cash that was paid (from Order)
-        cash_cents = order.cash_cents *
-        credit_cents = order.credit_cents
+        # Figure out the ratio of credit / cash that was paid (from Order)
+        cash_refund = order_item.cash_cents * permil_to_refund.fdiv(1000)
+        credit_refund = refund.amount_cents - cash_refund
 
+        # Immediately refund the credit
+        if credit_refund.positive?
+          refund.credit_entries.create(
+            user: user,
+            amount_cents: credit_refund,
+            reason: :credit_refund,
+          )
+        end
 
-        puts "TOPPING UP CREDIT"
-        # user.update(render_credit_cents: user.render_credit_cents + refund_cents)
-        refund.credit_entries.create(
-          user: user,
-          amount_cents: refund_cents,
-          reason: :refund_to_credit,
-        )
+        # Temporarily refund the cash as credit
+        if cash_refund.positive?
+          refund.credit_entries.create(
+            user: user,
+            amount_cents: cash_refund,
+            reason: :delayed_cash_refund,
+          )
+        end
       else
 
         # Figure out the Stripe transaction from the Order
