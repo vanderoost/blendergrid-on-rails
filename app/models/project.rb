@@ -23,12 +23,13 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
-  belongs_to :order, optional: true
+  has_one :order_item, class_name: "Order::Item"
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
 
   delegate :user, to: :upload
+  delegate :order, to: :order_item
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
   after_create :start_checking, if: :created?
@@ -278,7 +279,6 @@ class Project < ApplicationRecord
           reason: :refund_to_credit,
         )
       else
-        puts "NO USER ASSOCIATED"
 
         # Figure out the Stripe transaction from the Order
         # Refund the amount from the Stripe transaction

@@ -83,7 +83,6 @@ class Order < ApplicationRecord
           project.price_cents * self.cash_cents.fdiv(total_cents)
         ).ceil # Ceil to make sure we don't end up using too little cash for Stripe
         item_credit_cents = project.price_cents - item_cash_cents
-        puts "USING CASH (#{item_cash_cents}) AND CREDIT (#{item_credit_cents})"
       end
 
       items.create(
@@ -136,15 +135,13 @@ class Order < ApplicationRecord
   end
 
   def apply_render_credit
-    puts "MAYBE APPLY RENDER CREDIT"
     return unless credit_cents.positive?
 
-    credit_entry = CreditEntry.create(
+    CreditEntry.create(
       user: user,
       amount_cents: -credit_cents,
       reason: :pay_order,
     )
-    puts "CREATED CREDIT ENTRY: #{credit_entry.inspect}"
   end
 
   # TODO: Is this the right location for this?
