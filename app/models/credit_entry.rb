@@ -1,6 +1,7 @@
 class CreditEntry < ApplicationRecord
   belongs_to :user
   belongs_to :order, optional: true
+  belongs_to :refund, optional: true
 
   enum :reason, %i[ old_balance gift topup pay_order credit_refund delayed_cash_refund
     reversed_cash_refund ].index_with(&:to_s)

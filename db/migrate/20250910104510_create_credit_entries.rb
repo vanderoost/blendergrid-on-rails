@@ -8,5 +8,6 @@ class CreateCreditEntries < ActiveRecord::Migration[8.0]
       t.string :reason
       t.timestamps
     end
+    add_index :credit_entries, :created_at
   end
 end
