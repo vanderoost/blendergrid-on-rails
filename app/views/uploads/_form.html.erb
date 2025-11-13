@@ -47,13 +47,15 @@
       </div>
     </div>
 
-    <div data-upload-target="list" class="hidden has-[*]:block rounded-md divide-gray-300 dark:divide-white/10 divide-y-1 dark:bg-white/5 outline-1 -outline-offset-1 outline-gray-300 dark:outline-white/10 max-h-48 overflow-y-auto"></div>
+    <div data-upload-target="list" class="hidden has-[*]:block rounded-md divide-gray-300 dark:divide-white/10 divide-y dark:bg-white/5 outline-1 -outline-offset-1 outline-gray-300 dark:outline-white/10 max-h-48 overflow-y-auto"></div>
 
     <% unless authenticated? %>
-      <div class="input_group rounded-md bg-white px-3 pt-2.5 pb-1.5 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
+
+      <div class="rounded-md bg-white px-3 pt-2.5 pb-1.5 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
         <%= form.label :guest_email_address, "Email address #{form.object.errors[:guest_email_address].first}", class: "block text-xs font-medium text-gray-900 dark:text-gray-200" %>
-        <%= form.email_field :guest_email_address, autocomplete: "username", value: params[:guest_email_address] || session[:guest_email_address], placeholder: "suzanne@blender.org", required: true, elass: "block w-full text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+        <%= form.email_field :guest_email_address, autocomplete: "username", placeholder: "suzanne@blender.org", required: true, class: "block w-full text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
       </div>
+
     <% end %>
 
     <div class="flex items-center justify-end gap-x-6">
