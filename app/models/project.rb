@@ -131,10 +131,10 @@ class Project < ApplicationRecord
   end
 
   def download_link
-    if output_objects.blank?
-      nil
-    elsif output_objects.one?
+    if output_objects.one?
       output_objects.first[:url]
+    elsif frame_objects.one?
+      frame_objects.first[:url]
     else
       nil
     end

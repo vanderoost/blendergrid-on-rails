@@ -7,6 +7,7 @@
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Waiting stage
     - [ ] Edit page with deadline+res+samples form
+    - [ ] Show settings summary (non editable)
     - [x] Show price at index per project
     - [x] Deadline + resolution + samples form at index
 - [x] UI/UX
