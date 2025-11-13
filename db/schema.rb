@@ -189,6 +189,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_162838) do
     t.datetime "updated_at", null: false
     t.integer "upload_id", null: false
     t.string "uuid", null: false
+    t.index ["created_at"], name: "index_projects_on_created_at"
     t.index ["current_blender_scene_id"], name: "index_projects_on_current_blender_scene_id"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
     t.index ["order_id"], name: "index_projects_on_order_id"

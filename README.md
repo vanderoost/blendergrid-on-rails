@@ -54,7 +54,7 @@ RAILS_ENV=production caffeinate -id bin/rake etl:users
 Useful for when migrations have changed (instead of added).
 
 ```bash
-while :
+c; caffeinate -id while :
 do RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:drop:primary && break
 sleep 10
 done

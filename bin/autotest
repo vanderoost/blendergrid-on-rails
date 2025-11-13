@@ -47,17 +47,17 @@ class AutoTest
       @rerun_all = @rubocop_success && @brakeman_success && @test_success
 
       if @rerun_all || ! @rubocop_success
-        @rubocop_success = system("bin/rubocop")
+        @rubocop_success = system("rubocop")
         return unless @rubocop_success
       end
 
       if @rerun_all || ! @brakeman_success
-        @brakeman_success = system("bin/brakeman", "--no-pager")
+        @brakeman_success = system("brakeman", "--no-pager")
         return unless @brakeman_success
       end
 
       if @rerun_all || ! @test_success
-        @test_success = system("bin/rails test --fail-fast")
+        @test_success = system("rails test --fail-fast")
       end
     end
 end

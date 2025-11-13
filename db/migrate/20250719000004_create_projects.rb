@@ -14,5 +14,7 @@ class CreateProjects < ActiveRecord::Migration[8.0]
       t.timestamps
       t.datetime :deleted_at, index: true
     end
+
+    add_index :projects, :created_at
   end
 end
