@@ -8,7 +8,6 @@ class CreateWorkflows < ActiveRecord::Migration[8.0]
       t.json :result
       t.json :timing
 
-      # TODO: Consider creating a NodeType model and referencing that
       t.string :node_provider_id
       t.string :node_type_name
 

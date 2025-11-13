@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_10_162838) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -42,36 +42,36 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
   create_table "api_tokens", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "last_used_at"
-    t.string "name"
+    t.string "name", null: false
     t.string "token_digest", null: false
     t.datetime "updated_at", null: false
     t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
   end
 
   create_table "articles", force: :cascade do |t|
-    t.text "body"
+    t.text "body", null: false
     t.datetime "created_at", null: false
     t.text "excerpt"
     t.text "image_url"
     t.datetime "published_at"
     t.string "slug", null: false
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_id"
+    t.integer "user_id", null: false
     t.index ["slug"], name: "index_articles_on_slug", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
   create_table "blender_scenes", force: :cascade do |t|
-    t.json "camera"
+    t.json "camera", null: false
     t.datetime "created_at", null: false
-    t.json "file_output"
-    t.json "frame_range"
-    t.string "name"
-    t.json "post_processing"
+    t.json "file_output", null: false
+    t.json "frame_range", null: false
+    t.string "name", null: false
+    t.json "post_processing", null: false
     t.integer "project_id", null: false
-    t.json "resolution"
-    t.json "sampling"
+    t.json "resolution", null: false
+    t.json "sampling", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_blender_scenes_on_project_id"
   end
@@ -84,15 +84,16 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
     t.integer "refund_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.index ["created_at"], name: "index_credit_entries_on_created_at"
     t.index ["order_id"], name: "index_credit_entries_on_order_id"
     t.index ["refund_id"], name: "index_credit_entries_on_refund_id"
     t.index ["user_id"], name: "index_credit_entries_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
-    t.string "action"
+    t.string "action", null: false
     t.datetime "created_at", null: false
-    t.integer "request_id"
+    t.integer "request_id", null: false
     t.integer "resource_id"
     t.string "resource_type"
     t.datetime "updated_at", null: false
@@ -111,12 +112,12 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
     t.integer "capacity", default: 0
     t.datetime "created_at", null: false
     t.integer "millicents_per_hour"
-    t.string "provider_id"
-    t.string "region"
-    t.string "type_name"
+    t.string "provider_id", null: false
+    t.string "region", null: false
+    t.string "type_name", null: false
     t.datetime "updated_at", null: false
-    t.string "zone"
-    t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_dimensions", unique: true
+    t.string "zone", null: false
+    t.index ["provider_id", "region", "zone", "type_name"], name: "unique_node_supply_attributes", unique: true
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -146,35 +147,30 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
 
   create_table "page_variants", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "landing_page_id"
-    t.json "sections"
+    t.integer "landing_page_id", null: false
+    t.json "sections", null: false
     t.datetime "updated_at", null: false
     t.index ["landing_page_id"], name: "index_page_variants_on_landing_page_id"
   end
 
   create_table "project_benchmarks", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "expected_render_time"
-    t.integer "project_id"
-    t.json "sample_settings"
-    t.json "settings"
-    t.json "timing"
+    t.integer "project_id", null: false
+    t.json "sample_settings", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_project_benchmarks_on_project_id"
   end
 
   create_table "project_blend_checks", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "project_id"
-    t.json "settings"
-    t.json "stats"
+    t.integer "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_project_blend_checks_on_project_id"
   end
 
   create_table "project_renders", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_project_renders_on_project_id"
   end
@@ -191,7 +187,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
     t.string "status"
     t.json "tweaks"
     t.datetime "updated_at", null: false
-    t.integer "upload_id"
+    t.integer "upload_id", null: false
     t.string "uuid", null: false
     t.index ["current_blender_scene_id"], name: "index_projects_on_current_blender_scene_id"
     t.index ["deleted_at"], name: "index_projects_on_deleted_at"
@@ -201,7 +197,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
   end
 
   create_table "refunds", force: :cascade do |t|
-    t.integer "amount_cents"
+    t.integer "amount_cents", null: false
     t.datetime "created_at", null: false
     t.integer "order_item_id", null: false
     t.string "stripe_refund_id"
@@ -249,9 +245,9 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
   create_table "upload_zip_checks", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "upload_id"
+    t.integer "upload_id", null: false
     t.json "zip_contents"
-    t.string "zip_filename"
+    t.string "zip_filename", null: false
     t.index ["upload_id"], name: "index_upload_zip_checks_on_upload_id"
   end
 
@@ -271,7 +267,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_183549) do
     t.string "email_address", null: false
     t.boolean "email_address_verified", default: false
     t.string "name"
-    t.string "password_digest"
+    t.string "password_digest", null: false
     t.integer "render_credit_cents", default: 0
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true

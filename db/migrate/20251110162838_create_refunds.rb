@@ -2,7 +2,7 @@ class CreateRefunds < ActiveRecord::Migration[8.2]
   def change
     create_table :refunds do |t|
       t.references :order_item, null: false
-      t.integer :amount_cents
+      t.integer :amount_cents, null: false
       t.string :stripe_refund_id
       t.timestamps
     end

@@ -2,11 +2,6 @@
 
 ## before launch
 
-- [ ] Make the refunds work as stated in the terms of service
-    - [ ] Handle Stripe refunds after a delay with cron jobs
-    - [x] Handle refund credit
-    - [x] Handle Stripe refunds for guests
-- [ ] Tighten up the migrations to have everything not nullable where needed
 - [ ] Tighten up the routes to remove any unused routes with `only:`
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
@@ -76,6 +71,11 @@
 - [x] Refresh the project show page for in_progress projects
 - [x] Cancel render button
 - [x] Soft delete feature for certain models (projects, ?)
+- [x] Make the refunds work as stated in the terms of service
+    - [x] Handle Stripe refunds after a delay with cron jobs
+    - [x] Handle refund credit
+    - [x] Handle Stripe refunds for guests
+- [x] Tighten up the migrations to have everything not nullable where needed
 
 ## after launch
 
