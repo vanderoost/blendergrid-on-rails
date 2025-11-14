@@ -3,20 +3,18 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # TODO: Narrow the methods down to only the ones implemented in controllers
-
   resource :signups, path: "signup", only: %w[new create]
-  resource :session
+  resource :session, only: %w[new create destroy]
 
-  resources :users
-  resources :passwords, param: :token
-  resources :email_address_verifications, param: :token
-  resources :uploads, param: :uuid do
-    resources :project_intakes
+  resources :users, only: %w[show]
+  resources :passwords, param: :token, only: %w[new create edit update]
+  resources :email_address_verifications, param: :token, only: %w[show]
+  resources :uploads, param: :uuid, only: %w[index show new create] do
+    resources :project_intakes, only: %w[create]
   end
-  resources :quotes
-  resources :orders
-  resources :projects, param: :uuid do
+  resources :quotes, only: %w[create]
+  resources :orders, only: %w[create]
+  resources :projects, param: :uuid, only: %w[index show update destroy] do
     resources :renders
     resources :blender_scenes
     resources :duplicates

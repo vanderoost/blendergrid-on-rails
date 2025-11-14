@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy ]
-  allow_unauthenticated_access only: %i[ index show edit update destroy ]
+  before_action :set_project, only: %i[ show update destroy ]
+  allow_unauthenticated_access only: %i[ index show update destroy ]
 
   def index
     if authenticated?
@@ -19,7 +19,7 @@ class ProjectsController < ApplicationController
 
   def update
     flash[:alert] = "Error updating the scene" unless @project.update(project_params)
-    redirect_back_or_to edit_project_path(@project)
+    redirect_back_or_to project_path(@project)
   end
 
   def destroy
