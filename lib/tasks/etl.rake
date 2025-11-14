@@ -61,6 +61,22 @@ namespace :etl do
   end
 
   task landing_pages: :environment do
+    # First create the default home page
+    landing_page = LandingPage.where(slug: "/").first_or_initialize
+    landing_page.save!
+    page_variant = landing_page.page_variants.first_or_initialize
+    page_variant.sections = [
+      {
+        id: :heading,
+        title: "Fast rendering for Blender",
+        subtitle: "Start by uploading a .blend file.",
+      },
+      { id: :upload },
+      { id: :logo_cloud },
+      { id: :testimonials },
+    ]
+    page_variant.save!
+
     scope = OldApp::LandingPage.all
     total_count = scope.count
     puts "Migrating #{total_count} landing pages in #{Rails.env}…"
@@ -77,7 +93,16 @@ namespace :etl do
       end
 
       page_variant = landing_page.page_variants.first_or_initialize
-      page_variant.sections = { upload: { heading: heading } }
+      page_variant.sections = [
+        {
+          id: :heading,
+          title: heading,
+          subtitle: "Start by uploading a .blend file.",
+        },
+        { id: :upload },
+        { id: :logo_cloud },
+        { id: :testimonials },
+      ]
       page_variant.created_at = old_landing_page.created_at
       page_variant.save!
 
