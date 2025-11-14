@@ -37,8 +37,7 @@ Rails.application.routes.draw do
 
   # Webhooks
   namespace :webhooks do
-    # TODO: Consider making it more RESTful (events/stripe, POST event)
-    post "stripe", to: "stripe#handle"
+    resource :stripe_events, only: %w[create]
   end
 
   # Static pages

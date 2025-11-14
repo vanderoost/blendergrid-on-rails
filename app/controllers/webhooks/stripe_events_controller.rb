@@ -1,5 +1,5 @@
-class Webhooks::StripeController < Webhooks::BaseController
-  def handle
+class Webhooks::StripeEventsController < Webhooks::BaseController
+  def create
     case event.type
     when "checkout.session.completed", "checkout.session.async_payment_succeeded"
       handle_successful_checkout event.data.object
