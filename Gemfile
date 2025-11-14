@@ -88,4 +88,4 @@ gem "redcarpet", "~> 3.6"
 gem "tailwindcss-rails"
 
 # TEMPORARY: MySQL adapter for article migration script
-gem "mysql2", "~> 0.5.6"
+# gem "mysql2", "~> 0.5.6"
