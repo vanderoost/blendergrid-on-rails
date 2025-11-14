@@ -184,9 +184,9 @@ class Project < ApplicationRecord
   end
 
   def warnings
-    Array(blend_check&.workflow&.result&.dig(
-        "stats", "warnings", "scenes", current_blender_scene.name)
-    )
+    Hash(blend_check&.workflow&.result&.dig(
+        "stats", "warnings", "scenes", current_blender_scene.name
+    ))
   end
 
   private
