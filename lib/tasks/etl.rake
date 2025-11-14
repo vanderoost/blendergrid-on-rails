@@ -133,6 +133,61 @@ namespace :etl do
   end
 
   task projects: :environment do
+    puts "Migrating projects in #{Rails.env}…"
+
+    scope = OldApp::Project
+      .where.not(user_id: nil)
+      .where("updated_at > ?", 3.days.ago)
+
+    # TODO: Make sure to select only rendered projects
+
+    puts "Found #{scope.count} projects"
+
+    scope.find_each do |old_project|
+      puts "------------------------------"
+
+      old_user = old_project.user
+      if old_user.nil?
+        puts "No old user found for project #{old_project.id}"
+        next
+      end
+
+      if old_project.project_source.nil?
+        puts "No project source found for project #{old_project.id}"
+        next
+      end
+
+      puts "Found '#{old_project.name}' from '#{old_user.email}'"
+      puts "Source: #{old_project.project_source.inspect}"
+
+      user = User.where(email_address: old_user.email).first
+
+      if user.nil?
+        puts "No user found for email #{old_user.email}"
+        next
+      end
+
+      # Create an Upload and a Project in the new database
+      # Mayb also a BlenderScene?
+      upload = Upload.upsert({
+        uuid: old_project.project_source.uuid,
+        user_id: user.id,
+      }, unique_by: :uuid).first
+
+      puts "Created upload #{upload.inspect}"
+
+      project = Project.upsert({
+        uuid: old_project.uuid,
+        upload_id: upload["id"],
+        name: old_project.name,
+        status: "rendered",
+        blend_filepath: old_project.main_blend_file,
+        price_cents: old_project.price,
+        deleted_at: old_project.deleted_at,
+      }, unique_by: :uuid).first
+
+      puts "Created project #{project.inspect}"
+    end
   end
 end
 

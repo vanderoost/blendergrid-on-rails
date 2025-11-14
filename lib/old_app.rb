@@ -48,7 +48,13 @@ class OldApp::TeamMember < OldApp
 end
 
 class OldApp::ProjectSource < OldApp
-  self.table_name = "project_sources"
-
   self.inheritance_column = :_type_disabled
+
+  has_many :projects
+  belongs_to :user
+end
+
+class OldApp::Project < OldApp
+  belongs_to :project_source
+  belongs_to :user
 end
