@@ -77,6 +77,7 @@
     - [x] Handle refund credit
     - [x] Handle Stripe refunds for guests
 - [x] Tighten up the migrations to have everything not nullable where needed
+- [x] Auto update inspecting .zip contents, Stimulus to reload a Turbo frame
 
 ## after launch
 

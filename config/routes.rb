@@ -15,9 +15,9 @@ Rails.application.routes.draw do
   resources :quotes, only: %w[create]
   resources :orders, only: %w[create]
   resources :projects, param: :uuid, only: %w[index show update destroy] do
-    resources :renders
-    resources :blender_scenes
-    resources :duplicates
+    resources :renders, only: %w[create destroy]
+    resources :blender_scenes, only: %w[update]
+    resources :duplicates, only: %w[create]
   end
   resources :payment_intents, only: %w[create]
 
@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resource :workflow_progress, only: %w[update]
-      resources :workflows, param: :uuid
+      resources :workflows, param: :uuid, only: %w[update]
       resources :node_supplies do
         patch "/", on: :collection, action: :update
       end
@@ -48,7 +48,7 @@ Rails.application.routes.draw do
 
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")
-  resources :articles, param: :slug
+  resources :articles, param: :slug, only: %w[index show]
 
   # Landing pages
   get "start/:slug", to: redirect("%{slug}")

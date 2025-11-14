@@ -1,36 +1,48 @@
-<% if @projects.empty? || @upload.ongoing_zip_checks.any? %>
-  <div class="bg-white dark:bg-gray-800/50 max-w-md mx-auto mt-16 sm:mt-20 border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4">
+<turbo-frame id="upload-inspections"
+  refresh="morph"
+  data-controller="simple-poll"
+  data-simple-poll-path-value="<%= request.path %>"
+  data-simple-poll-interval-value="10000" >
+  <% if @projects.empty? || @upload.ongoing_zip_checks.any? %>
 
-    <% if @upload.ongoing_zip_checks.any? %>
-      <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-          <h2 class="text-base font-semibold text-gray-900 dark:text-white">
-            <%= "Inspecting #{pluralize(@upload.ongoing_zip_checks.count, ".zip file")}" %>
-          </h2>
-          <% @upload.ongoing_zip_checks.each do |zip_check| %>
-            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            <%= "Looking for .blend files in #{zip_check.zip_filename}.." %></p>
-          <% end %>
+    <div class="bg-white dark:bg-gray-800/50 max-w-md mx-auto mt-16 sm:mt-20 border border-gray-300 dark:border-white/10 p-4 rounded-md flex flex-col gap-y-4">
+
+      <% if @upload.ongoing_zip_checks.any? %>
+
+        <%= tag.div(nil, hidden: true, data: { "simple-poll-target" => "inProgress" }) %>
+
+        <div class="sm:flex sm:items-center">
+          <div class="sm:flex-auto">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+              <%= "Inspecting #{pluralize(@upload.ongoing_zip_checks.count, ".zip file")}" %>
+            </h2>
+            <% @upload.ongoing_zip_checks.each do |zip_check| %>
+              <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+              <%= "Looking for .blend files in #{zip_check.zip_filename}.." %></p>
+            <% end %>
+          </div>
         </div>
-      </div>
-    <% end %>
 
-    <% if @upload.blend_filepaths.many? %>
-      <%= render "project_intakes/form",
-        upload: @upload,
-        project_intake: @project_intake %>
-    <% end %>
+      <% end %>
 
-    <% if @upload.blend_filepaths.empty? && @upload.ongoing_zip_checks.empty? %>
-      <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-          <h2 class="text-base font-semibold text-gray-900 dark:text-white">
-            No .blend files found!
-          </h2>
+      <% if @upload.blend_filepaths.many? %>
+        <%= render "project_intakes/form",
+          upload: @upload,
+          project_intake: @project_intake %>
+      <% end %>
+
+      <% if @upload.blend_filepaths.empty? && @upload.ongoing_zip_checks.empty? %>
+        <div class="sm:flex sm:items-center">
+          <div class="sm:flex-auto">
+            <h2 class="text-base font-semibold text-gray-900 dark:text-white">
+              No .blend files found!
+            </h2>
+          </div>
         </div>
-      </div>
-    <% end %>
-  </div>
-<% end %>
+      <% end %>
+    </div>
+  <% end %>
 
-<%= render "projects/list", projects: @projects %>
+  <%= render "projects/list", projects: @projects %>
+
+</turbo-frame>
