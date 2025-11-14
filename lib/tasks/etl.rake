@@ -31,16 +31,8 @@ namespace :etl do
       elsif old_user.password.blank?
         guest_count += 1
       else
-        user = User.where(id: old_user.id).first_or_initialize
 
-        user.name = old_user.name
-        user.email_address = old_user.email
-        user.password_digest = old_user.password
-        user.email_address_verified = old_user.email_verified_at.present?
-        user.render_credit_cents = old_user.bg_credit
-        user.created_at = old_user.created_at
-        user.save!
-
+        make_user_from_old(old_user)
         created_count += 1
 
         if user.render_credit_cents.nonzero? && user.saved_change_to_id_value?
@@ -118,6 +110,12 @@ namespace :etl do
 
     scope.find_each do |old_article|
       article = Article.where(slug: old_article.slug).first_or_initialize
+
+      user = User.where(id: old_article.user.id).first
+      if user.nil?
+        puts "No user found for article #{old_article.id}"
+        make_user_from_old(old_article.user)
+      end
 
       article.user_id = old_article.user.id
       article.title = old_article.title
@@ -258,4 +256,16 @@ def update_article_body(article)
   end
 
   updated_body
+end
+
+def make_user_from_old(old_user)
+  user = User.where(id: old_user.id).first_or_initialize
+
+  user.name = old_user.name
+  user.email_address = old_user.email
+  user.password_digest = old_user.password
+  user.email_address_verified = old_user.email_verified_at.present?
+  user.render_credit_cents = old_user.bg_credit
+  user.created_at = old_user.created_at
+  user.save!
 end

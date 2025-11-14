@@ -2,7 +2,7 @@
 
 richard:
   name: Richard
-  email_address: richard@blendergrid.com
+  email_address: rich@blendergrid.com
   password_digest: <%= password_digest %>
   email_address_verified: true
 
