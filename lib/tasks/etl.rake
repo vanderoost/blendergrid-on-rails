@@ -157,6 +157,11 @@ namespace :etl do
         next
       end
 
+      unless old_project.project_events.map(&:type).include?("RENDER_ACTIVITY_SUCCESS")
+        puts "Project has not finished rendering"
+        next
+      end
+
       puts "Found '#{old_project.name}' from '#{old_user.email}'"
       puts "Source: #{old_project.project_source.inspect}"
 

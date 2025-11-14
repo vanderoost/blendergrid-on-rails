@@ -57,4 +57,11 @@ end
 class OldApp::Project < OldApp
   belongs_to :project_source
   belongs_to :user
+  has_many :project_events
+end
+
+class OldApp::ProjectEvent < OldApp
+  self.inheritance_column = :_type_disabled
+
+  belongs_to :project
 end
