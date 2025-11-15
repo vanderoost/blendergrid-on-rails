@@ -3,13 +3,13 @@
 <div class="space-y-12 mt-12">
 
   <!-- TODO: Personal Information section -->
-  <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
-    <div>
-      <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Personal Information</h2>
-      <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">How we communicate with you.</p>
-    </div>
+  <%= form_with model: @user do |form| %>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Personal Information</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">How we communicate with you.</p>
+      </div>
 
-    <%= form_with model: @user do |form| %>
       <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
 
         <div class="sm:col-span-4">
@@ -33,8 +33,9 @@
         </div>
 
       </div>
-    <% end %>
-  </div>
+
+    </div>
+  <% end %>
 
   <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
     <div>
@@ -74,4 +75,5 @@
   </div>
 
   <!-- TODO: Delete account section -->
+
 </div>

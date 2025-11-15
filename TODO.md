@@ -2,14 +2,12 @@
 
 ## before launch
 
-- [ ] Fix the 'forgot password' form
 - [ ] Fix up all the transactional emails (style, message, reply-to)
-- [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Waiting stage
-    - [ ] Edit page with deadline+res+samples form
     - [ ] Show settings summary (non editable)
     - [x] Show price at index per project
     - [x] Deadline + resolution + samples form at index
+    - [x] Edit page with deadline+res+samples form
 - [x] UI/UX
     - [x] Pay once for multiple projects
     - [x] Basic style so it doesn’t look like a 90’s primary school website
@@ -79,6 +77,8 @@
 - [x] Tighten up the migrations to have everything not nullable where needed
 - [x] Auto update inspecting .zip contents, Stimulus to reload a Turbo frame
 - [x] Tighten up the routes to remove any unused routes with `only:`
+- [x] Fix the 'forgot password' form
+- [x] Fix and run the projects / articles / landing pages migration scripts
 
 ## after launch
 
