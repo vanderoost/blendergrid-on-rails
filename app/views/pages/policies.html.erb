@@ -1,4 +1,5 @@
 <% if @content_html.blank? %>
+  <% content_for :title, "Blendergrid Policies" %>
 
   <div class="py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -40,6 +41,8 @@
   </div>
 
 <% else %>
+
+  <% content_for :title, @title %>
 
   <div class="py-24 sm:py-32">
     <div class="mx-auto max-w-4xl px-6 lg:px-8">

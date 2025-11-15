@@ -32,6 +32,7 @@ class PagesController < ApplicationController
       fenced_code_blocks: true,
       no_intra_emphasis: true
     )
+    @title = "Blendergrid #{slug.titleize}"
     @content_html = markdown.render(markdown_content)
   end
 end
