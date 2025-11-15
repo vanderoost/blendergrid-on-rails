@@ -18,7 +18,7 @@ class SignupsController < ApplicationController
 
   def signup_params
     params.expect(signup: [
-      :name, :email_address, :password, :password_confirmation, :gift,
+      :name, :email_address, :password, :password_confirmation, :terms, :gift,
     ])
   end
 end

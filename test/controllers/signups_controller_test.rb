@@ -6,6 +6,20 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "user should accept the terms" do
+    assert_difference("User.count", 0) do
+      post signups_url, params: { signup: {
+        name: "Nassim Taleb",
+        email_address: "foo@fighters.bar",
+        password: "secretly",
+        password_confirmation: "secretly",
+        terms: "0",
+      } }
+    end
+    # assert_response :redirect
+    # assert flash.key? :alert
+  end
+
   test "should create a new user from a signup" do
     assert_difference("User.count", 1) do
       post signups_url, params: { signup: {
@@ -13,6 +27,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
         email_address: "foo@fighters.bar",
         password: "secretly",
         password_confirmation: "secretly",
+        terms: "1",
       } }
     end
     assert_response :redirect
@@ -26,6 +41,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
         email_address: "yt.watcher@example.com",
         password: "secretly",
         password_confirmation: "secretly",
+        terms: "1",
         gift: "true",
       } }
     end
