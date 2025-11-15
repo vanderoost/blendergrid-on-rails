@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { pluralize } from "application"
 
 export default class extends Controller {
   static targets = ["projectsTable", "project", "summaryDisplay"]
@@ -17,20 +18,29 @@ export default class extends Controller {
   }
 
   update = () => {
+    let checkboxCount = 0
     let projectCheckedCount = 0
     let totalPriceCents = 0
     this.projectTargets.forEach(project => {
       const checkbox = project.querySelector("input[type=checkbox]")
-      if (!checkbox.checked) return
+      if (!!checkbox) checkboxCount += 1
+      if (!checkbox || !checkbox.checked) return
 
       projectCheckedCount += 1
-      totalPriceCents += parseInt(project.querySelector("[data-price-cents]").dataset.priceCents)
+      totalPriceCents += parseInt(
+        project.querySelector("[data-price-cents]").dataset.priceCents
+      )
     })
 
-    if (projectCheckedCount === 0) {
-      this.summaryDisplayTarget.innerText = "select a project to start rendering"
+    if (checkboxCount === 0) {
+      this.summaryDisplayTarget.innerText = "please wait a few minutes for the price calculation to finish..."
+    } else if (projectCheckedCount === 0) {
+      this.summaryDisplayTarget.innerText = "select the projects you want to render"
     } else {
-      this.summaryDisplayTarget.innerText = `total for ${projectCheckedCount} projects: $${(totalPriceCents / 100).toFixed(2)} USD`
+      this.summaryDisplayTarget.innerHTML = `
+        <span class="text-gray-700 dark:text-gray-300">total for ${pluralize(projectCheckedCount, "project")}:</span>
+        <span class="ml-3 tabular-nums">$${(totalPriceCents / 100).toFixed(2)} USD</span>
+      `
     }
   }
 }

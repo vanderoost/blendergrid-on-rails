@@ -82,10 +82,10 @@
 
 ## after launch
 
+- [ ] Fix bug when uploading two of the same file
 - [ ] Dedicated thank you for signing up page? (With instructions to verify email)
 - [ ] Email validation on email address updates
 - [ ] Add pagination to articles index
-- [ ] Only show "select a project to start rendering" if there are unchecked checkboxes
 - [ ] Have a CTA button (calculate price, render) on the project show page as well
 - [ ] Project settings form: Edit + tab to next field makes it submit and lose focus
 - [ ] After creating an upload, stay on the start page, show projects in a turbo frame
@@ -117,3 +117,4 @@ properly
     - [ ]  Select a project
     - [ ]  Calculate the price
     - [ ]  Start rendering
+- [x] Only show "select a project to start rendering" if there are unchecked checkboxes

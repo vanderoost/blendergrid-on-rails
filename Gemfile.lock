@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/vanderoost/rails.git
-  revision: 8fb804b125701b789366fdf82dbcbcb617d78db3
+  revision: 2045c9cf1f7f1f45ff528e1fa2e2a34a839d5fe1
   branch: 8-1-multipart-direct-uploads
   specs:
     actioncable (8.2.0.alpha)
@@ -159,7 +159,7 @@ GEM
     dotenv (3.1.8)
     drb (2.2.3)
     ed25519 (1.4.0)
-    erb (5.1.3)
+    erb (6.0.0)
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
@@ -380,7 +380,7 @@ GEM
       ostruct
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    stringio (3.1.7)
+    stringio (3.1.8)
     stripe (17.2.0)
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)

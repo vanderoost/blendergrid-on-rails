@@ -152,19 +152,28 @@
       -->
       <%= turbo_frame_tag "#{dom_id(project)}_pre_render_setting" do %>
         <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
+          
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_deadline_hours, "Deadline" %>
-            <%= form.number_field :tweaks_deadline_hours, in: project.tweaks_deadline_hours_min..project.tweaks_deadline_hours_max %>
+            <div class="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
+              <%= form.number_field :tweaks_deadline_hours, in: project.tweaks_deadline_hours_min..project.tweaks_deadline_hours_max, class: "block min-w-0 bg-white py-0.5 pr-1 pl-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+              <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400">h</div>
+            </div>
           </div>
 
           <div class="flex flex-col gap-2">
-            <%= form.label :tweaks_resolution_percentage, "Resolution %" %>
-            <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2) %>
+            <%= form.label :tweaks_resolution_percentage, "Resolution" %>
+            <div class="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
+              <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2), class: "block min-w-0 bg-white py-0.5 pr-1 pl-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+              <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400">%</div>
+            </div>
           </div>
 
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_sampling_max_samples, "Samples" %>
-            <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)..(project.sampling_max_samples * 2) %>
+            <div class="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
+              <%= form.number_field :tweaks_sampling_max_samples, in: (project.sampling_max_samples / 2)..(project.sampling_max_samples * 2), class: "block min-w-0 bg-white py-0.5 px-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+            </div>
           </div>
         <% end %>
 

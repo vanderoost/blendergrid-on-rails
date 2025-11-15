@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { pluralize } from "application"
 
 const states = {
   empty: "empty",
@@ -211,7 +212,3 @@ function splitFilename(filename, tailLength = 10) {
   return [firstPart, lastPart];
 }
 
-function pluralize(count, singular, plural = '') {
-  const word = count === 1 ? singular : plural || singular + 's'
-  return `${count} ${word}`
-}

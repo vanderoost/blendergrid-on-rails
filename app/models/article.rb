@@ -14,7 +14,7 @@ class Article < ApplicationRecord
   end
 
   def author_name
-    user.name
+    user&.name&.split(" ")&.first || "Anonymous"
   end
 
   def body_html

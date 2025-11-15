@@ -7,6 +7,7 @@ class CreateUsers < ActiveRecord::Migration[8.0]
       t.boolean :email_address_verified, default: false
       t.integer :render_credit_cents, default: 0
       t.timestamps
+      t.datetime :deleted_at, index: true
     end
   end
 end
