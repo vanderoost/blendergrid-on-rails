@@ -32,7 +32,7 @@ namespace :etl do
         guest_count += 1
       else
 
-        make_user_from_old(old_user)
+        user = make_user_from_old(old_user)
         created_count += 1
 
         if user.render_credit_cents.nonzero? && user.saved_change_to_id_value?
@@ -160,7 +160,7 @@ namespace :etl do
 
     scope = OldApp::Project
       .where.not(user_id: nil)
-      .where("updated_at > ?", 3.days.ago)
+      .where("updated_at > ?", 14.days.ago)
 
     # TODO: Make sure to select only rendered projects
 
@@ -268,4 +268,6 @@ def make_user_from_old(old_user)
   user.render_credit_cents = old_user.bg_credit
   user.created_at = old_user.created_at
   user.save!
+
+  user
 end

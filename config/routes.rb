@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
   # Static pages
   get "pricing", to: "pages#pricing"
+  get "support", to: "pages#support"
   get "policies", to: "pages#policies"
   get "policies/:slug", to: "pages#policies"
 

@@ -54,13 +54,15 @@ RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:users
 Useful for when migrations have changed (instead of added).
 
 ```bash
-c; caffeinate -id while :
+c; while :
 do RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:drop:primary && break
 sleep 10
 done
 RAILS_ENV=production DISABLE_DATABASE_ENVIRONMENT_CHECK=1 r db:migrate:primary &&
 RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:users &&
+RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:landing_pages &&
 RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:articles &&
+RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:projects &&
 say 'The import is done!' || say 'Something went wrong'
 ```
 
