@@ -1,5 +1,6 @@
 class SignupsController < ApplicationController
-  allow_unauthenticated_access only: %w[new create]
+  allow_unauthenticated_access
+  before_action :redirect_if_authenticated
 
   def new
     @signup = Signup.new

@@ -76,4 +76,8 @@ module Authentication
         user_id: nil
       )
     end
+
+    def redirect_if_authenticated
+      redirect_to account_path if authenticated?
+    end
 end
