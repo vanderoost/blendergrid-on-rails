@@ -2,6 +2,7 @@
 
 ## before launch
 
+- [ ] Fix the 'forgot password' form
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Waiting stage
@@ -81,6 +82,7 @@
 
 ## after launch
 
+- [ ] Dedicated thank you for signing up page? (With instructions to verify email)
 - [ ] Email validation on email address updates
 - [ ] Add pagination to articles index
 - [ ] Only show "select a project to start rendering" if there are unchecked checkboxes

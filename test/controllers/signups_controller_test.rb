@@ -6,6 +6,32 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "user should submit their name" do
+    assert_difference("User.count", 0) do
+      post signups_url, params: { signup: {
+        name: "",
+        email_address: "foo@fighters.bar",
+        password: "secretly",
+        password_confirmation: "secretly",
+        terms: "1",
+      } }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "user should submit the same password twice" do
+    assert_difference("User.count", 0) do
+      post signups_url, params: { signup: {
+        name: "Nassim Taleb",
+        email_address: "foo@fighters.bar",
+        password: "secretly",
+        password_confirmation: "secretleyyy",
+        terms: "1",
+      } }
+    end
+    assert_response :unprocessable_entity
+  end
+
   test "user should accept the terms" do
     assert_difference("User.count", 0) do
       post signups_url, params: { signup: {
@@ -16,8 +42,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
         terms: "0",
       } }
     end
-    # assert_response :redirect
-    # assert flash.key? :alert
+    assert_response :unprocessable_entity
   end
 
   test "should create a new user from a signup" do
