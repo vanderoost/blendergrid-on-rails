@@ -1,4 +1,7 @@
 class ProjectMailer < ApplicationMailer
+  default to:       -> { @user.email_address },
+          reply_to: -> { "support@blendergrid.com" }
+
   def project_created(project)
     @project = project
     @user = @project.user

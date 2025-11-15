@@ -211,6 +211,8 @@ namespace :etl do
         status: "rendered",
         blend_filepath: old_project.main_blend_file,
         price_cents: old_project.price,
+        created_at: old_project.created_at,
+        updated_at: old_project.updated_at,
         deleted_at: old_project.deleted_at,
       }, unique_by: :uuid).first
 

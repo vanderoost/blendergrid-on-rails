@@ -52,7 +52,7 @@ if content =~ /^---\n(.*?)\n---\n(.*)/m
 
   puts "✅ Updated: #{article.title}"
   puts "📝 Cache automatically cleared"
-  puts "🔗 View at: https://rails.blendergrid.com/articles/#{article.slug}"
+  puts "🔗 View at: https://blendergrid.com/articles/#{article.slug}"
 else
   puts "❌ Error parsing frontmatter"
 end

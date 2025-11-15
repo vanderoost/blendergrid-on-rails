@@ -65,9 +65,9 @@ class Dashboard
       loop do
         begin
           projects = Project.first 16
-          revenue_24h = Project.joins(:order).where(order: {
-            created_at: 24.hours.ago..Time.now,
-          }).sum(:price_cents)
+          revenue_24h = Order
+            .where(created_at: 24.hours.ago..)
+            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
 
           @data_lock.synchronize do
             @projects = projects
