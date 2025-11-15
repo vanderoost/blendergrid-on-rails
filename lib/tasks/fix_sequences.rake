@@ -1,7 +1,7 @@
 namespace :db do
   desc "Reset all PostgreSQL sequences to match current max IDs"
   task reset_sequences: :environment do
-    if ActiveRecord::Base.connection.adapter_name == 'PostgreSQL'
+    if ActiveRecord::Base.connection.adapter_name == "PostgreSQL"
       # Get all tables with primary keys
       tables = ActiveRecord::Base.connection.tables
 
@@ -25,7 +25,7 @@ namespace :db do
           # Get max ID
           max_id = ActiveRecord::Base.connection.execute(
             "SELECT COALESCE(MAX(#{pk}), 0) + 1 AS max_id FROM #{table}"
-          ).first['max_id']
+          ).first["max_id"]
 
           # Reset sequence
           ActiveRecord::Base.connection.execute(
@@ -38,7 +38,7 @@ namespace :db do
         end
       end
 
-      puts "\n✅ All sequences have been reset!"
+      puts "\nAll sequences have been reset!"
     else
       puts "This task only works with PostgreSQL databases"
     end
