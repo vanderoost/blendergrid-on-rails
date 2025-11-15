@@ -19,7 +19,7 @@ export default class extends Controller {
     leaveTo: "opacity-0",
   }
 
-  connect() {
+  panelTargetConnected() {
     this.open();
 
     setTimeout(this.close, this.timing.enter + this.timing.hold);
