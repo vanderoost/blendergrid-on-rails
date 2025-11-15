@@ -18,7 +18,8 @@
       "Read(//Users/richard/.cache/**)",
       "WebFetch(domain:docs.stripe.com)",
       "WebSearch",
-      "Bash(bundle list:*)"
+      "Bash(bundle list:*)",
+      "Bash(kamal logs:*)"
     ],
     "deny": [],
     "ask": []

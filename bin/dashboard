@@ -64,7 +64,7 @@ class Dashboard
     @projects_poll_thread = Thread.new do
       loop do
         begin
-          projects = Project.first 16
+          projects = Project.first 20
           revenue_24h = Order
             .where(created_at: 24.hours.ago..)
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
