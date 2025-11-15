@@ -2,7 +2,6 @@
 
 ## before launch
 
-- [ ] Tighten up the routes to remove any unused routes with `only:`
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Fix and run the projects / articles / landing pages migration scripts
 - [ ] Waiting stage
@@ -78,9 +77,11 @@
     - [x] Handle Stripe refunds for guests
 - [x] Tighten up the migrations to have everything not nullable where needed
 - [x] Auto update inspecting .zip contents, Stimulus to reload a Turbo frame
+- [x] Tighten up the routes to remove any unused routes with `only:`
 
 ## after launch
 
+- [ ] Email validation on email address updates
 - [ ] Add pagination to articles index
 - [ ] Only show "select a project to start rendering" if there are unchecked checkboxes
 - [ ] Have a CTA button (calculate price, render) on the project show page as well

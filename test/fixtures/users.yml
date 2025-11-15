@@ -7,11 +7,13 @@ richard:
   email_address_verified: true
 
 gary:
+  name: Gary
   email_address: gary@example.com
   password_digest: <%= password_digest %>
   email_address_verified: true
 
 unverified_user:
+  name: Unverified User
   email_address: two@example.com
   password_digest: <%= password_digest %>
 
@@ -21,18 +23,21 @@ author:
   password_digest: <%= password_digest %>
 
 user_with_balance_20:
+  name: Napoleon Dynamite
   email_address: napoleon@dynamite.io
   password_digest: <%= password_digest %>
   email_address_verified: true
   render_credit_cents: 2000
 
 user_with_balance_1000:
+  name: Richard Example
   email_address: richard@example.com
   password_digest: <%= password_digest %>
   email_address_verified: true
   render_credit_cents: 100000
 
 long_email_address:
+  name: Long Email User
   email_address: diesisteineextreemecooleemailalsorlydasschoncool@fake-box.com
   password_digest: <%= password_digest %>
   email_address_verified: true
