@@ -29,10 +29,10 @@
   @apply contents
 }
 .field_with_errors > label {
-  @apply text-red-900 dark:text-red-100;
+  @apply text-red-600 dark:text-red-400;
 }
 .field_with_errors > input {
-  @apply text-red-900 dark:text-red-100 placeholder-red-900/50 dark:placeholder-red-100/50;
+  @apply text-red-900 dark:text-red-100 placeholder-red-900/50 dark:placeholder-red-100/50 bg-red-100 dark:bg-red-900/50;
 }
 
 .progress_donut {

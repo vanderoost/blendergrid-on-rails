@@ -135,7 +135,9 @@
     </div>
 
   <% else %>
-    TODO: Project details for <%= @project.name %>. 
+    <% if @project.benchmarking? %> 
+      <p class="italic text-sm text-gray-700 dark:text-gray-300 py-8">Price calculation in progress...</p>
+    <% end %>
   <% end %>
 
 </turbo-frame>

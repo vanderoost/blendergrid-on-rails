@@ -17,5 +17,6 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
-  validates :email_address, uniqueness: { case_sensitive: false }
+  validates :name, presence: true
+  validates :email_address, presence: true, uniqueness: { case_sensitive: false }
 end

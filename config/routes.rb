@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resource :signups, path: "signup", only: %w[new create]
   resource :session, only: %w[new create destroy]
 
-  resources :users, only: %w[show]
+  resources :users, only: %w[show update]
   resources :passwords, param: :token, only: %w[new create edit update]
   resources :email_address_verifications, param: :token, only: %w[show]
   resources :uploads, param: :uuid, only: %w[index show new create] do
