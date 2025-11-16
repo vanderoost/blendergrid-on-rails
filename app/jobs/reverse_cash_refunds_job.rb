@@ -2,7 +2,6 @@ class ReverseCashRefundsJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    puts "REVERSING DELAYED CASH REFUNDS"
     CreditEntry
       .where(created_at: 32.hours.ago..24.hours.ago)
       .where(reason: "delayed_cash_refund")

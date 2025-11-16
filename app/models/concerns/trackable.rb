@@ -14,10 +14,10 @@ module Trackable
     end
 
     def track_created
-      # track_event(:created)
+      track_event(:created)
     end
 
     def track_updated
-      # track_event(:updated)
+      track_event(:updated)
     end
 end
