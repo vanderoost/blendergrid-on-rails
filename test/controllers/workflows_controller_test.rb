@@ -1,15 +1,19 @@
 require "test_helper"
 
 class WorkflowsControllerTest < ActionDispatch::IntegrationTest
-  setup do
-    @checking_project = projects(:checking)
-    @blend_check_workflow = @checking_project.blend_check.workflow
-    @benchmarking_project = projects(:benchmarking)
-    @benchmark_workflow = @benchmarking_project.benchmark.workflow
-    @rendering_project = projects(:rendering)
-    @render_workflow = @rendering_project.render.workflow
-    @api_token = ApiToken.create!(name: "Test Token")
-    @auth_headers = { "Authorization" => "Bearer #{@api_token.token}" }
+  test "should handle failed workflow" do
+    patch api_v1_workflow_path(@blend_check_workflow),
+      params: {
+        workflow: { status: "failed" },
+      },
+      headers: @auth_headers,
+      as: :json
+
+    @blend_check_workflow.reload
+    assert_equal "failed", @blend_check_workflow.status
+
+    project = @blend_check_workflow.project
+    assert_equal "failed", project.status
   end
 
   test "should set status, result, timing, and node type" do
@@ -93,5 +97,16 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
 
     @rendering_project.reload
     assert @rendering_project.rendered?, "status should be rendered"
+  end
+
+  setup do
+    @checking_project = projects(:checking)
+    @blend_check_workflow = @checking_project.blend_check.workflow
+    @benchmarking_project = projects(:benchmarking)
+    @benchmark_workflow = @benchmarking_project.benchmark.workflow
+    @rendering_project = projects(:rendering)
+    @render_workflow = @rendering_project.render.workflow
+    @api_token = ApiToken.create!(name: "Test Token")
+    @auth_headers = { "Authorization" => "Bearer #{@api_token.token}" }
   end
 end

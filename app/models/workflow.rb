@@ -14,7 +14,8 @@ class Workflow < ApplicationRecord
   delegate :broadcast_update, to: :project
 
   after_create :start, if: :created?
-  after_update_commit :handle_completion, if: :just_done?
+  after_update_commit :handle_completion, if: :just_finished?
+  after_update_commit :handle_failure, if: :just_failed?
   after_update_commit :broadcast_update, if: :saved_change_to_progress_permil?
 
   def stop
@@ -35,7 +36,15 @@ class Workflow < ApplicationRecord
       # TODO: Use a background job to start the workflow
     end
 
-    def just_done?
-      status_previously_changed? && (finished? || failed?)
+    def handle_failure
+      project.fail
+    end
+
+    def just_finished?
+      status_previously_changed? && finished?
+    end
+
+    def just_failed?
+      status_previously_changed? && failed?
     end
 end
