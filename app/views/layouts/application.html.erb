@@ -22,7 +22,6 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= render "layouts/helpscout" %>
   </head>
 
   <body>
@@ -38,5 +37,7 @@
     <%= render "layouts/footer" %>
 
     <%= render "layouts/notifications" %>
+
+    <div data-controller="helpscout" hidden></div>
   </body>
 </html>
