@@ -115,9 +115,11 @@
       <% end %>
     </div>
 
-    <div class="border-t border-gray-200 dark:border-gray-700 space-y-1 pt-2 pb-3">
-        <%= link_to "Account", account_path, class: (current_page?(account_path) ? current_mobile_link_class : default_mobile_link_class) %>
-    </div>
+    <% if authenticated? %>
+      <div class="border-t border-gray-200 dark:border-gray-700 space-y-1 pt-2 pb-3">
+          <%= link_to "Account", account_path, class: (current_page?(account_path) ? current_mobile_link_class : default_mobile_link_class) %>
+      </div>
+    <% end %>
 
     <div class="border-t border-gray-200 p-4 dark:border-gray-700 flex justify-end">
       <% if authenticated? %>
