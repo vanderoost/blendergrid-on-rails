@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_10_162838) do
+ActiveRecord::Schema[8.2].define(version: 2025_11_16_115211) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -295,6 +295,25 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_10_162838) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "articles", "users"
+  add_foreign_key "blender_scenes", "projects"
+  add_foreign_key "credit_entries", "orders"
+  add_foreign_key "credit_entries", "refunds"
+  add_foreign_key "credit_entries", "users"
+  add_foreign_key "events", "requests"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "projects"
+  add_foreign_key "orders", "users"
+  add_foreign_key "page_variants", "landing_pages"
+  add_foreign_key "project_benchmarks", "projects"
+  add_foreign_key "project_blend_checks", "projects"
+  add_foreign_key "project_renders", "projects"
   add_foreign_key "projects", "blender_scenes", column: "current_blender_scene_id"
+  add_foreign_key "projects", "orders"
+  add_foreign_key "projects", "uploads"
+  add_foreign_key "refunds", "order_items"
+  add_foreign_key "requests", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "upload_zip_checks", "uploads"
+  add_foreign_key "uploads", "users"
 end
