@@ -17,6 +17,10 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
-  # validates :name, presence: true # TODO: Turn back on after ETL
+  validates :name, presence: true
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
+
+  def first_name
+    name.split(" ").first.titleize
+  end
 end
