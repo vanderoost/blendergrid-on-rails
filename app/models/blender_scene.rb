@@ -11,6 +11,7 @@ class BlenderScene < ApplicationRecord
       x: :integer,
       y: :integer,
       percentage: :integer,
+      use_border: :boolean,
     },
     sampling: {
       use_adaptive: :boolean,
