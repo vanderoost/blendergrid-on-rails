@@ -82,6 +82,7 @@
 
 ## after launch
 
+- [ ] Don't allow duplicating projects that failed the blend check
 - [ ] Fix bug when uploading two of the same file
 - [ ] Dedicated thank you for signing up page? (With instructions to verify email)
 - [ ] Email validation on email address updates
