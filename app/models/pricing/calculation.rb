@@ -72,6 +72,7 @@ class Pricing::Calculation
         @max_node_count,
         @blender_scene.frames.count / @min_jobs_per_node,
       ].min
+      max_node_count = [ max_node_count, 1 ].max
       puts "MAX NODE COUNT: #{max_node_count}" if DEBUG
 
       api_time = @api_time_per_node * max_node_count
