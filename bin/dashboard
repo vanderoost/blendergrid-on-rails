@@ -12,6 +12,7 @@ GREEN = 1
 BLUE = 2
 YELLOW = 3
 RED = 4
+GRAY = 5
 
 # Log all SQL queries (works in all environments using notifications)
 SQL_LOG = File.open(Rails.root.join("log", "dashboard_sql.log"), "a")
@@ -46,7 +47,7 @@ class Dashboard
     @poll_signal = ConditionVariable.new
     @fetch_error = nil
 
-    # Projects table (always latest 20 for home view)
+    # Projects list (latest 20 + active owner's projects if applicable)
     @projects = []
     @project_ix = -1
     @project_cols = %i[name owner]
@@ -55,10 +56,9 @@ class Dashboard
     # Project details
     @project = nil
 
-    # Owner view
+    # Active owner (when set, adds owner's projects to @projects)
     @owner_user = nil # Cached user object
     @owner_email = nil # Cached email for guests
-    @owner_projects = [] # Owner's projects when in owner view
 
     ################ STATE ################
 
@@ -74,6 +74,7 @@ class Dashboard
     init_pair(BLUE, COLOR_BLUE, -1)
     init_pair(YELLOW, COLOR_YELLOW, -1)
     init_pair(RED, COLOR_RED, -1)
+    init_pair(GRAY, COLOR_BLACK + 8, -1)
   end
 
   def start_polling_data
@@ -82,18 +83,7 @@ class Dashboard
         begin
           log("Polling data...")
 
-          # Always load latest 20 projects for home view
-          projects = Project
-            .includes({ upload: :user }, { renders: :workflow })
-            .first(20)
-
-          revenue_24h = Order
-            .where(created_at: 24.hours.ago..)
-            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
-            CreditEntry.where(reason: :topup).sum(:amount_cents)
-
-          # Also load owner projects if an owner is active
-          owner_projects = nil
+          # Check if an owner is active
           owner_user = nil
           owner_email = nil
           @data_lock.synchronize do
@@ -101,24 +91,46 @@ class Dashboard
             owner_email = @owner_email
           end
 
+          # Always load latest 20 projects
+          latest_20 = Project
+            .includes({ upload: :user }, { renders: :workflow }, { order_item: :order })
+            .first(20)
+            .to_a
+
+          # If owner is active, also load their projects and merge
           if owner_user.present?
-            log("Polling owner projects for user #{owner_user.id}...")
+            log("Polling latest 20 + owner projects for user #{owner_user.id}...")
             owner_projects = owner_user.projects
-              .includes({ upload: :user }, { renders: :workflow })
+              .includes(
+                { upload: :user },
+                { renders: :workflow },
+                { order_item: :order },
+              )
               .first(12)
+              .to_a
+            projects = (latest_20 + owner_projects).uniq
           elsif owner_email.present?
-            log("Polling owner projects for guest #{owner_email}...")
+            log("Polling latest 20 + owner projects for guest #{owner_email}...")
             owner_projects = Project
               .includes({ upload: :user }, { renders: :workflow })
               .joins(:upload)
               .where(upload: { guest_email_address: owner_email })
               .first(12)
+              .to_a
+            projects = (latest_20 + owner_projects).uniq
+          else
+            log("Polling latest 20 projects...")
+            projects = latest_20
           end
+
+          revenue_24h = Order
+            .where(created_at: 24.hours.ago..)
+            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
+            CreditEntry.where(reason: :topup).sum(:amount_cents)
 
           @data_lock.synchronize do
             @projects = projects
             @revenue_24h = revenue_24h
-            @owner_projects = owner_projects if owner_projects.present?
             @fetch_error = nil
           end
           log("Polled #{projects.length} projects")
@@ -141,6 +153,17 @@ class Dashboard
   def trigger_poll
     @data_lock.synchronize do
       @poll_signal.signal
+    end
+  end
+
+  def filtered_owner_projects
+    # Filter projects list for active owner (must be called under @data_lock)
+    if @owner_user.present?
+      @projects.select { |p| p.user == @owner_user }
+    elsif @owner_email.present?
+      @projects.select { |p| p.upload.guest_email_address == @owner_email }
+    else
+      []
     end
   end
 
@@ -171,8 +194,11 @@ class Dashboard
             @project_ix += 1
             @project_ix = 0 if @project_ix >= @projects.length
           when :owner_details
-            @project_ix += 1
-            @project_ix = 0 if @project_ix >= @owner_projects.length
+            @data_lock.synchronize do
+              owner_projects = filtered_owner_projects
+              @project_ix += 1
+              @project_ix = 0 if @project_ix >= owner_projects.length
+            end
           end
 
         when 'k' # Up
@@ -181,8 +207,11 @@ class Dashboard
             @project_ix -= 1
             @project_ix = @projects.length - 1 if @project_ix < 0
           when :owner_details
-            @project_ix -= 1
-            @project_ix = @owner_projects.length - 1 if @project_ix < 0
+            @data_lock.synchronize do
+              owner_projects = filtered_owner_projects
+              @project_ix -= 1
+              @project_ix = owner_projects.length - 1 if @project_ix < 0
+            end
           end
 
         when 10 # Enter
@@ -233,7 +262,10 @@ class Dashboard
 
     when :owner_details
       if @project_ix >= 0
-        @project = @owner_projects[@project_ix]
+        @data_lock.synchronize do
+          owner_projects = filtered_owner_projects
+          @project = owner_projects[@project_ix]
+        end
         change_view :project_details
       end
     end
@@ -256,7 +288,6 @@ class Dashboard
       @data_lock.synchronize do
         @owner_user = nil
         @owner_email = nil
-        @owner_projects = []
       end
     end
 
@@ -265,26 +296,18 @@ class Dashboard
   end
 
   def load_owner_data(project)
-    # Set owner info and filter current projects list for instant display
+    # Set owner info - projects list already contains matching projects
     @data_lock.synchronize do
       if project.user.present?
         @owner_user = project.user
         @owner_email = nil
-        # Filter projects list to show matching ones instantly
-        @owner_projects = @projects.select { |p| p.user == project.user }
       else
         @owner_user = nil
         @owner_email = project.upload.guest_email_address
-        # Filter projects list to show matching ones instantly
-        @owner_projects = @projects.select do |p|
-          p.upload.guest_email_address == @owner_email
-        end
       end
-      # Ensure we have at least the current project
-      @owner_projects = [project] if @owner_projects.empty?
     end
 
-    # Trigger poll to load full owner projects list
+    # Trigger poll to load full owner projects and merge into @projects
     trigger_poll
   end
 
@@ -307,14 +330,18 @@ class Dashboard
       end
     end
 
-    projects.each_with_index do |p, i|
+    projects.first(20).each_with_index do |p, i|
       # Highlight the selected project name
       hl = @project_cols[@project_col] == :name && i == @project_ix
       render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
       addstr(" ")
 
       # Status
-      render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
+      render_cell(status_str(p), 16, [
+        color_pair(GREEN) => p.rendered?,
+        color_pair(YELLOW) => p.in_progress?,
+        color_pair(RED) => p.failed?
+      ])
       addstr(" ")
 
       # Update time
@@ -323,7 +350,10 @@ class Dashboard
       addstr(" ")
 
       # Price
-      render_cell(cents_to_dollars(p.price_cents).rjust(12), 12)
+      not_paid = p.order&.stripe_payment_intent_id.blank?
+      render_cell(cents_to_dollars(p.price_cents).rjust(12), 12, [
+        color_pair(GRAY) => not_paid
+      ])
       addstr(" ")
 
       # Owner
@@ -364,14 +394,14 @@ class Dashboard
   end
 
   def render_owner_details(_project)
-    # Safely read owner and owner projects data under lock
+    # Safely read owner and filter projects for this owner
     owner_user = nil
     owner_email = nil
     owner_projects = []
     @data_lock.synchronize do
       owner_user = @owner_user
       owner_email = @owner_email
-      owner_projects = @owner_projects
+      owner_projects = filtered_owner_projects
     end
 
     if owner_user.present?
@@ -425,7 +455,11 @@ class Dashboard
       addstr(" ")
 
       # Status
-      render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
+      render_cell(status_str(p), 16, [
+        color_pair(GREEN) => p.rendered?,
+        color_pair(YELLOW) => p.in_progress?,
+        color_pair(RED) => p.failed?
+      ])
       addstr(" ")
 
       # Update time
@@ -489,8 +523,8 @@ def human_duration(duration)
 
   return "#{sign}#{days} days" if days > 2
   return "#{sign}#{hours}h" if hours > 23
-  return "#{sign}#{hours}:%02dh" % minutes if hours
-  return "#{sign}#{minutes}:%02dm" % seconds if minutes
+  return "#{sign}#{hours}:%02dh" % minutes if hours.positive?
+  return "#{sign}#{minutes}:%02dm" % seconds if minutes.positive?
   return "#{sign}#{seconds}s" if seconds > 9
   return "#{sign}%.01fs" % (seconds + ms.fdiv(1000)) if seconds > 0
 
