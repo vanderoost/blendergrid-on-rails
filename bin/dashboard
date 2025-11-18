@@ -6,11 +6,25 @@ require "curses"
 
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
+DEBUG_LOG.sync = true  # Disable buffering
 
 GREEN = 1
 BLUE = 2
 YELLOW = 3
 RED = 4
+
+# Log all SQL queries (works in all environments using notifications)
+SQL_LOG = File.open(Rails.root.join("log", "dashboard_sql.log"), "a")
+SQL_LOG.sync = true
+
+# Subscribe to SQL events - works in all Rails environments
+ActiveSupport::Notifications.subscribe("sql.active_record") do |name, start, finish, id, payload|
+  unless payload[:name] == "SCHEMA"
+    duration = ((finish - start) * 1000).round(1)
+    SQL_LOG.puts "#{payload[:name]} (#{duration}ms)  #{payload[:sql]}"
+    SQL_LOG.flush
+  end
+end
 
 # What to store in state?
 # VIEWS
@@ -29,6 +43,7 @@ class Dashboard
     ################ STATE ################
     @view = :home_view
     @data_lock = Mutex.new
+    @poll_signal = ConditionVariable.new
     @fetch_error = nil
 
     # Projects table
@@ -66,6 +81,7 @@ class Dashboard
     @data_poll_thread = Thread.new do
       loop do
         begin
+          log("Polling data...")
           # Eager load all associations to prevent N+1 queries
           projects = Project
             .includes({ upload: :user }, { renders: :workflow })
@@ -75,21 +91,56 @@ class Dashboard
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
             CreditEntry.where(reason: :topup).sum(:amount_cents)
 
+          # Load owner projects if an owner is active
+          owner_projects = nil
+          owner_user = nil
+          owner_email = nil
+          @data_lock.synchronize do
+            owner_user = @owner_user
+            owner_email = @owner_email
+          end
+
+          if owner_user.present?
+            log("Polling owner projects for user #{owner_user.id}...")
+            owner_projects = owner_user.projects
+              .includes({ upload: :user }, { renders: :workflow })
+              .first(12)
+          elsif owner_email.present?
+            log("Polling owner projects for guest #{owner_email}...")
+            owner_projects = Project
+              .includes({ upload: :user }, { renders: :workflow })
+              .joins(:upload)
+              .where(upload: { guest_email_address: owner_email })
+              .first(12)
+          end
+
           @data_lock.synchronize do
             @projects = projects
             @revenue_24h = revenue_24h
+            @owner_projects = owner_projects if owner_projects.present?
             @fetch_error = nil
           end
+          log("Polled #{projects.length} projects")
         rescue => e
           @data_lock.synchronize do
             @fetch_error = e.message
           end
           log("Error fetching projects: #{e.message}")
         end
-        sleep 20 
+
+        # Wait for signal or timeout after 20 seconds
+        @data_lock.synchronize do
+          @poll_signal.wait(@data_lock, 20)
+        end
       end
     end
     @data_poll_thread.abort_on_exception = true
+  end
+
+  def trigger_poll
+    @data_lock.synchronize do
+      @poll_signal.signal
+    end
   end
 
   def start_display_loop
@@ -202,27 +253,36 @@ class Dashboard
 
     @owner_project_ix = -1
 
+    # Clear owner data when leaving owner view to stop polling
+    if @view == :owner_details && new_view != :owner_details
+      @data_lock.synchronize do
+        @owner_user = nil
+        @owner_email = nil
+        @owner_projects = []
+      end
+    end
+
     clear
     @view = new_view
   end
 
   def load_owner_data(project)
-    # Cache owner data to avoid repeated queries during rendering
-    if project.user.present?
-      @owner_user = project.user
-      @owner_email = nil
-      @owner_projects = project.user.projects
-        .includes({ upload: :user }, { renders: :workflow })
-        .first(12)
-    else
-      @owner_user = nil
-      @owner_email = project.upload.guest_email_address
-      @owner_projects = Project
-        .includes({ upload: :user }, { renders: :workflow })
-        .joins(:upload)
-        .where(upload: { guest_email_address: @owner_email })
-        .first(12)
+    # Set owner info from already-loaded project data (no DB query)
+    # and initialize with current project, then trigger poll for full list
+    @data_lock.synchronize do
+      if project.user.present?
+        @owner_user = project.user
+        @owner_email = nil
+      else
+        @owner_user = nil
+        @owner_email = project.upload.guest_email_address
+      end
+      # Start with just the current project, poll will load the rest
+      @owner_projects = [project]
     end
+
+    # Trigger immediate poll to load full owner projects list
+    trigger_poll
   end
 
   def render_home_view
@@ -301,20 +361,30 @@ class Dashboard
   end
 
   def render_owner_details(_project)
+    # Safely read owner data under lock
+    owner_user = nil
+    owner_email = nil
+    owner_projects = []
+    @data_lock.synchronize do
+      owner_user = @owner_user
+      owner_email = @owner_email
+      owner_projects = @owner_projects
+    end
+
     # Use cached owner data instead of fetching
-    if @owner_user.present?
-      render_user_details
+    if owner_user.present?
+      render_user_details(owner_user, owner_projects)
     else
-      render_guest_details
+      render_guest_details(owner_email, owner_projects)
     end
   end
 
-  def render_user_details
+  def render_user_details(owner_user, owner_projects)
     first_col_width = 12
     row = 0
     setpos(row += 1, 2)
     render_cell(
-      @owner_user.name || @owner_user.email_address,
+      owner_user.name || owner_user.email_address,
       32,
       [ color_pair(GREEN), A_UNDERLINE ]
     )
@@ -322,33 +392,33 @@ class Dashboard
 
     render_cell("ID:", first_col_width, color_pair(YELLOW))
     addstr(" ")
-    render_cell(@owner_user.id, 24)
+    render_cell(owner_user.id, 24)
     setpos(row += 1, 2)
 
     render_cell("Email:", first_col_width, color_pair(YELLOW))
     addstr(" ")
-    render_cell(@owner_user.email_address, 24)
+    render_cell(owner_user.email_address, 24)
     setpos(row += 2, 2)
 
     # Owner projects already cached in @owner_projects
-    render_owner_projects_table
+    render_owner_projects_table(owner_projects)
   end
 
-  def render_guest_details
+  def render_guest_details(owner_email, owner_projects)
     setpos(1, 2)
     render_cell(
-      "Guest #{@owner_email}",
+      "Guest #{owner_email}",
       64,
       [ color_pair(GREEN), A_UNDERLINE ]
     )
     setpos(3, 2)
 
     # Owner projects already cached in @owner_projects
-    render_owner_projects_table
+    render_owner_projects_table(owner_projects)
   end
 
-  def render_owner_projects_table
-    @owner_projects.each_with_index do |p, i|
+  def render_owner_projects_table(owner_projects)
+    owner_projects.each_with_index do |p, i|
       # Highlight the selected project name
       hl = i == @owner_project_ix
       render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
@@ -356,6 +426,11 @@ class Dashboard
 
       # Status
       render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
+      addstr(" ")
+
+      # Update time
+      time_ago_str = "#{human_duration(Time.current - p.stage_updated_at)} ago"
+      render_cell(time_ago_str, 12)
       addstr(" ")
 
       # Price
