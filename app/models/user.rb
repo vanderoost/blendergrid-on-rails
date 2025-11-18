@@ -21,6 +21,6 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
 
   def first_name
-    name.split(" ").first&.titleize || email_address.split("@").first
+    name&.split(" ")&.first&.titleize || email_address.split("@").first
   end
 end
