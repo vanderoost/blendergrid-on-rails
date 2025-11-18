@@ -29,7 +29,7 @@ class Project < ApplicationRecord
   has_many :renders, class_name: "Project::Render"
 
   delegate :user, to: :upload
-  delegate :order, to: :order_item
+  delegate :order, to: :order_item, allow_nil: true
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
   after_create :start_checking, if: :created?
@@ -189,6 +189,18 @@ class Project < ApplicationRecord
     ))
   end
 
+  def update_price
+    self.tweaks_deadline_hours_min = price_calculation.deadline_hours_min
+    self.tweaks_deadline_hours_max = price_calculation.deadline_hours_max
+    if self.tweaks_deadline_hours < self.tweaks_deadline_hours_min
+      self.tweaks_deadline_hours = self.tweaks_deadline_hours_min
+    elsif self.tweaks_deadline_hours > self.tweaks_deadline_hours_max
+      self.tweaks_deadline_hours = self.tweaks_deadline_hours_max
+    end
+
+    self.price_cents = price_calculation.price_cents
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
@@ -210,18 +222,6 @@ class Project < ApplicationRecord
     def stage_changed?
       return false unless status_changed?
       status_to_stage(status_was) != stage
-    end
-
-    def update_price
-      self.tweaks_deadline_hours_min = price_calculation.deadline_hours_min
-      self.tweaks_deadline_hours_max = price_calculation.deadline_hours_max
-      if self.tweaks_deadline_hours < self.tweaks_deadline_hours_min
-        self.tweaks_deadline_hours = self.tweaks_deadline_hours_min
-      elsif self.tweaks_deadline_hours > self.tweaks_deadline_hours_max
-        self.tweaks_deadline_hours = self.tweaks_deadline_hours_max
-      end
-
-      self.price_cents = price_calculation.price_cents
     end
 
     def price_calculation

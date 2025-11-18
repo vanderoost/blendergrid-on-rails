@@ -1,5 +1,7 @@
 class Pricing::Calculation
-  DEBUG = false
+  DEBUG = true
+  MIN_NODES_PER_ZONE = 5
+  MAX_NODE_COUNT = 75 # Maybe depend on node_supplies?
 
   def initialize(benchmark:, node_supplies:, blender_scene:, tweaks: {})
     raise "No Benchmark provided" if benchmark.blank?
@@ -14,7 +16,7 @@ class Pricing::Calculation
 
     # Configuration
     @api_time_per_node = 20.seconds
-    @max_node_count = 50 # Maybe depend on node_supplies?
+    @max_node_count = MAX_NODE_COUNT
     @node_boot_time = 5.minutes
     @min_jobs_per_node = 3
     @min_deadline_factor = 1.5
@@ -75,7 +77,8 @@ class Pricing::Calculation
       api_time = @api_time_per_node * max_node_count
 
       min_wall_time = api_time + @node_boot_time + download_time + unzip_time +
-        init_time + sampling_time + post_time + upload_time +
+        (init_time + sampling_time + post_time + upload_time) *
+        (@blender_scene.frames.count / max_node_count) +
         [ zip_time, encode_time ].max
       safe_min_wall_time = min_wall_time * @min_deadline_factor
 
@@ -111,15 +114,22 @@ class Pricing::Calculation
       j = all_jobs_time.in_seconds
       d = deadline.in_seconds
       b = @node_boot_time.in_seconds
-      node_count = (d - b - Math.sqrt((d - b)**2 - 4*a*j)) / (2*a)
-      puts "NODE COUNT FORMULA: #{node_count.round 4}" if DEBUG
-      node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
-      puts "NODE COUNT: #{node_count}" if DEBUG
+      sqrt_term = (d - b)**2 - 4*a*j
+      puts "SQRT TERM: #{sqrt_term}" if DEBUG
+      if sqrt_term.positive?
+        node_count = (d - b - Math.sqrt(sqrt_term)) / (2*a)
+        puts "NODE COUNT FORMULA: #{node_count.round 4}" if DEBUG
+        node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
+        puts "NODE COUNT: #{node_count}" if DEBUG
+      else
+        node_count = j / (d - b)
+      end
 
       # What do the nodes cost?
       nodes_remaining = node_count
       total_hourly_cost = 0
       @node_supplies.each do |supply|
+        capacity = [ supply.capacity, MIN_NODES_PER_ZONE ].max
         nodes_to_use = [ nodes_remaining, supply.capacity ].min
         total_hourly_cost += supply.millicents_per_hour * nodes_to_use
         nodes_remaining -= nodes_to_use
