@@ -22,11 +22,17 @@ module Authentication
     end
 
     def resume_session
-      Current.session ||= find_session_by_cookie
+      Current.session ||= find_session_by_cookie || start_session_from_token
     end
 
     def find_session_by_cookie
       Session.find_by(id: cookies.signed[:session_id])
+    end
+
+    def start_session_from_token
+      user = User.find_by_token_for(:session, params[:session_token])
+      return unless user
+      start_new_session_for user
     end
 
     def request_authentication
