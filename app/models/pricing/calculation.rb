@@ -1,6 +1,6 @@
 class Pricing::Calculation
   DEBUG = true
-  MIN_NODES_PER_ZONE = 5
+  MIN_NODES_PER_ZONE = 4
   MAX_NODE_COUNT = 75 # Maybe depend on node_supplies?
 
   def initialize(benchmark:, node_supplies:, blender_scene:, tweaks: {})
@@ -119,18 +119,19 @@ class Pricing::Calculation
       if sqrt_term.positive?
         node_count = (d - b - Math.sqrt(sqrt_term)) / (2*a)
         puts "NODE COUNT FORMULA: #{node_count.round 4}" if DEBUG
-        node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
-        puts "NODE COUNT: #{node_count}" if DEBUG
       else
         node_count = j / (d - b)
+        puts "FALL BACK TO SIMPLE FORMULA: #{node_count.round 4}" if DEBUG
       end
+      puts "NODE COUNT: #{node_count}" if DEBUG
+      node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
 
       # What do the nodes cost?
       nodes_remaining = node_count
       total_hourly_cost = 0
       @node_supplies.each do |supply|
         capacity = [ supply.capacity, MIN_NODES_PER_ZONE ].max
-        nodes_to_use = [ nodes_remaining, supply.capacity ].min
+        nodes_to_use = [ nodes_remaining, capacity ].min
         total_hourly_cost += supply.millicents_per_hour * nodes_to_use
         nodes_remaining -= nodes_to_use
         break if nodes_remaining < 1
