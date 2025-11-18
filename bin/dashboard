@@ -67,7 +67,8 @@ class Dashboard
           projects = Project.first 20
           revenue_24h = Order
             .where(created_at: 24.hours.ago..)
-            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
+            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
+            CreditEntry.where(reason: :topup).sum(:amount_cents)
 
           @data_lock.synchronize do
             @projects = projects
