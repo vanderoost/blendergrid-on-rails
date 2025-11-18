@@ -50,4 +50,3 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
-.rubocop_server.yml

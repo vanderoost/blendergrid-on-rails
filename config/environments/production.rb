@@ -69,6 +69,12 @@ Rails.application.configure do
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "blendergrid.com" }
 
+  # Set host for all URL helpers (routes)
+  Rails.application.routes.default_url_options = {
+    host: "blendergrid.com",
+    protocol: "https",
+  }
+
   # Specify outgoing SMTP server. Remember to add smtp/* credentials via rails
   # credentials:edit.
   config.action_mailer.delivery_method = :smtp
