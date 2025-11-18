@@ -36,7 +36,11 @@ class Webhooks::StripeEventsController < Webhooks::BaseController
         return
       end
 
-      CreditEntry.create(user: user, amount_cents: session.amount_subtotal)
+      CreditEntry.create(
+        user: user,
+        amount_cents: session.amount_subtotal,
+        reason: :topup,
+      )
     end
 
     def handle_order_fulfillment(session)
