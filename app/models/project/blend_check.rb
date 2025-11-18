@@ -36,6 +36,7 @@ class Project::BlendCheck < ApplicationRecord
             "/tmp/project/#{project.blend_filepath}",
             "--python", "/tmp/scripts/integrity_check.py",
             "--",
+            "--project-dir", "/tmp/project",
             "--output-dir", "/tmp/output",
           ],
           image: Rails.env.production? ? {
