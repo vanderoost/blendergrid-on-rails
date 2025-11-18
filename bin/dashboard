@@ -41,6 +41,8 @@ class Dashboard
     @project = nil
 
     # User details (also has a projects table)
+    @owner_user = nil # Cached user object
+    @owner_email = nil # Cached email for guests
     @owner_projects = []
     @owner_project_ix = -1
 
@@ -60,11 +62,14 @@ class Dashboard
     init_pair(RED, COLOR_RED, -1)
   end
 
-  def start_polling_projects
-    @projects_poll_thread = Thread.new do
+  def start_polling_data
+    @data_poll_thread = Thread.new do
       loop do
         begin
-          projects = Project.first 20
+          # Eager load all associations to prevent N+1 queries
+          projects = Project
+            .includes({ upload: :user }, { renders: :workflow })
+            .first 20
           revenue_24h = Order
             .where(created_at: 24.hours.ago..)
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
@@ -81,10 +86,10 @@ class Dashboard
           end
           log("Error fetching projects: #{e.message}")
         end
-        sleep 5
+        sleep 20 
       end
     end
-    @projects_poll_thread.abort_on_exception = true
+    @data_poll_thread.abort_on_exception = true
   end
 
   def start_display_loop
@@ -164,11 +169,14 @@ class Dashboard
 
       # Figure out what thing was "clicked"
       if @project_ix >= 0
-        change_view case @project_cols[@project_col]
+        case @project_cols[@project_col]
         when :name
           @project = @projects[@project_ix]
-          :project_details
-        when :owner then :owner_details
+          change_view :project_details
+        when :owner
+          # Cache owner data when entering owner details view
+          load_owner_data(@projects[@project_ix])
+          change_view :owner_details
         end
       end
 
@@ -196,6 +204,25 @@ class Dashboard
 
     clear
     @view = new_view
+  end
+
+  def load_owner_data(project)
+    # Cache owner data to avoid repeated queries during rendering
+    if project.user.present?
+      @owner_user = project.user
+      @owner_email = nil
+      @owner_projects = project.user.projects
+        .includes({ upload: :user }, { renders: :workflow })
+        .first(12)
+    else
+      @owner_user = nil
+      @owner_email = project.upload.guest_email_address
+      @owner_projects = Project
+        .includes({ upload: :user }, { renders: :workflow })
+        .joins(:upload)
+        .where(upload: { guest_email_address: @owner_email })
+        .first(12)
+    end
   end
 
   def render_home_view
@@ -227,9 +254,13 @@ class Dashboard
       render_cell(status_str(p), 16, [ color_pair(YELLOW) => p.in_progress? ])
       addstr(" ")
 
+      # Update time
+      time_ago_str = "#{human_duration(Time.current - p.stage_updated_at)} ago"
+      render_cell(time_ago_str, 12)
+      addstr(" ")
+
       # Price
-      price_str = cents_to_dollars(p.price_cents)
-      render_cell(price_str.rjust(12), 12)
+      render_cell(cents_to_dollars(p.price_cents).rjust(12), 12)
       addstr(" ")
 
       # Owner
@@ -269,44 +300,50 @@ class Dashboard
     setpos(row += 1, 2)
   end
 
-  def render_owner_details(project)
-    if project.user.present?
-      render_user_details(project.user)
+  def render_owner_details(_project)
+    # Use cached owner data instead of fetching
+    if @owner_user.present?
+      render_user_details
     else
-      render_guest_details(project.upload.guest_email_address)
+      render_guest_details
     end
   end
 
-  def render_user_details(user)
+  def render_user_details
     first_col_width = 12
     row = 0
     setpos(row += 1, 2)
-    render_cell(user.name || user.email_address, 32, [ color_pair(GREEN), A_UNDERLINE ])
+    render_cell(
+      @owner_user.name || @owner_user.email_address,
+      32,
+      [ color_pair(GREEN), A_UNDERLINE ]
+    )
     setpos(row += 2, 2)
 
     render_cell("ID:", first_col_width, color_pair(YELLOW))
     addstr(" ")
-    render_cell(user.id, 24)
+    render_cell(@owner_user.id, 24)
     setpos(row += 1, 2)
 
     render_cell("Email:", first_col_width, color_pair(YELLOW))
     addstr(" ")
-    render_cell(user.email_address, 24)
+    render_cell(@owner_user.email_address, 24)
     setpos(row += 2, 2)
 
-    @owner_projects = user.projects.first(12)
+    # Owner projects already cached in @owner_projects
     render_owner_projects_table
   end
 
-  def render_guest_details(email_address)
+  def render_guest_details
     setpos(1, 2)
-    render_cell("Guest #{email_address}", 64, [ color_pair(GREEN), A_UNDERLINE ])
+    render_cell(
+      "Guest #{@owner_email}",
+      64,
+      [ color_pair(GREEN), A_UNDERLINE ]
+    )
     setpos(3, 2)
 
-    @owner_projects = Project.joins(:upload).where(upload: {
-      guest_email_address: email_address,
-    }).first(12)
-
+    # Owner projects already cached in @owner_projects
     render_owner_projects_table
   end
 
@@ -362,11 +399,32 @@ def status_str(project)
   "rendering %5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
 end
 
+def human_duration(duration)
+  return "" if duration.blank?
+
+  sign = duration < 0 ? "-" : ""
+
+  ms = duration.in_milliseconds.round.abs
+  seconds, ms = ms.divmod(1000)
+  minutes, seconds = seconds.divmod(60)
+  hours, minutes = minutes.divmod(60)
+  days, hours = hours.divmod(24)
+
+  return "#{sign}#{days} days" if days > 2
+  return "#{sign}#{hours}h" if hours > 23
+  return "#{sign}#{hours}:%02dh" % minutes if hours
+  return "#{sign}#{minutes}:%02dm" % seconds if minutes
+  return "#{sign}#{seconds}s" if seconds > 9
+  return "#{sign}%.01fs" % (seconds + ms.fdiv(1000)) if seconds > 0
+
+  "#{sign}#{seconds}.%03ds" % ms
+end
+
 def log(msg)
   DEBUG_LOG.puts "[#{Time.now}] #{msg}"
   DEBUG_LOG.flush
 end
 
 dash = Dashboard.new
-dash.start_polling_projects
+dash.start_polling_data
 dash.start_display_loop
