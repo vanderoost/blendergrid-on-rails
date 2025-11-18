@@ -46,7 +46,7 @@ class Dashboard
     @poll_signal = ConditionVariable.new
     @fetch_error = nil
 
-    # Projects table
+    # Projects table (always latest 20 for home view)
     @projects = []
     @project_ix = -1
     @project_cols = %i[name owner]
@@ -55,11 +55,10 @@ class Dashboard
     # Project details
     @project = nil
 
-    # User details (also has a projects table)
+    # Owner view
     @owner_user = nil # Cached user object
     @owner_email = nil # Cached email for guests
-    @owner_projects = []
-    @owner_project_ix = -1
+    @owner_projects = [] # Owner's projects when in owner view
 
     ################ STATE ################
 
@@ -82,16 +81,18 @@ class Dashboard
       loop do
         begin
           log("Polling data...")
-          # Eager load all associations to prevent N+1 queries
+
+          # Always load latest 20 projects for home view
           projects = Project
             .includes({ upload: :user }, { renders: :workflow })
-            .first 20
+            .first(20)
+
           revenue_24h = Order
             .where(created_at: 24.hours.ago..)
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
             CreditEntry.where(reason: :topup).sum(:amount_cents)
 
-          # Load owner projects if an owner is active
+          # Also load owner projects if an owner is active
           owner_projects = nil
           owner_user = nil
           owner_email = nil
@@ -170,8 +171,8 @@ class Dashboard
             @project_ix += 1
             @project_ix = 0 if @project_ix >= @projects.length
           when :owner_details
-            @owner_project_ix += 1
-            @owner_project_ix = 0 if @owner_project_ix >= @owner_projects.length
+            @project_ix += 1
+            @project_ix = 0 if @project_ix >= @owner_projects.length
           end
 
         when 'k' # Up
@@ -180,8 +181,8 @@ class Dashboard
             @project_ix -= 1
             @project_ix = @projects.length - 1 if @project_ix < 0
           when :owner_details
-            @owner_project_ix -= 1
-            @owner_project_ix = @owner_projects.length - 1 if @owner_project_ix < 0
+            @project_ix -= 1
+            @project_ix = @owner_projects.length - 1 if @project_ix < 0
           end
 
         when 10 # Enter
@@ -217,7 +218,6 @@ class Dashboard
   def maybe_change_view
     case @view
     when :home_view
-
       # Figure out what thing was "clicked"
       if @project_ix >= 0
         case @project_cols[@project_col]
@@ -225,15 +225,15 @@ class Dashboard
           @project = @projects[@project_ix]
           change_view :project_details
         when :owner
-          # Cache owner data when entering owner details view
+          # Set active owner and trigger poll for their projects
           load_owner_data(@projects[@project_ix])
           change_view :owner_details
         end
       end
 
     when :owner_details
-      if @owner_project_ix >= 0
-        @project = @owner_projects[@owner_project_ix]
+      if @project_ix >= 0
+        @project = @owner_projects[@project_ix]
         change_view :project_details
       end
     end
@@ -251,9 +251,7 @@ class Dashboard
     return if @view == new_view
     log("Changing view from #{@view} to #{new_view}")
 
-    @owner_project_ix = -1
-
-    # Clear owner data when leaving owner view to stop polling
+    # Clear owner data when leaving owner view
     if @view == :owner_details && new_view != :owner_details
       @data_lock.synchronize do
         @owner_user = nil
@@ -267,21 +265,26 @@ class Dashboard
   end
 
   def load_owner_data(project)
-    # Set owner info from already-loaded project data (no DB query)
-    # and initialize with current project, then trigger poll for full list
+    # Set owner info and filter current projects list for instant display
     @data_lock.synchronize do
       if project.user.present?
         @owner_user = project.user
         @owner_email = nil
+        # Filter projects list to show matching ones instantly
+        @owner_projects = @projects.select { |p| p.user == project.user }
       else
         @owner_user = nil
         @owner_email = project.upload.guest_email_address
+        # Filter projects list to show matching ones instantly
+        @owner_projects = @projects.select do |p|
+          p.upload.guest_email_address == @owner_email
+        end
       end
-      # Start with just the current project, poll will load the rest
-      @owner_projects = [project]
+      # Ensure we have at least the current project
+      @owner_projects = [project] if @owner_projects.empty?
     end
 
-    # Trigger immediate poll to load full owner projects list
+    # Trigger poll to load full owner projects list
     trigger_poll
   end
 
@@ -361,7 +364,7 @@ class Dashboard
   end
 
   def render_owner_details(_project)
-    # Safely read owner data under lock
+    # Safely read owner and owner projects data under lock
     owner_user = nil
     owner_email = nil
     owner_projects = []
@@ -371,7 +374,6 @@ class Dashboard
       owner_projects = @owner_projects
     end
 
-    # Use cached owner data instead of fetching
     if owner_user.present?
       render_user_details(owner_user, owner_projects)
     else
@@ -400,7 +402,6 @@ class Dashboard
     render_cell(owner_user.email_address, 24)
     setpos(row += 2, 2)
 
-    # Owner projects already cached in @owner_projects
     render_owner_projects_table(owner_projects)
   end
 
@@ -413,14 +414,13 @@ class Dashboard
     )
     setpos(3, 2)
 
-    # Owner projects already cached in @owner_projects
     render_owner_projects_table(owner_projects)
   end
 
   def render_owner_projects_table(owner_projects)
     owner_projects.each_with_index do |p, i|
       # Highlight the selected project name
-      hl = i == @owner_project_ix
+      hl = i == @project_ix
       render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
       addstr(" ")
 
@@ -437,6 +437,8 @@ class Dashboard
       price_str = cents_to_dollars(p.price_cents)
       render_cell(price_str.rjust(12), 12)
       addstr(" ")
+
+      # No owner column since all projects belong to the same owner
 
       # Move to the next line beginning
       setpos(stdscr.cury + 1, 2)
