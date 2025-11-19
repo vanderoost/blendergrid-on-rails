@@ -9,7 +9,8 @@ class SignupsController < ApplicationController
   def create
     @signup = Signup.new signup_params
     if @signup.save
-      redirect_to root_path, notice: "Check your email inbox for a verification link."
+      # redirect_to root_path, notice: "Check your email inbox for a verification link."
+      render @signup
     else
       render :new, status: :unprocessable_content
     end

@@ -1,5 +1,5 @@
 class Pricing::Calculation
-  DEBUG = true
+  DEBUG = false
   MIN_NODES_PER_ZONE = 4
   MAX_NODE_COUNT = 75 # Maybe depend on node_supplies?
 

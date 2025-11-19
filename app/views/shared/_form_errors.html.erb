@@ -1,7 +1,34 @@
-<% if form.object.errors.any? %>
+<%
+start = [
+  "Almost there:",
+  "Back up a bit:",
+  "Darn it!",
+  "Hang on:",
+  "Hold up:",
+  "Hold your horses!",
+  "Just a sec:",
+  "Let's try again:",
+  "Not quite:",
+  "Not so fast!",
+  "One moment",
+  "Pump the brakes!",
+  "Slow down!",
+  "Wait a minute:",
+  "Whoops!",
+].sample
+%>
+
+<% if form.object.errors.one? %>
   <div class="text-red-600 dark:text-red-400 my-4 text-sm">
+    <strong><%= start %> <%= form.object.errors.full_messages.first %></strong>
+  </div>
+<% elsif form.object.errors.many? %>
+  <div class="text-red-600 dark:text-red-400 my-4 text-sm">
+    <strong><%= start %> Please fix these <%= form.object.errors.count %> points</strong>
+    <ul class="mt-2 list-disc list-inside">
     <% form.object.errors.full_messages.each do |message| %>
-      <p><%= message %></p>
+      <li class="my-1"><%= message %></li>
     <% end %>
+    </ul>
   </div>
 <% end %>

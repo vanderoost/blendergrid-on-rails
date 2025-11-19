@@ -14,11 +14,7 @@ class UserFlowTest < ActionDispatch::IntegrationTest
         password: "password",
         password_confirmation: "password",
       } }
-      assert_response :redirect
     end
-
-    follow_redirect!
-    assert_response :success
   end
 
   test "can verify email address" do

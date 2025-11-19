@@ -4,11 +4,13 @@
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <%= render "form", signup: @signup %>
+    <turbo-frame id="signup-form">
+      <%= render "form", signup: @signup %>
 
-    <p class="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
-      Already signed up?
-      <%= link_to "Log in", new_session_path, class: "font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>
-    </p>
+      <p class="mt-10 text-center text-sm/6 text-gray-500 dark:text-gray-400">
+        Already signed up?
+        <%= link_to "Log in", new_session_path, class: "font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>
+      </p>
+    </turbo-frame>
   </div>
 </div>

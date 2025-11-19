@@ -55,8 +55,6 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
         terms: "1",
       } }
     end
-    assert_response :redirect
-    assert flash.key? :notice
   end
 
   test "should create a new user with credit from a gift signup" do

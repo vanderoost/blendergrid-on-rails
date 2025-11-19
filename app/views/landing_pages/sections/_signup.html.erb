@@ -1,3 +1,5 @@
 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-  <%= render "signups/form", signup: Signup.new, gift: section["gift"] %>
+  <turbo-frame id="signup-form">
+    <%= render "signups/form", signup: @signup || Signup.new(gift: section["gift"]) %>
+  </turbo-frame>
 </div>
