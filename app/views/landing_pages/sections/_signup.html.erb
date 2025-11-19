@@ -1,11 +1,11 @@
 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-  <turbo-frame id="signup-form">
-    <% unless authenticated? %>
+  <% unless authenticated? %>
+    <turbo-frame id="signup-form">
       <%= render "signups/form", signup: @signup || Signup.new(gift: section["gift"]) %>
-    <% else %>
-      <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
-        <%= render "uploads/form", upload: @upload || Upload.new %>
-      </p>
-    <% end %>
-  </turbo-frame>
+    </turbo-frame>
+  <% else %>
+    <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
+    <%= render "uploads/form", upload: @upload || Upload.new %>
+    </p>
+  <% end %>
 </div>

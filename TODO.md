@@ -82,6 +82,8 @@
 
 ## after launch
 
+- [ ] Add some kind of span signup protection
+- [ ] Send emails to guest uploaders!!!
 - [ ] Don't allow duplicating projects that failed the blend check
 - [ ] Fix bug when uploading two of the same file
 - [ ] Dedicated thank you for signing up page? (With instructions to verify email)
@@ -119,3 +121,4 @@ properly
     - [ ]  Calculate the price
     - [ ]  Start rendering
 - [x] Only show "select a project to start rendering" if there are unchecked checkboxes
+- [x] Don't show the signup for when logged in on affiliate landing pages
