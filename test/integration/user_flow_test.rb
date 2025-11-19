@@ -17,6 +17,24 @@ class UserFlowTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "affiliate page shows signup form" do
+    get landing_page_path(:youtuber)
+    assert_response :success
+
+    assert_dom 'form[action="/signup"]'
+  end
+
+  test "affiliate page doesn't show signup form if logged in" do
+    sign_in_as users(:richard)
+
+    get landing_page_path(:youtuber)
+    assert_response :success
+
+    assert_dom "*", text: "Richard"
+    assert_not_dom 'form[action="/signup"]'
+    assert_dom 'form[action="/uploads"]'
+  end
+
   test "can verify email address" do
     user = users(:unverified_user)
 
