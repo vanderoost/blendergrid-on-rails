@@ -433,6 +433,11 @@ class Dashboard
     render_cell("Email:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(owner_user.email_address, 24)
+    setpos(row += 1, 2)
+
+    render_cell("Credit:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(cents_to_dollars(owner_user.render_credit_cents), 24)
     setpos(row += 2, 2)
 
     render_owner_projects_table(owner_projects)
@@ -509,8 +514,14 @@ def cents_to_dollars(cents)
 end
 
 def status_str(project)
-  return project.status unless project.status == "rendering"
-  "rendering %5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+  case project.status
+  when "rendering"
+    "rendering %5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+  # when "cancelled"
+  #   "cancelled @%5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+  else
+    project.status
+  end
 end
 
 def human_duration(duration)
@@ -524,7 +535,7 @@ def human_duration(duration)
   hours, minutes = minutes.divmod(60)
   days, hours = hours.divmod(24)
 
-  return "#{sign}#{days} days" if days > 2
+  return "#{sign}#{days} days" if days.positive?
   return "#{sign}#{hours}h" if hours > 23
   return "#{sign}#{hours}:%02dh" % minutes if hours.positive?
   return "#{sign}#{minutes}:%02dm" % seconds if minutes.positive?
