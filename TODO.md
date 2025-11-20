@@ -82,6 +82,7 @@
 
 ## after launch
 
+- [ ] Take blend check errors into accoun (no camera) and don't allow benchmarks
 - [ ] Add some kind of span signup protection
 - [ ] Send emails to guest uploaders!!!
 - [ ] Don't allow duplicating projects that failed the blend check
