@@ -13,7 +13,9 @@ youtuber_default:
   sections:
     - id: heading
       note: 'In collaboration with <a href="https://youtube.com" target="_blank" class="font-semibold text-primary-600 dark:text-primary-400"><span aria-hidden="true" class="absolute inset-0"></span>Tyler Durden Art <span aria-hidden="true">&rarr;</span></a>'
-      title: "Youtube subscribers get $20 off"
+      title: "Tyler Durden Art subscribers get $20 off"
       subtitle: "Sign up to get $20 off your first cloud render."
     - id: signup
       gift: true
+    - id: logo_cloud
+    - id: testimonials
