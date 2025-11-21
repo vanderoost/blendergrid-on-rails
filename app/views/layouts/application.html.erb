@@ -30,8 +30,10 @@
     <%#= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
     <%#= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
 
-    <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-18.5rem-2px)]">
-      <%= yield %>
+    <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-6rem)]">
+      <div class="relative isolate px-6 pt-14 lg:px-8">
+        <%= yield %>
+      </div>
     </main>
 
     <%= render "layouts/footer" %>

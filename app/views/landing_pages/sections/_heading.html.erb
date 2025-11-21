@@ -1,11 +1,20 @@
-<div class="mx-auto max-w-7xl px-6 lg:px-8 my-12">
-  <div class="mx-auto max-w-4xl sm:text-center">
-    <h1 class="text-5xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-6xl sm:text-balance dark:text-white">
+<div class="mx-auto max-w-2xl">
+  <% if section["note"].present? %>
+    <div class="hidden sm:mb-8 sm:flex sm:justify-center">
+      <div class="relative rounded-full px-3 py-1 text-sm/6 text-gray-600 ring-1 ring-gray-900/10 hover:ring-gray-900/20 dark:text-gray-400 dark:ring-white/10 dark:hover:ring-white/20 bg-white/50 dark:bg-gray-950/30">
+        <%= section["note"].html_safe %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="text-center">
+    <h1 class="text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl dark:text-white">
       <%= section["title"].html_safe %>
     </h1>
-    <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
-      <%= section["subtitle"].html_safe %>
-    </p>
+    <% if section["subtitle"].present? %>
+      <p class="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
+        <%= section["subtitle"].html_safe %>
+      </p>
+    <% end %>
   </div>
 </div>
-

@@ -17,120 +17,122 @@
     current_mobile_link_class = "block border-l-4 border-primary-600 bg-primary-50 py-3 pr-4 pl-3 text-base font-medium text-primary-700 dark:border-primary-500 dark:bg-primary-600/10 dark:text-primary-300"
 %>
 
-<nav class="border-b border-gray-200 bg-white dark:bg-gray-800/50 dark:border-white/10">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16">
+<header class="absolute inset-x-0 top-0 z-50 border-b border-gray-200 bg-white/70 dark:bg-gray-800/50 dark:border-white/10">
+  <nav>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16">
 
-      <!-- LOGO -->
-      <div class="flex shrink-0 grow basis-0 items-center md:w-12 overflow-hidden">
-        <%= link_to root_path do %>
-          <%= render "shared/logo", classes: "h-7 lg:h-8 w-auto" %>
-        <% end %>
-      </div>
+        <!-- LOGO -->
+        <div class="flex shrink-0 grow basis-0 items-center md:w-12 overflow-hidden">
+          <%= link_to root_path do %>
+            <%= render "shared/logo", classes: "h-7 lg:h-8 w-auto" %>
+          <% end %>
+        </div>
 
-      <!-- NAV LINKS -->
-      <div class="hidden sm:-my-px sm:flex sm:gap-8">
-        <% nav_links.each do |link| %>
-          <%= link_to link[:title], link[:path], class: (link.fetch(:current_page, current_page?(link[:path])) ? current_link_class : default_link_class) + link.fetch(:display_class, " inline-flex") %>
-        <% end %>
-      </div>
+        <!-- NAV LINKS -->
+        <div class="hidden sm:-my-px sm:flex sm:gap-8">
+          <% nav_links.each do |link| %>
+            <%= link_to link[:title], link[:path], class: (link.fetch(:current_page, current_page?(link[:path])) ? current_link_class : default_link_class) + link.fetch(:display_class, " inline-flex") %>
+          <% end %>
+        </div>
 
-      <!-- SIGNUP/LOGIN/LOGOUT -->
-      <div class="hidden sm:flex items-center shrink-0 grow basis-0 justify-end gap-x-4">
-        <% if authenticated? %>
+        <!-- SIGNUP/LOGIN/LOGOUT -->
+        <div class="hidden sm:flex items-center shrink-0 grow basis-0 justify-end gap-x-4">
+          <% if authenticated? %>
 
-          <div data-controller="dropdown" class="relative">
+            <div data-controller="dropdown" class="relative">
 
-            <button data-action="dropdown#toggle click@window->dropdown#hide keydown.esc->dropdown#hide"
-              class="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-400 shadow-xs hover:bg-gray-50 dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
+              <button data-action="dropdown#toggle click@window->dropdown#hide keydown.esc->dropdown#hide"
+                class="inline-flex items-center w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold text-gray-700 dark:text-gray-400 shadow-xs hover:bg-gray-50 dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
 
-              <%= Current.user&.first_name %>
-            </button>
+                <%= Current.user&.first_name %>
+              </button>
 
-            <div data-dropdown-target="menu" hidden class="absolute right-0 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:divide-white/10 dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+              <div data-dropdown-target="menu" hidden class="absolute right-0 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg outline-1 outline-black/5 transition transition-discrete [--anchor-gap:--spacing(2)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:divide-white/10 dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
 
-              <div class="px-4 py-3">
-                <p class="text-sm text-gray-700 dark:text-gray-400">Logged in as</p>
-                <p class="truncate text-sm font-medium text-gray-900 dark:text-white"><%= Current.user.email_address %></p>
+                <div class="px-4 py-3">
+                  <p class="text-sm text-gray-700 dark:text-gray-400">Logged in as</p>
+                  <p class="truncate text-sm font-medium text-gray-900 dark:text-white"><%= Current.user.email_address %></p>
+                </div>
+
+                <div class="py-1">
+                  <%= link_to account_path, class: "group/item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white" do %>
+                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-gray-400 group-hover/item:text-gray-500 dark:text-gray-500 dark:group-hover/item:text-white">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" />
+                    </svg>
+                    Account
+                  <% end %>
+                </div>
+
+                <div class="py-1">
+                  <%= button_to session_path,
+                    method: :delete,
+                    class:  "group/item w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white" do %>
+                    <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-gray-400 group-hover/item:text-gray-500 dark:text-gray-500 dark:group-hover/item:text-white">
+                      <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z" clip-rule="evenodd" />
+                      <path fill-rule="evenodd" d="M6 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H6.75A.75.75 0 0 1 6 10Z" clip-rule="evenodd" />
+                    </svg>
+                    Log out
+                  <% end %>
+                </div>
               </div>
 
-              <div class="py-1">
-                <%= link_to account_path, class: "group/item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white" do %>
-                  <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-gray-400 group-hover/item:text-gray-500 dark:text-gray-500 dark:group-hover/item:text-white">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0Zm-5.5-2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0ZM10 12a5.99 5.99 0 0 0-4.793 2.39A6.483 6.483 0 0 0 10 16.5a6.483 6.483 0 0 0 4.793-2.11A5.99 5.99 0 0 0 10 12Z" clip-rule="evenodd" />
-                  </svg>
-                  Account
-                <% end %>
-              </div>
-
-              <div class="py-1">
-                <%= button_to session_path,
-                  method: :delete,
-                  class:  "group/item w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 hover:outline-hidden dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white" do %>
-                  <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="mr-3 size-5 text-gray-400 group-hover/item:text-gray-500 dark:text-gray-500 dark:group-hover/item:text-white">
-                    <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 0 1 5.25 2h5.5A2.25 2.25 0 0 1 13 4.25v2a.75.75 0 0 1-1.5 0v-2a.75.75 0 0 0-.75-.75h-5.5a.75.75 0 0 0-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 0 0 .75-.75v-2a.75.75 0 0 1 1.5 0v2A2.25 2.25 0 0 1 10.75 18h-5.5A2.25 2.25 0 0 1 3 15.75V4.25Z" clip-rule="evenodd" />
-                    <path fill-rule="evenodd" d="M6 10a.75.75 0 0 1 .75-.75h9.546l-1.048-.943a.75.75 0 1 1 1.004-1.114l2.5 2.25a.75.75 0 0 1 0 1.114l-2.5 2.25a.75.75 0 1 1-1.004-1.114l1.048-.943H6.75A.75.75 0 0 1 6 10Z" clip-rule="evenodd" />
-                  </svg>
-                  Log out
-                <% end %>
-              </div>
             </div>
 
-          </div>
+          <% else %>
 
+            <%= link_to new_session_path, class: "items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" do %>
+              Log in <span aria-hidden="true">&rarr;</span>
+            <% end %>
+
+          <% end %>
+        </div>
+
+        <!-- MOBILE MENU BUTTON -->
+        <div class="-mr-2 flex items-center sm:hidden">
+          <label for="navbar-trigger" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-primary-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white dark:focus:outline-primary-500">
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Open main menu</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+              <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+              <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <input id="navbar-trigger" type="checkbox" class="hidden peer/hamburger" />
+    <div id="mobile-menu" class="hidden peer-checked/hamburger:block md:peer-checked/hamburger:hidden">
+      <div class="space-y-1 pt-2 pb-3">
+        <% nav_links.each do |link| %>
+          <%= link_to link[:title], link[:path], class: (current_page?(link[:path]) ? current_mobile_link_class : default_mobile_link_class) %>
+        <% end %>
+      </div>
+
+      <% if authenticated? %>
+        <div class="border-t border-gray-200 dark:border-gray-700 space-y-1 pt-2 pb-3">
+          <%= link_to "Account", account_path, class: (current_page?(account_path) ? current_mobile_link_class : default_mobile_link_class) %>
+        </div>
+      <% end %>
+
+      <div class="border-t border-gray-200 p-4 dark:border-gray-700 flex justify-end">
+        <% if authenticated? %>
+          <%= button_to "Log out", session_path,
+            method: :delete,
+            class:  "block border-l-4 border-transparent rounded px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-200 cursor-pointer" %>
         <% else %>
-
-          <%= link_to new_session_path, class: "items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" do %>
+          <%= link_to new_session_path, class: "block border-l-4 border-transparent rounded px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-200" do %>
             Log in <span aria-hidden="true">&rarr;</span>
           <% end %>
-
         <% end %>
       </div>
-
-      <!-- MOBILE MENU BUTTON -->
-      <div class="-mr-2 flex items-center sm:hidden">
-        <label for="navbar-trigger" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-2 focus:outline-offset-2 focus:outline-primary-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white dark:focus:outline-primary-500">
-          <span class="absolute -inset-0.5"></span>
-          <span class="sr-only">Open main menu</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
-            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
-            <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </label>
-      </div>
     </div>
-  </div>
-
-  <!-- MOBILE MENU -->
-  <input id="navbar-trigger" type="checkbox" class="hidden peer/hamburger" />
-  <div id="mobile-menu" class="hidden peer-checked/hamburger:block md:peer-checked/hamburger:hidden">
-    <div class="space-y-1 pt-2 pb-3">
-      <% nav_links.each do |link| %>
-        <%= link_to link[:title], link[:path], class: (current_page?(link[:path]) ? current_mobile_link_class : default_mobile_link_class) %>
-      <% end %>
-    </div>
-
-    <% if authenticated? %>
-      <div class="border-t border-gray-200 dark:border-gray-700 space-y-1 pt-2 pb-3">
-          <%= link_to "Account", account_path, class: (current_page?(account_path) ? current_mobile_link_class : default_mobile_link_class) %>
-      </div>
-    <% end %>
-
-    <div class="border-t border-gray-200 p-4 dark:border-gray-700 flex justify-end">
-      <% if authenticated? %>
-        <%= button_to "Log out", session_path,
-          method: :delete,
-          class:  "block border-l-4 border-transparent rounded px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-200 cursor-pointer" %>
-      <% else %>
-        <%= link_to new_session_path, class: "block border-l-4 border-transparent rounded px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-200" do %>
-          Log in <span aria-hidden="true">&rarr;</span>
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-</nav>
+  </nav>
+</header>

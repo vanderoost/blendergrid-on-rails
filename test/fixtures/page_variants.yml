@@ -12,7 +12,8 @@ youtuber_default:
   landing_page: youtuber
   sections:
     - id: heading
-      title: "Youtuber recommends Blendergrid"
-      subtitle: "Sign up to get a $20 free credit gift."
+      note: 'In collaboration with <a href="https://youtube.com" target="_blank" class="font-semibold text-primary-600 dark:text-primary-400"><span aria-hidden="true" class="absolute inset-0"></span>Ty er Durden Art <span aria-hidden="true">&rarr;</span></a>'
+      title: "Youtube subscribers get $20 off"
+      subtitle: "Sign up to get $20 off your first cloud render."
     - id: signup
       gift: true

@@ -82,7 +82,9 @@
 
 ## after launch
 
+- [ ] Archive old projects after 14 days, and let users now about this
 - [ ] Take blend check errors into accoun (no camera) and don't allow benchmarks
+- [ ] Make Render model soft deleteable (so we keep a reference to the Render workflow)
 - [ ] Add some kind of span signup protection
 - [ ] Send emails to guest uploaders!!!
 - [ ] Don't allow duplicating projects that failed the blend check
@@ -123,3 +125,13 @@ properly
     - [ ]  Start rendering
 - [x] Only show "select a project to start rendering" if there are unchecked checkboxes
 - [x] Don't show the signup for when logged in on affiliate landing pages
+
+## Marketing
+
+- [ ] Capture emails for newsletter
+    - [ ] On articles
+    - [ ] somewhere else?
+
+## Dashboard
+
+- [ ] Take refunds into account with 24h revenue (or show refunds)
