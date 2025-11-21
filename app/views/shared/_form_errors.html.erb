@@ -1,32 +1,32 @@
 <%
 start = [
   "Almost there:",
-  "Back up a bit:",
-  "Darn it!",
   "Hang on:",
   "Hold up:",
   "Hold your horses!",
-  "Just a sec:",
   "Let's try again:",
   "Not quite:",
-  "Not so fast!",
-  "Pump the brakes!",
-  "Wait a minute:",
   "Whoops!",
 ].sample
 %>
 
-<% if form.object.errors.one? %>
-  <div class="text-red-600 dark:text-red-400 my-4 text-sm">
-    <strong><%= start %> <%= form.object.errors.full_messages.first %></strong>
-  </div>
-<% elsif form.object.errors.many? %>
-  <div class="text-red-600 dark:text-red-400 my-4 text-sm">
-    <strong><%= start %> Please fix these <%= form.object.errors.count %> points</strong>
-    <ul class="mt-2 list-disc list-inside">
-    <% form.object.errors.full_messages.each do |message| %>
-      <li class="my-1"><%= message %></li>
-    <% end %>
-    </ul>
-  </div>
+<% if form.object.errors.any? %>
+
+<div class="border border-gray-200 bg-white/70 dark:bg-gray-800/50 dark:border-white/10 rounded-md px-4">
+  <% if form.object.errors.one? %>
+    <div class="text-red-600 dark:text-red-400 my-4 text-sm">
+      <strong><%= start %> <%= form.object.errors.full_messages.first %></strong>
+    </div>
+  <% elsif form.object.errors.many? %>
+    <div class="text-red-600 dark:text-red-400 my-4 text-sm">
+      <strong><%= start %> Please fix these <%= form.object.errors.count %> points</strong>
+      <ul class="mt-2 list-disc list-inside">
+      <% form.object.errors.full_messages.each do |message| %>
+        <li class="my-1"><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
 <% end %>
