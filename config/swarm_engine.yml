@@ -13,5 +13,5 @@ development:
 
 production:
   <<: *defaults
-  env: staging # ENV of the Swarm Engine - Production is reserved for the live site
+  env: production
   bucket: blendergrid-production-us-east-1
