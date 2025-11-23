@@ -20,60 +20,64 @@
           <blockquote class="p-6 text-lg tracking-tight text-gray-900 sm:p-12 sm:text-xl/8 dark:text-white/80">
             <p>“I'm glad you guys seem to be taking the approach of making something simple that works really well, and adding features slowly.<br/><strong class="dark:text-white">I love being able to rely on Blendergrid to 'just work'</strong> when I need it to.”</p>
           </blockquote>
-          <figcaption class="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap dark:border-white/10">
-            <img src="https://s3.amazonaws.com/blendergrid-media/headshots/tyler.jpg" alt="Tyler Disney" class="size-10 flex-none rounded-full bg-gray-50 dark:bg-gray-700" />
-            <div class="flex-auto">
-              <div class="font-semibold text-gray-900 dark:text-white">Tyler Disney</div>
-              <div class="text-gray-600 dark:text-gray-400">Lead Visualization Engineer at Integral Group</div>
-            </div>
-          </figcaption>
+          <a href="/articles/tyler-disney-interview" target="_blank" class="group">
+            <figcaption class="flex flex-wrap items-center gap-x-4 gap-y-4 border-t border-gray-900/10 px-6 py-4 sm:flex-nowrap dark:border-white/10">
+              <img src="https://s3.amazonaws.com/blendergrid-media/headshots/tyler.jpg" alt="Tyler Disney" class="size-10 flex-none rounded-full bg-gray-50 dark:bg-gray-700" />
+              <div class="flex-auto">
+                <div class="font-semibold text-gray-700 group-hover:text-gray-900 dark:text-gray-300 group-hover:dark:text-white">
+                  Tyler Disney
+                </div>
+                <div class="text-gray-500 group-hover:text-gray-700 dark:text-gray-400 group-hover:dark:text-gray-300">
+                  Lead Visualization Engineer at Integral Group
+                </div>
+              </div>
+            </figcaption>
+          </a>
         </figure>
 
         <div class="space-y-8 xl:contents xl:space-y-0">
           <div class="space-y-8 xl:row-span-2">
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“Yeah! I’ve been really enjoying Blendergrid! I thought about buying a massive expensive PC for my rendering... but why? This is faster and maybe even more cost effective.”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/ryan-scott" alt="Ryan Scott" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Ryan Scott</div>
-                  <div class="text-gray-600 dark:text-gray-400">Founder at Storypixel</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "Yeah! I’ve been really enjoying Blendergrid! I thought about buying a massive expensive PC for my rendering... but why? This is faster and maybe even more cost effective.",
+              name: "Ryan Scott",
+              company: "Storypixel",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/ryan-scott",
+              link: "https://www.storypixel.com/" %>
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“I’ve been using Blendergrid for a few years now. You have by far the ugliest interface among render farms, but you provide the simplest and best results ;) I don't know why, but with other render farms, there are always problems, and the render results never match my file. With you, I've never had these issues. So in short: I'm super happy with you :)”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/pol-decker" alt="" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Pol Decker</div>
-                  <div class="text-gray-600 dark:text-gray-400">PolDecker.com</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "I’ve been using Blendergrid for a few years now. You have by far the ugliest interface among render farms, but you provide the simplest and best results ;) I don't know why, but with other render farms, there are always problems, and the render results never match my file. With you, I've never had these issues. So in short: I'm super happy with you :)",
+              name: "Pol Decker",
+              company: "PolDecker.com",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/pol-decker",
+              link: "https://www.poldecker.com/" %>
+
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "Without a shadow of a doubt the best render farm I've ever used. The customer support has been absolutely incredible, and they've gone above and beyond to help me with every single question I've had. Not only an amazing render farm, but also quite clearly run by incredible people!",
+              name: "Ryan Vautier",
+              company: "RyanVautier.com",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/ryan-vautier",
+              link: "https://www.ryanvautier.com" %>
 
           </div>
 
           <div class="space-y-8 xl:row-start-1">
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“I have tried other Render Farms in the past and Blendergrid is by far the easiest to use and the price was amazing! Blendergrid also provided a helpful, friendly and prompt customer service. Since Blendergrid ran my entire render my computer was free to work on other projects. I am very excited to upload more Blender projects in the near future. Thank you, I highly recommend your service to others. Keep up the amazing work!”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://s3.amazonaws.com/blendergrid-media/headshots/deyson.jpg" alt="" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Deyson Ortiz</div>
-                  <div class="text-gray-600 dark:text-gray-400">Founder at Motion Master Templates</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "I have tried other Render Farms in the past and Blendergrid is by far the easiest to use and the price was amazing! Blendergrid also provided a helpful, friendly and prompt customer service. Since Blendergrid ran my entire render my computer was free to work on other projects. I am very excited to upload more Blender projects in the near future. Thank you, I highly recommend your service to others. Keep up the amazing work!",
+              name: "Deyson Ortiz",
+              company: "MotionMasterTemplates",
+              headshot: "https://s3.amazonaws.com/blendergrid-media/headshots/deyson.jpg",
+              link: "https://motionmastertemplates.com/" %>
+
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "I'm in love with Blendergrid right now.
+                The other day, I tried out another rendering farm (a Blender-focused competitor to Blendergrid). I rendered two angles of the same model - one with Blendergrid and one with this competitor (was it Render Avenue? Boulevard? I can't remember ;p). I got my render back from Blendergrid about 10 times faster and 5 times cheaper than the competitor, and the whole process was way easier with Blendergrid.
+                Keep it up. You're a king in the marketplace.",
+              name: "Lex Avellino",
+              company: "Three Division",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/lex-avellino",
+              link: "https://www.threedivision.com" %>
 
           </div>
         </div>
@@ -81,48 +85,46 @@
         <div class="space-y-8 xl:contents xl:space-y-0">
           <div class="space-y-8 xl:row-start-1">
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“Tonight I submitted two renders and (without my knowledge) I had appended an unwanted node-string in the compositor, which ruined my renders. I emailed support - not expecting any reply at least until morning - and within minutes Richard replied. Minutes later he had found a way to stitch together pre-composited snippets, which he transferred immediately, saving my skin. This goes well past my experience of other cloud rendering services and exceeded all my expectations. Thank you for humanity and a wonderful service!”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://s3.amazonaws.com/blendergrid-media/headshots/robin.jpg" alt="Robin de Roubaix" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Robin de Roubaix</div>
-                  <div class="text-gray-600 dark:text-gray-400">Independent Freelancer</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "Tonight I submitted two renders and (without my knowledge) I had appended an unwanted node-string in the compositor, which ruined my renders. I emailed support - not expecting any reply at least until morning - and within minutes Richard replied. Minutes later he had found a way to stitch together pre-composited snippets, which he transferred immediately, saving my skin. This goes well past my experience of other cloud rendering services and exceeded all my expectations. Thank you for humanity and a wonderful service!",
+              name: "Robin de Roubaix",
+              company: "Independed 3D artist",
+              headshot: "https://s3.amazonaws.com/blendergrid-media/headshots/robin.jpg",
+              link: "https://www.linkedin.com/in/robin-de-roubaix-6b84694/" %>
+
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "The process was quite smooth and clear - it doesn't cause any special limitations to our creativity.
+Moreover, it is very important to get excellent hi-res frames during the process. In 3D productions you're never 100% sure about the final results until you see it fully rendered.
+And we also experienced a good level of assistance and care of our demands. After going through this process will this be something you plan on continuing to do in the future.",
+              name: "Giorgio Molinaro",
+              company: "Fabrica",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/articles/rendering-for-benetton/giorgio-molinaro-profile",
+              link: "/articles/rendering-for-benetton" %>
 
           </div>
 
           <div class="space-y-8 xl:row-span-2">
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“After testing Blendergrid for the first time I have to say that it met all of my expectations. The price was reasonable and my 3D animation was rendered very quickly (in less than five hours). Had I used my personal computer, it would have taken several days. Thumbs up! I'll be back!”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://s3.amazonaws.com/blendergrid-media/headshots/zacharias.jpg" alt="" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Zacharias Reinhardt</div>
-                  <div class="text-gray-600 dark:text-gray-400">CGBoost.com</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "After testing Blendergrid for the first time I have to say that it met all of my expectations. The price was reasonable and my 3D animation was rendered very quickly (in less than five hours). Had I used my personal computer, it would have taken several days. Thumbs up! I'll be back!",
+              name: "Zacharias Reinhardt",
+              company: "CGBoost",
+              headshot: "https://s3.amazonaws.com/blendergrid-media/headshots/zacharias.jpg",
+              link: "https://www.cgboost.com/" %>
 
-            <figure class="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-900/5 dark:bg-gray-800/75 dark:shadow-none dark:ring-white/10">
-              <blockquote class="text-gray-900 dark:text-white">
-                <p>“Thank you so much! I can't tell you how much of a lifesaver this has been for us! Our computers wouldn’t have been able to handle this many frames in the amount of time we had. Your farm was fast and affordable, and next time we have a project this big, I think we’ll probably use your service again instead of trying to scramble to get things done. Thank you again!”</p>
-              </blockquote>
-              <figcaption class="mt-6 flex items-center gap-x-4">
-                <img src="https://s3.amazonaws.com/blendergrid-media/headshots/heather.jpg" alt="" class="size-10 rounded-full bg-gray-50 dark:bg-gray-700" />
-                <div>
-                  <div class="font-semibold text-gray-900 dark:text-white">Heather Meade</div>
-                  <div class="text-gray-600 dark:text-gray-400">Animator at Rain Drop Products</div>
-                </div>
-              </figcaption>
-            </figure>
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "Thank you so much! I can't tell you how much of a lifesaver this has been for us! Our computers wouldn’t have been able to handle this many frames in the amount of time we had. Your farm was fast and affordable, and next time we have a project this big, I think we’ll probably use your service again instead of trying to scramble to get things done. Thank you again!",
+              name: "Heather Meade",
+              company: "RainDrop",
+              headshot: "https://s3.amazonaws.com/blendergrid-media/headshots/heather.jpg",
+              link: "https://www.rain-drop.com/" %>
+
+            <%= render "landing_pages/sections/small_testimonial",
+              quote: "Blendergrid really saved my neck recently. I had to release a YouTube video with the deadline of 24 hours and when I began rendering my 3D models only then did I realize it would have taken 5 days to render. I did a lot of research and it seemed blendergrid was the best option out there. 2 hours later I had four completed 3D animations and I could finally stop sweating. Highly recommended!",
+              name: "Christian Simpson",
+              company: "@RetroRecipes",
+              headshot: "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_256,h_256/headshots/christian-simpson",
+              link: "https://www.youtube.com/@RetroRecipes" %>
 
           </div>
         </div>
