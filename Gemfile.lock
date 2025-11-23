@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/vanderoost/rails.git
-  revision: 2045c9cf1f7f1f45ff528e1fa2e2a34a839d5fe1
+  revision: 719ccda400889c31f12c657b8d5b81c6dfb81f6e
   branch: 8-1-multipart-direct-uploads
   specs:
     actioncable (8.2.0.alpha)
@@ -224,7 +224,7 @@ GEM
     marcel (1.1.0)
     matrix (0.4.3)
     mini_mime (1.1.5)
-    minitest (5.26.1)
+    minitest (5.26.2)
     msgpack (1.8.0)
     net-imap (0.5.12)
       date
