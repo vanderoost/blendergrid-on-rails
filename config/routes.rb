@@ -41,14 +41,19 @@ Rails.application.routes.draw do
   end
 
   # Static pages
-  get "pricing", to: "pages#pricing"
-  get "support", to: "pages#support"
-  get "policies", to: "pages#policies"
-  get "policies/:slug", to: "pages#policies"
+  get "pricing", to: "pages#pricing", as: :pricing
+  get "support", to: "pages#support", as: :support
+  get "policies", to: "pages#policies", as: :policies
+  get "policies/:slug", to: "pages#policies", as: :policy, constraints: {
+    slug: /terms|privacy|refund/,
+  }
 
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")
   resources :articles, param: :slug, only: %w[index show]
+
+  # Sitemap
+  get "/sitemap.xml", to: "sitemap#index", defaults: { format: "xml" }
 
   # Landing pages
   get "start/:slug", to: redirect("%{slug}")
