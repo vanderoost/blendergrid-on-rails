@@ -1,5 +1,5 @@
 <% if @content_html.blank? %>
-  <% content_for :title, "Blendergrid Policies" %>
+  <% content_for :title, "Policies" %>
 
   <div class="py-16 sm:py-24">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
@@ -67,7 +67,7 @@
   <%= render "landing_pages/sections/jsonld_breadcrumb", pages: [
     {name: "Home", url: root_url},
     {name: "Policies", url: policies_url},
-    {name: @slug.titleize},
+    {name: @title},
   ] %>
 
 <% end %>

@@ -11,16 +11,16 @@ class PagesController < ApplicationController
   end
 
   def policies
-    @slug = params[:slug]
+    slug = params[:slug]
 
-    return unless @slug
+    return unless slug
 
     # TODO: Move this into a model or something
-    unless ALLOWED_POLICIES.include?(@slug)
+    unless ALLOWED_POLICIES.include?(slug)
       raise ActionController::RoutingError.new("Not Found")
     end
 
-    md_path = Rails.root / "app" / "views" / "pages" / "policies" / "#{@slug}.md"
+    md_path = Rails.root / "app" / "views" / "pages" / "policies" / "#{slug}.md"
 
     raise ActionController::RoutingError.new("Not Found") unless File.exist?(md_path)
 
@@ -32,7 +32,7 @@ class PagesController < ApplicationController
       fenced_code_blocks: true,
       no_intra_emphasis: true
     )
-    @title = "Blendergrid #{@slug.titleize}"
+    @title = slug.titleize
     @content_html = markdown.render(markdown_content)
   end
 end

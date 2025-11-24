@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html class="bg-gray-50 dark:bg-gray-900 scheme-light dark:scheme-dark">
   <head>
-    <title><%= content_for(:title) || "Blendergrid Render Farm" %></title>
+    <title>
+      <%= content_for?(:title) ? "#{yield(:title)} - Blendergrid" : "Cloud Render Farm for Blender - Blendergrid" %>
+    </title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -19,16 +21,12 @@
     <link rel="apple-touch-icon" href="/icon.png">
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
     <%= render "layouts/navigation" %>
-
-    <%#= tag.strong(flash[:alert], style: "color:red") if flash[:alert] %>
-    <%#= tag.strong(flash[:notice], style: "color:green") if flash[:notice] %>
 
     <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-6rem)]">
       <div class="relative isolate px-6 pt-14 lg:px-8">
