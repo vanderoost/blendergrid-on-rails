@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   # Articles
   get "learn/articles/:slug", to: redirect("articles/%{slug}")
   resources :articles, param: :slug, only: %w[index show]
+  resources :authors, param: :slug, only: %w[show]
 
   # Sitemap
   get "/sitemap.xml", to: "sitemap#index", defaults: { format: "xml" }

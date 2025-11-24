@@ -10,3 +10,9 @@
 <div class="my-8">
   <%= link_to "Back to articles", articles_path, class: "underline text-blue-500" %>
 </div>
+
+<%= render "landing_pages/sections/jsonld_breadcrumb", pages: [
+  {name: "Home", url: root_url},
+  {name: "Articles", url: articles_url},
+  {name: @article.title},
+] %>

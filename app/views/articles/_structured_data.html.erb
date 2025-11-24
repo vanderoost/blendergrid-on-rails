@@ -1,10 +1,28 @@
 <script type="application/ld+json">
-  <%= {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": article.title,
-    "datePublished": article.published_at&.iso8601,
-    "author": { "@type": "Person", "name": article.author_name },
-    "mainEntityOfPage": article_url(article)
-  }.to_json.html_safe %>
+<%= {
+  "@context" => "https://schema.org",
+  "@type" => "Article",
+  "mainEntityOfPage" => {
+    "@type" => "WebPage",
+    "@id" => article_url(article)
+  },
+  "headline" => strip_tags(article.title),
+  "description" => article.excerpt,
+  "image" => "https://res.cloudinary.com/blendergrid/image/upload/c_fill,f_auto,w_1344/articles/#{article.slug}/#{article.image_url}",
+  "author" => {
+    "@type" => "Person",
+    "name" => article.user.name,
+    "url" => author_url(article.user.slug),
+  },
+  "publisher" => {
+    "@type" => "Organization",
+    "name" => "Blendergrid",
+    "logo" => {
+      "@type" => "ImageObject",
+      "url" => "https://blendergrid.com/logo.png"
+    }
+  },
+  "datePublished" => article.published_at&.to_date,
+  "dateModified" => article.updated_at&.to_date,
+}.to_json.html_safe %>
 </script>

@@ -82,6 +82,9 @@
 
 ## after launch
 
+- [ ] Add tags support to articles
+- [ ] Be able to filter articles by tag
+- [ ] Make the article author page look a bit better
 - [ ] Archive old projects after 14 days, and let users now about this
 - [ ] Take blend check errors into accoun (no camera) and don't allow benchmarks
 - [ ] Make Render model soft deleteable (so we keep a reference to the Render workflow)

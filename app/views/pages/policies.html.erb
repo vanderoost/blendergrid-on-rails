@@ -40,6 +40,11 @@
     </div>
   </div>
 
+  <%= render "landing_pages/sections/jsonld_breadcrumb", pages: [
+    {name: "Home", url: root_url},
+    {name: "Policies"},
+  ] %>
+
 <% else %>
 
   <% content_for :title, @title %>
@@ -58,5 +63,11 @@
       </div>
     </div>
   </div>
+
+  <%= render "landing_pages/sections/jsonld_breadcrumb", pages: [
+    {name: "Home", url: root_url},
+    {name: "Policies", url: policies_url},
+    {name: @slug.titleize},
+  ] %>
 
 <% end %>

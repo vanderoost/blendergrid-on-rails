@@ -23,4 +23,8 @@ class User < ApplicationRecord
   def first_name
     name&.split(" ")&.first&.titleize || email_address.split("@").first
   end
+
+  def slug
+    name&.parameterize
+  end
 end

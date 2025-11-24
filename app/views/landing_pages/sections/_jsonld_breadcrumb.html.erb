@@ -1,0 +1,15 @@
+<script type="application/ld+json">
+<%= raw({
+  "@context" => "https://schema.org/",
+  "@type" => "BreadcrumbList",
+  "itemListElement" => pages.map.with_index do |page, i|
+    result = {
+      "@type" => "ListItem",
+      "position" => i + 1,
+      "name" => page[:name]
+    }
+    result["item"] = page[:url] if page[:url]
+    result
+  end
+}.to_json) %>
+</script>
