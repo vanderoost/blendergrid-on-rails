@@ -39,6 +39,7 @@ module Project::States
     def finish_benchmarking
       @project.process_benchmark
       @project.benchmarked!
+      ProjectMailer.project_benchmark_finished(@project).deliver_later
     end
 
     def fail

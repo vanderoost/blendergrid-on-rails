@@ -1,9 +1,11 @@
 <p>Price benchmark of '<%= @project.blend_filepath %>' is finished!</p>
 
 <p>You can access it at your
-  <a
-    href="<%= projects_url(session_token: @user.generate_token_for(:session)) %>"
-  >
+  <a href="<%= projects_url(session_token: @session_token) %>">
     Projects page
-  </a>
+  </a>.
+</p>
+
+<p>
+  - the Blendergrid team
 </p>

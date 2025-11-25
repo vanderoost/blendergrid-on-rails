@@ -1,6 +1,8 @@
 require "test_helper"
 
 class WorkflowsControllerTest < ActionDispatch::IntegrationTest
+  include ActionMailer::TestHelper
+
   test "should handle failed workflow" do
     patch api_v1_workflow_path(@blend_check_workflow),
       params: {
@@ -83,6 +85,36 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
 
     @benchmarking_project.reload
     assert @benchmarking_project.benchmarked?, "status should be benchmarked"
+  end
+
+  test "benchmark completion should send a notification email" do
+    assert @benchmarking_project.benchmarking?, "status should be benchmarking"
+
+    # richard = users(:richard)
+    # @benchmarking_project.upload.user = richard
+    # puts "Project user: #{@benchmarking_project.user.email_address}"
+
+    assert_emails 1 do
+      patch api_v1_workflow_path(@benchmark_workflow),
+        params: {
+          workflow: {
+            status: "finished",
+            result: { "settings" => { "foo" => "bar" } },
+            timing: {
+              "download" => { "max" => 10000 },
+              "unzip" => { "max" => 3000 },
+              "init" => { "mean" => 5000, "std" => 1000 },
+              "sampling" => { "mean" => 120000, "std" => 10000 },
+              "post" => { "mean" => 2000, "std" => 500 },
+              "upload" => { "mean" => 3000, "std" => 800, "max" => 4000 },
+            },
+            node_provider_id: "aws",
+            node_type_name: "t3.micro",
+          },
+        },
+        headers: @auth_headers,
+        as: :json
+    end
   end
 
   test "render completion should change the project status to rendered" do

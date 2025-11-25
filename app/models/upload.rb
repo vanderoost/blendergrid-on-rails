@@ -12,6 +12,8 @@ class Upload < ApplicationRecord
   has_many :zip_checks, class_name: "Upload::ZipCheck"
   has_many :projects
 
+  generates_token_for :session, expires_in: 2.days
+
   after_create :find_blend_files_in_zip_files
 
   validates :files, presence: true

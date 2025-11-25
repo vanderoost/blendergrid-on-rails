@@ -31,8 +31,14 @@ module Authentication
 
     def start_session_from_token
       user = User.find_by_token_for(:session, params[:session_token])
-      return unless user
-      start_new_session_for user
+      return start_new_session_for(user) if user.present?
+
+      upload = Upload.find_by_token_for(:session, params[:session_token])
+      return unless upload
+      puts "FOUND UPLOAD: #{upload.inspect}"
+      session[:guest_email_address] = upload.guest_email_address
+      session[:guest_session_id] = upload.guest_session_id
+      nil
     end
 
     def request_authentication
@@ -75,10 +81,10 @@ module Authentication
     end
 
     def current_guest_uploads
-      return Upload.none unless session[:guest_email_address] # TODO: Can we skip this?
+      return Upload.none unless session[:guest_email_address]
       Upload.where(
         guest_email_address: session[:guest_email_address],
-        guest_session_id: session.id.to_s,
+        guest_session_id: session[:guest_session_id] || session.id.to_s,
         user_id: nil
       )
     end
