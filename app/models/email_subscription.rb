@@ -21,6 +21,8 @@ class EmailSubscription
 
   private
     def create_kit_subscription
+      return true unless Rails.env.production?
+
       begin
         # TODO: Put this in a background job, also add to a form? Or keep track of the
         # subscripiton source at least.
@@ -28,7 +30,6 @@ class EmailSubscription
 
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE unless Rails.env.production?
 
         request = Net::HTTP::Post.new(url)
         request["X-Kit-Api-Key"] = Rails.application.credentials.dig(
