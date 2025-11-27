@@ -125,7 +125,9 @@ class Project < ApplicationRecord
         basename: File.basename(filename, extension),
         extension: extension,
         size: obj.size,
-        url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+        url: obj.presigned_url(
+          :get, expires_in: 1.hour.in_seconds, use_accelerate_endpoint: true
+        ),
       }
     end
   end
