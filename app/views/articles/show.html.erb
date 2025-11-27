@@ -7,6 +7,12 @@
 
 <%= render @article %>
 
+<div class="rounded-xl overflow-hidden">
+  <%= render template: "email_subscriptions/new", locals: {
+    email_subscription: EmailSubscription.new } %>
+</div>
+
+<%# TODO: Make this a proper breadcrumb %>
 <div class="my-8">
   <%= link_to "Back to articles", articles_path, class: "underline text-blue-500" %>
 </div>

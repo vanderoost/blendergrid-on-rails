@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource :signups, path: "signup", only: %w[new create]
   resource :session, only: %w[new create destroy]
+  resources :email_subscriptions, only: %w[new create]
 
   resources :users, only: %w[show update]
   resources :passwords, param: :token, only: %w[new create edit update]
