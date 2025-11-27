@@ -88,16 +88,13 @@
 - [ ] Archive old projects after 14 days, and let users now about this
 - [ ] Take blend check errors into accoun (no camera) and don't allow benchmarks
 - [ ] Make Render model soft deleteable (so we keep a reference to the Render workflow)
-- [ ] Add some kind of span signup protection
-- [ ] Send emails to guest uploaders!!!
+- [ ] Add some kind of spam signup protection
 - [ ] Don't allow duplicating projects that failed the blend check
 - [ ] Fix bug when uploading two of the same file
-- [ ] Dedicated thank you for signing up page? (With instructions to verify email)
 - [ ] Email validation on email address updates
 - [ ] Add pagination to articles index
 - [ ] Have a CTA button (calculate price, render) on the project show page as well
 - [ ] Project settings form: Edit + tab to next field makes it submit and lose focus
-- [ ] After creating an upload, stay on the start page, show projects in a turbo frame
 - [ ] DRY up the heroicon svg icons
 - [ ] MAYBE Allow custom output file names for frames / animations?
 - [ ] After dropping files, scroll the upload button into view
@@ -105,22 +102,10 @@
     - [ ] Missing fonts
     - [ ] Unbaked simulations
 - [ ] Read Blender versions form DockerHub, allow users to change versions
-- [ ] Make a pricing page
-- [ ] Add more features to the dashboard
-    - [ ] Download blend/source files
-    - [ ] Download frames
-    - [ ] Download / view logs
-    - [ ] Open S3 project page
-    - [ ] Edit render credit?
-    - [ ] Send email
-    - [ ] Open contact in helpscout
-- [ ] Going from homepage upload form to upload page doesn't initialize the project link
-properly
+- [ ] Improve the pricing page
 - [ ] Figure out caching for faster landing pages and article pages
 - [ ] Allow users to save their credit card details for faster rendering & blender addon
 - [ ] Add the upload-form to the empty state of the projects page
-- [ ] Make a nicer toaster for flash messages
-- [ ] Put helpscout widget in a permanent turbo element?
 - [ ]  Disable checkbox if there's only one Project in a stage
 - [ ]  Add helpful handwritten hints to the UI with arrows
     - [ ]  Select a project
@@ -128,6 +113,9 @@ properly
     - [ ]  Start rendering
 - [x] Only show "select a project to start rendering" if there are unchecked checkboxes
 - [x] Don't show the signup for when logged in on affiliate landing pages
+- [x] Send emails to guest uploaders!!!
+- [x] Dedicated thank you for signing up page? (With instructions to verify email)
+- [x] Make a nicer toaster for flash messages
 
 ## Marketing
 
@@ -138,3 +126,10 @@ properly
 ## Dashboard
 
 - [ ] Take refunds into account with 24h revenue (or show refunds)
+- [ ] Download blend/source files
+- [ ] Download frames
+- [ ] Download / view logs
+- [ ] Open S3 project page
+- [ ] Edit render credit?
+- [ ] Send email
+- [ ] Open contact in helpscout
