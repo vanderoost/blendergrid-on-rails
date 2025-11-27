@@ -299,7 +299,7 @@ class Dashboard
     Thread.new do
       log("Start downloading project '#{project.name}'")
       src = "s3://#{project.bucket_name}/projects/#{project.uuid}/"
-      dst = Pathname(Dir.home) / "Downloads" / project.uuid
+      dst = Pathname(Dir.home) / "Downloads" / "#{project.name}-#{project.uuid}"
       `aws s3 sync #{src} #{dst}`
       log("Finished downloading project '#{project.name}'")
     end
