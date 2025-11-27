@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "email_subscription" do %>
+  <div class="bg-primary-700 py-16 sm:py-20 lg:py-24">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 lg:grid-cols-12 lg:gap-8 lg:px-8">
+      <h2 class="max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:col-span-7 text-balance">Want fresh article updates? Sign up for our newsletter.</h2>
+
+  <%= render "email_subscriptions/form",
+    email_subscription: @email_subscription || EmailSubscription.new %>
+
+    </div>
+  </div>
+<% end %>

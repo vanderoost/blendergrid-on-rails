@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "email_subscription" do %>
+  <div class="bg-primary-700 py-16 sm:py-20 lg:py-24">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <h2 class="max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:col-span-7 text-balance">Thanks for subscribing!</h2>
+      <p class="mx-auto mt-6 text-lg text-gray-300">
+        We will send new articles to '<%= @email_subscription.email_address %>'. You can unsubscribe at any time.
+      </p>
+    </div>
+  </div>
+<% end %>
