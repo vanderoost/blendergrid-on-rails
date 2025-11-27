@@ -20,7 +20,7 @@ class Project::BlendCheck < ApplicationRecord
 
     {
       workflow_id: workflow.uuid,
-      deadline:    Time.current.to_i,
+      deadline: Time.current.to_i,
       files: {
         input: {
           scripts: "s3://#{scripts_bucket}/#{swarm_engine_env}",
@@ -40,8 +40,13 @@ class Project::BlendCheck < ApplicationRecord
             "--output-dir", "/tmp/output",
           ],
           image: Rails.env.production? ? {
-            command: [ "python", "/tmp/scripts/get_blender_image.py",
-              "/tmp/project/#{project.blend_filepath}" ],
+            command: [
+              "python",
+              "/tmp/s3/blendergrid-blender-scripts/#{swarm_engine_env}/"\
+                "get_blender_image.py",
+              "/tmp/s3/#{project.bucket_name}/projects/#{project.uuid}/"\
+                "input/#{project.blend_filepath}",
+            ],
           } : "blendergrid/blender:latest",
         },
       ],
