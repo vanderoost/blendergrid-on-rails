@@ -1,5 +1,5 @@
 <%= form_with model: email_subscription, class: "w-full max-w-md lg:col-span-5 lg:pt-2" do |form| %>
-  <div class="flex gap-x-4">
+  <div class="flex flex-col sm:flex-row gap-4">
     <%= form.label :email_address, class: "sr-only" %>
     <%= form.email_field :email_address,
       required: true,
@@ -11,5 +11,11 @@
 
     <%= form.submit "Subscribe", class: "flex-none rounded-md bg-white px-3.5 py-2.5 text-sm font-semibold text-primary-600 shadow-xs hover:bg-primary-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" %>
   </div>
-  <p class="mt-4 text-sm/6 text-gray-300">We care about your data. Read our <a href="/policies/privacy" data-turbo-frame="_top" class="font-semibold whitespace-nowrap text-white hover:text-primary-50">privacy policy</a>.</p>
+  <p class="mt-4 text-sm/6 text-gray-300">We care about your data. Read our
+    <a href="/policies/privacy"
+      data-turbo-frame="_top"
+      class="font-semibold whitespace-nowrap text-white hover:text-primary-50">
+      privacy policy
+    </a>.
+  </p>
 <% end %>

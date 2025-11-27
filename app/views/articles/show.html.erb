@@ -7,7 +7,7 @@
 
 <%= render @article %>
 
-<div class="rounded-xl overflow-hidden">
+<div class="rounded-xl overflow-hidden mx-auto max-w-[73.125ch] lg:max-w-[81.25ch]">
   <%= render template: "email_subscriptions/new", locals: {
     email_subscription: EmailSubscription.new } %>
 </div>
