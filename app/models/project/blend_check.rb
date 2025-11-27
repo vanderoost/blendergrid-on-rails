@@ -46,6 +46,8 @@ class Project::BlendCheck < ApplicationRecord
                 "get_blender_image.py",
               "/tmp/s3/#{project.bucket_name}/projects/#{project.uuid}/"\
                 "input/#{project.blend_filepath}",
+              "/tmp/s3/#{bucket}/uploads/#{project.upload.uuid}/"\
+                "#{project.blend_filepath}",
             ],
           } : "blendergrid/blender:latest",
         },

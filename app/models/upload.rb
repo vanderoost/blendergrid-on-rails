@@ -22,8 +22,6 @@ class Upload < ApplicationRecord
                                   if: -> { user_id.blank? }
   validates :guest_session_id, presence: true, if: -> { user_id.blank? }
 
-  # broadcasts
-
   def ongoing_zip_checks
     zip_checks.select &:ongoing?
   end
