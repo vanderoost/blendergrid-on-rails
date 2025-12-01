@@ -217,6 +217,10 @@ class Dashboard
             end
           end
 
+        # Download project files
+        when 'd'
+          maybe_download_project
+
         when 10 # Enter
           maybe_change_view
 
@@ -282,6 +286,28 @@ class Dashboard
     end
   end
 
+  def maybe_download_project
+    case @view
+    when :home_view
+      download_project(@projects[@project_ix]) if @project_ix >= 0
+    when :project_details
+      download_project(@project) if @project.present?
+    end
+  end
+
+  def download_project(project)
+    Thread.new do
+      log("Start downloading project '#{project.name}'")
+      src = "s3://#{project.bucket_name}/projects/#{project.uuid}/"
+      dst = Pathname(Dir.home) / "Downloads" / "#{project.name}-#{project.uuid}"
+      `aws s3 sync #{src} '#{dst}'`
+      src = "s3://#{project.bucket_name}/uploads/#{project.upload.uuid}/"
+      dst /= "upload"
+      `aws s3 sync #{src} '#{dst}'`
+      log("Finished downloading project '#{project.name}'")
+    end
+  end
+
   def change_view(new_view)
     return if @view == new_view
     log("Changing view from #{@view} to #{new_view}")
@@ -343,7 +369,7 @@ class Dashboard
       render_cell(status_str(p), 16, [
         color_pair(GREEN) => p.rendered?,
         color_pair(YELLOW) => p.in_progress?,
-        color_pair(RED) => p.failed?
+        color_pair(RED) => p.failed?,
       ])
       addstr(" ")
 
@@ -355,7 +381,7 @@ class Dashboard
       # Price
       not_paid = p.order&.stripe_payment_intent_id.blank?
       render_cell(cents_to_dollars(p.price_cents).rjust(12), 12, [
-        color_pair(GRAY) => not_paid
+        color_pair(GRAY) => not_paid,
       ])
       addstr(" ")
 
@@ -466,7 +492,7 @@ class Dashboard
       render_cell(status_str(p), 16, [
         color_pair(GREEN) => p.rendered?,
         color_pair(YELLOW) => p.in_progress?,
-        color_pair(RED) => p.failed?
+        color_pair(RED) => p.failed?,
       ])
       addstr(" ")
 
