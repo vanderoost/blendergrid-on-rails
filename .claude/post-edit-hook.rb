@@ -33,7 +33,7 @@ begin
     debug_log.write("Edited file: #{edited_file}\n\n")
 
     if File.extname(edited_file) == ".rb"
-      rubocop_output = `rubocop -a #{edited_file}`
+      rubocop_output = `bundle exec rubocop -a #{edited_file}`
       is_success = $?.success?
       log.write(rubocop_output + "\n\n") if rubocop_output
     end
@@ -46,7 +46,7 @@ begin
   end
 
   if is_success
-    brakeman_output = `brakeman --no-pager --no-color`
+    brakeman_output = `bundle exec brakeman --no-pager --no-color`
     is_success = $?.success?
     log.write(brakeman_output + "\n\n")
   end

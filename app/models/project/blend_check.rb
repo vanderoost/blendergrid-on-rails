@@ -57,8 +57,20 @@ class Project::BlendCheck < ApplicationRecord
   end
 
   def handle_completion
+    scenes_data = workflow.result&.dig("settings", "scenes")
+
+    if scenes_data.blank?
+      Rails.logger.error(
+        "BlendCheck#handle_completion: Missing scenes data! " \
+        "Project: #{project.id}, Workflow: #{workflow.id}, " \
+        "Result present: #{workflow.result.present?}, " \
+        "Result keys: #{workflow.result&.keys}, " \
+        "Settings keys: #{workflow.result&.dig('settings')&.keys}"
+      )
+    end
+
     current_scene_name = workflow.result&.dig("settings", "scene_name")
-    workflow.result&.dig("settings", "scenes")&.each do |scene_name, settings|
+    scenes_data&.each do |scene_name, settings|
       blender_scene = project.blender_scenes.find_or_initialize_by(name: scene_name)
       blender_scene.update(settings.slice(*BlenderScene.column_names))
       project.current_blender_scene = blender_scene if scene_name == current_scene_name
