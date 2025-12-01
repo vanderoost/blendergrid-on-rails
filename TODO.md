@@ -119,17 +119,18 @@
 
 ## Marketing
 
-- [ ] Capture emails for newsletter
-    - [ ] On articles
+- [x] Capture emails for newsletter
+    - [x] On articles
     - [ ] somewhere else?
 
 ## Dashboard
 
+- [ ] Display deleted projects
 - [ ] Take refunds into account with 24h revenue (or show refunds)
-- [ ] Download blend/source files
-- [ ] Download frames
-- [ ] Download / view logs
 - [ ] Open S3 project page
 - [ ] Edit render credit?
 - [ ] Send email
 - [ ] Open contact in helpscout
+- [x] Download blend/source files
+- [x] Download frames
+- [x] Download / view logs

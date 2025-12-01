@@ -300,10 +300,10 @@ class Dashboard
       log("Start downloading project '#{project.name}'")
       src = "s3://#{project.bucket_name}/projects/#{project.uuid}/"
       dst = Pathname(Dir.home) / "Downloads" / "#{project.name}-#{project.uuid}"
-      `aws s3 sync #{src} #{dst}`
+      `aws s3 sync #{src} '#{dst}'`
       src = "s3://#{project.bucket_name}/uploads/#{project.upload.uuid}/"
-      dst = Pathname(Dir.home) / "Downloads" / "#{project.name}-#{project.uuid}/upload/"
-      `aws s3 sync #{src} #{dst}`
+      dst /= "upload"
+      `aws s3 sync #{src} '#{dst}'`
       log("Finished downloading project '#{project.name}'")
     end
   end
