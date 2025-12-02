@@ -24,6 +24,52 @@ class Project::StatesTest < ActiveSupport::TestCase
   test "a project can finish checking" do
     project = projects(:checking)
     assert project.checking?
+
+    project.blend_check.workflow.update(result: {
+      settings: {
+        scenes: { "foo" => {
+          frame_range: {
+            type: "animation",
+            start: 10,
+            end: 250,
+            step: 1,
+            single: 25,
+          },
+          resolution: {
+            x: 1920,
+            y: 1080,
+            percentage: 50,
+            use_border: false,
+          },
+          sampling: {
+            use_adaptive: true,
+            noise_threshold: 0.05,
+            min_samples: 16,
+            max_samples: 256,
+          },
+          file_output: {
+            file_format: "EXR",
+            color_mode: "RGBA",
+            color_depth: "16",
+            ffmpeg_format: "MP4",
+            ffmpeg_codec: "H264",
+            film_transparent: true,
+            fps: 60,
+          },
+          camera: {
+            name: "Camera",
+            name_options: [ "Camera", "Camera.001", "Camera.002" ],
+          },
+          post_processing: {
+            use_compositing: true,
+            use_sequencer: false,
+            use_stamp: false,
+          },
+        } },
+        scene_name: "foo",
+      },
+    })
+
     project.finish_checking
     assert project.checked?
   end

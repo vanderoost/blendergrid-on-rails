@@ -72,6 +72,30 @@ class Project < ApplicationRecord
     current_blender_scene&.output_ffmpeg_format&.extension
   end
 
+  def process_blend_check
+    workflow = blend_check.workflow
+    raise "Project has no BlendCheck Workflow" if workflow.blank?
+
+    scenes_data = workflow.result&.dig("settings", "scenes")
+    if scenes_data.blank?
+      Rails.logger.error(
+        "BlendCheck#handle_completion: Missing scenes data! " \
+        "Project: #{id}, Workflow: #{workflow.id}, " \
+        "Result present: #{workflow.result.present?}, " \
+        "Result keys: #{workflow.result&.keys}, " \
+        "Settings keys: #{workflow.result&.dig('settings')&.keys}"
+      )
+      raise "BlendCheck#handle_completion: Missing scenes data!"
+    end
+
+    current_scene_name = workflow.result&.dig("settings", "scene_name")
+    scenes_data&.each do |scene_name, settings|
+      blender_scene = blender_scenes.find_or_initialize_by(name: scene_name)
+      blender_scene.update(settings.slice(*BlenderScene.column_names))
+      self.current_blender_scene = blender_scene if scene_name == current_scene_name
+    end
+  end
+
   def process_benchmark
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 

@@ -30,7 +30,7 @@ class BlenderScene < ApplicationRecord
     },
     camera: {
       name: :string,
-      name_options: :string,
+      name_options: :array,
     },
     post_processing: {
       use_compositing: :boolean,
