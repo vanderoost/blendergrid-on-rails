@@ -1,5 +1,9 @@
 # TODOs
 
+## bugs
+
+- [ ] Duplicate project frame range type change is not being propagated
+
 ## before launch
 
 - [ ] Fix up all the transactional emails (style, message, reply-to)

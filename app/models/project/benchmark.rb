@@ -42,6 +42,7 @@ class Project::Benchmark < ApplicationRecord
           {
             job_id:  "sample-frame-$frame",
             command: [
+              "--enable-autoexec",
               "/tmp/project/#{project.blend_filepath}",
               "--scene",
               project.current_blender_scene.name,
