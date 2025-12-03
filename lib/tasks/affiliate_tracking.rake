@@ -1,7 +1,7 @@
 namespace :affiliate_tracking do
   desc "Backfill page variant attribution for existing users"
   task backfill: :environment do
-    users = User.where(page_variant_id: nil).limit(100)
+    users = User.where(page_variant_id: nil)
     total = users.count
 
     puts "Found #{total} users without page variant attribution"
@@ -12,6 +12,7 @@ namespace :affiliate_tracking do
       AttributePageVariantJob.perform_later(user)
       progress += 1
       print "\rEnqueued: #{progress}/#{total}" if progress % 100 == 0
+      sleep 5 if progress % 50 == 0
     end
 
     puts "\n✓ Successfully enqueued #{total} attribution jobs"
