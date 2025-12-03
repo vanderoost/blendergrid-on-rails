@@ -26,9 +26,11 @@ namespace :affiliate_tracking do
 
     puts "\nPage Variant Attribution Report"
     puts "=" * 50
-    puts "Total users:        #{total_users}"
-    puts "Attributed:         #{attributed} (#{(attributed.to_f / total_users * 100).round(1)}%)"
-    puts "Not attributed:     #{unattributed} (#{(unattributed.to_f / total_users * 100).round(1)}%)"
+    puts "Total users:    #{total_users}"
+    puts "Attributed:     #{attributed} (#{(attributed.to_f / total_users * 100).
+      round(1)}%)"
+    puts "Not attributed: #{unattributed} (#{(unattributed.to_f / total_users * 100).
+      round(1)}%)"
     puts
 
     if attributed > 0
