@@ -38,6 +38,6 @@ class User < ApplicationRecord
 
   private
     def attribute_page_variant_later
-      AttributePageVariantJob.set(wait: 10.seconds).perform_later(self)
+      AttributePageVariantJob.set(wait: 2.minutes).perform_later(self)
     end
 end
