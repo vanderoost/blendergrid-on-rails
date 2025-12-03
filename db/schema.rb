@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_11_16_115211) do
+ActiveRecord::Schema[8.2].define(version: 2025_12_03_160936) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -269,11 +269,13 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_16_115211) do
     t.string "email_address", null: false
     t.boolean "email_address_verified", default: false
     t.string "name"
+    t.integer "page_variant_id"
     t.string "password_digest", null: false
     t.integer "render_credit_cents", default: 0
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["page_variant_id"], name: "index_users_on_page_variant_id"
   end
 
   create_table "workflows", force: :cascade do |t|
@@ -316,4 +318,5 @@ ActiveRecord::Schema[8.2].define(version: 2025_11_16_115211) do
   add_foreign_key "sessions", "users"
   add_foreign_key "upload_zip_checks", "uploads"
   add_foreign_key "uploads", "users"
+  add_foreign_key "users", "page_variants"
 end

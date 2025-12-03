@@ -2,7 +2,7 @@ module Trackable
   extend ActiveSupport::Concern
 
   included do
-    has_many :events, as: :resource
+    has_many :resource_events, as: :resource, class_name: "Event"
 
     after_create :track_created
     after_update :track_updated

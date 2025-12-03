@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include EmailAddressVerifyable
+  include Trackable
 
   has_secure_password
   has_email_address_verification
@@ -14,6 +15,13 @@ class User < ApplicationRecord
   has_many :credit_entries
   has_many :requests
   has_many :events, through: :requests
+  belongs_to :page_variant, optional: true
+
+  after_create :attribute_page_variant_later
+
+  scope :from_page_variant, ->(variant) {
+    where(page_variant: variant)
+  }
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
@@ -27,4 +35,9 @@ class User < ApplicationRecord
   def slug
     name&.parameterize
   end
+
+  private
+    def attribute_page_variant_later
+      AttributePageVariantJob.set(wait: 10.seconds).perform_later(self)
+    end
 end
