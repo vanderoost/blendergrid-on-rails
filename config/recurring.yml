@@ -17,4 +17,9 @@ production:
   reverse_cash_refunds:
     class: ReverseCashRefundsJob
     args: []
-    schedule: every hour at minute 42
+    schedule: every hour at minute 32
+
+  refresh_affiliate_stats:
+    class: RefreshAffiliateStatsJob
+    args: []
+    schedule: every hour at minute 52

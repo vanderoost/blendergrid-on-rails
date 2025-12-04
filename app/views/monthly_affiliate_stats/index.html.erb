@@ -1,0 +1,78 @@
+<%= turbo_frame_tag "affiliate_stats" do %>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+
+      <p class="text-sm/6 font-semibold text-gray-900 dark:text-white">Monthly Metrics for <%= @year %></p>
+      <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">Data is updated daily.</p>
+    </div>
+
+    <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+
+      <% if @year > 2025 %>
+        <%= link_to "← #{@year - 1}",
+          account_monthly_affiliate_stats_path(year: @year - 1),
+          class: "block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
+      <% end %>
+
+      <% if @year < Date.current.year %>
+        <%= link_to "#{@year + 1} →",
+          account_monthly_affiliate_stats_path(year: @year + 1),
+          class: "block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
+      <% end %>
+
+    </div>
+  </div>
+
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 not-dark:bg-white rounded-lg">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="relative min-w-full divide-y divide-gray-300 dark:divide-white/15">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold whitespace-nowrap text-gray-900 sm:pl-0 dark:text-white">Month</th>
+              <th scope="col" class="px-2 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Visits</th>
+              <th scope="col" class="px-2 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Signups</th>
+              <th scope="col" class="px-2 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Sales</th>
+              <th scope="col" class="px-2 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Rewards</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
+
+            <% (1..12).each do |month| %>
+              <% stat = @stats.find { |s| s.month == month } %>
+              <tr>
+                <td class="py-2 pr-3 pl-4 text-sm whitespace-nowrap text-gray-500 sm:pl-0 dark:text-gray-400">
+                  <%= Date::ABBR_MONTHNAMES[month] %>
+                </td>
+
+                <td class="px-2 py-2 text-sm text-right whitespace-nowrap tabular-nums <%= stat&.visits&.positive? ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400' %>">
+                  <%= number_with_delimiter(stat&.visits || 0) %>
+                </td>
+                <td class="px-2 py-2 text-sm text-right whitespace-nowrap tabular-nums <%= stat&.signups&.positive? ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400' %>">
+                  <%= number_with_delimiter(stat&.signups || 0) %>
+                </td>
+                <td class="px-2 py-2 text-sm text-right whitespace-nowrap tabular-nums <%= stat&.sales_cents&.positive? ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400' %>">
+                  <%= number_to_currency((stat&.sales_cents || 0) / 100.0) %>
+                </td>
+                <td class="px-2 py-2 text-sm text-right whitespace-nowrap tabular-nums <%= stat&.rewards_cents&.positive? ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400' %>">
+
+                  <div class="w-min ml-auto flex items-center gap-x-3">
+                  <% if stat&.paid_out_at %>
+                    <div class="w-min hidden sm:block rounded-md bg-green-50 px-2 py-1 -my-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-900/30 dark:text-green-400 dark:inset-ring-green-500/20">Paid</div>
+                  <% elsif stat&.rewards_cents&.positive? %>
+                    <div class="w-min hidden sm:block rounded-md bg-amber-50 px-2 py-1 -my-1 text-xs font-medium text-amber-700 inset-ring inset-ring-amber-600/20 dark:bg-amber-900/30 dark:text-amber-400 dark:inset-ring-amber-500/20">Pending</div>
+                  <% end %>
+
+                  <%= number_to_currency((stat&.rewards_cents || 0) / 100.0) %>
+                  </div>
+
+                </td>
+              </tr>
+            <% end %>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>

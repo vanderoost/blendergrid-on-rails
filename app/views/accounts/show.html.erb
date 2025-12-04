@@ -76,4 +76,46 @@
 
   <!-- TODO: Delete account section -->
 
+  <% if Current.user.affiliate %>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Referral Program</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Earn rewards by helping other Blender artists find us.</p>
+      </div>
+
+
+      <div class="md:col-span-2 space-y-8">
+
+        <div class="sm:flex sm:items-center">
+          <div class="sm:flex-auto">
+
+            <p class="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            Your affiliate link:<br/>
+            <a href="https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>" target="_blank" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">
+              https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>
+            </a>
+            </p>
+            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+              <ol class="list-decimal list-inside text-sm">
+                <li>Share your link with the Blender community</li>
+                <li>Users who sign up get a $20 render credit gift to try Blendergrid</li>
+                <li>Up to <%= Current.user.affiliate.reward_window_months %> months after signup, you earn <%= Current.user.affiliate.reward_percent %>% of all render payments they make</li>
+              </ol>
+            </p>
+          </div>
+
+          <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+
+
+          </div>
+        </div>
+
+
+        <%= turbo_frame_tag "affiliate_stats", src: account_monthly_affiliate_stats_path, loading: :lazy do %>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
 </div>
