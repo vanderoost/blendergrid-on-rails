@@ -79,14 +79,33 @@
   <% if Current.user.affiliate %>
     <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
       <div>
-        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Affiliate Dashboard</h2>
-        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Track your affiliate performance and earnings.</p>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Referral Program</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Earn a commission by sharing Blendergrid with your friends.</p>
       </div>
 
-      <div class="md:col-span-2">
-        <%= turbo_frame_tag "affiliate_stats",
-            src: account_monthly_affiliate_stats_path,
-            loading: :lazy do %>
+
+      <div class="md:col-span-2 space-y-8">
+
+        <div class="sm:flex sm:items-center">
+          <div class="sm:flex-auto">
+
+            <p class="text-sm/6 font-semibold text-gray-900 dark:text-white">
+            Your affiliate link:<br/>
+            <a href="https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>" target="_blank" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">
+              https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>
+            </a>
+            </p>
+            <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">Earn rewards every time someone pays for a render after signing up through your link.</p>
+          </div>
+
+          <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+
+
+          </div>
+        </div>
+
+
+        <%= turbo_frame_tag "affiliate_stats", src: account_monthly_affiliate_stats_path, loading: :lazy do %>
           <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
         <% end %>
       </div>
