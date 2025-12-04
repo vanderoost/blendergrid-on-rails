@@ -1,3 +1,5 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-# Empty - create affiliates in specific tests as needed
+richard:
+  user: richard
+  landing_page: youtuber
+  reward_percent: 42
+  reward_window_months: 12

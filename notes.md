@@ -1,4 +1,4 @@
-1. Let's store it as an integer under `commission_percent` (it will never be a partial
+1. Let's store it as an integer under `reward_percent` (it will never be a partial
    percentage anyway).
 
 2. Good point, I agree.

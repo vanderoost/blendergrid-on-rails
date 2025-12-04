@@ -55,9 +55,9 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_04_122600) do
   end
 
   create_table "affiliates", force: :cascade do |t|
-    t.integer "commission_percent", default: 10, null: false
     t.datetime "created_at", null: false
     t.integer "landing_page_id", null: false
+    t.integer "reward_percent", default: 10, null: false
     t.integer "reward_window_months", default: 12, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
