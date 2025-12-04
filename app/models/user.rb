@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :requests
   has_many :events, through: :requests
   belongs_to :page_variant, optional: true
+  has_one :affiliate, dependent: :destroy
 
   after_create :attribute_page_variant_later
 

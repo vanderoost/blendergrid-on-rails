@@ -76,4 +76,21 @@
 
   <!-- TODO: Delete account section -->
 
+  <% if Current.user.affiliate %>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Affiliate Dashboard</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Track your affiliate performance and earnings.</p>
+      </div>
+
+      <div class="md:col-span-2">
+        <%= turbo_frame_tag "affiliate_stats",
+            src: account_monthly_affiliate_stats_path,
+            loading: :lazy do %>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
 </div>

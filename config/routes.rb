@@ -23,7 +23,9 @@ Rails.application.routes.draw do
   resources :payment_intents, only: %w[create]
 
   # Account settings etc.
-  resource :account, only: %w[show]
+  resource :account, only: %w[show] do
+    resources :monthly_affiliate_stats, only: %w[index]
+  end
 
   # API
   namespace :api do

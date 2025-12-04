@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_12_03_160936) do
+ActiveRecord::Schema[8.2].define(version: 2025_12_04_122600) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -37,6 +37,32 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_03_160936) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "affiliate_monthly_stats", force: :cascade do |t|
+    t.integer "affiliate_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "month", null: false
+    t.datetime "paid_out_at"
+    t.integer "rewards_cents", default: 0, null: false
+    t.integer "sales_cents", default: 0, null: false
+    t.integer "signups", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.integer "visits", default: 0, null: false
+    t.integer "year", null: false
+    t.index ["affiliate_id", "year", "month"], name: "idx_on_affiliate_id_year_month_5f1d0c472d", unique: true
+    t.index ["affiliate_id"], name: "index_affiliate_monthly_stats_on_affiliate_id"
+  end
+
+  create_table "affiliates", force: :cascade do |t|
+    t.integer "commission_percent", default: 10, null: false
+    t.datetime "created_at", null: false
+    t.integer "landing_page_id", null: false
+    t.integer "reward_window_months", default: 12, null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["landing_page_id"], name: "index_affiliates_on_landing_page_id"
+    t.index ["user_id"], name: "index_affiliates_on_user_id", unique: true
   end
 
   create_table "api_tokens", force: :cascade do |t|
@@ -297,6 +323,9 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_03_160936) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "affiliate_monthly_stats", "affiliates"
+  add_foreign_key "affiliates", "landing_pages"
+  add_foreign_key "affiliates", "users"
   add_foreign_key "articles", "users"
   add_foreign_key "blender_scenes", "projects"
   add_foreign_key "credit_entries", "orders"

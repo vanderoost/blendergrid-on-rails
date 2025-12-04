@@ -1,0 +1,90 @@
+<%= turbo_frame_tag "affiliate_stats" do %>
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-xl font-semibold"><%= @year %> Affiliate Stats</h2>
+    <div class="flex gap-2">
+      <%= link_to "← #{@year - 1}",
+          account_monthly_affiliate_stats_path(year: @year - 1),
+          class: "px-3 py-1 text-sm border rounded hover:bg-gray-50" %>
+      <%= link_to "#{@year + 1} →",
+          account_monthly_affiliate_stats_path(year: @year + 1),
+          class: "px-3 py-1 text-sm border rounded hover:bg-gray-50",
+          disabled: @year >= Date.current.year %>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            Month
+          </th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+            Visits
+          </th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+            Signups
+          </th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+            Sales
+          </th>
+          <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+            Rewards
+          </th>
+          <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+            Paid Out
+          </th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% (1..12).each do |month| %>
+          <% stat = @stats.find { |s| s.month == month } %>
+          <tr class="<%= 'bg-gray-50' if stat&.paid_out_at %>">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <%= Date::MONTHNAMES[month] %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+              <%= number_with_delimiter(stat&.visits || 0) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+              <%= number_with_delimiter(stat&.signups || 0) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
+              <%= number_to_currency((stat&.sales_cents || 0) / 100.0) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">
+              <%= number_to_currency((stat&.rewards_cents || 0) / 100.0) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+              <% if stat&.paid_out_at %>
+                <%= stat.paid_out_at.strftime("%b %d, %Y") %>
+              <% else %>
+                —
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot class="bg-gray-100">
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">
+            Total
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900">
+            <%= number_with_delimiter(@stats.sum(:visits)) %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900">
+            <%= number_with_delimiter(@stats.sum(:signups)) %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900">
+            <%= number_to_currency(@stats.sum(:sales_cents) / 100.0) %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-gray-900">
+            <%= number_to_currency(@stats.sum(:rewards_cents) / 100.0) %>
+          </td>
+          <td class="px-6 py-4"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+<% end %>
