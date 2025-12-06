@@ -1,5 +1,3 @@
 #!/bin/sh
 
-echo "Cleaning up Docker on remote servers..."
-
 kamal server exec "docker system prune --all --volumes --force"

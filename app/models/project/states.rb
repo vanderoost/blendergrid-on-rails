@@ -22,6 +22,10 @@ module Project::States
     def finish_checking
       @project.process_blend_check
       @project.checked!
+
+    rescue StandardError => e
+      Rails.logger.error "Error while finishing blend check: #{e.message}"
+      fail
     end
 
     def fail
@@ -41,6 +45,9 @@ module Project::States
       @project.process_benchmark
       @project.benchmarked!
       ProjectMailer.project_benchmark_finished(@project).deliver_later
+    rescue StandardError => e
+      Rails.logger.error "Error while finishing benchmark: #{e.message}"
+      fail
     end
 
     def fail

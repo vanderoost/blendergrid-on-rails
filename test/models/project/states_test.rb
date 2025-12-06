@@ -74,6 +74,18 @@ class Project::StatesTest < ActiveSupport::TestCase
     assert project.checked?
   end
 
+  test "a project fails when finish_checking raises an error" do
+    project = projects(:checking)
+    assert project.checking?
+
+    # Set workflow result to empty hash - this will cause
+    # process_blend_check to raise "Missing scenes data!"
+    project.blend_check.workflow.update(result: {})
+
+    project.finish_checking
+    assert project.failed?, "Project should be marked as failed"
+  end
+
   test "a checked project can start benchmarking" do
     project = projects(:checked)
     assert project.checked?

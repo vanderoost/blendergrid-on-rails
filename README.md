@@ -73,8 +73,6 @@ Running a local server (using foreman for both web and tailwind refreshes)
 bin/dev
 ```
 
-Also make sure Redis is running for websockets (Turbo Streams over ActionCable) to work.
-
 ### Email
 
 Use Mailhog to run a local SMTP server.
@@ -86,8 +84,6 @@ brew install mailhog
 ```
 
 Then run `mailhog`, and open `http://localhost:8025` in your browser to see the inbox.
-
-TODO: Maybe make this a command in `bin/` and/or run it automatically on bin/dev?
 
 ### Stripe
 

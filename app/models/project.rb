@@ -77,16 +77,7 @@ class Project < ApplicationRecord
     raise "Project has no BlendCheck Workflow" if workflow.blank?
 
     scenes_data = workflow.result&.dig("settings", "scenes")
-    if scenes_data.blank?
-      Rails.logger.error(
-        "BlendCheck#handle_completion: Missing scenes data! " \
-        "Project: #{id}, Workflow: #{workflow.id}, " \
-        "Result present: #{workflow.result.present?}, " \
-        "Result keys: #{workflow.result&.keys}, " \
-        "Settings keys: #{workflow.result&.dig('settings')&.keys}"
-      )
-      raise "BlendCheck#handle_completion: Missing scenes data!"
-    end
+    raise "Missing scenes data!" if scenes_data.blank?
 
     current_scene_name = workflow.result&.dig("settings", "scene_name")
     scenes_data&.each do |scene_name, settings|

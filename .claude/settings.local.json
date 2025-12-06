@@ -20,7 +20,8 @@
       "WebSearch",
       "Bash(bundle list:*)",
       "Bash(kamal logs:*)",
-      "Bash(timeout 300 kamal logs:*)"
+      "Bash(timeout 300 kamal logs:*)",
+      "Bash(timeout 60 kamal logs:*)"
     ],
     "deny": [],
     "ask": []
