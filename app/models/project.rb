@@ -77,7 +77,7 @@ class Project < ApplicationRecord
     raise "Project has no BlendCheck Workflow" if workflow.blank?
 
     scenes_data = workflow.result&.dig("settings", "scenes")
-    raise "Missing scenes data!" if scenes_data.blank?
+    raise "Missing scenes data" if scenes_data.blank?
 
     current_scene_name = workflow.result&.dig("settings", "scene_name")
     scenes_data&.each do |scene_name, settings|
