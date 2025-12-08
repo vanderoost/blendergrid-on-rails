@@ -93,7 +93,11 @@ class Dashboard
 
           # Always load latest 20 projects
           latest_20 = Project
-            .includes({ upload: :user }, { renders: :workflow }, { order_item: :order })
+            .includes(
+              { upload: :user },
+              { renders: :workflow },
+              { order_items: :order },
+            )
             .first(20)
             .to_a
 
@@ -104,7 +108,7 @@ class Dashboard
               .includes(
                 { upload: :user },
                 { renders: :workflow },
-                { order_item: :order },
+                { order_items: :order },
               )
               .first(12)
               .to_a

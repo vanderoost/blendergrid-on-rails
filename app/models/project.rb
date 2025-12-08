@@ -23,13 +23,13 @@ class Project < ApplicationRecord
   include Uuidable
 
   belongs_to :upload
-  has_one :order_item, class_name: "Order::Item"
+  has_many :order_items, class_name: "Order::Item"
+  has_many :orders, through: :order_items
   has_many :blend_checks, class_name: "Project::BlendCheck"
   has_many :benchmarks, class_name: "Project::Benchmark"
   has_many :renders, class_name: "Project::Render"
 
   delegate :user, to: :upload
-  delegate :order, to: :order_item, allow_nil: true
 
   before_save :update_stage_timestamp, if: :stage_changed? || stage_updated_at.nil?
   after_create :start_checking, if: :created?
@@ -47,6 +47,18 @@ class Project < ApplicationRecord
 
   def in_progress?
     %w[created checking benchmarking rendering].include? status
+  end
+
+  def order_item
+    @order_item ||= (association(:order_items).loaded? ?
+      order_items.max_by { |oi| oi.order&.id || 0 } :
+      order_items.joins(:order).order("orders.id DESC").first)
+  end
+
+  def order
+    @order ||= (association(:order_items).loaded? ?
+      order_items.map(&:order).compact.max_by(&:id) :
+      orders.order(id: :desc).first)
   end
 
   def to_key
