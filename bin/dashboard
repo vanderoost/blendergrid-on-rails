@@ -130,10 +130,26 @@ class Dashboard
             .where(created_at: 24.hours.ago..)
             .where(reason: :topup).sum(:amount_cents)
           revenue_24h = render_revenue_24h + topup_revenue_24h
+          render_revenue_7d = Order
+            .where(created_at: 7.days.ago..)
+            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
+          topup_revenue_7d = CreditEntry
+            .where(created_at: 7.days.ago..)
+            .where(reason: :topup).sum(:amount_cents)
+          revenue_7d = render_revenue_7d + topup_revenue_7d
+          render_revenue_30d = Order
+            .where(created_at: 30.days.ago..)
+            .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
+          topup_revenue_30d = CreditEntry
+            .where(created_at: 30.days.ago..)
+            .where(reason: :topup).sum(:amount_cents)
+          revenue_30d = render_revenue_30d + topup_revenue_30d
 
           @data_lock.synchronize do
             @projects = projects
             @revenue_24h = revenue_24h
+            @revenue_7d = revenue_7d
+            @revenue_30d = revenue_30d
             @fetch_error = nil
           end
           log("Polled #{projects.length} projects")
@@ -349,6 +365,8 @@ class Dashboard
 
     projects = []
     revenue_24h = 0
+    revenue_7d = 0
+    revenue_30d = 0
     @data_lock.synchronize do
       if @fetch_error
         log("Error fetching projects: #{@fetch_error}")
@@ -356,6 +374,8 @@ class Dashboard
       else
         projects = @projects
         revenue_24h = @revenue_24h
+        revenue_7d = @revenue_7d
+        revenue_30d = @revenue_30d
       end
     end
 
@@ -394,8 +414,14 @@ class Dashboard
     end
 
     setpos(stdscr.cury + 1, 2)
-    render_cell("24h revenue:", 16, color_pair(YELLOW))
-    render_cell(cents_to_dollars(revenue_24h), 12)
+    render_cell("24h revenue:", 14, color_pair(YELLOW))
+    render_cell(cents_to_dollars(revenue_24h).rjust(12), 12)
+    setpos(stdscr.cury + 1, 2)
+    render_cell(" 7d revenue:", 14, color_pair(YELLOW))
+    render_cell(cents_to_dollars(revenue_7d).rjust(12), 12)
+    setpos(stdscr.cury + 1, 2)
+    render_cell("30d revenue:", 14, color_pair(YELLOW))
+    render_cell(cents_to_dollars(revenue_30d).rjust(12), 12)
   end
 
 
