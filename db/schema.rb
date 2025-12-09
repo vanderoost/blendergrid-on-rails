@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_12_04_122600) do
+ActiveRecord::Schema[8.2].define(version: 2025_12_08_145828) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -57,11 +57,15 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_04_122600) do
   create_table "affiliates", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "landing_page_id", null: false
+    t.json "payout_method_details"
+    t.datetime "payout_onboarded_at"
     t.integer "reward_percent", default: 10, null: false
     t.integer "reward_window_months", default: 12, null: false
+    t.string "stripe_account_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["landing_page_id"], name: "index_affiliates_on_landing_page_id"
+    t.index ["stripe_account_id"], name: "index_affiliates_on_stripe_account_id", unique: true
     t.index ["user_id"], name: "index_affiliates_on_user_id", unique: true
   end
 
