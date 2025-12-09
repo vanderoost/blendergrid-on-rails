@@ -1,3 +1,4 @@
+# TODO: Take refunds into account
 class RefreshAffiliateStatsJob < ApplicationJob
   queue_as :default
 

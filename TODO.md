@@ -47,10 +47,10 @@
 
 ## Affiliates
 
-- [ ] Let Users create Payout methods for themselves
 - [ ] Let Users delete Payout methods
-- [ ] Automatically use Payout methods to pay out rewards monthly
-    - [ ] Keep track of the required Storage Balance so we are able to pay out
+- [x] Let Users create Payout methods for themselves
+- [x] Keep track of the required Storage Balance so we are able to pay out
+- [x] Automatically use Payout methods to pay out rewards monthly
 
 ## Dashboard
 

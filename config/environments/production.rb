@@ -29,6 +29,9 @@ Rails.application.configure do
   # Give users more time to upload huge files.
   config.active_storage.service_urls_expire_in = 24.hours
 
+  # Get rid of warnings about image variants that we don't use.
+  config.active_storage.variant_processor = :disabled
+
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   config.assume_ssl = true
 

@@ -4,7 +4,6 @@ class MonthlyAffiliateStatsController < ApplicationController
   def index
     @year = params[:year]&.to_i || Date.current.year
     @year = @year.clamp(2024, Date.current.year)
-
     @stats = @affiliate.affiliate_monthly_stats
                        .where(year: @year)
                        .order(:month)
