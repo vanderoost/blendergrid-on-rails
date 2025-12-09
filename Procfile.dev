@@ -2,3 +2,5 @@ web: bin/rails server -b 0.0.0.0
 css: bin/rails tailwindcss:watch
 email: mailhog
 stripe: stripe listen --forward-to localhost:3000/webhooks/stripe_events
+stripev2: stripe listen --forward-thin-to localhost:3000/webhooks/stripe_events --thin-events "*"
+
