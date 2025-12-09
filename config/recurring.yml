@@ -28,3 +28,8 @@ production:
     class: FundGlobalPayoutBalanceJob
     args: []
     schedule: every day at 11pm
+
+  payout_affiliate_rewards_job:
+    class: PayoutAffiliateRewardsJob
+    args: []
+    schedule: every month at 9am
