@@ -1,3 +1,5 @@
+require "ostruct"
+
 # TODO: Put this whole thing on a diet - Move logic into POROs
 class Webhooks::StripeEventsController < Webhooks::BaseController
   def create
