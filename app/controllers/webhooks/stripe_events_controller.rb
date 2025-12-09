@@ -26,10 +26,37 @@ class Webhooks::StripeEventsController < Webhooks::BaseController
 
   private
     def event
-      payload = request.body.read
-      signature = request.env["HTTP_STRIPE_SIGNATURE"]
-      secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
-      Stripe::Webhook.construct_event(payload, signature, secret)
+      @event ||= begin
+        payload = request.body.read
+        request.body.rewind
+
+        # Try to parse as JSON first to check if it's a v2 event
+        parsed_payload = JSON.parse(payload)
+
+        # V2 events have object: "v2.core.event"
+        if parsed_payload["object"] == "v2.core.event"
+          # V2 events use a different signature verification
+          signature = request.env["HTTP_STRIPE_SIGNATURE"]
+          secret = Rails.application.credentials.dig(:stripe, :webhook_secret_v2)
+
+          # Verify the signature for v2 events
+          Stripe::Webhook::Signature.verify_header(
+            payload,
+            signature,
+            secret,
+            tolerance: 300
+          )
+
+          # Return the parsed event as an OpenStruct for compatibility
+          JSON.parse(payload, object_class: OpenStruct)
+        else
+          # V1 events use the standard webhook verification
+          request.body.rewind
+          signature = request.env["HTTP_STRIPE_SIGNATURE"]
+          secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
+          Stripe::Webhook.construct_event(payload, signature, secret)
+        end
+      end
     end
 
     def handle_successful_checkout(session)
