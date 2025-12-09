@@ -23,3 +23,8 @@ production:
     class: RefreshAffiliateStatsJob
     args: []
     schedule: every hour at minute 52
+
+  fund_global_payout_balance_job:
+    class: FundGlobalPayoutBalanceJob
+    args: []
+    schedule: every day at 11pm
