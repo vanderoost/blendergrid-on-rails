@@ -85,6 +85,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 100000, user.render_credit_cents, "User should have $1000 credits"
     assert 100000 >= @project.price_cents, "Credit should cover entire amount"
 
+    puts "Project: #{@project.inspect}"
+
     assert_difference("Project::Render.count", 1) do
       post orders_url,
         params: { order: {
@@ -93,6 +95,8 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
         headers: root_referrer_header
       assert_redirected_to root_url
     end
+
+    puts "Render: #{@project.renders.last.inspect}"
 
     user.reload
     assert_equal @project.price_cents, 100000 - user.render_credit_cents
