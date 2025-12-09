@@ -1,3 +1,255 @@
+<% countries = [
+  [ "Afghanistan", "AF" ],
+  [ "Åland Islands", "AX" ],
+  [ "Albania", "AL" ],
+  [ "Algeria", "DZ" ],
+  [ "American Samoa", "AS" ],
+  [ "Andorra", "AD" ],
+  [ "Angola", "AO" ],
+  [ "Anguilla", "AI" ],
+  [ "Antarctica", "AQ" ],
+  [ "Antigua and Barbuda", "AG" ],
+  [ "Argentina", "AR" ],
+  [ "Armenia", "AM" ],
+  [ "Aruba", "AW" ],
+  [ "Australia", "AU" ],
+  [ "Austria", "AT" ],
+  [ "Azerbaijan", "AZ" ],
+  [ "Bahamas", "BS" ],
+  [ "Bahrain", "BH" ],
+  [ "Bangladesh", "BD" ],
+  [ "Barbados", "BB" ],
+  [ "Belarus", "BY" ],
+  [ "Belgium", "BE" ],
+  [ "Belize", "BZ" ],
+  [ "Benin", "BJ" ],
+  [ "Bermuda", "BM" ],
+  [ "Bhutan", "BT" ],
+  [ "Bolivia", "BO" ],
+  [ "Bonaire", "BQ" ],
+  [ "Bosnia and Herzegovina", "BA" ],
+  [ "Botswana", "BW" ],
+  [ "Bouvet Island", "BV" ],
+  [ "Brazil", "BR" ],
+  [ "British Indian Ocean Territory", "IO" ],
+  [ "Brunei Darussalam", "BN" ],
+  [ "Bulgaria", "BG" ],
+  [ "Burkina Faso", "BF" ],
+  [ "Burundi", "BI" ],
+  [ "Cabo Verde", "CV" ],
+  [ "Cambodia", "KH" ],
+  [ "Cameroon", "CM" ],
+  [ "Canada", "CA" ],
+  [ "Cayman Islands", "KY" ],
+  [ "Central African Republic", "CF" ],
+  [ "Chad", "TD" ],
+  [ "Chile", "CL" ],
+  [ "China", "CN" ],
+  [ "Christmas Island", "CX" ],
+  [ "Cocos (Keeling) Islands", "CC" ],
+  [ "Colombia", "CO" ],
+  [ "Comoros", "KM" ],
+  [ "Congo", "CG" ],
+  [ "Congo, Democratic Republic of the", "CD" ],
+  [ "Cook Islands", "CK" ],
+  [ "Costa Rica", "CR" ],
+  [ "Côte d'Ivoire", "CI" ],
+  [ "Croatia", "HR" ],
+  [ "Cuba", "CU" ],
+  [ "Curaçao", "CW" ],
+  [ "Cyprus", "CY" ],
+  [ "Czechia", "CZ" ],
+  [ "Denmark", "DK" ],
+  [ "Djibouti", "DJ" ],
+  [ "Dominica", "DM" ],
+  [ "Dominican Republic", "DO" ],
+  [ "Ecuador", "EC" ],
+  [ "Egypt", "EG" ],
+  [ "El Salvador", "SV" ],
+  [ "Equatorial Guinea", "GQ" ],
+  [ "Eritrea", "ER" ],
+  [ "Estonia", "EE" ],
+  [ "Eswatini", "SZ" ],
+  [ "Ethiopia", "ET" ],
+  [ "Falkland Islands", "FK" ],
+  [ "Faroe Islands", "FO" ],
+  [ "Fiji", "FJ" ],
+  [ "Finland", "FI" ],
+  [ "France", "FR" ],
+  [ "French Guiana", "GF" ],
+  [ "French Polynesia", "PF" ],
+  [ "French Southern Territories", "TF" ],
+  [ "Gabon", "GA" ],
+  [ "Gambia", "GM" ],
+  [ "Georgia", "GE" ],
+  [ "Germany", "DE" ],
+  [ "Ghana", "GH" ],
+  [ "Gibraltar", "GI" ],
+  [ "Greece", "GR" ],
+  [ "Greenland", "GL" ],
+  [ "Grenada", "GD" ],
+  [ "Guadeloupe", "GP" ],
+  [ "Guam", "GU" ],
+  [ "Guatemala", "GT" ],
+  [ "Guernsey", "GG" ],
+  [ "Guinea", "GN" ],
+  [ "Guinea-Bissau", "GW" ],
+  [ "Guyana", "GY" ],
+  [ "Haiti", "HT" ],
+  [ "Heard Island and McDonald Islands", "HM" ],
+  [ "Holy See", "VA" ],
+  [ "Honduras", "HN" ],
+  [ "Hong Kong", "HK" ],
+  [ "Hungary", "HU" ],
+  [ "Iceland", "IS" ],
+  [ "India", "IN" ],
+  [ "Indonesia", "ID" ],
+  [ "Iran", "IR" ],
+  [ "Iraq", "IQ" ],
+  [ "Ireland", "IE" ],
+  [ "Isle of Man", "IM" ],
+  [ "Israel", "IL" ],
+  [ "Italy", "IT" ],
+  [ "Jamaica", "JM" ],
+  [ "Japan", "JP" ],
+  [ "Jersey", "JE" ],
+  [ "Jordan", "JO" ],
+  [ "Kazakhstan", "KZ" ],
+  [ "Kenya", "KE" ],
+  [ "Kiribati", "KI" ],
+  [ "Korea, Democratic People's Republic of", "KP" ],
+  [ "Korea, Republic of", "KR" ],
+  [ "Kuwait", "KW" ],
+  [ "Kyrgyzstan", "KG" ],
+  [ "Lao People's Democratic Republic", "LA" ],
+  [ "Latvia", "LV" ],
+  [ "Lebanon", "LB" ],
+  [ "Lesotho", "LS" ],
+  [ "Liberia", "LR" ],
+  [ "Libya", "LY" ],
+  [ "Liechtenstein", "LI" ],
+  [ "Lithuania", "LT" ],
+  [ "Luxembourg", "LU" ],
+  [ "Macao", "MO" ],
+  [ "Madagascar", "MG" ],
+  [ "Malawi", "MW" ],
+  [ "Malaysia", "MY" ],
+  [ "Maldives", "MV" ],
+  [ "Mali", "ML" ],
+  [ "Malta", "MT" ],
+  [ "Marshall Islands", "MH" ],
+  [ "Martinique", "MQ" ],
+  [ "Mauritania", "MR" ],
+  [ "Mauritius", "MU" ],
+  [ "Mayotte", "YT" ],
+  [ "Mexico", "MX" ],
+  [ "Micronesia", "FM" ],
+  [ "Moldova", "MD" ],
+  [ "Monaco", "MC" ],
+  [ "Mongolia", "MN" ],
+  [ "Montenegro", "ME" ],
+  [ "Montserrat", "MS" ],
+  [ "Morocco", "MA" ],
+  [ "Mozambique", "MZ" ],
+  [ "Myanmar", "MM" ],
+  [ "Namibia", "NA" ],
+  [ "Nauru", "NR" ],
+  [ "Nepal", "NP" ],
+  [ "Netherlands", "NL" ],
+  [ "New Caledonia", "NC" ],
+  [ "New Zealand", "NZ" ],
+  [ "Nicaragua", "NI" ],
+  [ "Niger", "NE" ],
+  [ "Nigeria", "NG" ],
+  [ "Niue", "NU" ],
+  [ "Norfolk Island", "NF" ],
+  [ "North Macedonia", "MK" ],
+  [ "Northern Mariana Islands", "MP" ],
+  [ "Norway", "NO" ],
+  [ "Oman", "OM" ],
+  [ "Pakistan", "PK" ],
+  [ "Palau", "PW" ],
+  [ "Palestine", "PS" ],
+  [ "Panama", "PA" ],
+  [ "Papua New Guinea", "PG" ],
+  [ "Paraguay", "PY" ],
+  [ "Peru", "PE" ],
+  [ "Philippines", "PH" ],
+  [ "Pitcairn", "PN" ],
+  [ "Poland", "PL" ],
+  [ "Portugal", "PT" ],
+  [ "Puerto Rico", "PR" ],
+  [ "Qatar", "QA" ],
+  [ "Réunion", "RE" ],
+  [ "Romania", "RO" ],
+  [ "Russian Federation", "RU" ],
+  [ "Rwanda", "RW" ],
+  [ "Saint Barthélemy", "BL" ],
+  [ "Saint Helena", "SH" ],
+  [ "Saint Kitts and Nevis", "KN" ],
+  [ "Saint Lucia", "LC" ],
+  [ "Saint Martin (French part)", "MF" ],
+  [ "Saint Pierre and Miquelon", "PM" ],
+  [ "Saint Vincent and the Grenadines", "VC" ],
+  [ "Samoa", "WS" ],
+  [ "San Marino", "SM" ],
+  [ "Sao Tome and Principe", "ST" ],
+  [ "Saudi Arabia", "SA" ],
+  [ "Senegal", "SN" ],
+  [ "Serbia", "RS" ],
+  [ "Seychelles", "SC" ],
+  [ "Sierra Leone", "SL" ],
+  [ "Singapore", "SG" ],
+  [ "Sint Maarten (Dutch part)", "SX" ],
+  [ "Slovakia", "SK" ],
+  [ "Slovenia", "SI" ],
+  [ "Solomon Islands", "SB" ],
+  [ "Somalia", "SO" ],
+  [ "South Africa", "ZA" ],
+  [ "South Georgia and the South Sandwich Islands", "GS" ],
+  [ "South Sudan", "SS" ],
+  [ "Spain", "ES" ],
+  [ "Sri Lanka", "LK" ],
+  [ "Sudan", "SD" ],
+  [ "Suriname", "SR" ],
+  [ "Svalbard and Jan Mayen", "SJ" ],
+  [ "Sweden", "SE" ],
+  [ "Switzerland", "CH" ],
+  [ "Syrian Arab Republic", "SY" ],
+  [ "Taiwan", "TW" ],
+  [ "Tajikistan", "TJ" ],
+  [ "Tanzania", "TZ" ],
+  [ "Thailand", "TH" ],
+  [ "Timor-Leste", "TL" ],
+  [ "Togo", "TG" ],
+  [ "Tokelau", "TK" ],
+  [ "Tonga", "TO" ],
+  [ "Trinidad and Tobago", "TT" ],
+  [ "Tunisia", "TN" ],
+  [ "Türkiye", "TR" ],
+  [ "Turkmenistan", "TM" ],
+  [ "Turks and Caicos Islands", "TC" ],
+  [ "Tuvalu", "TV" ],
+  [ "Uganda", "UG" ],
+  [ "Ukraine", "UA" ],
+  [ "United Arab Emirates", "AE" ],
+  [ "United Kingdom", "GB" ],
+  [ "United States", "US" ],
+  [ "United States Minor Outlying Islands", "UM" ],
+  [ "Uruguay", "UY" ],
+  [ "Uzbekistan", "UZ" ],
+  [ "Vanuatu", "VU" ],
+  [ "Venezuela", "VE" ],
+  [ "Viet Nam", "VN" ],
+  [ "Virgin Islands (British)", "VG" ],
+  [ "Virgin Islands (U.S.)", "VI" ],
+  [ "Wallis and Futuna", "WF" ],
+  [ "Western Sahara", "EH" ],
+  [ "Yemen", "YE" ],
+  [ "Zambia", "ZM" ],
+  [ "Zimbabwe", "ZW" ]
+]%>
+
 <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mt-8">Account</h1>
 
 <div class="space-y-12 mt-12">
@@ -82,8 +334,6 @@
         <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Referral Program</h2>
         <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Earn rewards by helping other Blender artists find us.</p>
       </div>
-
-
       <div class="md:col-span-2 space-y-8">
 
         <div class="sm:flex sm:items-center">
@@ -103,17 +353,74 @@
               </ol>
             </p>
           </div>
-
-          <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-
-
-          </div>
         </div>
 
+        <div class="col-span-full">
+          <%= turbo_frame_tag "affiliate_stats", src: account_monthly_affiliate_stats_path, loading: :lazy do %>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
+          <% end %>
+        </div>
 
-        <%= turbo_frame_tag "affiliate_stats", src: account_monthly_affiliate_stats_path, loading: :lazy do %>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
-        <% end %>
+        <div class="col-span-full">
+          <h3 class="block text-sm/4 font-medium text-gray-900 dark:text-white">Payouts</h3>
+          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Get paid out automatically when you have pending rewards.</p>
+
+          <% if Current.user.affiliate.payout_onboarded_at.present? %>
+
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+            <% if Current.user.affiliate.payout_method_details.present? %>
+              <div class="mt-2">
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <% details = Current.user.affiliate.payout_method_details %>
+                  <span class="font-medium">
+                    <%= details["institution_name"] || details["bank_name"] %>
+                  </span>
+                  <% if details["account_type"].present? %>
+                    <span class="capitalize"><%= details["account_type"] %></span>
+                  <% elsif details["country"].present? %>
+                    <span class="uppercase"><%= details["country"] %></span>
+                  <% end %>
+                  ••••<%= details["last4"] %>
+                </p>
+              </div>
+            <% end %>
+
+            <div class="mt-2 flex items-center gap-x-3">
+              <%= button_to "Update payout method", account_payout_methods_path, data: { turbo: false }, class: "rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring inset-ring-gray-300 hover:bg-gray-50 dark:bg-white/10 dark:text-white dark:shadow-none dark:inset-ring-white/5 dark:hover:bg-white/20" %>
+            </div>
+            </div>
+
+          <% else %>
+
+            <%= form_with url: account_payout_methods_path, method: :post, data: { turbo: false }, class: "mt-4" do |form| %>
+              <div class="space-y-4">
+                
+                <div class="sm:col-span-full">
+                  <%= form.label :country, "Country", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
+
+                  <div class="mt-2 flex gap-4">
+
+                    <div class="grid grid-cols-1">
+                      <%= form.select :country, options_for_select(countries, "US"), {}, class: "col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:*:bg-gray-800 dark:focus:outline-primary-500"
+                      %>
+
+                      <svg viewBox="0 0 16 16" fill="currentColor" data-slot="icon" aria-hidden="true" class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4 dark:text-gray-400">
+                        <path d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                      </svg>
+
+                    </div>
+
+                    <div>
+                      <%= form.submit "Set up payout method", class: "rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:focus-visible:outline-primary-500" %>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+
       </div>
     </div>
   <% end %>

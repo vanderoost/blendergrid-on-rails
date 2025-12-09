@@ -7,10 +7,10 @@ class ApplicationController < ActionController::Base
       return redirect_to projects_path if url.blank?
 
       uri = URI.parse(url)
-      if uri.host == "checkout.stripe.com"
+      if [ "checkout.stripe.com", "connect.stripe.com" ].include? uri.host
         redirect_to url, allow_other_host: true
       else
-        redirect_to projects_path
+        redirect_back_or_to root_path
       end
     rescue URI::InvalidURIError
       redirect_to projects_path

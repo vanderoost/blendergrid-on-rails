@@ -8,6 +8,7 @@
       "Bash(bundle exec rubocop:*)",
       "Bash(bundle info:*)",
       "Bash(bundle install:*)",
+      "Bash(bundle list:*)",
       "Bash(bundle)",
       "Bash(cat:*)",
       "Bash(find:*)",
@@ -15,13 +16,12 @@
       "Bash(gem list:*)",
       "Bash(gem uninstall:*)",
       "Bash(git show:*)",
-      "Read(//Users/richard/.cache/**)",
-      "WebFetch(domain:docs.stripe.com)",
-      "WebSearch",
-      "Bash(bundle list:*)",
       "Bash(kamal logs:*)",
       "Bash(timeout 300 kamal logs:*)",
-      "Bash(timeout 60 kamal logs:*)"
+      "Bash(timeout 60 kamal logs:*)",
+      "Read(//Users/richard/.cache/**)",
+      "WebFetch(domain:docs.stripe.com)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
