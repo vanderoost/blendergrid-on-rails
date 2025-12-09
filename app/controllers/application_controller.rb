@@ -4,15 +4,15 @@ class ApplicationController < ActionController::Base
 
   private
     def redirect_to_safe_url(url)
-      return redirect_to projects_path if url.blank?
+      return redirect_back_or_to root_path if url.blank?
 
       uri = URI.parse(url)
-      if [ "checkout.stripe.com", "connect.stripe.com" ].include? uri.host
+      if [ "checkout.stripe.com", "accounts.stripe.com" ].include? uri.host
         redirect_to url, allow_other_host: true
       else
         redirect_back_or_to root_path
       end
     rescue URI::InvalidURIError
-      redirect_to projects_path
+      redirect_back_or_to root_path
     end
 end

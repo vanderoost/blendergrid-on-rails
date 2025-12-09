@@ -91,7 +91,7 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
             project_uuids: [ @project.uuid ],
           } },
         headers: root_referrer_header
-      assert_redirected_to projects_url
+      assert_redirected_to root_url
     end
 
     user.reload
