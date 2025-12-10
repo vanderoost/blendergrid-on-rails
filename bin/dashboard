@@ -133,21 +133,33 @@ class Dashboard
           topup_revenue_24h = CreditEntry
             .where(created_at: 24.hours.ago..)
             .where(reason: :topup).sum(:amount_cents)
-          revenue_24h = render_revenue_24h + topup_revenue_24h
+          refunds_24h = Refund
+            .where(created_at: 24.hours.ago..)
+            .where.not(stripe_refund_id: nil)
+            .sum(:amount_cents)
+          revenue_24h = render_revenue_24h + topup_revenue_24h - refunds_24h
           render_revenue_7d = Order
             .where(created_at: 7.days.ago..)
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
           topup_revenue_7d = CreditEntry
             .where(created_at: 7.days.ago..)
             .where(reason: :topup).sum(:amount_cents)
-          revenue_7d = render_revenue_7d + topup_revenue_7d
+          refunds_7d = Refund
+            .where(created_at: 7.days.ago..)
+            .where.not(stripe_refund_id: nil)
+            .sum(:amount_cents)
+          revenue_7d = render_revenue_7d + topup_revenue_7d - refunds_7d
           render_revenue_30d = Order
             .where(created_at: 30.days.ago..)
             .where.not(stripe_payment_intent_id: nil).sum(:cash_cents)
           topup_revenue_30d = CreditEntry
             .where(created_at: 30.days.ago..)
             .where(reason: :topup).sum(:amount_cents)
-          revenue_30d = render_revenue_30d + topup_revenue_30d
+          refunds_30d = Refund
+            .where(created_at: 30.days.ago..)
+            .where.not(stripe_refund_id: nil)
+            .sum(:amount_cents)
+          revenue_30d = render_revenue_30d + topup_revenue_30d - refunds_30d
 
           @data_lock.synchronize do
             @projects = projects

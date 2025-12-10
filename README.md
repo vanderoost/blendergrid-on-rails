@@ -16,12 +16,12 @@ Live at: [blendergrid.com](https://blendergrid.com)
 
 Make sure the `EDITOR` environment variable is set (`export EDITOR=vim`).
 
-Update credentials and secrets:
+Update credentials and secrets in the default credentials file:
 ```bash
 RAILS_ENV=production bin/rails credentials:edit
 ```
 
-For specific development credentials (if they differ from production), use:
+For development credentials, use:
 ```bash
 rails credentials:edit -e development
 ```
