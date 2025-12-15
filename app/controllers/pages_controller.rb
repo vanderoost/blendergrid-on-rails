@@ -1,7 +1,6 @@
 class PagesController < ApplicationController
   allow_unauthenticated_access
 
-  # Define allowed policy pages to prevent path traversal
   ALLOWED_POLICIES = %w[terms privacy refund].freeze
 
   def pricing

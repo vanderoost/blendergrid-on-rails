@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
       uri = URI.parse(url)
       if [ "checkout.stripe.com", "accounts.stripe.com" ].include? uri.host
-        redirect_to url, allow_other_host: true
+        redirect_to url, status: 303, allow_other_host: true
       else
         redirect_back_or_to root_path
       end
