@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+# Set up Github Actions secrets and variables
+
+AWS_PROFILE = "vanderoost"
+
+require_relative "../config/application"
+
+Rails.application.initialize!
+
+deploy_config = YAML.load_file(Rails.root.join('config', 'deploy.yml'))
+app_name = Rails.application.class.module_parent_name.downcase
+web_server_user = deploy_config['ssh']['user']
+web_server_host = deploy_config['servers']['web'].first
+service_name = deploy_config['service']
+image_name = deploy_config['image']
+
+def system!(*args)
+  system(*args, exception: true)
+end
+
+puts "Setting up Github secrets and variables for #{app_name}\n"
+
+puts "Rails settings"
+system!("gh variable set APP_NAME --body '#{app_name}'")
+system!("gh variable set SERVICE_NAME --body '#{service_name}'")
+system!("gh variable set IMAGE_NAME --body '#{image_name}'")
+system!("gh secret set RAILS_MASTER_KEY < config/master.key")
+
+puts "AWS configuration"
+system!("gh variable set AWS_REGION "\
+  "--body \"$(aws configure get region --profile #{AWS_PROFILE})\"")
+system!("gh secret set AWS_ACCESS_KEY_ID "\
+  "--body \"$(aws configure get aws_access_key_id --profile #{AWS_PROFILE})\"")
+system!("gh secret set AWS_SECRET_ACCESS_KEY "\
+  "--body \"$(aws configure get aws_secret_access_key --profile #{AWS_PROFILE})\"")
+
+ssh_login = "#{web_server_user}@#{web_server_host}"
+ssh_key_name = "github-actions-#{app_name}"
+ssh_key_path = ".ssh/#{ssh_key_name}"
+puts "Webserver SSH access: #{ssh_login}"
+system!("ssh #{ssh_login} 'sed -i.bak \"/#{ssh_key_name}/d\" .ssh/authorized_keys'")
+system!("ssh #{ssh_login} 'rm -f #{ssh_key_path} #{ssh_key_path}.pub'")
+system!("ssh #{ssh_login} 'ssh-keygen -t ed25519 -N \"\" -f #{ssh_key_path}"\
+  " -C \"#{ssh_key_name}\"'")
+system!("ssh #{ssh_login} 'cat #{ssh_key_path}.pub >> .ssh/authorized_keys'")
+system!("gh secret set SSH_PRIVATE_KEY --body \"$(ssh #{ssh_login}"\
+  " 'cat #{ssh_key_path}')\"")
+
+puts "Done!"
