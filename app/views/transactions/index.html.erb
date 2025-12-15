@@ -1,0 +1,60 @@
+<%= turbo_frame_tag "transactions" do %>
+  <div class="sm:flex sm:items-center">
+    <div class="sm:flex-auto">
+      <p class="text-sm/6 font-semibold text-gray-900 dark:text-white">Transactions in the last 60 days</p>
+    </div>
+  </div>
+
+  <div class="mt-8 flow-root">
+    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 not-dark:bg-white rounded-lg">
+      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+        <table class="relative min-w-full divide-y divide-gray-300 dark:divide-white/15">
+          <thead>
+            <tr>
+              <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold whitespace-nowrap text-gray-900 sm:pl-0 dark:text-white">Date</th>
+              <th scope="col" class="px-2 py-3.5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Amount</th>
+              <th scope="col" class="py-2 pr-3.5">
+                <span class="sr-only">Currency</span>
+              </th>
+              <th scope="col" class="py-2 pr-3.5">
+                <span class="sr-only">Status</span>
+              </th>
+              <th scope="col" class="px-2 py-3.5 text-left text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-white">Type</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-900">
+
+            <% @transactions.each do |transaction| %>
+              <tr>
+                <td class="py-2 pr-3 pl-4 text-sm whitespace-nowrap text-gray-500 sm:pl-0 dark:text-gray-400">
+                  <%= transaction.created_at.strftime("%b %d, %H:%M %Z") %>
+                </td>
+                <td class="px-2 py-2 text-sm font-medium text-right whitespace-nowrap text-gray-900 dark:text-white tabular-nums">
+                  <%= number_to_currency(transaction.amount_cents.fdiv(100)) %>
+                </td>
+                <td class="px-2 py-2 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  USD
+                </td>
+                <td class="px-2 py-2 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  <span class="inline-flex items-center gap-x-0.5 rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:inset-ring-green-500/20">
+                    Succeeded
+                    <span type="button" class="relative -mr-1 size-3.5 rounded-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-3.5 stroke-green-700/50 dark:stroke-green-400">
+                        <path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="absolute -inset-1"></span>
+                    </button>
+                  </span>
+                </td>
+                <td class="px-2 py-2 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                  <%= "Credit #{transaction.reason.titleize}" %>
+                </td>
+              </tr>
+            <% end %>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>

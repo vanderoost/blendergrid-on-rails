@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   # Account settings etc.
   resource :account, only: %w[show] do
+    resources :transactions, only: %w[index]
     resources :monthly_affiliate_stats, only: %w[index]
     resources :payout_methods, only: %w[create]
   end

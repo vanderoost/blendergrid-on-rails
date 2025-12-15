@@ -267,7 +267,7 @@
         <div class="sm:col-span-4">
           <%= form.label :name, "Name #{form.object.errors[:name].first}", class: "block text-sm/6 font-medium text-gray-900 dark:text-white" %>
           <div class="mt-2">
-            <%= form.text_field :name, autocomplete: "given-name", class: "block w-full rounded-md px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
+            <%= form.text_field :name, autocomplete: "given-name", class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-primary-500" %>
           </div>
         </div>
 
@@ -289,6 +289,7 @@
     </div>
   <% end %>
 
+  <!-- Render credit section -->
   <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
     <div>
       <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Render credit</h2>
@@ -325,6 +326,22 @@
 
     <% end %>
   </div>
+
+  <!-- Transactions section -->
+  <% if Current.user.credit_entries.where(created_at: 60.days.ago..).where(reason: :topup).any? %>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
+      <div>
+        <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Transactions</h2>
+        <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Recent transactions you've made.</p>
+      </div>
+
+      <div class="md:col-span-2 space-y-8">
+        <%= turbo_frame_tag "transactions", src: account_transactions_path, loading: :lazy do %>
+          <p class="text-sm text-gray-500 dark:text-gray-400">Loading transactions...</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 
   <!-- TODO: Delete account section -->
 
