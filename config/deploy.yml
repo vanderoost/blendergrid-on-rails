@@ -7,8 +7,9 @@ image: blendergrid/web-app
 # Deploy to these servers.
 servers:
   web:
-    # - 3.236.70.222 # Server B
     - blendergrid.com
+    # - 34.237.76.153 # Server A
+    # - 34.239.175.76 # Server B
   # job:
   #   hosts:
   #     - 192.168.0.1
