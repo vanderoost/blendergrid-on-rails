@@ -60,6 +60,8 @@ class RefreshAffiliateStatsJob < ApplicationJob
 
       total_sales = 0
 
+      # TODO: Subtract refunds
+
       attributed_users.find_each do |user|
         reward_end_date = user.created_at + reward_window_months.months
         sale_date_range = [ date_range.begin, user.created_at ].max..

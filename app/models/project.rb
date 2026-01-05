@@ -39,7 +39,9 @@ class Project < ApplicationRecord
 
   validates :blend_filepath, presence: true
 
-  default_scope { where(deleted_at: nil).order(stage_updated_at: :desc) }
+  default_scope { where(deleted_at: nil)
+    .where(updated_at: 30.days.ago..)
+    .order(stage_updated_at: :desc) }
 
   def self.in_stages
     all.group_by(&:stage).map { |stage, projects| stage.new(projects) }.sort_by(&:order)
