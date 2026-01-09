@@ -1,0 +1,55 @@
+<div class="my-8 flex flex-col gap-4">
+  <% if @project.frame_objects.any? %>
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+      Rendered Frames
+      <span class="ml-4 inline-flex min-w-8 items-center justify-center rounded-full bg-gray-100 px-1.5 py-0.5 text-ss font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+        <%= @project.frame_objects.count %>
+      </span>
+    </h2>
+
+    <% if @project.frames.count > 24 %>
+      <% frame_objects_by_number = @project.frame_objects.group_by { |obj| obj[:frame_number] } %>
+
+      <!-- Frame minigrid -->
+      <div class="flex gap-1 flex-wrap">
+        <% @project.frames.each do |frame| %>
+          <% is_rendered = frame_objects_by_number[frame].present? %>
+          <div class="size-4 rounded <%= is_rendered ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-800' %>"></div>
+        <% end %>
+      </div>
+
+    <% else %>
+      <!-- Frame thumbnails -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <% @project.frame_objects.each do |obj| %>
+          <%= link_to obj[:url], target: "_blank", class: "block group border border-gray-200 hover:bg-gray-100 text-gray-700 dark:text-gray-300 bg-white dark:border-white/10 dark:bg-gray-800/50 dark:hover:bg-gray-800 rounded overflow-hidden" do %>
+
+            <% if [".png", ".jpg", ".bmp"].include? obj[:extension] %>
+              <img src="<%= obj[:url] %>" loading="lazy">
+            <% else %>
+              <div class="py-3 flex items-center justify-center group-hover:text-gray-950 dark:group-hover:text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor" class="size-8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                </svg>
+              </div>
+            <% end %>
+
+            <div class="px-2 py-1 text-sm flex flex-wrap gap-2 justify-between max-h-7 overflow-hidden">
+              <div class="flex flex-wrap overflow-hidden">
+                <div class="truncate group-hover:text-gray-950 dark:group-hover:text-white"><%= obj[:basename] %></div>
+                <div><%= obj[:extension] %></div>
+              </div>
+              <div><%= number_to_human_size(obj[:size]) %></div>
+            </div>
+
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
+
+
+
+  <% else %>
+    <p class="italic text-sm text-gray-700 dark:text-gray-300 py-8">No frames have finished rendering yet.</p>
+  <% end %>
+</div>
