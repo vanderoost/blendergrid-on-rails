@@ -1,12 +1,17 @@
-# TODO: Take refunds into account
 class RefreshAffiliateStatsJob < ApplicationJob
   queue_as :default
 
   def perform
-    year = Date.yesterday.year
-    month = Date.yesterday.month
+    refresh_month(1.month.ago)
+    refresh_month(Time.current)
+  end
+
+  def refresh_month(date)
+    year = date.year
+    month = date.month
 
     Affiliate.all.each do |affiliate|
+      puts "Month: #{year}-#{month} - Affiliate: #{affiliate.user.name}"
       date_range = Date.new(year, month, 1)..Date.new(year, month, -1)
       page_variant_ids = affiliate.landing_page.page_variant_ids
 
@@ -30,6 +35,8 @@ class RefreshAffiliateStatsJob < ApplicationJob
         month: month,
         **stats,
       }, unique_by: [ :affiliate_id, :year, :month ])
+
+      puts ""
     end
   end
 
@@ -60,8 +67,6 @@ class RefreshAffiliateStatsJob < ApplicationJob
 
       total_sales = 0
 
-      # TODO: Subtract refunds
-
       attributed_users.find_each do |user|
         reward_end_date = user.created_at + reward_window_months.months
         sale_date_range = [ date_range.begin, user.created_at ].max..
@@ -69,15 +74,24 @@ class RefreshAffiliateStatsJob < ApplicationJob
 
         next if sale_date_range.begin > sale_date_range.end
 
-        orders_total = user.orders
+        orders = user.orders
           .where(created_at: sale_date_range)
-          .sum(:cash_cents)
+          .where.not(stripe_payment_intent_id: nil)
+        orders_total = orders.sum(:cash_cents)
+        refunds_total = Refund.joins(:order_item)
+          .where(order_items: { order_id: orders.select(:id) })
+          .sum(:amount_cents)
 
         topups_total = user.credit_entries
           .where(reason: :topup, created_at: sale_date_range)
           .sum(:amount_cents)
 
-        total_sales += orders_total + topups_total
+        if orders_total + topups_total > 0
+          puts "User #{user.email_address} - Sales: #{orders_total + topups_total} - "\
+            "Refunds: #{refunds_total}"
+        end
+
+        total_sales += orders_total - refunds_total + topups_total
       end
 
       total_sales
