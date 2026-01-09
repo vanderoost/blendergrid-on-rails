@@ -148,7 +148,8 @@ class Project < ApplicationRecord
         extension: extension,
         size: obj.size,
         url: obj.presigned_url(
-          :get, expires_in: 1.hour.in_seconds, use_accelerate_endpoint: true
+          :get, expires_in: 1.hour.in_seconds,
+          use_accelerate_endpoint: Rails.env.production?
         ),
       }
     end
