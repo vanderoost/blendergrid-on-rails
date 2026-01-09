@@ -119,9 +119,7 @@ class Project < ApplicationRecord
      filename = obj.key.split("/").last
       extension = File.extname(filename)
       basename = File.basename(filename, extension)
-
-      frame_number = basename.split("-").last.to_i # TODO: Handle more complex file names
-
+      frame_number = basename.scan(/\d{4,}/).last&.to_i || 0
       {
         frame_number: frame_number,
         basename: basename,
