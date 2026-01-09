@@ -114,21 +114,23 @@ class Project < ApplicationRecord
   end
 
   def frame_objects
-    prefix = "projects/#{uuid}/frames/"
-    objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
-     filename = obj.key.split("/").last
-      extension = File.extname(filename)
-      basename = File.basename(filename, extension)
-      frame_number = basename.scan(/\d{4,}/).last&.to_i || 0
-      {
-        frame_number: frame_number,
-        basename: basename,
-        extension: extension,
-        size: obj.size,
-        url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
-      }
+    @frame_objects ||= begin
+      prefix = "projects/#{uuid}/frames/"
+      objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
+       filename = obj.key.split("/").last
+        extension = File.extname(filename)
+        basename = File.basename(filename, extension)
+        frame_number = basename.scan(/\d{4,}/).last&.to_i || 0
+        {
+          frame_number: frame_number,
+          basename: basename,
+          extension: extension,
+          size: obj.size,
+          url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+        }
+      end
+      objects
     end
-    objects
   end
 
   def sample_frame_urls
