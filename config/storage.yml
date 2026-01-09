@@ -22,7 +22,7 @@ amazon:
   secret_access_key: <%= Rails.application.credentials.dig(:aws, :secret_access_key) %>
   region: us-east-1
   bucket: <%= Rails.configuration.swarm_engine.dig(:bucket) %>
-  use_accelerate_endpoint: true
+  use_accelerate_endpoint: <%= Rails.env.production? %>
 
 # Remember not to checkin your GCS keyfile to a repository
 # google:

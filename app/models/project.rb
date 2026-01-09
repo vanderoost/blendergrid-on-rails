@@ -104,32 +104,25 @@ class Project < ApplicationRecord
   def process_benchmark
     raise "Project has no BlenderScene" if current_blender_scene.blank?
 
-    # TODO: Choose a sensible deadline based on the benchmark / exp. server hours
     self.tweaks_deadline_hours = Project::DEFAULT_DEADLINE_HOURS
     self.tweaks_resolution_percentage = resolution_percentage
     self.tweaks_sampling_max_samples = sampling_max_samples
 
-    # Initialize the price
     update_price
 
     self.save!
   end
 
-  # TODO: Maybe deprecate this and use frame_objects
-  def frame_urls
-    prefix = "projects/#{uuid}/output/frames/"
-    bucket.objects(prefix: prefix)
-      .sort_by(&:key)
-      .map { |obj| obj.presigned_url(:get, expires_in: 1.hour.in_seconds) }
-  end
-
   def frame_objects
     prefix = "projects/#{uuid}/frames/"
     objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
-      filename = obj.key.split("/").last
+     filename = obj.key.split("/").last
       extension = File.extname(filename)
+      basename = File.basename(filename, extension)
+      frame_number = basename.scan(/\d{4,}/).last&.to_i || 0
       {
-        basename: File.basename(filename, extension),
+        frame_number: frame_number,
+        basename: basename,
         extension: extension,
         size: obj.size,
         url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
@@ -155,7 +148,8 @@ class Project < ApplicationRecord
         extension: extension,
         size: obj.size,
         url: obj.presigned_url(
-          :get, expires_in: 1.hour.in_seconds, use_accelerate_endpoint: true
+          :get, expires_in: 1.hour.in_seconds,
+          use_accelerate_endpoint: Rails.env.production?
         ),
       }
     end
