@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   allow_unauthenticated_access only: %i[ create ]
-  skip_before_action :verify_authenticity_token, only: %i[ create ]
+  skip_forgery_protection only: %i[ create ]
 
   def create
     @order = Order.new(order_params)
