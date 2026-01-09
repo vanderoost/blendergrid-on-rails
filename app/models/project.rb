@@ -117,7 +117,7 @@ class Project < ApplicationRecord
     @frame_objects ||= begin
       prefix = "projects/#{uuid}/frames/"
       objects = bucket.objects(prefix: prefix).sort_by(&:key).map do |obj|
-       filename = obj.key.split("/").last
+        filename = obj.key.split("/").last
         extension = File.extname(filename)
         basename = File.basename(filename, extension)
         frame_number = basename.scan(/\d{4,}/).last&.to_i || 0
@@ -126,7 +126,9 @@ class Project < ApplicationRecord
           basename: basename,
           extension: extension,
           size: obj.size,
-          url: obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
+          url: Rails.env.production? ?
+            "https://#{bucket_name}.s3.us-east-1.amazonaws.com/#{obj.key}" :
+            obj.presigned_url(:get, expires_in: 1.hour.in_seconds),
         }
       end
       objects
