@@ -42,13 +42,26 @@ module RequestTracking
 
       if Current.request_data.key?(:created_at)
         response_time = Time.current - Current.request_data[:created_at]
-        Current.request_data[:response_time_ms] = response_time.in_milliseconds.round
+        Current.request_data[:response_time_ms] = (
+          response_time.in_milliseconds.round
+        )
+      end
+
+      # Filter out any events with unpersisted resources to avoid
+      # serialization errors in parallel test environments
+      serialized_events = Current.events&.select do |event|
+        event[:resource].nil? || event[:resource].persisted?
       end
 
       TrackRequestJob.perform_later(
         user: Current.user,
         request_data: Current.request_data,
-        events: Current.events,
+        events: serialized_events,
+      )
+    rescue ActiveJob::SerializationError => e
+      # Log but don't fail the request if event tracking can't be serialized
+      Rails.logger.warn(
+        "Failed to serialize tracking data: #{e.message}"
       )
     end
 
