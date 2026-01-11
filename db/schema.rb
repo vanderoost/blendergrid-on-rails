@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2025_12_08_145828) do
+ActiveRecord::Schema[8.2].define(version: 2026_01_11_184349) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -116,7 +116,9 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_08_145828) do
     t.integer "user_id", null: false
     t.index ["created_at"], name: "index_credit_entries_on_created_at"
     t.index ["order_id"], name: "index_credit_entries_on_order_id"
+    t.index ["reason", "created_at"], name: "index_credit_entries_on_reason_and_created_at"
     t.index ["refund_id"], name: "index_credit_entries_on_refund_id"
+    t.index ["user_id", "reason", "created_at"], name: "index_credit_entries_on_user_id_reason_created_at"
     t.index ["user_id"], name: "index_credit_entries_on_user_id"
   end
 
@@ -172,6 +174,7 @@ ActiveRecord::Schema[8.2].define(version: 2025_12_08_145828) do
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["user_id", "created_at"], name: "index_orders_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 

@@ -2,7 +2,7 @@
 
 ## Bugs
 
-- [ ] Duplicate project frame range type change is not being propagated
+- [ ] Duplicate project frame-range-type change is not being propagated
 
 ## General
 
@@ -55,8 +55,8 @@
 ## Dashboard
 
 - [ ] Display deleted projects
-- [ ] Take refunds into account with 24h revenue (or show refunds)
 - [ ] Open S3 project page
 - [ ] Edit render credit?
 - [ ] Send email
 - [ ] Open contact in helpscout
+- [x] Take refunds into account with 24h revenue (or show refunds)

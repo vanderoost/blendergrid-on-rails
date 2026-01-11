@@ -64,31 +64,78 @@ class RefreshAffiliateStatsJob < ApplicationJob
 
     def calculate_sales(page_variant_ids, date_range, reward_window_months)
       attributed_users = User.where(page_variant_id: page_variant_ids)
+                             .select(:id, :created_at, :email_address)
+                             .to_a
 
+      return 0 if attributed_users.empty?
+
+      user_ids = attributed_users.map(&:id)
+
+      # Calculate expanded date range to cover all possible reward windows
+      max_user_creation = attributed_users.map(&:created_at).max
+      expanded_end_date = [
+        date_range.end,
+        max_user_creation + reward_window_months.months,
+      ].max
+      expanded_date_range = date_range.begin..expanded_end_date
+
+      # Fetch all potentially relevant orders in one query
+      all_orders = Order.where(user_id: user_ids)
+                        .where.not(stripe_payment_intent_id: nil)
+                        .where(created_at: expanded_date_range)
+                        .select(:id, :user_id, :cash_cents, :created_at)
+                        .to_a
+
+      # Fetch all refunds for these orders in one query
+      order_ids = all_orders.map(&:id)
+      refunds_by_order_id = {}
+      if order_ids.any?
+        Refund.joins(:order_item)
+              .where(order_items: { order_id: order_ids })
+              .group("order_items.order_id")
+              .sum(:amount_cents)
+              .each { |order_id, total| refunds_by_order_id[order_id] = total }
+      end
+
+      # Fetch all topups in one query
+      all_topups = CreditEntry.where(
+        user_id: user_ids,
+        reason: :topup,
+        created_at: expanded_date_range
+      ).select(:user_id, :amount_cents, :created_at).to_a
+
+      # Calculate sales per user
       total_sales = 0
 
-      attributed_users.find_each do |user|
+      attributed_users.each do |user|
         reward_end_date = user.created_at + reward_window_months.months
         sale_date_range = [ date_range.begin, user.created_at ].max..
                           [ date_range.end, reward_end_date ].min
 
         next if sale_date_range.begin > sale_date_range.end
 
-        orders = user.orders
-          .where(created_at: sale_date_range)
-          .where.not(stripe_payment_intent_id: nil)
-        orders_total = orders.sum(:cash_cents)
-        refunds_total = Refund.joins(:order_item)
-          .where(order_items: { order_id: orders.select(:id) })
-          .sum(:amount_cents)
+        # Filter orders for this user and date range (in memory)
+        user_orders = all_orders.select do |order|
+          order.user_id == user.id &&
+          order.created_at >= sale_date_range.begin &&
+          order.created_at <= sale_date_range.end
+        end
 
-        topups_total = user.credit_entries
-          .where(reason: :topup, created_at: sale_date_range)
-          .sum(:amount_cents)
+        orders_total = user_orders.sum(&:cash_cents)
+        refunds_total = user_orders.sum do |order|
+          refunds_by_order_id[order.id] || 0
+        end
+
+        # Filter topups for this user and date range (in memory)
+        topups_total = all_topups.select do |topup|
+          topup.user_id == user.id &&
+          topup.created_at >= sale_date_range.begin &&
+          topup.created_at <= sale_date_range.end
+        end.sum(&:amount_cents)
 
         if orders_total + topups_total > 0
-          puts "User #{user.email_address} - Sales: #{orders_total + topups_total} - "\
-            "Refunds: #{refunds_total}"
+          puts "User #{user.email_address} - Sales: "\
+               "#{orders_total + topups_total} - Refunds: #{refunds_total}"
         end
 
         total_sales += orders_total - refunds_total + topups_total
