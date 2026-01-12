@@ -53,7 +53,7 @@
     <!-- Show some sample frames -->
     <% if @project.sample_frame_urls.any? %>
       <div class="my-8 flex flex-col gap-4">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Sample Frames</h2>
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Preview Frames</h2>
         <div class="flex flex-wrap gap-4 flex-col md:flex-row">
           <% @project.sample_frame_urls.each do |url| %>
             <%= link_to url, target: "_blank",
