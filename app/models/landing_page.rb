@@ -1,5 +1,6 @@
 class LandingPage < ApplicationRecord
   has_many :page_variants
+  has_one :affiliate
 
   def to_param
     slug

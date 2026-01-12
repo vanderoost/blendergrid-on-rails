@@ -59,6 +59,8 @@ class Dashboard
     # Active owner (when set, adds owner's projects to @projects)
     @owner_user = nil # Cached user object
     @owner_email = nil # Cached email for guests
+    @owner_landing_page = nil # Cached landing page for guests
+    @owner_token = nil # Cached session token for user
 
     ################ STATE ################
 
@@ -92,13 +94,14 @@ class Dashboard
           end
 
           # Always load latest 20 projects
-          latest_20 = Project
+          recent_projects = Project.unscoped
             .includes(
               { upload: :user },
               { renders: :workflow },
               { order_items: :order },
             )
-            .first(20)
+            .order(stage_updated_at: :desc)
+            .first(24)
             .to_a
 
           # If owner is active, also load their projects and merge
@@ -112,7 +115,7 @@ class Dashboard
               )
               .first(12)
               .to_a
-            projects = (latest_20 + owner_projects).uniq
+            projects = (recent_projects + owner_projects).uniq
           elsif owner_email.present?
             log("Polling latest 20 + owner projects for guest #{owner_email}...")
             owner_projects = Project
@@ -121,10 +124,10 @@ class Dashboard
               .where(upload: { guest_email_address: owner_email })
               .first(12)
               .to_a
-            projects = (latest_20 + owner_projects).uniq
+            projects = (recent_projects + owner_projects).uniq
           else
             log("Polling latest 20 projects...")
-            projects = latest_20
+            projects = recent_projects
           end
 
           render_revenue_24h = Order
@@ -349,6 +352,7 @@ class Dashboard
       @data_lock.synchronize do
         @owner_user = nil
         @owner_email = nil
+        @owner_token = nil
       end
     end
 
@@ -362,9 +366,12 @@ class Dashboard
       if project.user.present?
         @owner_user = project.user
         @owner_email = nil
+        @owner_landing_page = project.user&.page_variant&.landing_page&.slug
+        @owner_token = @owner_user.generate_token_for(:session)
       else
         @owner_user = nil
         @owner_email = project.upload.guest_email_address
+        @owner_token = nil
       end
     end
 
@@ -395,10 +402,12 @@ class Dashboard
       end
     end
 
-    projects.first(20).each_with_index do |p, i|
-      # Highlight the selected project name
+    projects.first(24).each_with_index do |p, i|
       hl = @project_cols[@project_col] == :name && i == @project_ix
-      render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
+      render_cell(p.name, 32, [
+        p.deleted_at.present? ? color_pair(GRAY) : color_pair(BLUE),
+        A_STANDOUT => hl,
+      ])
       addstr(" ")
 
       # Status
@@ -468,21 +477,25 @@ class Dashboard
     # Safely read owner and filter projects for this owner
     owner_user = nil
     owner_email = nil
+    owner_landing_page = nil
+    owner_token = nil
     owner_projects = []
     @data_lock.synchronize do
       owner_user = @owner_user
       owner_email = @owner_email
+      owner_landing_page = @owner_landing_page
+      owner_token = @owner_token
       owner_projects = filtered_owner_projects
     end
 
     if owner_user.present?
-      render_user_details(owner_user, owner_projects)
+      render_user_details(owner_user, owner_projects, owner_landing_page, owner_token)
     else
       render_guest_details(owner_email, owner_projects)
     end
   end
 
-  def render_user_details(owner_user, owner_projects)
+  def render_user_details(owner_user, owner_projects, owner_landing_page, owner_token)
     first_col_width = 12
     row = 0
     setpos(row += 1, 2)
@@ -506,6 +519,20 @@ class Dashboard
     render_cell("Credit:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(cents_to_dollars(owner_user.render_credit_cents), 24)
+    setpos(row += 1, 2)
+
+    render_cell("Landing page:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(owner_landing_page, 24)
+    setpos(row += 1, 2)
+
+    render_cell("View as:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    render_cell(
+      app.root_url(session_token: owner_token),
+      256,
+      color_pair(YELLOW),
+    )
     setpos(row += 2, 2)
 
     render_owner_projects_table(owner_projects)
@@ -566,6 +593,10 @@ class Dashboard
     attrs.each { |attr| attroff(attr) }
 
     addstr(" " * (width - str.length))
+  end
+
+  def app
+    @app ||= Rails.application.routes.url_helpers
   end
 end
 
