@@ -73,6 +73,7 @@ class Project::Render < ApplicationRecord
           project.sampling_max_samples.to_s,
         ],
         parameters: { frame: frame_params },
+        expected_duration: 5.minutes.in_milliseconds,
         image: "blendergrid/blender:#{project.blender_version}",
       }
     end
