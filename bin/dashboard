@@ -7,6 +7,7 @@ require "curses"
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
 DEBUG_LOG.sync = true  # Disable buffering
+PROJECT_POLL_COUNT = 24
 
 GREEN = 1
 BLUE = 2
@@ -47,7 +48,6 @@ class Dashboard
     @poll_signal = ConditionVariable.new
     @fetch_error = nil
 
-    # Projects list (latest 20 + active owner's projects if applicable)
     @projects = []
     @project_ix = -1
     @project_cols = %i[name owner]
@@ -93,7 +93,6 @@ class Dashboard
             owner_email = @owner_email
           end
 
-          # Always load latest 20 projects
           recent_projects = Project.unscoped
             .includes(
               { upload: :user },
@@ -106,7 +105,8 @@ class Dashboard
 
           # If owner is active, also load their projects and merge
           if owner_user.present?
-            log("Polling latest 20 + owner projects for user #{owner_user.id}...")
+            log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for user"\
+              " #{owner_user.id}...")
             owner_projects = owner_user.projects
               .includes(
                 { upload: :user },
@@ -117,7 +117,8 @@ class Dashboard
               .to_a
             projects = (recent_projects + owner_projects).uniq
           elsif owner_email.present?
-            log("Polling latest 20 + owner projects for guest #{owner_email}...")
+            log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for guest "\
+              "#{owner_email}...")
             owner_projects = Project
               .includes({ upload: :user }, { renders: :workflow })
               .joins(:upload)
@@ -126,7 +127,7 @@ class Dashboard
               .to_a
             projects = (recent_projects + owner_projects).uniq
           else
-            log("Polling latest 20 projects...")
+            log("Polling latest #{PROJECT_POLL_COUNT} projects...")
             projects = recent_projects
           end
 
@@ -179,7 +180,6 @@ class Dashboard
           log("Error fetching projects: #{e.message}")
         end
 
-        # Wait for signal or timeout after 20 seconds
         @data_lock.synchronize do
           @poll_signal.wait(@data_lock, 20)
         end
@@ -410,7 +410,6 @@ class Dashboard
       ])
       addstr(" ")
 
-      # Status
       render_cell(status_str(p), 16, [
         color_pair(GREEN) => p.rendered?,
         color_pair(YELLOW) => p.in_progress?,
@@ -418,23 +417,19 @@ class Dashboard
       ])
       addstr(" ")
 
-      # Update time
       time_ago_str = "#{human_duration(Time.current - p.stage_updated_at)} ago"
       render_cell(time_ago_str, 12)
       addstr(" ")
 
-      # Price
       not_paid = p.order&.stripe_payment_intent_id.blank?
       render_cell(cents_to_dollars(p.price_cents).rjust(12), 12, [
         color_pair(GRAY) => not_paid,
       ])
       addstr(" ")
 
-      # Owner
       hl = @project_cols[@project_col] == :owner && i == @project_ix
       render_cell(p.owner, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
 
-      # Move to the next line beginning
       setpos(stdscr.cury + 1, 2)
     end
 
@@ -474,7 +469,6 @@ class Dashboard
   end
 
   def render_owner_details(_project)
-    # Safely read owner and filter projects for this owner
     owner_user = nil
     owner_email = nil
     owner_landing_page = nil

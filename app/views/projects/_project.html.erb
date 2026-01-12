@@ -187,11 +187,10 @@
     <div class="flex justify-end">
       <%= link_to project_path(project),
         class: "font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 flex items-center" do %>
-        <% if project.checked? || project.benchmarked? %>
-          <span class="hidden md:inline mr-2">Settings</span><span class="md-mr-2">&rarr;</span>
-        <% elsif %w[benchmarking rendering rendered cancelled failed].include?(project.status) %>
-          <span class="hidden md:inline mr-2">Details</span><span class="md-mr-2">&rarr;</span>
-        <% end %>
+        <span class="hidden md:inline mr-2">
+          <%= if project.checked? then "Settings" elsif project.benchmarked? then "Preview" else "Details" end %>
+        </span>
+        <span class="md-mr-2">&rarr;</span>
       <% end %>
     </div>
     <% if project.benchmarked? %>
