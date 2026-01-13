@@ -1,3 +1,5 @@
+require "aws-sdk-s3"
+
 class Project::Render < ApplicationRecord
   include Workflowable
 
@@ -9,6 +11,11 @@ class Project::Render < ApplicationRecord
 
   def make_start_message
     swarm_engine_env = Rails.configuration.swarm_engine[:env]
+
+    bucket.object("projects/#{project.uuid}/jsons/settings.json").put(
+      body: project.settings_hash.to_json,
+      content_type: "application/json"
+    )
 
     {
       workflow_id: workflow.uuid,
@@ -116,7 +123,7 @@ class Project::Render < ApplicationRecord
       key_prefix = Rails.configuration.swarm_engine[:key_prefix]
       {
         input: {
-          project: "s3://#{bucket}/#{key_prefix}/#{project.upload.uuid}",
+          project: "s3://#{bucket_name}/#{key_prefix}/#{project.upload.uuid}",
           settings: "#{s3_project_path}/jsons",
         },
         output: { frames: "#{s3_project_path}/frames" },
@@ -137,16 +144,6 @@ class Project::Render < ApplicationRecord
       }
     end
 
-    def s3_project_path
-      "s3://#{bucket}/projects/#{project.uuid}"
-    end
-
-    def bucket
-      @bucket ||= Rails.configuration.swarm_engine[:bucket]
-    end
-
-
-
     def frame_params
       if project.frame_range_type == "animation"
         {
@@ -163,5 +160,21 @@ class Project::Render < ApplicationRecord
 
     def cancel_project
       project.cancel
+    end
+
+    def s3_project_path
+      "s3://#{bucket_name}/projects/#{project.uuid}"
+    end
+
+    def bucket
+      @bucket ||= s3.bucket(bucket_name)
+    end
+
+    def bucket_name
+      @bucket_name ||= Rails.configuration.swarm_engine[:bucket]
+    end
+
+    def s3
+      @s3 ||= Aws::S3::Resource.new
     end
 end
