@@ -22,7 +22,8 @@ export default class extends Controller {
   }
 
   // Called on file input change
-  // Should just care about presentation, don't keep track of total file size here
+  // Should just care about presentation, don't keep track of
+  // total file size here
   showFiles() {
     if (this.statusValue === states.uploading) { return }
     const files = this.inputTarget.files
@@ -32,7 +33,9 @@ export default class extends Controller {
       const file = files[i]
       const [filenameHead, filenameTail] = splitFilename(file.name)
       const fileElement = document.createElement("div")
-      fileElement.className = "flex items-center justify-between gap-x-3 p-3 text-sm"
+      fileElement.className =
+        "flex items-center justify-between gap-x-3 p-3 text-sm"
+      fileElement.dataset.fileName = file.name
       fileElement.innerHTML = `
         <div class="relative w-5 h-5 flex-none">
           <svg class="w-full h-full" viewBox="0 0 64 64">
@@ -45,7 +48,8 @@ export default class extends Controller {
               fill="transparent"
             ></circle>
             <circle
-              class="text-primary-600 dark:text-primary-500 stroke-current progress_donut"
+              class="text-primary-600 dark:text-primary-500
+               stroke-current progress_donut"
               stroke-width="14"
               cx="32"
               cy="32"
@@ -60,7 +64,23 @@ export default class extends Controller {
           <span class="truncate">${filenameHead}</span>
           <span class="whitespace-pre">${filenameTail}</span>
         </div>
-        <div class="text-gray-500 dark:text-gray-400">${humanFileSize(file.size)}</div>
+        <div class="text-gray-500 dark:text-gray-400">
+          ${humanFileSize(file.size)}
+        </div>
+        <button
+          type="button"
+          data-action="click->upload#removeFile"
+          class="flex-none text-gray-400 hover:text-gray-600
+           dark:text-gray-500 dark:hover:text-gray-300
+           transition-colors"
+          title="Remove file"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+           stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+             d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
       `
       this.listTarget.appendChild(fileElement)
       this.fileItemsByName.set(file.name, fileElement)
@@ -72,17 +92,48 @@ export default class extends Controller {
       this.submitTarget.disabled = false
       this.submitTarget.value = `Upload ${pluralize(files.length, "File")}`
     } else {
+      this.statusValue = states.empty
+      this.listTarget.classList.add("hidden")
       this.submitTarget.disabled = true
       this.submitTarget.value = "Upload Files"
     }
 
   }
 
+  removeFile(event) {
+    event.preventDefault()
+
+    // Can't remove files during upload
+    if (this.statusValue === states.uploading) { return }
+
+    const button = event.currentTarget
+    const fileItem = button.closest('[data-file-name]')
+    const fileNameToRemove = fileItem.dataset.fileName
+
+    // Create a new DataTransfer with all files except the one
+    // being removed
+    const dt = new DataTransfer()
+    const files = Array.from(this.inputTarget.files)
+
+    files.forEach(file => {
+      if (file.name !== fileNameToRemove) {
+        dt.items.add(file)
+      }
+    })
+
+    // Update the input with the new file list
+    this.inputTarget.files = dt.files
+
+    // Refresh the UI
+    this.showFiles()
+  }
+
   uploadsStart() {
     if (this.statusValue !== states.uploading) {
       this.statusValue = states.uploading
       this.submitTarget.disabled = true
-      this.submitTarget.value = `Uploading ${pluralize(this.inputTarget.files.length, "File")}`
+      this.submitTarget.value =
+        `Uploading ${pluralize(this.inputTarget.files.length, "File")}`
     }
 
     if (this.startTime === 0) {
