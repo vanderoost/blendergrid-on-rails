@@ -6,6 +6,7 @@
 
 ## General
 
+- [ ] Ability to cancel uploads
 - [ ] Fix up all the transactional emails (style, message, reply-to)
 - [ ] Waiting stage
     - [ ] Show settings summary (non editable)

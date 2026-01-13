@@ -7,7 +7,7 @@ require "curses"
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
 DEBUG_LOG.sync = true  # Disable buffering
-PROJECT_POLL_COUNT = 24
+PROJECT_POLL_COUNT = 32
 
 GREEN = 1
 BLUE = 2
@@ -100,7 +100,7 @@ class Dashboard
               { order_items: :order },
             )
             .order(stage_updated_at: :desc)
-            .first(24)
+            .first(PROJECT_POLL_COUNT)
             .to_a
 
           # If owner is active, also load their projects and merge
@@ -402,7 +402,7 @@ class Dashboard
       end
     end
 
-    projects.first(24).each_with_index do |p, i|
+    projects.first(PROJECT_POLL_COUNT).each_with_index do |p, i|
       hl = @project_cols[@project_col] == :name && i == @project_ix
       render_cell(p.name, 32, [
         p.deleted_at.present? ? color_pair(GRAY) : color_pair(BLUE),
@@ -466,6 +466,15 @@ class Dashboard
     addstr(" ")
     render_cell(status_str(@project), 16)
     setpos(row += 1, 2)
+
+    if @project.rendering? && @project.tweaks["deadline_hours"].present?
+      deadline_at = @project.render.created_at + @project.tweaks["deadline_hours"].hours
+      remaining = deadline_at - Time.current
+      render_cell("Remaining:", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell(human_duration(remaining), 16)
+      setpos(row += 1, 2)
+    end
   end
 
   def render_owner_details(_project)
