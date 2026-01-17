@@ -412,7 +412,7 @@ class Dashboard
 
       render_cell(status_str(p), 16, [
         color_pair(GREEN) => p.rendered?,
-        color_pair(YELLOW) => p.in_progress?,
+        color_pair(YELLOW) => p.in_progress? && !p.deleted_at.present?,
         color_pair(RED) => p.failed?,
       ])
       addstr(" ")
@@ -516,7 +516,7 @@ class Dashboard
 
     render_cell("Email:", first_col_width, color_pair(YELLOW))
     addstr(" ")
-    render_cell(owner_user.email_address, 24)
+    render_cell(owner_user.email_address, 48)
     setpos(row += 1, 2)
 
     render_cell("Credit:", first_col_width, color_pair(YELLOW))

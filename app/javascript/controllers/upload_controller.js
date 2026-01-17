@@ -1,6 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import { pluralize } from "application"
 
+// Track active DirectUpload instances globally so we can cancel them
+// DirectUpload has built-in abort() support (from Rails fork)
+if (!window.activeDirectUploads) {
+  window.activeDirectUploads = new Map()
+}
+
 const states = {
   empty: "empty",
   ready: "ready",
@@ -13,19 +19,43 @@ export default class extends Controller {
 
   connect() {
     this.fileItemsByName = new Map()
+    this.fileNameToUploadId = new Map() // Track filename -> upload ID
     this.items = new Map()
     this.totalSize = 0
     this.uploadedSizes = new Map()
     this.smoothEta = null
     this.etaCalcDelay = 3000
     this.startTime = 0
+    this.activeUploadCount = 0 // Track how many uploads are active
+
+    // Add form submit listener for debugging
+    this.element.addEventListener('submit', (e) => {
+      console.log('Form submit event fired!', {
+        files: this.inputTarget.files.length,
+        status: this.statusValue
+      })
+    })
+
+    // Add button click listener for debugging
+    this.submitTarget.addEventListener('click', (e) => {
+      console.log('Submit button clicked!', {
+        disabled: this.submitTarget.disabled,
+        status: this.statusValue
+      })
+    })
   }
 
   // Called on file input change
   // Should just care about presentation, don't keep track of
   // total file size here
   showFiles() {
-    if (this.statusValue === states.uploading) { return }
+    console.log('showFiles called, status:', this.statusValue)
+    console.log('Input has files:', this.inputTarget.files.length)
+    console.log('Input element:', this.inputTarget)
+    if (this.statusValue === states.uploading) {
+      console.log('Blocked by uploading state')
+      return
+    }
     const files = this.inputTarget.files
 
     this.listTarget.innerHTML = ""
@@ -91,6 +121,11 @@ export default class extends Controller {
       this.listTarget.classList.remove("hidden")
       this.submitTarget.disabled = false
       this.submitTarget.value = `Upload ${pluralize(files.length, "File")}`
+      console.log('Files ready to upload:', {
+        fileCount: files.length,
+        status: this.statusValue,
+        buttonDisabled: this.submitTarget.disabled
+      })
     } else {
       this.statusValue = states.empty
       this.listTarget.classList.add("hidden")
@@ -103,37 +138,74 @@ export default class extends Controller {
   removeFile(event) {
     event.preventDefault()
 
-    // Can't remove files during upload
-    if (this.statusValue === states.uploading) { return }
-
     const button = event.currentTarget
     const fileItem = button.closest('[data-file-name]')
     const fileNameToRemove = fileItem.dataset.fileName
 
-    // Create a new DataTransfer with all files except the one
-    // being removed
-    const dt = new DataTransfer()
-    const files = Array.from(this.inputTarget.files)
+    if (this.statusValue === states.uploading) {
+      // Cancel the active upload using built-in abort() method
+      const upload = window.activeDirectUploads.get(fileNameToRemove)
+      if (upload) {
+        // Call the built-in abort method from Rails fork
+        // This will trigger uploadError which handles cleanup
+        upload.abort()
 
-    files.forEach(file => {
-      if (file.name !== fileNameToRemove) {
-        dt.items.add(file)
+        // Update tracking - remove this file's contribution
+        const uploadId = this.fileNameToUploadId.get(fileNameToRemove)
+        if (uploadId) {
+          this.uploadedSizes.delete(uploadId)
+          this.fileNameToUploadId.delete(fileNameToRemove)
+        }
+
+        // Reduce total size by this file's size
+        this.totalSize -= upload.file.size
       }
-    })
 
-    // Update the input with the new file list
-    this.inputTarget.files = dt.files
+      // Remove the file item from display
+      fileItem.remove()
+      this.fileItemsByName.delete(fileNameToRemove)
 
-    // Refresh the UI
-    this.showFiles()
+      console.log('After remove:', {
+        filesRemaining: this.fileItemsByName.size,
+        activeUploads: this.activeUploadCount,
+        status: this.statusValue
+      })
+
+      // Recalculate progress with remaining files
+      if (this.fileItemsByName.size > 0) {
+        this.trackTotalProgress()
+      } else {
+        // No files left, check if we should reset
+        this.checkIfAllUploadsComplete()
+      }
+
+    } else {
+      // Before upload: remove from file input
+      const dt = new DataTransfer()
+      const files = Array.from(this.inputTarget.files)
+
+      files.forEach(file => {
+        if (file.name !== fileNameToRemove) {
+          dt.items.add(file)
+        }
+      })
+
+      // Update the input with the new file list
+      this.inputTarget.files = dt.files
+
+      // Refresh the UI
+      this.showFiles()
+    }
   }
 
   uploadsStart() {
+    console.log('uploadsStart called, current status:', this.statusValue)
     if (this.statusValue !== states.uploading) {
       this.statusValue = states.uploading
       this.submitTarget.disabled = true
       this.submitTarget.value =
         `Uploading ${pluralize(this.inputTarget.files.length, "File")}`
+      console.log('Status changed to uploading')
     }
 
     if (this.startTime === 0) {
@@ -143,8 +215,17 @@ export default class extends Controller {
 
   // Called on: direct-upload:initialize
   uploadInit(event) {
-    const { file } = event.detail
+    const { id, file, upload } = event.detail
+    console.log('uploadInit called for file:', file.name)
     this.totalSize += file.size
+    this.fileNameToUploadId.set(file.name, id)
+    this.activeUploadCount++
+    console.log('Active upload count:', this.activeUploadCount)
+
+    // Store the DirectUpload instance so we can abort it later
+    if (upload) {
+      window.activeDirectUploads.set(file.name, upload)
+    }
   }
 
   uploadProgress(e) {
@@ -163,26 +244,39 @@ export default class extends Controller {
   }
 
   trackTotalProgress() {
-    const bytesDone = this.uploadedSizes.values().reduce((acc, n) => acc + n, 0)
-    const percent = bytesDone / this.totalSize * 100
+    const bytesDone =
+      Array.from(this.uploadedSizes.values()).reduce(
+        (acc, n) => acc + n, 0)
 
-    this.summaryTarget.querySelector(".percentage").innerHTML = `Uploading: ${percent.toFixed(1)}%`
-    this.summaryTarget.querySelector(".upload_progress").style.width = `${percent.toFixed(1)}%`
+    // Guard against division by zero
+    if (this.totalSize <= 0) {
+      return
+    }
+
+    const percent = Math.min(100, bytesDone / this.totalSize * 100)
+
+    this.summaryTarget.querySelector(".percentage").innerHTML =
+      `Uploading: ${percent.toFixed(1)}%`
+    this.summaryTarget.querySelector(".upload_progress").style.width =
+      `${percent.toFixed(1)}%`
 
     const now = Date.now()
     const elapsed = now - this.startTime
 
-    if (elapsed > this.etaCalcDelay) {
+    if (elapsed > this.etaCalcDelay && bytesDone > 0) {
       const bytesRemaining = this.totalSize - bytesDone
-      const eta = now + elapsed / bytesDone * bytesRemaining
+      if (bytesRemaining > 0) {
+        const eta = now + elapsed / bytesDone * bytesRemaining
 
-      if (this.smoothEta === null) {
-        this.smoothEta = eta
-      } else {
-        this.smoothEta = 0.99 * this.smoothEta + 0.01 * eta
+        if (this.smoothEta === null) {
+          this.smoothEta = eta
+        } else {
+          this.smoothEta = 0.99 * this.smoothEta + 0.01 * eta
+        }
+        const remaining = this.smoothEta - now
+        this.summaryTarget.querySelector(".eta").innerHTML =
+          `About ${humanDuration(remaining)} remaining`
       }
-      const remaining = this.smoothEta - now
-      this.summaryTarget.querySelector(".eta").innerHTML = `About ${humanDuration(remaining)} remaining`
     }
 
     if (this.summaryTarget.classList.contains("hidden")) {
@@ -192,22 +286,77 @@ export default class extends Controller {
   }
 
   uploadError(e) {
-    const { id, error } = e.detail
+    const { id, error, file } = e.detail
+
+    // Prevent default alert for aborted uploads (user cancelled them)
+    if (error && error.toString().includes("Upload aborted")) {
+      e.preventDefault()
+    }
+
+    // Clean up stored upload instance
+    if (file) {
+      window.activeDirectUploads.delete(file.name)
+    }
+
     const el = this.items.get(id)
     if (el) {
       el.insertAdjacentText("beforeend", ` — failed: ${error}`)
       el.querySelector("[data-progress]")?.remove()
       this.items.delete(id)
     }
+    this.activeUploadCount = Math.max(0, this.activeUploadCount - 1)
+    this.checkIfAllUploadsComplete()
   }
 
   uploadEnd(e) {
-    const { id } = e.detail
+    const { id, file } = e.detail
+
+    // Clean up stored upload instance
+    if (file) {
+      window.activeDirectUploads.delete(file.name)
+    }
+
     const el = this.items.get(id)
     if (el) {
       const bar = el.querySelector("[data-progress]")
       if (bar) bar.value = 100
       this.items.delete(id)
+    }
+    this.activeUploadCount = Math.max(0, this.activeUploadCount - 1)
+    this.checkIfAllUploadsComplete()
+  }
+
+  checkIfAllUploadsComplete() {
+    console.log('checkIfAllUploadsComplete:', {
+      activeUploadCount: this.activeUploadCount,
+      status: this.statusValue,
+      filesRemaining: this.fileItemsByName.size
+    })
+
+    // If all uploads are done (completed, failed, or cancelled)
+    // and form is still in uploading state
+    if (this.activeUploadCount <= 0 &&
+        this.statusValue === states.uploading) {
+
+      if (this.fileItemsByName.size === 0) {
+        // All files were cancelled - reset the form
+        console.log('Resetting form - all files cancelled')
+        this.resetForm()
+      }
+      // If some files uploaded successfully or are still queued,
+      // let ActiveStorage handle it - the Rails fork now properly
+      // manages the queue
+    }
+  }
+
+  resetForm() {
+    // Use Turbo to visit the current page, which fetches it fresh from
+    // the server This resets all JavaScript state (including ActiveStorage)
+    // but feels smoother than a hard reload
+    if (typeof Turbo !== 'undefined') {
+      Turbo.visit(window.location.href)
+    } else {
+      window.location.reload()
     }
   }
 }
