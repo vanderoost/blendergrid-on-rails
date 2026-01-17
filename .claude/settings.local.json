@@ -36,7 +36,10 @@
       "Bash(bundle update:*)",
       "Bash(bin/kamal logs:*)",
       "Bash(aws logs describe-log-groups:*)",
-      "Bash(kamal app details:*)"
+      "Bash(kamal app details:*)",
+      "Bash(git log:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(RAILS_ENV=test bin/rails db:migrate:status:*)"
     ],
     "deny": [],
     "ask": []
