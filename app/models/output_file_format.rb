@@ -1,27 +1,27 @@
 class OutputFileFormat
   FORMATS = [
-    { id: :bmp, name: "BMP", color_modes: [ :BW, :RGB, :RGBA ] },
-    { id: :iris, name: "Iris", color_modes: [ :BW, :RGB, :RGBA ] },
-    { id: :png, name: "PNG", color_modes: [ :BW, :RGB, :RGBA ],
+    { id: :bmp, name: "BMP", extension: ".bmp", color_modes: [ :BW, :RGB, :RGBA ] },
+    { id: :iris, name: "Iris", extension: ".rgb", color_modes: [ :BW, :RGB, :RGBA ] },
+    { id: :png, name: "PNG", extension: ".png", color_modes: [ :BW, :RGB, :RGBA ],
       color_depths: [ 8, 16 ] },
-    { id: :jpeg, name: "JPEG", color_modes: [ :BW, :RGB ] },
-    { id: :jpeg2000, name: "JPEG 2000", color_modes: [ :BW, :RGB, :RGBA ],
-      color_depths: [ 8, 12, 16 ] },
-    { id: :targa, name: "Targa", color_modes: [ :BW, :RGB, :RGBA ] },
-    { id: :targa_raw, name: "Targa Raw", color_modes: [ :BW, :RGB, :RGBA ] },
-    { id: :cineon, name: "Cineon", color_modes: [ :BW, :RGB ] },
-    { id: :dpx, name: "DPX", color_modes: [ :BW, :RGB, :RGBA ],
+    { id: :jpeg, name: "JPEG", extension: ".jpg", color_modes: [ :BW, :RGB ] },
+    { id: :jpeg2000, name: "JPEG 2000", extension: ".jp2",
+      color_modes: [ :BW, :RGB, :RGBA ], color_depths: [ 8, 12, 16 ] },
+    { id: :targa, name: "Targa", extension: ".tga", color_modes: [ :BW, :RGB, :RGBA ] },
+    { id: :targa_raw, name: "Targa Raw", extension: ".tga",
+      color_modes: [ :BW, :RGB, :RGBA ] },
+    { id: :cineon, name: "Cineon", extension: ".cin", color_modes: [ :BW, :RGB ] },
+    { id: :dpx, name: "DPX", extension: ".dpx", color_modes: [ :BW, :RGB, :RGBA ],
       color_depths: [ 8, 10, 12, 16 ] },
-    { id: :open_exr_multilayer, name: "OpenEXR MultiLayer",
+    { id: :open_exr_multilayer, name: "OpenEXR MultiLayer", extension: ".exr",
       color_depths: [ 16, 32 ] },
-    { id: :open_exr, name: "OpenEXR", color_modes: [ :BW, :RGB, :RGBA ],
-      color_depths: [ 16, 32 ] },
-    { id: :hdr, name: "Radiance HDR", color_modes: [ :BW, :RGB ] },
-    { id: :tiff, name: "TIFF", color_modes: [ :BW, :RGB, :RGBA ],
+    { id: :open_exr, name: "OpenEXR", extension: ".exr",
+      color_modes: [ :BW, :RGB, :RGBA ], color_depths: [ 16, 32 ] },
+    { id: :hdr, name: "Radiance HDR", extension: ".hdr", color_modes: [ :BW, :RGB ] },
+    { id: :tiff, name: "TIFF", extension: ".tif", color_modes: [ :BW, :RGB, :RGBA ],
       color_depths: [ 8, 16 ] },
-    { id: :webp, name: "WebP", color_modes: [ :BW, :RGB, :RGBA ] },
-    { id: :ffmpeg, name: "FFmpeg Video", color_modes: [ :BW, :RGB ],
-      video: true },
+    { id: :webp, name: "WebP", extension: ".webp", color_modes: [ :BW, :RGB, :RGBA ] },
+    { id: :ffmpeg, name: "FFmpeg Video", color_modes: [ :BW, :RGB ], video: true },
   ]
 
   include ActiveModel::Model
@@ -29,6 +29,7 @@ class OutputFileFormat
 
   attribute :id, :string
   attribute :name, :string
+  attribute :extension, :string
   attribute :color_modes, default: []
   attribute :color_depths, default: []
   attribute :video, :boolean, default: false

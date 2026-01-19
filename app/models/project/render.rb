@@ -57,6 +57,7 @@ class Project::Render < ApplicationRecord
 
     def render_execution(render_ex_id)
       expected_duration = project.job_time || 3.minutes
+      puts "EXPECTED DURATION: #{expected_duration}"
       {
         execution_id: render_ex_id,
         job_id: "frame-$frame",
@@ -82,6 +83,9 @@ class Project::Render < ApplicationRecord
         ],
         parameters: { frame: frame_params },
         expected_duration: expected_duration.in_milliseconds.round,
+        expected_output_files: [
+          "#{s3_project_path}/frames/frame-$frame#{project.frame_extension}",
+        ],
         image: "blendergrid/blender:#{project.blender_version}",
       }
     end

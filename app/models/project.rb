@@ -82,6 +82,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def frame_extension
+    current_blender_scene&.output_file_format&.extension
+  end
+
   def ffmpeg_extension
     current_blender_scene&.output_ffmpeg_format&.extension
   end
