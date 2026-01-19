@@ -31,9 +31,9 @@ class SwarmEngine
     )
   end
 
-  def ensure_workers(workflow)
+  def ensure_workers
     client.publish(
-      message: {},
+      message: "{}",
       topic_arn: self.topic_arn,
       message_attributes: {
         event_type: { data_type: "String", string_value: "workers_required" },
