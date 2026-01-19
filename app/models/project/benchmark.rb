@@ -65,7 +65,7 @@ class Project::Benchmark < ApplicationRecord
               "--project-dir", "/tmp/project",
             ],
             parameters: { frame: sample_settings["frame_range"] },
-            expected_duration: 1.minute.in_milliseconds,
+            expected_duration: 1.minute.in_milliseconds.round,
             image: "blendergrid/blender:#{project.blender_version}",
           },
       ],

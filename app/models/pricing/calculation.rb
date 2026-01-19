@@ -42,6 +42,10 @@ class Pricing::Calculation
     @deadline_hours_max
   end
 
+  def job_time
+    @job_time
+  end
+
   private
     def calculate
       # GENERAL
@@ -90,8 +94,8 @@ class Pricing::Calculation
       # ONE NODE - MAX DEADLINE
       api_time = @api_time_per_node
 
-      job_time = init_time + sampling_time + post_time + upload_time
-      all_jobs_time = job_time * @blender_scene.frames.count
+      @job_time = init_time + sampling_time + post_time + upload_time
+      all_jobs_time = @job_time * @blender_scene.frames.count
 
       max_wall_time = api_time + @node_boot_time + download_time + unzip_time +
         all_jobs_time + [ zip_time, encode_time ].max

@@ -56,6 +56,7 @@ class Project::Render < ApplicationRecord
     end
 
     def render_execution(render_ex_id)
+      expected_duration = project.job_time || 3.minutes
       {
         execution_id: render_ex_id,
         job_id: "frame-$frame",
@@ -80,7 +81,7 @@ class Project::Render < ApplicationRecord
           project.sampling_max_samples.to_s,
         ],
         parameters: { frame: frame_params },
-        expected_duration: 5.minutes.in_milliseconds,
+        expected_duration: expected_duration.in_milliseconds.round,
         image: "blendergrid/blender:#{project.blender_version}",
       }
     end

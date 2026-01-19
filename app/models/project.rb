@@ -86,6 +86,11 @@ class Project < ApplicationRecord
     current_blender_scene&.output_ffmpeg_format&.extension
   end
 
+  def job_time
+    price_calculation.job_time
+  end
+
+
   def process_blend_check
     workflow = blend_check.workflow
     raise "Project has no BlendCheck Workflow" if workflow.blank?
