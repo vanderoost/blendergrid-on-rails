@@ -56,6 +56,12 @@ class Upload < ApplicationRecord
     raise "No zip file found in Upload #{id} for #{zip_check.zip_filename}"
   end
 
+  def maybe_request_workers
+    return unless (user&.sales_cents || 0) > MIN_SALES_CENTS_FOR_WORKERS
+    puts "Requesting workers because #{user&.email_address} created an Upload"
+    SwarmEngine.new.ensure_workers
+  end
+
   private
     def find_blend_files_in_zip_files
       zip_files.each do |zip_file|
@@ -89,12 +95,6 @@ class Upload < ApplicationRecord
 
     def maybe_request_workers_later
       MaybeRequestWorkersJob.perform_later(self)
-    end
-
-    def maybe_request_workers
-      return unless (user&.sales_cents || 0) > MIN_SALES_CENTS_FOR_WORKERS
-      puts "Requesting workers because #{user&.email_address} created an Upload"
-      SwarmEngine.new.ensure_workers
     end
 end
 
