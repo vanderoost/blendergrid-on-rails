@@ -635,9 +635,9 @@ def human_duration(duration)
   seconds, ms = ms.divmod(1000)
   minutes, seconds = seconds.divmod(60)
   hours, minutes = minutes.divmod(60)
-  days, hours = hours.divmod(24)
+  if hours > 48 then days, hours = hours.divmod(24) else days = 0 end
 
-  return "#{sign}#{days} days" if days.positive?
+  return "#{sign}#{days} days" if days > 1
   return "#{sign}#{hours}h" if hours > 23
   return "#{sign}#{hours}:%02dh" % minutes if hours.positive?
   return "#{sign}#{minutes}:%02dm" % seconds if minutes.positive?
