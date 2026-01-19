@@ -16,7 +16,7 @@ class Upload < ApplicationRecord
   generates_token_for :session, expires_in: 2.days
 
   after_create :find_blend_files_in_zip_files
-  after_create :maybe_request_workers_later
+  after_create_commit :maybe_request_workers_later
 
   validates :files, presence: true
   validates :guest_email_address, presence: true,
