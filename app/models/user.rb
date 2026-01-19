@@ -29,6 +29,11 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
 
+  def sales_cents
+    orders.where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
+    credit_entries.where(reason: :topup).sum(:amount_cents)
+  end
+
   def first_name
     name&.split(" ")&.first&.titleize || email_address.split("@").first
   end

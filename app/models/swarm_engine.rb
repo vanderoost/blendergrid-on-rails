@@ -31,6 +31,16 @@ class SwarmEngine
     )
   end
 
+  def ensure_workers(workflow)
+    client.publish(
+      message: {},
+      topic_arn: self.topic_arn,
+      message_attributes: {
+        event_type: { data_type: "String", string_value: "workers_required" },
+      }
+    )
+  end
+
   private
     def client
       @sns ||= Aws::SNS::Client.new
@@ -38,7 +48,6 @@ class SwarmEngine
 
     def topic_arn
       topic = "external-#{@swarm_engine_env}-topic"
-      Rails.logger.debug "Topic: #{topic}"
       "arn:aws:sns:#{@region}:#{@account_id}:#{topic}"
     end
 end

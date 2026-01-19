@@ -2,6 +2,7 @@ require "zip"
 
 class Upload < ApplicationRecord
   EXTERNAL_ZIP_CHECK_THRESHOLD = Rails.env.production? ? 512.megabytes : 10.megabytes
+  MIN_SALES_CENTS_FOR_WORKERS = 100_00
 
   include EmailValidatable
   include Trackable
@@ -15,6 +16,7 @@ class Upload < ApplicationRecord
   generates_token_for :session, expires_in: 2.days
 
   after_create :find_blend_files_in_zip_files
+  after_create :maybe_request_workers_later
 
   validates :files, presence: true
   validates :guest_email_address, presence: true,
@@ -83,6 +85,16 @@ class Upload < ApplicationRecord
         project = projects.create!(blend_filepath: blend_filepaths.first)
         raise "Project could not be created" unless project.persisted?
       end
+    end
+
+    def maybe_request_workers_later
+      MaybeRequestWorkersJob.perform_later(self)
+    end
+
+    def maybe_request_workers
+      return unless (user&.sales_cents || 0) > MIN_SALES_CENTS_FOR_WORKERS
+      puts "Requesting workers because #{user&.email_address} created an Upload"
+      SwarmEngine.new.ensure_workers
     end
 end
 
