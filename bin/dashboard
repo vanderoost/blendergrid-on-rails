@@ -274,12 +274,10 @@ class Dashboard
   private
 
   def render_view
-    active_project = @project_ix >= 0 ? @projects[@project_ix] : nil
-
     case @view
     when :home_view then render_home_view
     when :project_details then render_project_details
-    when :owner_details then render_owner_details active_project
+    when :owner_details then render_owner_details
     else
       log("Unknown view: #{@view}")
       raise "Unknown view: #{@view}"
@@ -325,6 +323,8 @@ class Dashboard
     case @view
     when :home_view
       download_project(@projects[@project_ix]) if @project_ix >= 0
+    when :owner_details
+      download_project(filtered_owner_projects[@project_ix]) if @project_ix >= 0
     when :project_details
       download_project(@project) if @project.present?
     end
@@ -477,7 +477,7 @@ class Dashboard
     end
   end
 
-  def render_owner_details(_project)
+  def render_owner_details
     owner_user = nil
     owner_email = nil
     owner_landing_page = nil

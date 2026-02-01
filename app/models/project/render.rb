@@ -57,7 +57,6 @@ class Project::Render < ApplicationRecord
 
     def render_execution(render_ex_id)
       expected_duration = project.job_time || 3.minutes
-      puts "EXPECTED DURATION: #{expected_duration}"
       {
         execution_id: render_ex_id,
         job_id: "frame-$frame",

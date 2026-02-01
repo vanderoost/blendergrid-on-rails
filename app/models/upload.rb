@@ -34,7 +34,9 @@ class Upload < ApplicationRecord
   end
 
   def blend_files
-    files.select { |f| f.filename.extension == "blend" }
+    files.select do |f|
+      f.filename.extension == "blend" && !f.filename.to_s.start_with?("._")
+    end
   end
 
   def zip_files
@@ -45,12 +47,12 @@ class Upload < ApplicationRecord
   def zip_check_done(zip_check)
     zip_files.each do |zip_file|
       next unless zip_file.filename.to_s == zip_check.zip_filename
-        zip_file.metadata[:blend_filepaths] = zip_check.zip_contents.select {
-          |path| path.end_with?(".blend")
-        }
-        zip_file.save
+      zip_file.metadata[:blend_filepaths] = zip_check.zip_contents.select do |path|
+        path.end_with?(".blend") && !File.basename(path).start_with?("._")
+      end
+      zip_file.save
 
-        maybe_create_project
+      maybe_create_project
       return
     end
     raise "No zip file found in Upload #{id} for #{zip_check.zip_filename}"
@@ -101,5 +103,6 @@ end
 def blend_entry?(entry)
   entry.ftype == :file &&
   !entry.name.start_with?("__MACOSX/") &&
+  !File.basename(entry.name).start_with?("._") &&
   entry.name.end_with?(".blend")
 end

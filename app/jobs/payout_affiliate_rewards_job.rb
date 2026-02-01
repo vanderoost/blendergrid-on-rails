@@ -52,7 +52,7 @@ class PayoutAffiliateRewardsJob < ApplicationJob
       })
       puts "Outbound payment created: #{outbound_payment.inspect}"
 
-      stat.update(paid_out_at: Time.current)
+      monthly_stat.update(paid_out_at: Time.current)
     end
 
     def financial_account

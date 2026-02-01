@@ -39,7 +39,9 @@
       "Bash(kamal app details:*)",
       "Bash(git log:*)",
       "Bash(git ls-tree:*)",
-      "Bash(RAILS_ENV=test bin/rails db:migrate:status:*)"
+      "Bash(RAILS_ENV=test bin/rails db:migrate:status:*)",
+      "Bash(aws s3:*)",
+      "Bash(RAILS_ENV=production bin/rails runner:*)"
     ],
     "deny": [],
     "ask": []
