@@ -29,7 +29,7 @@
           </dt>
           <el-disclosure <%= "hidden" unless faq == @faqs.first %> class="contents">
             <dd class="mt-2 pr-12">
-              <p class="text-base/7 text-gray-600 dark:text-gray-400"><%= faq.answer.html_safe %></p>
+              <p class="text-base/7 text-gray-600 dark:text-gray-400"><%= sanitize faq.answer %></p>
             </dd>
           </el-disclosure>
         </div>
