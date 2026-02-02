@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   resources :payment_intents, only: %w[create]
-  resources :faqs, only: %w[index]
+  resources :faqs, only: %w[index update]
 
   # Account settings etc.
   resource :account, only: %w[show] do
