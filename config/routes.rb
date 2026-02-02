@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :uploads, param: :uuid, only: %w[index show new create] do
     resources :project_intakes, only: %w[create]
   end
+
   resources :quotes, only: %w[create]
   resources :orders, only: %w[create]
   resources :projects, param: :uuid, only: %w[index show update destroy] do
@@ -20,7 +21,9 @@ Rails.application.routes.draw do
     resources :blender_scenes, only: %w[update]
     resources :duplicates, only: %w[create]
   end
+
   resources :payment_intents, only: %w[create]
+  resources :faqs, only: %w[index]
 
   # Account settings etc.
   resource :account, only: %w[show] do
@@ -46,7 +49,6 @@ Rails.application.routes.draw do
   end
 
   # Static pages
-  get "faq", to: "pages#faq", as: :faq
   get "pricing", to: "pages#pricing", as: :pricing
   get "support", to: "pages#support", as: :support
   get "policies", to: "pages#policies", as: :policies
