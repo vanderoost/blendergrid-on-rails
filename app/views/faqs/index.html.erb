@@ -1,0 +1,55 @@
+<% content_for :title, "Frequently asked questions" %>
+
+<div class="py-24 sm:py-32">
+  <div class="mx-auto max-w-7xl px-6 lg:px-8" data-controller="faq">
+
+    <div class="mx-auto max-w-4xl sm:text-center">
+      <h1 class="text-5xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-6xl sm:text-balance dark:text-white">Frequently Asked Questions</h1>
+
+      <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">Have a different question and can’t find the answer you’re looking for? Reach out to our support team by <a href="mailto:support@blendergrid.com" class="font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">sending us an email</a> and we’ll get back to you as soon as we can.</p>
+    </div>
+
+    <dl class="mt-16 divide-y divide-gray-900/10 dark:divide-white/10">
+
+      <% @faqs.each do |faq| %>
+
+        <div class="py-6 first:pt-0 last:pb-0">
+          <dt>
+            <button type="button" data-action="faq#toggle" data-faq-id-param="<%= faq.id %>" class="flex w-full items-start justify-between text-left text-gray-900 dark:text-white">
+              <span class="text-base/7 font-semibold"><%= faq.question %></span>
+              <span class="ml-6 flex h-7 items-center">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 in-aria-expanded:hidden">
+                  <path d="M12 6v12m6-6H6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" data-slot="icon" aria-hidden="true" class="size-6 not-in-aria-expanded:hidden">
+                  <path d="M18 12H6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+            </button>
+          </dt>
+          <el-disclosure <%= "hidden" unless faq == @faqs.first %> class="contents">
+            <dd class="mt-2 pr-12">
+              <p class="text-base/7 text-gray-600 dark:text-gray-400"><%= faq.answer %></p>
+            </dd>
+          </el-disclosure>
+        </div>
+
+      <% end %>
+
+    </dl>
+  </div>
+
+<script type="application/ld+json">
+  <%= {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": @faqs.map { |faq| {
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    } }
+  }.to_json.html_safe %>
+</script>

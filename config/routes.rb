@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :uploads, param: :uuid, only: %w[index show new create] do
     resources :project_intakes, only: %w[create]
   end
+
   resources :quotes, only: %w[create]
   resources :orders, only: %w[create]
   resources :projects, param: :uuid, only: %w[index show update destroy] do
@@ -20,7 +21,9 @@ Rails.application.routes.draw do
     resources :blender_scenes, only: %w[update]
     resources :duplicates, only: %w[create]
   end
+
   resources :payment_intents, only: %w[create]
+  resources :faqs, only: %w[index update]
 
   # Account settings etc.
   resource :account, only: %w[show] do

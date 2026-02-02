@@ -1,0 +1,43 @@
+<div class="mx-auto max-w-7xl px-6 lg:px-8">
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 class="text-4xl font-semibold tracking-tight
+      text-gray-900 sm:text-5xl dark:text-white">
+      Frequently asked questions
+    </h2>
+    <p class="mt-6 text-base/7 text-gray-600 dark:text-gray-400">
+      Have a different question? <%= link_to "Check out our entire FAQ page", faqs_path, class: "font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>.
+    </p>
+  </div>
+  <div class="mt-20">
+    <dl class="space-y-16 sm:grid sm:grid-cols-2
+      sm:space-y-0 sm:gap-x-6 sm:gap-y-16 lg:gap-x-10">
+      <% @top_faqs.each do |faq| %>
+        <div>
+          <dt class="text-base/7 font-semibold
+            text-gray-900 dark:text-white">
+            <%= faq.question %>
+          </dt>
+          <dd class="mt-2 text-base/7 text-gray-600
+            dark:text-gray-400">
+            <%= faq.answer %>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+</div>
+
+<script type="application/ld+json">
+  <%= {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": @top_faqs.map { |faq| {
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    } }
+  }.to_json.html_safe %>
+</script>
