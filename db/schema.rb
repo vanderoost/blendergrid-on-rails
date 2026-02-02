@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_01_11_184349) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_02_091815) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -131,6 +131,14 @@ ActiveRecord::Schema[8.2].define(version: 2026_01_11_184349) do
     t.datetime "updated_at", null: false
     t.index ["request_id"], name: "index_events_on_request_id"
     t.index ["resource_type", "resource_id"], name: "index_events_on_resource"
+  end
+
+  create_table "faqs", force: :cascade do |t|
+    t.text "answer"
+    t.integer "clicks", default: 0
+    t.datetime "created_at", null: false
+    t.string "question"
+    t.datetime "updated_at", null: false
   end
 
   create_table "landing_pages", force: :cascade do |t|
