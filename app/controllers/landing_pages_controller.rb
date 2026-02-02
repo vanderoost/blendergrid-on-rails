@@ -3,7 +3,11 @@ class LandingPagesController < ApplicationController
   before_action :set_landing_page, only: :show
 
   def show
-    render status: :not_found unless @landing_page
+    if @landing_page
+      @top_faqs = Faq.limit(4)
+    else
+      render status: :not_found
+    end
   end
 
   private
