@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   end
 
   # Static pages
+  get "faq", to: "pages#faq", as: :faq
   get "pricing", to: "pages#pricing", as: :pricing
   get "support", to: "pages#support", as: :support
   get "policies", to: "pages#policies", as: :policies
