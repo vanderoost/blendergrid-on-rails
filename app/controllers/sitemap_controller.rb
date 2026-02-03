@@ -2,7 +2,7 @@ class SitemapController < ApplicationController
   allow_unauthenticated_access
 
   def index
-    mod_date = Date.new(2025, 11, 24)
+    mod_date = Date.new(2026, 2, 2)
     @urls = [
       { loc: root_url, lastmod: mod_date },
       { loc: faqs_url, lastmod: mod_date },

@@ -112,6 +112,10 @@ class Project < ApplicationRecord
 
   def process_benchmark
     raise "Project has no BlenderScene" if current_blender_scene.blank?
+    raise "Benchmark has no timing" if benchmark.workflow.timing.blank?
+    raise "Timing has no 'init'" if benchmark.workflow.timing["init"].blank?
+    raise "Timing has no 'sampling'" if benchmark.workflow.timing["sampling"].blank?
+    raise "Timing has no 'post'" if benchmark.workflow.timing["post"].blank?
 
     self.tweaks_deadline_hours = Project::DEFAULT_DEADLINE_HOURS
     self.tweaks_resolution_percentage = resolution_percentage

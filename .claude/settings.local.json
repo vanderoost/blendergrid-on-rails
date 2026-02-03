@@ -44,7 +44,8 @@
       "Bash(RAILS_ENV=production bin/rails runner:*)",
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff --staged)",
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff)",
-      "Bash(bundle exec brakeman:*)"
+      "Bash(bundle exec brakeman:*)",
+      "Bash(xargs grep:*)"
     ],
     "deny": [],
     "ask": []
