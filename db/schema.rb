@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_02_091815) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_07_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -210,8 +210,16 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_02_091815) do
   end
 
   create_table "project_renders", force: :cascade do |t|
+    t.integer "cents_per_gigasample"
     t.datetime "created_at", null: false
+    t.integer "frame_count"
+    t.integer "max_samples"
+    t.integer "pixel_count"
+    t.integer "price_cents"
     t.integer "project_id", null: false
+    t.integer "resolution_x"
+    t.integer "resolution_y"
+    t.bigint "total_samples"
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_project_renders_on_project_id"
   end

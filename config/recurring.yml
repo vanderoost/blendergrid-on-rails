@@ -29,6 +29,11 @@ production:
     args: []
     schedule: every day at 11pm
 
+  refresh_rendering_stats:
+    class: RefreshRenderingStatsJob
+    args: []
+    schedule: every day at 3am
+
   payout_affiliate_rewards_job:
     class: PayoutAffiliateRewardsJob
     args: []
