@@ -243,6 +243,54 @@ class Project < ApplicationRecord
     self.price_cents = price_calculation.price_cents
   end
 
+  def partial_refund(permil)
+    permil ||= 0
+    permil_to_refund = 1000 - permil
+    refund_cents = price_cents * permil_to_refund.fdiv(1000)
+
+    unless refund_cents.positive?
+      puts "REFUND IS NOT POSITIVE (#{refund_cents} cents)"
+      return
+    end
+
+    refund = Refund.create(
+      order_item: order_item,
+      amount_cents: refund_cents,
+    )
+
+    if user.present?
+      # Figure out the ratio of credit / cash that was paid (from Order)
+      cash_refund = order_item.cash_cents * permil_to_refund.fdiv(1000)
+      credit_refund = refund.amount_cents - cash_refund
+
+      # Immediately refund the credit
+      if credit_refund.positive?
+        refund.credit_entries.create(
+          user: user,
+          amount_cents: credit_refund,
+          reason: :credit_refund,
+        )
+      end
+
+      # Temporarily refund the cash as credit
+      if cash_refund.positive?
+        refund.credit_entries.create(
+          user: user,
+          amount_cents: cash_refund,
+          reason: :delayed_cash_refund,
+        )
+      end
+    else
+
+      # Figure out the Stripe transaction from the Order
+      # Refund the amount from the Stripe transaction
+
+    end
+
+    # First refund in Render credit only.
+    # After a timeout, and the credit hasn't been used, do a full refund.
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
@@ -280,64 +328,6 @@ class Project < ApplicationRecord
 
     def saved_change_to_stage?
       status_to_stage(status_before_last_save) != stage
-    end
-
-    def partial_refund(permil)
-      permil ||= 0
-      permil_to_refund = 1000 - permil
-      refund_cents = price_cents * permil_to_refund.fdiv(1000)
-
-      unless refund_cents.positive?
-        puts "REFUND IS NOT POSITIVE (#{refund_cents} cents)"
-        return
-      end
-
-      # puts "REFUNDING #{permil_to_refund.fdiv(10)}% OF $#{refund_cents.fdiv(100)} ="\
-      #   " $#{refund_cents.fdiv(100)}"
-
-      # What we want to do is:
-      # - If the project has a registered user, top up their credit. Set a timer for the
-      # real refund to happen. If they use the credit, cancel the real refund.
-      # - If the project doesn't have a registered user, refund the Strip transaction
-      # directly.
-
-      # Create a Refund
-      refund = Refund.create(
-        order_item: order_item,
-        amount_cents: refund_cents,
-      )
-
-      if user.present?
-        # Figure out the ratio of credit / cash that was paid (from Order)
-        cash_refund = order_item.cash_cents * permil_to_refund.fdiv(1000)
-        credit_refund = refund.amount_cents - cash_refund
-
-        # Immediately refund the credit
-        if credit_refund.positive?
-          refund.credit_entries.create(
-            user: user,
-            amount_cents: credit_refund,
-            reason: :credit_refund,
-          )
-        end
-
-        # Temporarily refund the cash as credit
-        if cash_refund.positive?
-          refund.credit_entries.create(
-            user: user,
-            amount_cents: cash_refund,
-            reason: :delayed_cash_refund,
-          )
-        end
-      else
-
-        # Figure out the Stripe transaction from the Order
-        # Refund the amount from the Stripe transaction
-
-      end
-
-      # First refund in Render credit only.
-      # After a timeout, and the credit hasn't been used, do a full refund.
     end
 end
 
