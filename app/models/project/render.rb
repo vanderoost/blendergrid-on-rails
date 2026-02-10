@@ -1,6 +1,8 @@
 require "aws-sdk-s3"
 
 class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
+  DEADLINE_BUFFER = 5.minutes
+
   include Workflowable
 
   belongs_to :project
@@ -133,8 +135,8 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def owner = project
 
   def make_start_message
-    swarm_engine_env =
-      Rails.configuration.swarm_engine[:env]
+    swarm_engine_env = Rails.configuration.swarm_engine[:env]
+    deadline = workflow.project.tweaks_deadline_hours.hours.from_now - DEADLINE_BUFFER
 
     bucket.object(
       "projects/#{project.uuid}/jsons/settings.json"
@@ -145,8 +147,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     {
       workflow_id: workflow.uuid,
-      deadline: workflow.project
-        .tweaks_deadline_hours.hours.from_now.to_i,
+      deadline: deadline.to_i,
       files: {
         input: {
           scripts: "s3://blendergrid-blender-scripts"\
