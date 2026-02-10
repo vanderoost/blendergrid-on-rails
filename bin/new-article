@@ -3,35 +3,32 @@
 require_relative "../config/environment"
 require "tempfile"
 
-# Use fzf to select article
-articles = Article.order(updated_at: :desc)
-article_list = articles.map do |a|
-  status = a.published_at? ? "✓" : "draft"
-  # Clean and truncate title
-  clean_title =
-    a.title.gsub(/\s+/, " ").strip.truncate(50)
-  "#{a.id}|#{status}|#{clean_title}" \
-    "|#{a.slug}|#{a.updated_at.strftime('%Y-%m-%d')}"
+# Pick the author
+users = User.order(:name)
+if users.count == 1
+  user = users.first
+else
+  user_list = users.map do |u|
+    "#{u.id}|#{u.name}"
+  end
+  puts "Select author:"
+  selected = `echo "#{user_list.join("\n")}" \
+    | column -t -s'|' | fzf`.strip
+  exit if selected.empty?
+  user = User.find(selected.split(/\s+/).first.to_i)
 end
-puts "Select article to edit:"
-selected = `echo "#{article_list.join("\n")}" \
-  | column -t -s'|' | fzf`.strip
-exit if selected.empty?
 
-article_id = selected.split(/\s+/).first.to_i
-article = Article.find(article_id)
-
-# Create temp file with YAML frontmatter for metadata
+# Create temp file with empty frontmatter template
 temp_file = Tempfile.new(["article", ".md"])
 temp_file.write(<<~CONTENT)
   ---
-  title: #{article.title.to_json}
-  slug: #{article.slug.to_json}
-  published_at: #{article.published_at}
-  excerpt: #{article.excerpt.to_s.to_json}
+  title: "New Article"
+  slug: "new-article"
+  published_at:
+  excerpt: ""
   ---
 
-  #{article.body}
+  Write your article here...
 CONTENT
 temp_file.close
 
@@ -47,7 +44,8 @@ begin
     )
     body = $2.strip
 
-    article.update!(
+    article = Article.create!(
+      user: user,
       title: frontmatter["title"],
       slug: frontmatter["slug"],
       body: body,
@@ -55,8 +53,8 @@ begin
       published_at: frontmatter["published_at"]
     )
 
-    puts "Updated: #{article.title}"
-    puts "Cache automatically cleared"
+    status = article.published_at? ? "published" : "draft"
+    puts "Created (#{status}): #{article.title}"
     url = "https://blendergrid.com/articles/"
     puts "View at: #{url}#{article.slug}"
     temp_file.unlink
