@@ -465,15 +465,58 @@ class Dashboard
     render_cell("Status:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(status_str(@project), 16)
-    setpos(row += 1, 2)
 
     if @project.rendering? && @project.tweaks["deadline_hours"].present?
+      setpos(row += 1, 2)
       deadline_at = @project.render.created_at + @project.tweaks["deadline_hours"].hours
       remaining = deadline_at - Time.current
       render_cell("Remaining:", first_col_width, color_pair(YELLOW))
       addstr(" ")
       render_cell(human_duration(remaining), 16)
+    end
+
+    setpos(row += 2, 2)
+
+    render_cell("Frames:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    if @project.frame_range_type == "animation"
+      frame_str = "#{@project.frame_range_start}-#{@project.frame_range_end}"
+      if @project.frame_range_step > 1
+        frame_str += " step: #{@project.frame_range_step}"
+      end
+      frame_str += " (#{@project.frames&.count})"
+    else
+      frame_str = "#{@project.frame_range_start}"
+    end
+    render_cell("#{frame_str}", 32)
+
+    setpos(row += 1, 2)
+
+    render_cell("Resolution:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    res_str = "#{@project.resolution_x}x#{@project.resolution_y}"
+    scale_str = "@#{@project.resolution_percentage}%"
+    if @project.tweaks &&
+      @project.tweaks["resolution_percentage"] != @project.resolution_percentage
+      scale_str += " -> #{@project.tweaks["resolution_percentage"]}%"
+    end
+    render_cell("#{res_str} #{scale_str}", 32)
+
+    setpos(row += 1, 2)
+    render_cell("Samples:", first_col_width, color_pair(YELLOW))
+    addstr(" ")
+    spp_str = "#{@project.sampling_max_samples}"
+    if @project.tweaks &&
+      @project.tweaks["sampling_max_samples"] != @project.sampling_max_samples
+      spp_str += " -> #{@project.tweaks["sampling_max_samples"]}"
+    end
+    render_cell(spp_str, 32)
+
+    if @project.tweaks
       setpos(row += 1, 2)
+      render_cell("Deadline:", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell("#{@project.tweaks["deadline_hours"]}h", 32)
     end
   end
 
