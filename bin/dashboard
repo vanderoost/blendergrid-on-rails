@@ -3,11 +3,13 @@ require_relative "../config/application"
 Rails.application.initialize!
 
 require "curses"
+require "set"
 
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
 DEBUG_LOG.sync = true  # Disable buffering
 PROJECT_POLL_COUNT = 32
+NEW_RENDER_CENTS_THRESHOLD = 5_00
 
 GREEN = 1
 BLUE = 2
@@ -62,6 +64,9 @@ class Dashboard
     @owner_landing_page = nil # Cached landing page for guests
     @owner_token = nil # Cached session token for user
 
+    # Track which projects were rendering last poll
+    @rendering_project_ids = Set.new
+
     ################ STATE ################
 
     # Initialize Curses
@@ -93,9 +98,12 @@ class Dashboard
             owner_email = @owner_email
           end
 
+          log("Polling latest #{PROJECT_POLL_COUNT} projects...")
           recent_projects = Project.unscoped
             .includes(
               { upload: :user },
+              { blend_checks: :workflow },
+              { benchmarks: :workflow },
               { renders: :workflow },
               { order_items: :order },
             )
@@ -127,9 +135,15 @@ class Dashboard
               .to_a
             projects = (recent_projects + owner_projects).uniq
           else
-            log("Polling latest #{PROJECT_POLL_COUNT} projects...")
             projects = recent_projects
           end
+
+          current_rendering_ids = projects.select(&:rendering?).map(&:id).to_set
+          new_rendering_projects = projects.select do |p|
+            p.rendering? && !@rendering_project_ids.include?(p.id)
+          end
+          announce_new_renders(new_rendering_projects)
+          @rendering_project_ids = current_rendering_ids
 
           render_revenue_24h = Order
             .where(created_at: 24.hours.ago..)
@@ -444,7 +458,6 @@ class Dashboard
     render_cell(cents_to_dollars(revenue_30d).rjust(12), 12)
   end
 
-
   def render_project_details
     first_col_width = 12
     row = 0
@@ -517,6 +530,38 @@ class Dashboard
       render_cell("Deadline:", first_col_width, color_pair(YELLOW))
       addstr(" ")
       render_cell("#{@project.tweaks["deadline_hours"]}h", 32)
+    end
+
+    setpos(row += 1, 2)
+
+    if @project.blend_check&.workflow.present?
+      setpos(row += 1, 2)
+      workflow = @project.blend_check.workflow
+      render_cell("Blend check:", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      addstr(" ")
+      render_cell(workflow.uuid, 36, color_pair(GRAY))
+    end
+
+    if @project.benchmark&.workflow.present?
+      setpos(row += 1, 2)
+      workflow = @project.benchmark.workflow
+      render_cell("Benchmark:", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      addstr(" ")
+      render_cell(workflow.uuid, 36, color_pair(GRAY))
+    end
+
+    if @project.render&.workflow.present?
+      setpos(row += 1, 2)
+      workflow = @project.render.workflow
+      render_cell("Render:", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      addstr(" ")
+      render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
   end
 
@@ -647,6 +692,42 @@ class Dashboard
 end
 
 # Helpers
+def announce_new_renders(projects)
+  total_cents = projects.map(&:price_cents).compact.sum()
+
+  return if total_cents < NEW_RENDER_CENTS_THRESHOLD
+
+  dollars = cents_to_dollars(total_cents)
+
+  if projects.one?
+    project = projects.first
+    msg = "#{project.user.first_name} just started rendering '#{project.name}' for " \
+      "#{dollars}. It should be finished in #{project.tweaks_deadline_hours} hours."
+  else
+    deadline_hours_min = projects.map(&:tweaks_deadline_hours).min
+    deadline_hours_max = projects.map(&:tweaks_deadline_hours).max
+
+    users = projects.map(&:user).uniq
+    if users.one?
+      user_str = users.first.first_name
+    else
+      user_str = "#{users.count} users"
+    end
+
+    if deadline_hours_min == deadline_hours_max
+      deadline_range = "in #{deadline_hours_min} hours"
+    else
+      deadline_range = "between #{deadline_hours_min} and #{deadline_hours_max} hours"
+    end
+
+    msg = "#{user_str} just started rendering #{projects.count} projects for " \
+      "#{dollars}. They should be finished #{deadline_range}."
+  end
+
+  log("Announcing: '#{msg}'")
+  Thread.new { system("say", msg) }
+end
+
 def truncate(str, length)
   str = str.to_s
   return str if str.length <= length
