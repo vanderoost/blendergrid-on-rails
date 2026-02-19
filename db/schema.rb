@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_07_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -122,6 +122,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_07_120000) do
     t.index ["user_id"], name: "index_credit_entries_on_user_id"
   end
 
+  create_table "emails", force: :cascade do |t|
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.string "email_address", null: false
+    t.string "mailer_class", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_emails_on_created_at"
+    t.index ["email_address", "mailer_class", "action"], name: "index_emails_on_email_address_and_mailer_class_and_action"
+    t.index ["email_address"], name: "index_emails_on_email_address"
+  end
+
   create_table "events", force: :cascade do |t|
     t.string "action", null: false
     t.datetime "created_at", null: false
@@ -182,6 +193,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_07_120000) do
     t.string "stripe_session_id"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["created_at"], name: "index_orders_on_created_at"
+    t.index ["guest_email_address"], name: "index_orders_on_guest_email_address"
     t.index ["user_id", "created_at"], name: "index_orders_on_user_id_and_created_at"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
