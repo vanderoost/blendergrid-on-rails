@@ -676,14 +676,17 @@ class Dashboard
   def render_cell(str, width, attrs = [])
     str = truncate(str, width)
     attrs = Array(attrs).flat_map do |attr|
-      attr.is_a?(Hash) ? attr.select { |k, v| v } .keys : attr
+      attr.is_a?(Hash) ? attr.select { |k, v| v }.keys : attr
     end
 
+    start_x = stdscr.curx
     attrs.each { |attr| attron(attr) }
     addstr(str)
     attrs.each { |attr| attroff(attr) }
 
-    addstr(" " * (width - str.length))
+    used = stdscr.curx - start_x
+    remaining = width - used
+    addstr(" " * remaining) if remaining > 0
   end
 
   def app
@@ -701,8 +704,9 @@ def announce_new_renders(projects)
 
   if projects.one?
     project = projects.first
-    msg = "#{project.user.first_name} just started rendering '#{project.name}' for " \
-      "#{dollars}. It should be finished in #{project.tweaks_deadline_hours} hours."
+    first_name = project.user&.first_name || "A guest"
+    msg = "#{first_name} just started rendering '#{project.name}' for #{dollars}. " \
+      "It should be finished in #{project.tweaks_deadline_hours} hours."
   else
     deadline_hours_min = projects.map(&:tweaks_deadline_hours).min
     deadline_hours_max = projects.map(&:tweaks_deadline_hours).max
@@ -731,7 +735,13 @@ end
 def truncate(str, length)
   str = str.to_s
   return str if str.length <= length
-  str[0, length - 1] + "…"
+  target = length - 1 # 1 display column for "…"
+  result = ""
+  str.each_char do |c|
+    break if result.bytesize + c.bytesize > target
+    result << c
+  end
+  result + "…"
 end
 
 def cents_to_dollars(cents)
@@ -743,8 +753,12 @@ def status_str(project)
   case project.status
   when "rendering"
     "rendering %5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
-  # when "cancelled"
-  #   "cancelled @%5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+  when "cancelled"
+    if project.render&.workflow&.progress_permil.present?
+      "cancelled @%5.1f%%" % (project.render.workflow.progress_permil || 0).fdiv(10)
+    else
+      "cancelled"
+    end
   else
     project.status
   end
