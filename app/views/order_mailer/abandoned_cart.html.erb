@@ -1,0 +1,15 @@
+<p>
+  Hi! Thanks for uploading your Blender <%= @projects.one? ? "project" : "projects" %> earlier.
+</p>
+
+<p>
+  If you still need to render <%= @projects.one? ? "it" : "them" %>, you can pick up
+  where you left off on your
+  <a href="<%= projects_url(session_token: @session_token) %>">Projects page</a>.
+</p>
+
+<p>
+  If you have any questions, or need some help before you can continue, feel free to ask, we're happy to assist!
+</p>
+
+<p>- the Blendergrid team</p>
