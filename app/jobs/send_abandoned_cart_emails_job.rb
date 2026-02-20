@@ -7,14 +7,13 @@ class SendAbandonedCartEmailsJob < ApplicationJob
   queue_as :default
 
   def perform
-    abandoned_orders.each do |order|
-      email_address = email_address_for(order)
-      next if email_address.blank?
-      next if already_rendered?(order, email_address)
-      next if cart_email_sent_recently?(email_address)
-      next if any_email_sent_recently?(email_address)
+    abandoned_orders.group_by { |o| email_address_for(o) }.each do |email, orders|
+      next if email.blank?
+      next if already_rendered?(orders.first, email)
+      next if cart_email_sent_recently?(email)
+      next if any_email_sent_recently?(email)
 
-      OrderMailer.abandoned_cart(order).deliver_later
+      OrderMailer.abandoned_cart(orders.first).deliver_later
     end
   end
 
@@ -35,11 +34,14 @@ class SendAbandonedCartEmailsJob < ApplicationJob
 
   def already_rendered?(order, email_address)
     if order.user.present?
-      order.user.orders.where.not(stripe_payment_intent_id: nil).exists?
+      have_paid_orders = order.user.orders.where.not(stripe_payment_intent_id: nil)
+        .exists?
+      have_paid_orders
     else
-      Order.where(guest_email_address: email_address)
+      have_paid_orders = Order.where(guest_email_address: email_address)
            .where.not(stripe_payment_intent_id: nil)
            .exists?
+      have_paid_orders
     end
   end
 
