@@ -45,7 +45,8 @@
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff --staged)",
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff)",
       "Bash(bundle exec brakeman:*)",
-      "Bash(xargs grep:*)"
+      "Bash(xargs grep:*)",
+      "Bash(git -C /Users/richard/git/blendergrid-on-rails rm -r --cached .ruby-lsp/)"
     ],
     "deny": [],
     "ask": []
