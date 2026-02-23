@@ -6,8 +6,9 @@
 
 ## General
 
-- [ ] Ability to cancel uploads
-- [ ] Fix up all the transactional emails (style, message, reply-to)
+- [ ] Have a CTA button on the project show page as well
+    - [ ] Calculate price
+    - [ ] Render
 - [ ] Waiting stage
     - [ ] Show settings summary (non editable)
 - [ ] Add tags support to articles
@@ -21,7 +22,6 @@
 - [ ] Fix bug when uploading two of the same file
 - [ ] Email validation on email address updates
 - [ ] Add pagination to articles index
-- [ ] Have a CTA button (calculate price, render) on the project show page as well
 - [ ] Project settings form: Edit + tab to next field makes it submit and lose focus
 - [ ] DRY up the heroicon svg icons
 - [ ] MAYBE Allow custom output file names for frames / animations?
@@ -39,6 +39,7 @@
     - [ ]  Select a project
     - [ ]  Calculate the price
     - [ ]  Start rendering
+- [x] Fix up all the transactional emails (style, message, reply-to)
 
 ## Marketing
 
@@ -55,9 +56,9 @@
 
 ## Dashboard
 
-- [ ] Display deleted projects
 - [ ] Open S3 project page
 - [ ] Edit render credit?
 - [ ] Send email
 - [ ] Open contact in helpscout
+- [x] Display deleted projects
 - [x] Take refunds into account with 24h revenue (or show refunds)
