@@ -94,7 +94,6 @@ class Project < ApplicationRecord
     price_calculation.job_time
   end
 
-
   def process_blend_check
     workflow = blend_check.workflow
     raise "Project has no BlendCheck Workflow" if workflow.blank?
@@ -108,6 +107,8 @@ class Project < ApplicationRecord
       blender_scene.update(settings.slice(*BlenderScene.column_names))
       self.current_blender_scene = blender_scene if scene_name == current_scene_name
     end
+
+    raise "BlendCheck has errors" if blend_check_errors.any?
   end
 
   def process_benchmark
@@ -229,6 +230,10 @@ class Project < ApplicationRecord
     Hash(blend_check&.workflow&.result&.dig(
         "stats", "warnings", "scenes", current_blender_scene.name
     ))
+  end
+
+  def blend_check_errors
+    blend_check&.workflow&.result&.dig("stats", "errors") || []
   end
 
   def update_price
