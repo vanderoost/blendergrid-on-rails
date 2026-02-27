@@ -20,3 +20,13 @@ youtuber_default:
       gift: true
     - id: logo_cloud
     - id: testimonials
+
+how_to_default:
+  landing_page: how_to
+  sections:
+    - id: heading
+      title: "Start with a $20 credit gift"
+      subtitle: "Sign up to get $20 off your first cloud render."
+    - id: signup
+      gift: true
+    - id: testimonials

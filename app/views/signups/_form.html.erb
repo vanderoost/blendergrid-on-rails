@@ -55,6 +55,7 @@
   </div>
 
   <%= form.hidden_field :gift, value: true if form.object.gift %>
+  <%= form.hidden_field :referral_code if form.object.referral_code.present? %>
 
   <%= render "shared/form_errors", form: form %>
 

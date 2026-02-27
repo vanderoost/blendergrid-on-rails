@@ -1,12 +1,9 @@
 <% unless authenticated? %>
   <turbo-frame id="signup-form">
-    <%= render "signups/form", signup: @signup || Signup.new(gift: section["gift"]) %>
-
-
-
-
-
-
+    <%= render "signups/form",
+      signup: @signup || Signup.new(
+        gift: section["gift"], referral_code: @referral_code
+      ) %>
   </turbo-frame>
 <% else %>
   <p class="mx-auto mt-6 max-w-2xl text-lg font-medium text-pretty text-gray-500

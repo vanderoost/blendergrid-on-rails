@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  REFERRAL_AFFILIATE_MIN_SPENT_CENTS = 1000
+
   include EmailAddressVerifyable
   include Trackable
 
@@ -16,9 +18,8 @@ class User < ApplicationRecord
   has_many :requests
   has_many :events, through: :requests
   belongs_to :page_variant, optional: true
+  belongs_to :referring_affiliate, class_name: "Affiliate", optional: true
   has_one :affiliate, dependent: :destroy
-
-  after_create :attribute_page_variant_later
 
   scope :from_page_variant, ->(variant) {
     where(page_variant: variant)
@@ -28,6 +29,8 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email_address, presence: true, uniqueness: { case_sensitive: false }
+
+  after_create :attribute_page_variant_later
 
   def sales_cents
     orders.where.not(stripe_payment_intent_id: nil).sum(:cash_cents) +
@@ -40,6 +43,12 @@ class User < ApplicationRecord
 
   def slug
     name&.parameterize
+  end
+
+  def maybe_create_referral_affiliate
+    return if affiliate.present?
+    return unless sales_cents >= REFERRAL_AFFILIATE_MIN_SPENT_CENTS
+    Affiliate.create!(user: self, reward_percent: 10, reward_window_months: 12)
   end
 
   private

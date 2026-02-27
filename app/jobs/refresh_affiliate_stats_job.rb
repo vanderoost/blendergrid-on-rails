@@ -13,17 +13,30 @@ class RefreshAffiliateStatsJob < ApplicationJob
     Affiliate.all.each do |affiliate|
       puts "Month: #{year}-#{month} - Affiliate: #{affiliate.user.name}"
       date_range = Date.new(year, month, 1)..Date.new(year, month, -1)
-      page_variant_ids = affiliate.landing_page.page_variant_ids
 
-      stats = {
-        visits: calculate_visits(page_variant_ids, date_range),
-        signups: calculate_signups(page_variant_ids, date_range),
-        sales_cents: calculate_sales(
-          page_variant_ids,
-          date_range,
-          affiliate.reward_window_months
-        ),
-      }
+      if affiliate.landing_page_id.present?
+        page_variant_ids = affiliate.landing_page.page_variant_ids
+        users_scope = User.where(page_variant_id: page_variant_ids)
+        stats = {
+          visits: calculate_visits(page_variant_ids, date_range),
+          signups: calculate_signups(page_variant_ids, date_range),
+          sales_cents: calculate_sales(
+            users_scope, date_range, affiliate.reward_window_months
+          ),
+        }
+      elsif affiliate.referral_code.present?
+        users_scope = User.where(referring_affiliate_id: affiliate.id)
+        stats = {
+          visits: 0, # Unused for now since there is no dedicated landing page
+          signups: users_scope.where(created_at: date_range).count,
+          sales_cents: calculate_sales(
+            users_scope, date_range, affiliate.reward_window_months
+          ),
+        }
+      else
+        puts "ERROR: No referral code or landing page for affiliate #{affiliate.id}"
+        next
+      end
 
       stats[:rewards_cents] = (
         stats[:sales_cents] * affiliate.reward_percent.fdiv(100)
@@ -62,10 +75,8 @@ class RefreshAffiliateStatsJob < ApplicationJob
       ).count
     end
 
-    def calculate_sales(page_variant_ids, date_range, reward_window_months)
-      attributed_users = User.where(page_variant_id: page_variant_ids)
-                             .select(:id, :created_at, :email_address)
-                             .to_a
+    def calculate_sales(users_scope, date_range, reward_window_months)
+      attributed_users = users_scope.select(:id, :created_at, :email_address).to_a
 
       return 0 if attributed_users.empty?
 

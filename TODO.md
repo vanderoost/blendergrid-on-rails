@@ -3,6 +3,16 @@
 ## Bugs
 
 - [ ] Duplicate project frame-range-type change is not being propagated
+- [ ] Refunding projects paid with credit and cash
+    - [ ] Affiliate commision is calculated wrong (full price is subtracted instead of
+    only the cash amount)
+    - [ ] Too much credit is refunded to the User
+
+## Security / Scam prevention
+
+- [ ] On credit gifts, check if the persion might be signing up with multiple accounts
+to abuse the free credit system
+- [ ] Add a slight barrier to signing up to prevent bots from signing up
 
 ## General
 

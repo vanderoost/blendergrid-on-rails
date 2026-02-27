@@ -345,7 +345,8 @@
 
   <!-- TODO: Delete account section -->
 
-  <% if Current.user.affiliate %>
+  <% affiliate = Current.user.affiliate %>
+  <% if affiliate.present? %>
     <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3 dark:border-white/10">
       <div>
         <h2 class="text-base/7 font-semibold text-gray-900 dark:text-white">Referral Program</h2>
@@ -356,10 +357,15 @@
         <div class="sm:flex sm:items-center">
           <div class="sm:flex-auto">
 
+            <% affiliate_link = if affiliate.referral_code.present?
+                 "https://blendergrid.com/how-to?ref=#{affiliate.referral_code}"
+               else
+                 "https://blendergrid.com/#{affiliate.landing_page.slug}"
+               end %>
             <p class="text-sm/6 font-semibold text-gray-900 dark:text-white">
             Your affiliate link:<br/>
-            <a href="https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>" target="_blank" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">
-              https://blendergrid.com/<%= Current.user.affiliate.landing_page.slug %>
+            <a href="<%= affiliate_link %>" target="_blank" class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300">
+              <%= affiliate_link %>
             </a>
             </p>
             <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
@@ -372,6 +378,7 @@
           </div>
         </div>
 
+        <% if affiliate.has_referrals? %>
         <div class="col-span-full">
           <%= turbo_frame_tag "affiliate_stats", src: account_monthly_affiliate_stats_path, loading: :lazy do %>
             <p class="text-sm text-gray-500 dark:text-gray-400">Loading affiliate stats...</p>
@@ -437,6 +444,7 @@
             <% end %>
           <% end %>
         </div>
+        <% end %>
 
       </div>
     </div>

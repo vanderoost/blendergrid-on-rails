@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_25_000002) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -56,15 +56,17 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
 
   create_table "affiliates", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.integer "landing_page_id", null: false
+    t.integer "landing_page_id"
     t.json "payout_method_details"
     t.datetime "payout_onboarded_at"
+    t.string "referral_code"
     t.integer "reward_percent", default: 10, null: false
     t.integer "reward_window_months", default: 12, null: false
     t.string "stripe_account_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
     t.index ["landing_page_id"], name: "index_affiliates_on_landing_page_id"
+    t.index ["referral_code"], name: "index_affiliates_on_referral_code", unique: true
     t.index ["stripe_account_id"], name: "index_affiliates_on_stripe_account_id", unique: true
     t.index ["user_id"], name: "index_affiliates_on_user_id", unique: true
   end
@@ -145,10 +147,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
   end
 
   create_table "faqs", force: :cascade do |t|
-    t.text "answer"
-    t.integer "clicks", default: 0
+    t.text "answer", null: false
+    t.integer "clicks", default: 0, null: false
     t.datetime "created_at", null: false
-    t.string "question"
+    t.string "question", null: false
     t.datetime "updated_at", null: false
   end
 
@@ -333,11 +335,13 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
     t.string "name"
     t.integer "page_variant_id"
     t.string "password_digest", null: false
+    t.integer "referring_affiliate_id"
     t.integer "render_credit_cents", default: 0
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_users_on_deleted_at"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["page_variant_id"], name: "index_users_on_page_variant_id"
+    t.index ["referring_affiliate_id"], name: "index_users_on_referring_affiliate_id"
   end
 
   create_table "workflows", force: :cascade do |t|
@@ -383,5 +387,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_19_162541) do
   add_foreign_key "sessions", "users"
   add_foreign_key "upload_zip_checks", "uploads"
   add_foreign_key "uploads", "users"
+  add_foreign_key "users", "affiliates", column: "referring_affiliate_id"
   add_foreign_key "users", "page_variants"
 end
