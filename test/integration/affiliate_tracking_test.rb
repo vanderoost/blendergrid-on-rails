@@ -1,7 +1,7 @@
 require "test_helper"
 
 class AffiliateTrackingTest < ActionDispatch::IntegrationTest
-  test "visitor views landing page and signs up gets attributed" do
+  test "visitor signup through affiliate landing page is attributed" do
     get landing_page_url(slug: "youtuber")
     assert_response :success
     perform_enqueued_jobs(only: TrackRequestJob)
