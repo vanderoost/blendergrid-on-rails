@@ -12,6 +12,12 @@ gary:
   password_digest: <%= password_digest %>
   email_address_verified: true
 
+billy:
+  name: Billy
+  email_address: billy@example.com
+  password_digest: <%= password_digest %>
+  email_address_verified: true
+
 unverified_user:
   name: Unverified User
   email_address: two@example.com

@@ -9,6 +9,7 @@ class Signup
   attribute :email_address, :string
   attribute :password, :string
   attribute :gift, :boolean
+  attribute :referral_code, :string
 
   validates :name, presence: true, length: { maximum: 255 }
   validates :email_address, presence: true, length: { maximum: 255 }
@@ -21,6 +22,7 @@ class Signup
       user = User.new(name:, email_address:, password:)
       if user.save
         give_credit user if gift
+        attribute_referral(user) if referral_code.present?
         EmailAddressVerification.new(user).save
         true
       else
@@ -39,5 +41,12 @@ class Signup
   private
     def give_credit(user)
       CreditEntry.create(user: user, amount_cents: GIFT_CENTS, reason: :gift)
+    end
+
+    def attribute_referral(user)
+      affiliate = Affiliate.find_by(referral_code: referral_code)
+      return unless affiliate
+      return if affiliate.user_id == user.id
+      user.update_column(:referring_affiliate_id, affiliate.id)
     end
 end

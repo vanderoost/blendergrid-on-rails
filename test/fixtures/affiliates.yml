@@ -3,3 +3,9 @@ richard:
   landing_page: youtuber
   reward_percent: 42
   reward_window_months: 12
+
+gary:
+  user: gary
+  referral_code: "abc12345"
+  reward_percent: 10
+  reward_window_months: 12

@@ -12,6 +12,8 @@ class Order < ApplicationRecord
   attr_accessor :project_uuids, :success_url, :cancel_url, :redirect_url
 
   after_create :checkout
+  after_update :maybe_create_referral_affiliate_for_user,
+    if: -> { saved_change_to_stripe_payment_intent_id? }
 
   # TODO: Add validations
 
@@ -25,6 +27,10 @@ class Order < ApplicationRecord
   end
 
   private
+
+  def maybe_create_referral_affiliate_for_user
+    user&.maybe_create_referral_affiliate
+  end
 
   def checkout
     create_order_items

@@ -3,6 +3,7 @@ class AttributePageVariantJob < ApplicationJob
 
   def perform(user)
     return if user.page_variant_id.present?
+    return if user.referring_affiliate_id.present?
 
     page_variant = find_signup_page_variant(user)
     user.update_column(:page_variant_id, page_variant.id) if page_variant
