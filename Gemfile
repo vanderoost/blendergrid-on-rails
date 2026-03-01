@@ -79,7 +79,10 @@ gem "aws-sdk-s3", require: false
 gem "aws-sdk-sns"
 
 # Payments
-gem "stripe", "18.4.0"
+# Pinned to pre-release: v2.money_management (Global Payouts) is preview-only
+# and absent from stable releases. Bump manually when Stripe promotes it to GA.
+# Dependabot is configured to ignore stripe in .github/dependabot.yml.
+gem "stripe", "18.5.0.pre.beta.1"
 
 # Markdown parsing
 gem "redcarpet", "~> 3.6"
