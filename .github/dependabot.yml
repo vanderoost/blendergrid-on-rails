@@ -5,6 +5,11 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
+  ignore:
+    # Pinned to pre-release: v2.money_management (Global Payouts API) is
+    # preview-only and absent from stable releases. Manually bump when Stripe
+    # promotes it to GA.
+    - dependency-name: "stripe"
 - package-ecosystem: github-actions
   directory: "/"
   schedule:

@@ -1,7 +1,7 @@
 # Run this at the first day of each month
 
 class PayoutAffiliateRewardsJob < ApplicationJob
-  MIN_AGE_DAYS = 35
+  MIN_AGE_DAYS = 45 # More than 1 month to give refunds a buffer
   queue_as :default
 
   def perform
