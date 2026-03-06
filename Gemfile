@@ -63,7 +63,7 @@ group :development do
   gem "hotwire-spark"
 
   # Curses for TUI
-  gem "curses", "~> 1.5"
+  gem "curses", "~> 1.6"
 end
 
 group :test do
