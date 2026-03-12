@@ -158,7 +158,7 @@ jobs:
           echo "KAMAL_REGISTRY_PASSWORD=$(aws ecr get-login-password)" >> $GITHUB_ENV
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.9.1
+        uses: webfactory/ssh-agent@v0.10.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
