@@ -1,9 +1,11 @@
 class RefreshAffiliateStatsJob < ApplicationJob
+  MONTHS_BACK = 3
   queue_as :default
 
   def perform
-    refresh_month(1.month.ago)
-    refresh_month(Time.current)
+    MONTHS_BACK.times.reverse_each do |i|
+      refresh_month(i.month.ago)
+    end
   end
 
   def refresh_month(date)

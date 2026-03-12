@@ -42,6 +42,7 @@
       "Bash(RAILS_ENV=test bin/rails db:migrate:status:*)",
       "Bash(aws s3:*)",
       "Bash(RAILS_ENV=production bin/rails runner:*)",
+      "Bash(RAILS_ENV=production rails runner:*)",
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff --staged)",
       "Bash(git -C /Users/richard/git/blendergrid-on-rails diff)",
       "Bash(bundle exec brakeman:*)",
@@ -49,9 +50,7 @@
       "Bash(git -C /Users/richard/git/blendergrid-on-rails rm -r --cached .ruby-lsp/)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:rubygems.org)",
-      "Bash(gem contents stripe --version 18.4.0 2>/dev/null | grep v2_services || gem list stripe 2>/dev/null)",
-      "Bash(gem fetch stripe --version \"18.5.0.pre.beta.1\" --source https://rubygems.org -q 2>/dev/null && gem contents stripe-18.5.0.pre.beta.1.gem 2>/dev/null | grep v2_services && tar -xOf stripe-18.5.0.pre.beta.1.gem data.tar.gz 2>/dev/null | tar -xOz lib/stripe/services/v2_services.rb 2>/dev/null; ls stripe-18.5.0.pre.beta.1.gem 2>/dev/null && echo \"gem downloaded\")"
+      "WebFetch(domain:rubygems.org)"
     ],
     "deny": [],
     "ask": []
