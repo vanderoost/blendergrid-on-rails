@@ -9,6 +9,7 @@ class Signup
   attribute :email_address, :string
   attribute :password, :string
   attribute :gift, :boolean
+  attribute :ip_address, :string
   attribute :referral_code, :string
 
   validates :name, presence: true, length: { maximum: 255 }
@@ -21,7 +22,7 @@ class Signup
     if valid?
       user = User.new(name:, email_address:, password:)
       if user.save
-        give_credit user if gift
+        give_credit user if gift && !gift_ip_blocked?
         attribute_referral(user) if referral_code.present?
         EmailAddressVerification.new(user).save
         true
@@ -41,6 +42,21 @@ class Signup
   private
     def give_credit(user)
       CreditEntry.create(user: user, amount_cents: GIFT_CENTS, reason: :gift)
+    end
+
+    def gift_ip_blocked?
+      return false if ip_address.blank?
+
+      gift_recipient_ids = CreditEntry.where(reason: :gift).select(:user_id)
+      if Request.where(ip_address: ip_address, user_id: gift_recipient_ids).exists?
+        Rails.logger.info(
+          "Gift withheld for signup from IP #{ip_address} — " \
+          "already claimed by an existing account"
+        )
+        true
+      else
+        false
+      end
     end
 
     def attribute_referral(user)

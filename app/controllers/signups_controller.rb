@@ -8,6 +8,7 @@ class SignupsController < ApplicationController
 
   def create
     @signup = Signup.new(signup_params)
+    @signup.ip_address = request.remote_ip
     if @signup.save
       render @signup
     else

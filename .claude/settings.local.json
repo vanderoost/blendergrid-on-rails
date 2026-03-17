@@ -50,7 +50,9 @@
       "Bash(git -C /Users/richard/git/blendergrid-on-rails rm -r --cached .ruby-lsp/)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:rubygems.org)"
+      "WebFetch(domain:rubygems.org)",
+      "Bash(git -C /Users/richard/git/blendergrid-on-rails log --oneline --all)",
+      "Bash(git stash:*)"
     ],
     "deny": [],
     "ask": []

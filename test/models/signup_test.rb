@@ -69,6 +69,50 @@ class SignupTest < ActiveSupport::TestCase
     assert @signup.errors.key? :password_confirmation
   end
 
+  test "gift is given when ip has no prior gift sessions" do
+    @signup.gift = true
+    @signup.ip_address = "203.0.113.1"
+    assert @signup.save
+    assert_equal Signup::GIFT_CENTS,
+      User.find_by(email_address: @signup.email_address).render_credit_cents
+  end
+
+  test "gift is withheld when same ip already has a gift session" do
+    existing_user = User.create!(
+      name: "Troll", email_address: "troll@example.com", password: "password1"
+    )
+    CreditEntry.create!(
+      user: existing_user, amount_cents: Signup::GIFT_CENTS, reason: :gift
+    )
+    Request.create!(
+      user: existing_user, ip_address: "203.0.113.1"
+    )
+
+    @signup.gift = true
+    @signup.ip_address = "203.0.113.1"
+    assert @signup.save
+    assert_equal 0,
+      User.find_by(email_address: @signup.email_address).render_credit_cents
+  end
+
+  test "account is still created when gift is withheld due to ip" do
+    existing_user = User.create!(
+      name: "Troll", email_address: "troll@example.com", password: "password1"
+    )
+    CreditEntry.create!(
+      user: existing_user, amount_cents: Signup::GIFT_CENTS, reason: :gift
+    )
+    Request.create!(
+      user: existing_user, ip_address: "203.0.113.1"
+    )
+
+    @signup.gift = true
+    @signup.ip_address = "203.0.113.1"
+    assert_difference "User.count", 1 do
+      @signup.save
+    end
+  end
+
   def setup
     @signup = Signup.new(
       name: "Nassim Taleb",
