@@ -60,8 +60,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_25_000002) do
     t.json "payout_method_details"
     t.datetime "payout_onboarded_at"
     t.string "referral_code"
-    t.integer "reward_percent", default: 10, null: false
-    t.integer "reward_window_months", default: 12, null: false
+    t.integer "reward_percent", default: 40, null: false
+    t.integer "reward_window_months", default: 6, null: false
     t.string "stripe_account_id"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
