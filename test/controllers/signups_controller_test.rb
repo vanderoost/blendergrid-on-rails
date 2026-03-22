@@ -73,4 +73,28 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "yt.subber@example.com", user.email_address
     assert_equal Signup::GIFT_CENTS, user.render_credit_cents
   end
+
+  test "account is created but gift is withheld when ip already claimed a gift" do
+    existing_user = users(:gary)
+    CreditEntry.create!(
+      user: existing_user, amount_cents: Signup::GIFT_CENTS, reason: :gift
+    )
+    Request.create!(
+      user: existing_user, ip_address: "127.0.0.1"
+    )
+
+    assert_difference("User.count", 1) do
+      post signups_url, params: { signup: {
+        name: "Gift Troll",
+        email_address: "gifttroll@example.com",
+        password: "secretly",
+        password_confirmation: "secretly",
+        terms: "1",
+        gift: "true",
+      } }
+    end
+
+    user = User.find_by(email_address: "gifttroll@example.com")
+    assert_equal 0, user.render_credit_cents
+  end
 end
