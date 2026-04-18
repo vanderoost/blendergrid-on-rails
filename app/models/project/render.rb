@@ -259,10 +259,16 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
           "#{s3_project_path}/frames"\
           "/frame-$frame#{project.frame_extension}",
         ],
-        image:
-          "blendergrid/blender:"\
-          "#{project.blender_version}",
+        image: blender_image,
       }
+    end
+
+    def blender_image
+      if Rails.env.production?
+        "blendergrid/blender:#{project.blender_version}"
+      else
+        "blendergrid/blender:5.0"
+      end
     end
 
     def zip_execution(render_ex_id)

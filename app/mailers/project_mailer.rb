@@ -13,15 +13,10 @@ class ProjectMailer < ApplicationMailer
 
   def project_benchmark_finished(project)
     @project = project
-    if @project.user.present?
-      email_address = @project.user.email_address
-      @session_token = @project.user.generate_token_for(:session)
-    elsif @project.upload.guest_email_address.present?
-      email_address = @project.upload.guest_email_address
-      @session_token = @project.upload.generate_token_for(:session)
-    else
-      return
-    end
+    email_address = get_email_address(@project)
+    @session_token = get_session_token(@project)
+
+    return unless email_address.present? and @session_token.present?
 
     mail(
       to: email_address,
@@ -31,11 +26,31 @@ class ProjectMailer < ApplicationMailer
 
   def project_render_finished(project)
     @project = project
-    @user = @project.user
-    @session_token = @user.generate_token_for(:session)
+    email_address = get_email_address(@project)
+    @session_token = get_session_token(@project)
+
+    return unless email_address.present? and @session_token.present?
+
     mail(
-      to: @user.email_address,
+      to: email_address,
       subject: "project '#{@project.blend_filepath}' has finished rendering"
     )
   end
+
+  private
+    def get_email_address(project)
+      if project.user.present?
+        project.user.email_address
+      elsif project.upload.guest_email_address.present?
+        project.upload.guest_email_address
+      end
+    end
+
+    def get_session_token(project)
+      if project.user.present?
+        project.user.generate_token_for(:session)
+      elsif project.upload.guest_email_address.present?
+        project.upload.generate_token_for(:session)
+      end
+    end
 end

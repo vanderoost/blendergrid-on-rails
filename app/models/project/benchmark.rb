@@ -66,7 +66,7 @@ class Project::Benchmark < ApplicationRecord
             ],
             parameters: { frame: sample_settings["frame_range"] },
             expected_duration: 1.minute.in_milliseconds.round,
-            image: "blendergrid/blender:#{project.blender_version}",
+            image: blender_image,
           },
       ],
       metadata: {
@@ -75,6 +75,14 @@ class Project::Benchmark < ApplicationRecord
         project_uuid: project.uuid,
       },
     }
+  end
+
+  def blender_image
+    if Rails.env.production?
+      "blendergrid/blender:#{project.blender_version}"
+    else
+      "blendergrid/blender:5.0"
+    end
   end
 
   def handle_completion
