@@ -57,6 +57,20 @@ class Project::BlendCheck < ApplicationRecord
   end
 
   def handle_completion
+    fetch_result_from_s3 if workflow.result.blank?
     project.finish_checking
   end
+
+  private
+    def fetch_result_from_s3
+      stats_key = "projects/#{project.uuid}/jsons/stats.json"
+      stats = JSON.parse(project.bucket.object(stats_key).get.body.read)
+      settings_key = "projects/#{project.uuid}/jsons/settings.json"
+      settings = JSON.parse(project.bucket.object(settings_key).get.body.read)
+      workflow.update!(result: { stats: stats, settings: settings })
+    rescue Aws::S3::Errors::NoSuchKey, JSON::ParserError => e
+      Rails.logger.warn(
+        "Blend check S3 fallback failed for project #{project.uuid}: #{e.message}"
+      )
+    end
 end

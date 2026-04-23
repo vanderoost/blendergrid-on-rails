@@ -713,7 +713,7 @@ def announce_new_renders(projects)
 
     users = projects.map(&:user).uniq
     if users.one?
-      user_str = users.first.first_name
+      user_str = users.first&.first_name || "A user"
     else
       user_str = "#{users.count} users"
     end

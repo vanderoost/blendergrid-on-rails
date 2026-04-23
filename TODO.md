@@ -1,5 +1,10 @@
 # TODOs
 
+## Troubleshooting
+
+ - [ ] Automatically add a 'note' to a project when it failed, with the reason. To avoid
+   having to dig through the logs to find the reason.
+
 ## Bugs
 
 - [ ] Duplicate project frame-range-type change is not being propagated
