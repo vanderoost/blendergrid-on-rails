@@ -20,7 +20,9 @@ class ProjectTest < ActiveSupport::TestCase
     project = projects(:benchmarked)
     user = users(:richard)
 
-    Order.skip_callback(:create, :after, :checkout)
+    # Stub at method level: skip_callback+set_callback corrupts chain order.
+    original_checkout = Order.instance_method(:checkout)
+    Order.define_method(:checkout) { }
 
     begin
       abandoned_order = Order.create!(
@@ -57,7 +59,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal paid_order.items.first, project.order_item,
         "project.order_item should return the latest order item"
     ensure
-      Order.set_callback(:create, :after, :checkout)
+      Order.define_method(:checkout, original_checkout)
     end
   end
 end
