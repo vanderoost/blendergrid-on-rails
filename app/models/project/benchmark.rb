@@ -71,8 +71,9 @@ class Project::Benchmark < ApplicationRecord
       ],
       metadata: {
         type: "price-calculation",
-        created_by: "blendergrid-on-rails",
         project_uuid: project.uuid,
+        project_name: project.blend_filepath,
+        user_email: project.user&.email_address || project.upload.guest_email_address,
       },
     }
   end

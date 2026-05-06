@@ -158,9 +158,9 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
       executions: executions,
       metadata: {
         type: "render",
-        created_by: "blendergrid-on-rails",
         project_uuid: project.uuid,
         project_name: project.blend_filepath,
+        user_email: project.user&.email_address || project.upload.guest_email_address,
       },
     }
   end
