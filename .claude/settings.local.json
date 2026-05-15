@@ -54,7 +54,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:rubygems.org)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(kamal --version)"
     ],
     "deny": [],
     "ask": []

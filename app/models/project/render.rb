@@ -150,8 +150,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
       deadline: deadline.to_i,
       files: {
         input: {
-          scripts: "s3://blendergrid-blender-scripts"\
-            "/#{swarm_engine_env}",
+          scripts: "s3://blendergrid-blender-scripts/#{swarm_engine_env}",
         },
         logs: "#{s3_project_path}/logs",
       },
@@ -229,30 +228,45 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     def render_execution(render_ex_id)
       expected_duration = project.job_time || 3.minutes
+
+      command = [
+        "--enable-autoexec",
+        "/tmp/project/#{project.blend_filepath}",
+        "--scene", project.current_blender_scene.name,
+        "--python", "/tmp/scripts/init.py",
+        "-o", "/tmp/frames/frame-",
+      ]
+
+      if expected_duration < 2.minutes && project.frame_range_type == "animation"
+        batch_len = (5.minutes.fdiv(expected_duration)).floor
+        puts "USING BATCH SIZE: #{batch_len}" # DEBUG
+        expected_duration *= batch_len
+        command += [
+          "-s", "$frame_start",
+          "-e", "$frame_end",
+          "-j", "#{project.frame_range_step || 1}",
+          "-a",
+        ]
+      else
+        batch_len = 1
+        command += [
+          "-f", "$frame",
+        ]
+      end
+
+      command += [
+        "--",
+        "--settings-file", "/tmp/settings/settings.json",
+        "--project-dir", "/tmp/project",
+        "--cycles-samples", project.sampling_max_samples.to_s,
+      ]
+
       {
         execution_id: render_ex_id,
         job_id: "frame-$frame",
         files: render_files,
-        command: [
-          "--enable-autoexec",
-          "/tmp/project/#{project.blend_filepath}",
-          "--scene",
-          project.current_blender_scene.name,
-          "--python",
-          "/tmp/scripts/init.py",
-          "-o",
-          "/tmp/frames/frame-",
-          "-f",
-          "$frame",
-          "--",
-          "--settings-file",
-          "/tmp/settings/settings.json",
-          "--project-dir",
-          "/tmp/project",
-          "--cycles-samples",
-          project.sampling_max_samples.to_s,
-        ],
-        parameters: { frame: frame_params },
+        command: command,
+        parameters: { frame: frame_params(batch_len) },
         expected_duration:
           expected_duration.in_milliseconds.round,
         expected_output_files: [
@@ -350,18 +364,31 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
       }
     end
 
-    def frame_params
-      if project.frame_range_type == "animation"
-        {
-          start: project.frame_range_start,
-          end: project.frame_range_end,
-          step: project.frame_range_step,
-        }
-      elsif project.frame_range_type == "image"
-        project.frame_range_single
+    def frame_params(batch_len)
+      if batch_len > 1
+        frame_count = (project.frame_range_start..project.frame_range_end)
+          .step(project.frame_range_step).count
+        batch_count = frame_count.fdiv(batch_len).ceil
+        batch_step = project.frame_range_step * batch_len
+        puts "frame_count: #{frame_count} - batch_len: #{batch_len} - " \
+          "batch_count: #{batch_count} - batch_step: #{batch_step}" # DEBUG
+        batch_count.times.map { |i| {
+          start: i * batch_step,
+          end: [ (i + 1) * batch_step - 1, project.frame_range_end ].min,
+        }}
       else
-        raise "Unknown frame range type: "\
-          "#{project.frame_range_type}"
+        if project.frame_range_type == "animation"
+          {
+            start: project.frame_range_start,
+            end: project.frame_range_end,
+            step: project.frame_range_step,
+          }
+        elsif project.frame_range_type == "image"
+          project.frame_range_single
+        else
+          raise "Unknown frame range type: "\
+            "#{project.frame_range_type}"
+        end
       end
     end
 
