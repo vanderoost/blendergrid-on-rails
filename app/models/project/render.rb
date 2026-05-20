@@ -366,15 +366,17 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     def frame_params(batch_len)
       if batch_len > 1
-        frame_count = (project.frame_range_start..project.frame_range_end)
-          .step(project.frame_range_step).count
+        frame_range = (project.frame_range_start..project.frame_range_end)
+          .step(project.frame_range_step)
+        frame_count = frame_range.count
         batch_count = frame_count.fdiv(batch_len).ceil
         batch_step = project.frame_range_step * batch_len
         puts "frame_count: #{frame_count} - batch_len: #{batch_len} - " \
           "batch_count: #{batch_count} - batch_step: #{batch_step}" # DEBUG
         batch_count.times.map { |i| {
-          start: i * batch_step,
-          end: [ (i + 1) * batch_step - 1, project.frame_range_end ].min,
+          start: i * batch_step + project.frame_range_start,
+          end: [ (i + 1) * batch_step - 1 + project.frame_range_start,
+            project.frame_range_end ].min,
         }}
       else
         if project.frame_range_type == "animation"
