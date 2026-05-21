@@ -2,15 +2,6 @@ class ProjectMailer < ApplicationMailer
   default to:       -> { @user.email_address },
           reply_to: -> { "support@blendergrid.com" }
 
-  def project_created(project)
-    @project = project
-    @user = @project.user
-    mail(
-      to: @user.email_address,
-      subject: "you created project '#{@project.blend_filepath}'"
-    )
-  end
-
   def project_benchmark_finished(project)
     @project = project
     email_address = get_email_address(@project)
