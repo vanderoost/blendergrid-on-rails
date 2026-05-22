@@ -1,10 +1,12 @@
 Hi <%= @user.first_name %>,
 
-Thanks for your first upload to Blendergrid.
+Thanks for uploading your first .blend file to Blendergrid!
 
-If you calculate the price of your project, Blendergrid will also show some preview renders of your project, so you can make sure everything works before rendering the real thing.
+The next step is to calculate the price of your project. It's free, and it does two useful things at once: you'll see exactly what your render will cost, and Blendergrid generates a few preview renders so you can confirm everything looks right before paying for the full job.
 
-If you have any other questions, feel free to reply!
+<%= projects_url(session_token: @session_token) %>
+
+Any questions? Just hit reply, we're happy to help :)
 
 Happy rendering,
 

@@ -1,21 +1,21 @@
 Hi <%= @user.first_name %>,
 
-Thanks for creating your first Blendergrid project!
-
-This if you click on "Preview", after any price calculation, you can see some preview renders.
-
-And if you want to know how the settings change the price, here is the basics:
+You've uploaded your project and seen the price, nice work! If the number came out higher than you'd hoped, the good news is you have a lot of control over it. These are the three settings that move the price the most:
 
 Resolution:
-The render time and price of a project scales roughly quadratically with the resolution. So that means doubling the resolution can cause the price to go 4x.
+Render time scales roughly quadratically with resolution, so doubling the resolution can roughly quadruple the price. Dropping from 4K to 1080p makes a big difference.
 
 Cycles samples:
-The price roughly scales linearly with the samples setting. Doubling the samples can double the price, halving the samples halves the price.
+The price scales roughly linearly with samples: halving the samples roughly halves the price. With Blender's denoiser you can often go lower than you'd expect without losing much quality.
 
-Render time hours / deadline:
-The shorter the render time, the more servers we need, so it gets more expensive. But this all depends on the current server availability. If there are plenty of servers free in our cheapest data centers, the price stays low. If the deadline is so tight that we need to resort to servers in more expensive datacenters, the price might spike upwards more quickly.
+Render time / deadline:
+The tighter your deadline, the more servers we need, so the more it costs. If you can allow a little more time, we can use our cheapest data centers and keep the price low. A tight deadline may push us to pricier servers and spike the cost more quickly.
 
-Hope that helps. If you have any questions about this, feel free to shoot us a reply!
+Tweak any of these and recalculate to see the new price instantly. You can also check the preview renders on the project page to confirm quality before you commit. When it looks right, hit render:
+
+<%= projects_url(session_token: @session_token) %>
+
+Questions about any of this? Just hit reply.
 
 Happy rendering,
 

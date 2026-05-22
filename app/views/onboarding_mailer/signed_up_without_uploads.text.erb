@@ -1,10 +1,14 @@
 Hi <%= @user.first_name %>,
 
-Thanks for signing up to Blendergrid.
+Thanks for signing up to Blendergrid! You're one short step away from your first render: uploading a .blend file.
 
-Here's a quick walkthrough video to get you up to speed:
+Here's a quick walkthrough that shows how it works:
 
-[youtube link]
+https://youtu.be/LPpWWvtNCXg
+
+When you're ready, upload your first .blend file:
+
+<%= new_upload_url(session_token: @session_token) %>
 
 Happy rendering,
 
