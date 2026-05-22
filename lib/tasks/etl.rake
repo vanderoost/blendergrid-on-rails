@@ -266,7 +266,7 @@ def make_user_from_old(old_user)
   user.name = old_user.name
   user.email_address = old_user.email
   user.password_digest = old_user.password
-  user.email_address_verified = old_user.email_verified_at.present?
+  user.email_address_verified_at = old_user.email_verified_at
   user.render_credit_cents = old_user.bg_credit
   user.created_at = old_user.created_at
   user.save!

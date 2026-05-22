@@ -19,6 +19,11 @@ production:
     args: []
     schedule: every hour at minute 22
 
+  send_onboarding_emails:
+    class: SendOnboardingEmailsJob
+    args: []
+    schedule: every hour at minute 42
+
   reverse_cash_refunds:
     class: ReverseCashRefundsJob
     args: []

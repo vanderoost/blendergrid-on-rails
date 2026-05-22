@@ -4,19 +4,19 @@ richard:
   name: Richard
   email_address: rich@blendergrid.com
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
 
 gary:
   name: Gary
   email_address: gary@example.com
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
 
 billy:
   name: Billy
   email_address: billy@example.com
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
 
 unverified_user:
   name: Unverified User
@@ -32,19 +32,19 @@ user_with_balance_20:
   name: Napoleon Dynamite
   email_address: napoleon@dynamite.io
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
   render_credit_cents: 2000
 
 user_with_balance_1000:
   name: Richard Example
   email_address: richard@example.com
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
   render_credit_cents: 100000
 
 long_email_address:
   name: Long Email User
   email_address: diesisteineextreemecooleemailalsorlydasschoncool@fake-box.com
   password_digest: <%= password_digest %>
-  email_address_verified: true
+  email_address_verified_at: <%= 1.year.ago %>
 

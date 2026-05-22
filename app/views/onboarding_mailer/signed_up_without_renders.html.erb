@@ -1,0 +1,51 @@
+<p>
+  Hi <%= @user.first_name %>,
+</p>
+
+<p>
+  Thanks for creating your first Blendergrid project!
+</p>
+
+<p>
+  This if you click on "Preview", after any price calculation, you can see some
+  preview renders.
+</p>
+
+<p>
+  And if you want to know how the settings change the price, here is the basics:
+</p>
+
+<p>
+  <strong>Resolution:</strong><br>
+  The render time and price of a project scales roughly quadratically with the
+  resolution. So that means doubling the resolution can cause the price to go 4x.
+</p>
+
+<p>
+  <strong>Cycles samples:</strong><br>
+  The price roughly scales linearly with the samples setting. Doubling the samples
+  can double the price, halving the samples halves the price.
+</p>
+
+<p>
+  <strong>Render time hours / deadline:</strong><br>
+  The shorter the render time, the more servers we need, so it gets more expensive.
+  But this all depends on the current server availability. If there are plenty of
+  servers free in our cheapest data centers, the price stays low. If the deadline
+  is so tight that we need to resort to servers in more expensive datacenters, the
+  price might spike upwards more quickly.
+</p>
+
+<p>
+  Hope that helps. If you have any questions about this, feel free to shoot us a
+  reply!
+</p>
+
+<p>
+  Happy rendering,<br>
+  the Blendergrid team
+</p>
+
+<p>
+  <a href="https://www.blendergrid.com">www.blendergrid.com</a>
+</p>

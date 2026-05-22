@@ -3,7 +3,11 @@ module EmailAddressVerifyable
 
   included do
     def verify_email_address
-      update(email_address_verified: true)
+      update(email_address_verified_at: Time.current)
+    end
+
+    def email_address_verified?
+      email_address_verified_at.present?
     end
   end
 
