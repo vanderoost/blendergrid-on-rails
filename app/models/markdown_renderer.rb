@@ -35,7 +35,7 @@ class MarkdownRenderer < Redcarpet::Render::HTML
     if lang == "latex"
       code
     else
-      %(<code class="#{lang}"><pre>#{code}</pre></code>)
+      %(<code class="#{lang}"><pre>#{CGI.escapeHTML(code)}</pre></code>)
     end
   end
 
