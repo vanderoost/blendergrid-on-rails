@@ -3,20 +3,8 @@
 require_relative "../config/environment"
 require "tempfile"
 
-# Pick the author
-users = User.order(:name)
-if users.count == 1
-  user = users.first
-else
-  user_list = users.map do |u|
-    "#{u.id}|#{u.name}"
-  end
-  puts "Select author:"
-  selected = `echo "#{user_list.join("\n")}" \
-    | column -t -s'|' | fzf`.strip
-  exit if selected.empty?
-  user = User.find(selected.split(/\s+/).first.to_i)
-end
+# Always author as Richard (User 1)
+user = User.find_by!(email_address: "richard@blendergrid.com")
 
 # Create temp file with empty frontmatter template
 temp_file = Tempfile.new(["article", ".md"])
@@ -40,7 +28,7 @@ begin
   content = File.read(temp_file.path)
   if content =~ /^---\n(.*?)\n---\n(.*)/m
     frontmatter = YAML.safe_load(
-      $1, permitted_classes: [Time]
+      $1, permitted_classes: [Time, Date]
     )
     body = $2.strip
 

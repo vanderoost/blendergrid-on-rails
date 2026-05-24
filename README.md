@@ -49,6 +49,13 @@ Make sure the MySQL gem is installed before running the ETL rake tasks.
 RAILS_ENV=production ENABLE_OLD_DATABASE=true caffeinate -id bin/rake etl:users
 ```
 
+### Migrating changes in production
+
+```bash
+RAILS_ENV=production rails db:migrate
+```
+
+
 ## How to run the test suite
 
 One off tests:
