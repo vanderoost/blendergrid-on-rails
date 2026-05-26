@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   resources :users, only: %w[show update]
   resources :passwords, param: :token, only: %w[new create edit update]
+  get "invite/:token", to: "invites#show", as: :invite
   resources :email_address_verifications, param: :token, only: %w[show]
   resources :uploads, param: :uuid, only: %w[index show new create] do
     resources :project_intakes, only: %w[create]
