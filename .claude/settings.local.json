@@ -55,7 +55,8 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:rubygems.org)",
       "WebSearch",
-      "Bash(kamal --version)"
+      "Bash(kamal --version)",
+      "Bash(rg -rn -i \"smtp|ses|delivery_method|mailer|amazon|aws_ses\" config/)"
     ],
     "deny": [],
     "ask": []
