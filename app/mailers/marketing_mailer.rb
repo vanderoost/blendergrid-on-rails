@@ -8,11 +8,25 @@ class MarketingMailer < ApplicationMailer
           "X-SES-CONFIGURATION-SET" => "marketing"
 
   def announcement(user)
-    @user = user
     @session_token = user.generate_token_for(:session)
-    mail(
-      to: user.email_address,
-      subject: "What's new at Blendergrid",
-    )
+    marketing_mail(user, subject: "What's new at Blendergrid")
   end
+
+  private
+    # Wraps `mail` for every marketing send: skips unsubscribed recipients and
+    # adds the RFC 8058 one-click unsubscribe headers plus an @unsubscribe_url
+    # for the visible footer link in the views.
+    def marketing_mail(user, **options)
+      return if user.marketing_unsubscribed?
+
+      @user = user
+      @unsubscribe_url = unsubscribe_url(user.generate_token_for(:unsubscribe))
+
+      mail(
+        to: user.email_address,
+        "List-Unsubscribe" => "<#{@unsubscribe_url}>",
+        "List-Unsubscribe-Post" => "List-Unsubscribe=One-Click",
+        **options,
+      )
+    end
 end

@@ -56,7 +56,8 @@
       "WebFetch(domain:rubygems.org)",
       "WebSearch",
       "Bash(kamal --version)",
-      "Bash(rg -rn -i \"smtp|ses|delivery_method|mailer|amazon|aws_ses\" config/)"
+      "Bash(rg -rn -i \"smtp|ses|delivery_method|mailer|amazon|aws_ses\" config/)",
+      "WebFetch(domain:www.youtube.com)"
     ],
     "deny": [],
     "ask": []

@@ -8,6 +8,8 @@ class User < ApplicationRecord
   has_email_address_verification
 
   generates_token_for :session, expires_in: 2.days
+  # No expiry: unsubscribe links must keep working however old the email is.
+  generates_token_for :unsubscribe
 
   has_many :sessions, dependent: :destroy
   has_many :uploads
@@ -24,6 +26,7 @@ class User < ApplicationRecord
   scope :from_page_variant, ->(variant) {
     where(page_variant: variant)
   }
+  scope :marketing_subscribed, -> { where(marketing_unsubscribed_at: nil) }
 
   normalizes :email_address, with: ->(e) { e.strip.downcase if e }
 
@@ -43,6 +46,14 @@ class User < ApplicationRecord
 
   def slug
     name&.parameterize
+  end
+
+  def marketing_unsubscribed?
+    marketing_unsubscribed_at.present?
+  end
+
+  def unsubscribe_from_marketing!
+    update!(marketing_unsubscribed_at: Time.current) unless marketing_unsubscribed?
   end
 
   def maybe_create_referral_affiliate
