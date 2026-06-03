@@ -1,25 +1,20 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
-    <% if @user.nil? %>
-      <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">This link is no longer valid</h2>
+  <% if @user.nil? %>
+    <%= render "invalid" %>
+  <% elsif @user.marketing_unsubscribed? %>
+    <%= render "unsubscribed", user: @user %>
+  <% else %>
+    <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
+      <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Unsubscribing you…</h2>
       <p class="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-        We couldn't find a subscription for this link. It may have already been used.
-      </p>
-    <% elsif @user.marketing_unsubscribed? %>
-      <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">You're unsubscribed</h2>
-      <p class="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-        <%= @user.email_address %> won't receive any more marketing emails from us.
-      </p>
-    <% else %>
-      <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">Unsubscribe from marketing emails?</h2>
-      <p class="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-        You'll stop receiving marketing emails at <%= @user.email_address %>.
-        You'll still get important account and order emails.
+        One moment while we update your preferences. If nothing happens, use the
+        button below.
       </p>
 
-      <%= form_with url: unsubscribe_path(params[:token]), method: :post, class: "mt-8" do |form| %>
-        <%= form.submit "Unsubscribe", class: "flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
-      <% end %>
-    <% end %>
-  </div>
+      <%= button_to "Unsubscribe", unsubscribe_path(params[:token]),
+            method: :post,
+            form: { data: { controller: "submit-on-load", turbo: false } },
+            class: "mt-6 flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
+    </div>
+  <% end %>
 </div>

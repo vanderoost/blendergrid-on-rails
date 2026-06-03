@@ -1,0 +1,12 @@
+<div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
+  <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">You're unsubscribed</h2>
+  <p class="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
+    <%= user.email_address %> won't receive any more marketing emails from us.
+    You'll still get important account and order emails.
+  </p>
+
+  <p class="mt-8 text-sm/6 text-gray-500 dark:text-gray-400">Changed your mind?</p>
+  <%= button_to "Re-subscribe", unsubscribe_path(params[:token]),
+        method: :delete, data: { turbo: false },
+        class: "mt-3 flex w-full justify-center rounded-md bg-primary-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-primary-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 dark:bg-primary-500 dark:shadow-none dark:hover:bg-primary-400 dark:focus-visible:outline-primary-500" %>
+</div>

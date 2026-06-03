@@ -1,18 +1,25 @@
 class UnsubscriptionsController < ApplicationController
   allow_unauthenticated_access
-  # One-click unsubscribe POSTs come straight from mail providers (Gmail, Apple)
-  # with no CSRF token; the signed token in the URL is what authenticates them.
-  skip_forgery_protection only: :create
+  # Every action is authenticated solely by the unguessable signed token in the
+  # URL (no session/cookie), so CSRF protection adds nothing here — and the RFC
+  # 8058 one-click POST from mail providers carries no token.
+  skip_forgery_protection
   before_action :set_user_by_token
 
-  # GET /unsubscribe/:token — confirmation page. We never unsubscribe on GET so
-  # that link scanners / prefetchers don't unsubscribe people by accident.
+  # GET — landing page. The view auto-submits the unsubscribe POST when the user
+  # is still subscribed; otherwise it shows the unsubscribed/invalid state.
   def show
   end
 
-  # POST /unsubscribe/:token — the actual unsubscribe (button or one-click).
+  # POST — unsubscribe. Serves both the in-email link's JS auto-submit and the
+  # native one-click button in Gmail/Apple (List-Unsubscribe-Post, RFC 8058).
   def create
     @user&.unsubscribe_from_marketing!
+  end
+
+  # DELETE — re-subscribe (undo).
+  def destroy
+    @user&.resubscribe_to_marketing!
   end
 
   private

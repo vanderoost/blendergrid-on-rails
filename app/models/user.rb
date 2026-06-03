@@ -56,6 +56,10 @@ class User < ApplicationRecord
     update!(marketing_unsubscribed_at: Time.current) unless marketing_unsubscribed?
   end
 
+  def resubscribe_to_marketing!
+    update!(marketing_unsubscribed_at: nil) if marketing_unsubscribed?
+  end
+
   def maybe_create_referral_affiliate
     return if affiliate.present?
     return unless sales_cents >= REFERRAL_AFFILIATE_MIN_SPENT_CENTS
