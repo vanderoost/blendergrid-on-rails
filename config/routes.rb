@@ -7,14 +7,11 @@ Rails.application.routes.draw do
   resource :session, only: %w[new create destroy]
   resources :email_subscriptions, only: %w[new create]
 
-  # Marketing email unsubscribe, modelled as an "unsubscription" resource:
-  #   GET    shows the landing page (auto-submits the POST when still subscribed)
-  #   POST   creates the unsubscription = unsubscribe (also the RFC 8058 one-click)
-  #   DELETE destroys it = re-subscribe (undo)
-  # The signed token in the URL is the authentication.
-  get "unsubscribe/:token", to: "unsubscriptions#show", as: :unsubscribe
-  post "unsubscribe/:token", to: "unsubscriptions#create"
-  delete "unsubscribe/:token", to: "unsubscriptions#destroy"
+  # Marketing email unsubscribe. The signed token in the path is the auth.
+  #   GET    show    — landing page (auto-submits the POST when still subscribed)
+  #   POST   create  — unsubscribe (also the RFC 8058 one-click target)
+  #   DELETE destroy — re-subscribe (undo)
+  resource :unsubscribe, path: "unsubscribe/:token", only: %w[show create destroy]
 
   resources :users, only: %w[show update]
   resources :passwords, param: :token, only: %w[new create edit update]

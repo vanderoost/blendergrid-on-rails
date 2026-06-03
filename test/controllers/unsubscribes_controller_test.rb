@@ -1,6 +1,6 @@
 require "test_helper"
 
-class UnsubscriptionsControllerTest < ActionDispatch::IntegrationTest
+class UnsubscribesControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = users(:gary)
     @token = @user.generate_token_for(:unsubscribe)

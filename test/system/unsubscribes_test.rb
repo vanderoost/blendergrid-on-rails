@@ -1,6 +1,6 @@
 require "application_system_test_case"
 
-class UnsubscriptionsTest < ApplicationSystemTestCase
+class UnsubscribesTest < ApplicationSystemTestCase
   setup do
     @user = users(:gary)
     @token = @user.generate_token_for(:unsubscribe)

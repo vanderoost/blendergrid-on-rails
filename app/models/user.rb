@@ -8,7 +8,6 @@ class User < ApplicationRecord
   has_email_address_verification
 
   generates_token_for :session, expires_in: 2.days
-  # No expiry: unsubscribe links must keep working however old the email is.
   generates_token_for :unsubscribe
 
   has_many :sessions, dependent: :destroy
@@ -56,7 +55,7 @@ class User < ApplicationRecord
     update!(marketing_unsubscribed_at: Time.current) unless marketing_unsubscribed?
   end
 
-  def resubscribe_to_marketing!
+  def subscribe_to_marketing!
     update!(marketing_unsubscribed_at: nil) if marketing_unsubscribed?
   end
 

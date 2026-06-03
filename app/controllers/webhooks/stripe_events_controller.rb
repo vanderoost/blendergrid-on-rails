@@ -37,7 +37,7 @@ class Webhooks::StripeEventsController < Webhooks::BaseController
           # V2 thin events - use parse_event_notification
           request.body.rewind
           signature = request.env["HTTP_STRIPE_SIGNATURE"]
-          secret = Rails.application.credentials.dig(:stripe, :webhook_secret_v2)
+          secret = Rails.application.credentials.dig(:stripe, :webhook_secret)
 
           client = Stripe::StripeClient.new(Stripe.api_key)
           client.parse_event_notification(payload, signature, secret)
