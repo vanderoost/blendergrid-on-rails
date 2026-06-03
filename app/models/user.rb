@@ -10,6 +10,10 @@ class User < ApplicationRecord
   generates_token_for :session, expires_in: 2.days
   generates_token_for :unsubscribe
 
+  generates_token_for :invite, expires_in: 30.days do
+    password_salt&.last(10) # link self-destructs once they set their own password
+  end
+
   has_many :sessions, dependent: :destroy
   has_many :uploads
   has_many :projects, through: :uploads
