@@ -1,0 +1,26 @@
+Hey <%= @subscriber.greeting_name %>,
+
+There is another trick to make your renders go faster.
+
+It doesn't require expensive GPUs, or even a render farm. It doesn't have to
+cost you anything. It's all about using the compute power you already have
+smarter.
+
+When you're rendering with Cycles, you start off with a grainy image. Over time,
+the more samples are being computed, the better it looks. (obviously)
+
+Often times though, some areas of the image are already looking nice and clean,
+while other parts are still very grainy.
+
+Wouldn't it be amazing if you could laser-focus that render power on those grainy
+bits? In a "smart" way?
+
+That's called Adaptive Sampling! Check out this article and video where I explain
+all about this great Blender feature:
+<%= article_url("render-smarter-in-blender-with-adaptive-samples") %>
+
+Enjoy ☕️
+
+- Richard
+
+<%= render "footer" %>

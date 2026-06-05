@@ -1,0 +1,57 @@
+<% article_link = article_url("render-smarter-in-blender-with-adaptive-samples") %>
+
+<p>
+  Hey <%= @subscriber.greeting_name %>,
+</p>
+
+<p>
+  There is <a href="<%= article_link %>">another trick</a> to make your renders
+  go faster.
+</p>
+
+<p>
+  It doesn't require expensive GPUs, or even a render farm. It doesn't have to
+  cost you anything. It's all about using the compute power you already have
+  <strong>smarter</strong>.
+</p>
+
+<p>
+  When you're rendering with Cycles, you start off with a grainy image. Over
+  time, the more samples are being computed, the better it looks. (obviously)
+</p>
+
+<p>
+  Often times though, some areas of the image are already looking nice and clean,
+  while other parts are still very grainy.
+</p>
+
+<p>
+  Wouldn't it be amazing if you could laser-focus that render power on those
+  grainy bits? In a "smart" way?
+</p>
+
+<p>
+  That's called <strong>Adaptive Sampling</strong>! Check out this article and
+  video where I explain all about this great Blender feature:
+  <a href="<%= article_link %>">Render Smarter in Blender, with Adaptive
+  Samples</a>.
+</p>
+
+<figure style="margin: 0 0 1.5em; text-align: center;">
+  <a href="<%= article_link %>">
+    <img src="https://img.youtube.com/vi/7oW4lVDEKyE/maxresdefault.jpg"
+         alt="Render Smarter in Blender, with Adaptive Samples"
+         width="600"
+         style="display: block; width: 100%; height: auto; border: 0; border-radius: 4px;">
+  </a>
+</figure>
+
+<p>
+  Enjoy ☕️
+</p>
+
+<p>
+  - Richard
+</p>
+
+<%= render "footer" %>

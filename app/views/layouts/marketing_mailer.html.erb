@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="x-apple-disable-message-reformatting">
+    <style>
+      /* Shared marketing styles. Typography is also set inline on the content
+         cell below so clients that strip <head> still inherit it. */
+      body { margin: 0; padding: 0; background: #ffffff; }
+      .content { font-family: Arial, Helvetica, sans-serif; font-size: 16px;
+                 line-height: 1.5em; color: #000000; }
+      .content p, .content ul { margin: 0 0 1.5em; }
+      .content a { color: #1a73e8; text-decoration: underline; }
+      .content img { display: block; width: 100%; height: auto; border: 0; }
+    </style>
+  </head>
+  <body>
+    <table role="presentation" width="100%" border="0" cellspacing="0"
+           cellpadding="0" style="border-collapse: collapse; background: #ffffff;">
+      <tr>
+        <td align="center" style="padding: 24px 12px;">
+          <table role="presentation" width="600" border="0" cellspacing="0"
+                 cellpadding="0" style="border-collapse: collapse; width: 600px;
+                 max-width: 100%;">
+            <tr>
+              <td class="content" style="font-family: Arial, Helvetica, sans-serif;
+                  font-size: 16px; line-height: 1.5em; color: #000000;">
+                <%= yield %>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

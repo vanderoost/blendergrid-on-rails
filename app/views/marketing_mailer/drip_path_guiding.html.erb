@@ -1,0 +1,65 @@
+<% article_link = article_url("path-guiding-blender-interior-renders") %>
+<% image_style = "display: block; width: 100%; height: auto; border: 0; border-radius: 4px;" %>
+
+<p>
+  hey <%= @subscriber.greeting_name %>,
+</p>
+
+<p>
+  Here's an interesting render setting not many people know about:
+  <a href="<%= article_link %>">Path Guiding</a>
+</p>
+
+<p>
+  I wrote an article about how it can help optimise render times:
+</p>
+
+<figure style="margin: 0 0 1.5em; text-align: center;">
+  <a href="<%= article_link %>">
+    <img src="https://img.youtube.com/vi/uQvhNndPG90/maxresdefault.jpg"
+         alt="Blender Path Guiding" width="600" style="<%= image_style %>">
+  </a>
+  <figcaption style="margin-top: 8px; font-size: 14px; color: #555555;">
+    Optimize Your Interior Renders
+  </figcaption>
+</figure>
+
+<p>
+  I've also figured out a way to measure noise in a render, and used it on an
+  interior scene.<br>
+  In the tests, Path Guiding leads to a <strong>37% reduction in render
+  time!</strong>
+</p>
+
+<figure style="margin: 0 0 1.5em; text-align: center;">
+  <a href="<%= article_link %>">
+    <img src="https://res.cloudinary.com/blendergrid/image/upload/f_auto,q_auto,w_1200/articles/path-guiding-blender-interior-renders/path-guiding-render-time-vs-noise"
+         alt="Render time vs. noise: Path Guiding reduced render time by 37%"
+         width="600" style="<%= image_style %>">
+  </a>
+</figure>
+
+<p>
+  Pretty cool tech.
+</p>
+
+<p>
+  Unfortunately Path Guiding is only available on the CPU right now. I heard there
+  are plans to make it work on GPUs as well though.
+</p>
+
+<p>
+  If you're rendering with Blendergrid, it's still relevant, because we mainly use
+  large CPU servers.
+</p>
+
+<p>
+  I hope you enjoy the <a href="<%= article_link %>">article</a>!
+</p>
+
+<p>
+  Cheers,<br>
+  Richard
+</p>
+
+<%= render "footer" %>

@@ -24,6 +24,11 @@ production:
     args: []
     schedule: every hour at minute 42
 
+  send_drip_emails:
+    class: SendDripEmailsJob
+    args: []
+    schedule: every hour at minute 02
+
   reverse_cash_refunds:
     class: ReverseCashRefundsJob
     args: []
