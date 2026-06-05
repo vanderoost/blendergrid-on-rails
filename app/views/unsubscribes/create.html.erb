@@ -1,7 +1,7 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <% if @user.nil? %>
+  <% if @subscriber.nil? %>
     <%= render "invalid" %>
   <% else %>
-    <%= render "unsubscribed", user: @user %>
+    <%= render "unsubscribed", subscriber: @subscriber %>
   <% end %>
 </div>

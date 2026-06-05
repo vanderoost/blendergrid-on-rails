@@ -2,21 +2,21 @@ require "test_helper"
 
 class UnsubscribesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:gary)
-    @token = @user.generate_token_for(:unsubscribe)
+    @subscriber = subscribers(:gary_subscriber)
+    @token = @subscriber.generate_token_for(:unsubscribe)
   end
 
   # --- GET show (landing page) ---
 
-  test "show renders the auto-submitting form for a subscribed user" do
+  test "show renders the auto-submitting form for a subscribed subscriber" do
     get unsubscribe_url(@token)
     assert_response :success
     assert_select "form[data-controller='submit-on-load']"
-    assert_not @user.reload.marketing_unsubscribed?, "GET must not unsubscribe"
+    assert @subscriber.reload.subscribed?, "GET must not unsubscribe"
   end
 
   test "show renders the unsubscribed state once unsubscribed" do
-    @user.unsubscribe_from_marketing!
+    @subscriber.unsubscribe!
     get unsubscribe_url(@token)
     assert_response :success
     assert_select "form[data-controller='submit-on-load']", false
@@ -29,10 +29,10 @@ class UnsubscribesControllerTest < ActionDispatch::IntegrationTest
 
   # --- POST create (unsubscribe) ---
 
-  test "create unsubscribes the user" do
+  test "create unsubscribes the subscriber" do
     post unsubscribe_url(@token)
     assert_response :success
-    assert @user.reload.marketing_unsubscribed?
+    assert_not @subscriber.reload.subscribed?
   end
 
   test "create works without a CSRF token (RFC 8058 one-click)" do
@@ -43,12 +43,12 @@ class UnsubscribesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create is idempotent and keeps the original timestamp" do
-    @user.unsubscribe_from_marketing!
-    original = @user.reload.marketing_unsubscribed_at
+    @subscriber.unsubscribe!
+    original = @subscriber.reload.deleted_at
 
     post unsubscribe_url(@token)
     assert_response :success
-    assert_equal original, @user.reload.marketing_unsubscribed_at
+    assert_equal original, @subscriber.reload.deleted_at
   end
 
   test "create with an invalid token does not raise" do
@@ -58,20 +58,20 @@ class UnsubscribesControllerTest < ActionDispatch::IntegrationTest
 
   # --- DELETE destroy (re-subscribe) ---
 
-  test "destroy re-subscribes the user" do
-    @user.unsubscribe_from_marketing!
+  test "destroy re-subscribes the subscriber" do
+    @subscriber.unsubscribe!
 
     delete unsubscribe_url(@token)
     assert_response :success
-    assert_not @user.reload.marketing_unsubscribed?
+    assert @subscriber.reload.subscribed?
   end
 
-  test "unsubscribe then re-subscribe leaves the user subscribed" do
+  test "unsubscribe then re-subscribe leaves the subscriber subscribed" do
     post unsubscribe_url(@token)
-    assert @user.reload.marketing_unsubscribed?
+    assert_not @subscriber.reload.subscribed?
 
     delete unsubscribe_url(@token)
-    assert_not @user.reload.marketing_unsubscribed?
+    assert @subscriber.reload.subscribed?
   end
 
   test "destroy with an invalid token does not raise" do

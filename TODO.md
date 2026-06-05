@@ -21,6 +21,7 @@ to abuse the free credit system
 
 ## General
 
+- [ ] Resolution in pixels should be visible before starting the render
 - [ ] Have a CTA button on the project show page as well
     - [ ] Calculate price
     - [ ] Render

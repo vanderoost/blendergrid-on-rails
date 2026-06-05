@@ -1,0 +1,9 @@
+# Fixtures bypass User#after_create, so user-linked subscribers are declared here.
+gary_subscriber:
+  user: gary
+  source: signup
+
+newsletter_guest:
+  name: Jane Guest
+  guest_email_address: jane@example.com
+  source: newsletter

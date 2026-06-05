@@ -1,5 +1,6 @@
+<% take_a_look_url = @session_token ? root_url(session_token: @session_token) : root_url %>
 <p>
-  Hi <%= @user.first_name %>,
+  Hi <%= @subscriber.greeting_name %>,
 </p>
 
 <p>
@@ -7,7 +8,7 @@
 </p>
 
 <p>
-  <a href="<%= root_url(session_token: @session_token) %>"
+  <a href="<%= take_a_look_url %>"
      style="display: inline-block; padding: 12px 22px; background: #101828;
             color: #ffffff; text-decoration: none; border-radius: 6px;
             font-weight: bold;">
@@ -21,7 +22,7 @@
 </p>
 
 <p style="margin-top: 32px; font-size: 12px; color: #667085;">
-  You're receiving this because you have a Blendergrid account.
+  You're receiving this because you subscribed to Blendergrid updates.
   <a href="<%= @unsubscribe_url %>" style="color: #667085;">Unsubscribe</a>
   from marketing emails.
 </p>

@@ -1,11 +1,11 @@
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <% if @user.nil? %>
+  <% if @subscriber.nil? %>
     <%= render "invalid" %>
   <% else %>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm text-center">
       <h2 class="mt-10 text-2xl/9 font-bold tracking-tight text-gray-900 dark:text-white">You're subscribed again</h2>
       <p class="mt-4 text-sm/6 text-gray-500 dark:text-gray-400">
-        <%= @user.email_address %> will receive Blendergrid marketing emails again.
+        <%= @subscriber.email_address %> will receive Blendergrid marketing emails again.
       </p>
       <p class="mt-10 text-sm/6 text-gray-500 dark:text-gray-400">
         <%= link_to "Back to Blendergrid", root_path, class: "font-semibold text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300" %>

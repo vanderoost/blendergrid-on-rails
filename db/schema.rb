@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_06_03_124844) do
+ActiveRecord::Schema[8.2].define(version: 2026_06_05_113233) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -307,6 +307,19 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_03_124844) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "subscribers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
+    t.string "guest_email_address"
+    t.string "name"
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.index ["deleted_at"], name: "index_subscribers_on_deleted_at"
+    t.index ["guest_email_address"], name: "index_subscribers_on_guest_email_address", unique: true, where: "user_id IS NULL"
+    t.index ["user_id"], name: "index_subscribers_on_user_id", unique: true, where: "user_id IS NOT NULL"
+  end
+
   create_table "upload_zip_checks", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -332,7 +345,6 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_03_124844) do
     t.datetime "deleted_at"
     t.string "email_address", null: false
     t.datetime "email_address_verified_at"
-    t.datetime "marketing_unsubscribed_at"
     t.string "name"
     t.integer "page_variant_id"
     t.string "password_digest", null: false
@@ -386,6 +398,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_06_03_124844) do
   add_foreign_key "refunds", "order_items"
   add_foreign_key "requests", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "subscribers", "users"
   add_foreign_key "upload_zip_checks", "uploads"
   add_foreign_key "uploads", "users"
   add_foreign_key "users", "affiliates", column: "referring_affiliate_id"

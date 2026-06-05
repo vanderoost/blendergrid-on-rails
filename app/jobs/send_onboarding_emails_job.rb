@@ -16,10 +16,12 @@ class SendOnboardingEmailsJob < ApplicationJob
   end
 
   private
+    # Only nudge users with a live marketing subscription (new signups always have
+    # one via User#create_or_promote_subscriber).
     def recently_verified_users
-      User.where(
-        email_address_verified_at: VERIFIED_MAX_AGE.ago..VERIFIED_MIN_AGE.ago
-      )
+      User
+        .where(email_address_verified_at: VERIFIED_MAX_AGE.ago..VERIFIED_MIN_AGE.ago)
+        .joins(:subscriber).merge(Subscriber.subscribed)
     end
 
     # Pick the email for the earliest funnel step the user is stuck on, or nil
