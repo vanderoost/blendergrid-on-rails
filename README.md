@@ -193,3 +193,11 @@ In production:
 kamal console
 ```
 
+## Inviting users
+
+In order to invite users with a pre-made account that has a render credit balance, you
+can run:
+
+```bash
+bin/kamal app exec --interactive --reuse "bin/rails users:invite"
+```

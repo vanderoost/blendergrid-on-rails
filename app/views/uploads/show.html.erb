@@ -1,6 +1,7 @@
 <turbo-frame id="upload-inspections"
   refresh="morph"
-  data-controller="simple-poll"
+  data-controller="simple-poll back-link"
+  data-back-link-upload-id-value="<%= @upload.uuid %>"
   data-simple-poll-path-value="<%= request.path %>"
   data-simple-poll-interval-value="10000" >
   <% if @projects.empty? || @upload.ongoing_zip_checks.any? %>
