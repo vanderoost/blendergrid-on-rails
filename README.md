@@ -193,11 +193,22 @@ In production:
 kamal console
 ```
 
-## Inviting users
+## Affiliates
+
+### Inviting users with credit
 
 In order to invite users with a pre-made account that has a render credit balance, you
 can run:
 
 ```bash
-bin/kamal app exec --interactive --reuse "bin/rails users:invite"
+kamal app exec --interactive --reuse "bin/rails users:invite"
+```
+TODO: Maybe ditch `--reuse`
+
+### Creating affiliate landing pages
+
+You can create a landing page for a certain User account with:
+
+```bash
+kamal app exec --interactive 'bin/rails affiliates:create'
 ```

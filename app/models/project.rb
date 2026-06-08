@@ -296,6 +296,12 @@ class Project < ApplicationRecord
     # After a timeout, and the credit hasn't been used, do a full refund.
   end
 
+  def restart
+    return unless render.present?
+    render.workflow.started!
+    rendering!
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
