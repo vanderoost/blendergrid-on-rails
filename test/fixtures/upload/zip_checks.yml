@@ -1,0 +1,7 @@
+blank_result_check:
+  upload: guest_upload
+  zip_filename: archive.zip
+
+result_present_check:
+  upload: guest_upload
+  zip_filename: other.zip
