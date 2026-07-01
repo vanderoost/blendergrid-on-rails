@@ -29,7 +29,7 @@ export default class extends Controller {
     this.activeUploadCount = 0 // Track how many uploads are active
 
     // Add form submit listener for debugging
-    this.element.addEventListener('submit', (e) => {
+    this.element.addEventListener('submit', () => {
       console.log('Form submit event fired!', {
         files: this.inputTarget.files.length,
         status: this.statusValue
@@ -37,7 +37,7 @@ export default class extends Controller {
     })
 
     // Add button click listener for debugging
-    this.submitTarget.addEventListener('click', (e) => {
+    this.submitTarget.addEventListener('click', () => {
       console.log('Submit button clicked!', {
         disabled: this.submitTarget.disabled,
         status: this.statusValue
@@ -271,7 +271,7 @@ export default class extends Controller {
         if (this.smoothEta === null) {
           this.smoothEta = eta
         } else {
-          this.smoothEta = 0.99 * this.smoothEta + 0.01 * eta
+          this.smoothEta = 0.97 * this.smoothEta + 0.03 * eta
         }
         const remaining = this.smoothEta - now
         this.summaryTarget.querySelector(".eta").innerHTML =
@@ -336,7 +336,7 @@ export default class extends Controller {
     // If all uploads are done (completed, failed, or cancelled)
     // and form is still in uploading state
     if (this.activeUploadCount <= 0 &&
-        this.statusValue === states.uploading) {
+      this.statusValue === states.uploading) {
 
       if (this.fileItemsByName.size === 0) {
         // All files were cancelled - reset the form
