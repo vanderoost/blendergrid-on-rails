@@ -54,7 +54,8 @@ module StorageOrphans
   # Returns { attached: [...], unattached: [...], untracked: [...], skipped: [...] }
   # Each entry is a small struct-like hash with :key, :size, :age_ok.
   def scan
-    unless Rails.application.config.active_storage.service.to_s.start_with?("amazon", "localstack")
+    service = Rails.application.config.active_storage.service.to_s
+    unless service.start_with?("amazon", "localstack")
       abort "active_storage.service is not S3 in #{Rails.env}; nothing to scan."
     end
 
