@@ -45,7 +45,23 @@ class Upload::ZipCheck < ActiveRecord::Base
   end
 
   def handle_completion
-    update(zip_contents: workflow.result&.dig("zip_contents"))
+    contents = workflow.result&.dig("zip_contents") || fetch_contents_from_s3
+    update(zip_contents: contents)
     upload.zip_check_done(self)
   end
+
+  private
+    def fetch_contents_from_s3
+      key = "projects/#{upload.uuid}/jsons/zip_contents.json"
+      JSON.parse(bucket.object(key).get.body.read)
+    rescue Aws::S3::Errors::NoSuchKey, JSON::ParserError => e
+      Rails.logger.warn(
+        "Zip check S3 fallback failed for upload #{upload.uuid}: #{e.message}"
+      )
+      nil
+    end
+
+    def bucket
+      Aws::S3::Resource.new.bucket(Rails.configuration.swarm_engine[:bucket])
+    end
 end

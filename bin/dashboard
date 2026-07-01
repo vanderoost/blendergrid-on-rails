@@ -462,7 +462,7 @@ class Dashboard
     first_col_width = 12
     row = 0
     setpos(row += 1, 2)
-    render_cell("#{@project.name}", 64, [ color_pair(GREEN), A_UNDERLINE ])
+    render_cell("#{@project.name}", 92, [ color_pair(GREEN), A_UNDERLINE ])
     setpos(row += 2, 2)
 
     render_cell("ID:", first_col_width, color_pair(YELLOW))

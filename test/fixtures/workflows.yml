@@ -56,3 +56,17 @@ started_render:
   workflowable_type: Project::Render
   progress_permil: 100
 
+finished_zip_check_blank:
+  uuid: finished-zip-check-blank-1234
+  status: finished
+  workflowable: blank_result_check
+  workflowable_type: Upload::ZipCheck
+
+finished_zip_check_with_result:
+  uuid: finished-zip-check-result-1234
+  status: finished
+  workflowable: result_present_check
+  workflowable_type: Upload::ZipCheck
+  result:
+    zip_contents: [ "from_result/scene.blend" ]
+
