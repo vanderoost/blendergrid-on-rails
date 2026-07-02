@@ -15,6 +15,7 @@ class Project::Duplicate
     new_project.name = new_name
     new_project.stage_updated_at = Time.now
     new_project.status = :checked
+    new_project.price_cents = nil
 
     new_blend_check = project.blend_check.dup
     new_blend_check.update(project: new_project)
