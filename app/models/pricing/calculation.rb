@@ -1,17 +1,18 @@
 class Pricing::Calculation
-  DEBUG = false
   MIN_NODES_PER_ZONE = 4
   MAX_NODE_COUNT = 75 # Maybe depend on node_supplies?
-  GPU_SAMPLING_TIME_THRESH = 10.minutes
-  GPU_SAMPLING_FAC_THRESH = 10
+
+  attr_reader :price_cents, :deadline_hours_min, :deadline_hours_max
 
   def initialize(benchmark:, node_supplies:, blender_scene:, tweaks: {})
-    raise "No Benchmark provided" if benchmark.blank?
     raise "No NodeSupplies provided" if node_supplies.empty?
-    raise "No BlenderScene provided" if blender_scene.blank?
 
-    @benchmark = benchmark
-    @timing = benchmark.workflow.timing
+    # JobEstimate validates the benchmark and blender_scene
+    @estimate = Pricing::JobEstimate.new(
+      benchmark: benchmark,
+      blender_scene: blender_scene,
+      tweaks: tweaks,
+    )
     @node_supplies = node_supplies.sort_by(&:millicents_per_hour)
     @blender_scene = blender_scene
     @tweaks = tweaks
@@ -31,53 +32,18 @@ class Pricing::Calculation
     calculate
   end
 
-
-  def price_cents
-    @price_cents
-  end
-
-  def deadline_hours_min
-    @deadline_hours_min
-  end
-
-  def deadline_hours_max
-    @deadline_hours_max
-  end
-
   def job_time
-    @job_time
-  end
-
-  def use_gpu?
-    sampling_fac = @sampling_time.fdiv([ @init_time, 1.second ].max)
-
-    @sampling_time > GPU_SAMPLING_TIME_THRESH && sampling_fac > GPU_SAMPLING_FAC_THRESH
+    @estimate.job_time
   end
 
   private
     def calculate
       # GENERAL
-      download_time = @timing.dig("download", "max").milliseconds
-      unzip_time = (@timing.dig("unzip", "max") || 0).milliseconds
-
-      # GENERAL JOB TIMES
-      @init_time = @timing.dig("init", "mean").milliseconds +
-        @timing.dig("init", "std").milliseconds
-      @sampling_time = @timing.dig("sampling", "mean").milliseconds +
-        @timing.dig("sampling", "std").milliseconds
-      @sampling_time *= sample_factor
-      post_time = @timing.dig("post", "mean").milliseconds +
-        @timing.dig("post", "std").milliseconds
-      post_time *= pixel_factor
-      upload_time = @timing.dig("upload", "max").milliseconds
+      download_time = @estimate.download_time
+      unzip_time = @estimate.unzip_time
 
       # GENERAL POST RENDERING
-      zip_time = (
-        @blender_scene.frames.count * orig_pixel_count
-      ).fdiv(10_000_000).seconds
-      encode_time = (
-        @blender_scene.frames.count * orig_pixel_count
-      ).fdiv(10_000_000).seconds
+      post_render_time = [ @estimate.zip_time, @estimate.encode_time ].max
 
       # MAX NODES - MIN DEADLINE
       max_node_count = [
@@ -85,41 +51,39 @@ class Pricing::Calculation
         @blender_scene.frames.count / @min_jobs_per_node,
       ].min
       max_node_count = [ max_node_count, 1 ].max
-      puts "MAX NODE COUNT: #{max_node_count}" if DEBUG
+      debug { "MAX NODE COUNT: #{max_node_count}" }
 
       api_time = @api_time_per_node * max_node_count
 
       min_wall_time = api_time + @node_boot_time + download_time + unzip_time +
-        (@init_time + @sampling_time + post_time + upload_time) *
-        (@blender_scene.frames.count / max_node_count) +
-        [ zip_time, encode_time ].max
+        job_time * (@blender_scene.frames.count / max_node_count) +
+        post_render_time
       safe_min_wall_time = min_wall_time * @min_deadline_factor
 
       @deadline_hours_min = [ @deadline_hours_min,
         safe_min_wall_time.in_hours.ceil ].max
-      puts "MIN DEADLINE: #{@deadline_hours_min}h" if DEBUG
+      debug { "MIN DEADLINE: #{@deadline_hours_min}h" }
 
       # ONE NODE - MAX DEADLINE
       api_time = @api_time_per_node
 
-      @job_time = @init_time + @sampling_time + post_time + upload_time
-      all_jobs_time = @job_time * @blender_scene.frames.count
+      all_jobs_time = job_time * @blender_scene.frames.count
 
       max_wall_time = api_time + @node_boot_time + download_time + unzip_time +
-        all_jobs_time + [ zip_time, encode_time ].max
-      puts "MAX WALL TIME (ONE NODE): #{max_wall_time.round}" if DEBUG
+        all_jobs_time + post_render_time
+      debug { "MAX WALL TIME (ONE NODE): #{max_wall_time.round}" }
       allowed_max_deadline = max_wall_time * @max_deadline_factor
 
       @deadline_hours_max = [
         @deadline_hours_min + 1,
         allowed_max_deadline.in_hours.ceil,
       ].max
-      puts "MAX DEADLINE: #{@deadline_hours_max}h" if DEBUG
+      debug { "MAX DEADLINE: #{@deadline_hours_max}h" }
 
       # ACTUAL PREFERRED DEADLINE
       deadline_hours = [ @deadline_hours_max, @tweaks["deadline_hours"] ].min
       deadline_hours = [ @deadline_hours_min, deadline_hours ].max
-      puts "ACTUAL PREFERRED DEADLINE: #{deadline_hours}h" if DEBUG
+      debug { "ACTUAL PREFERRED DEADLINE: #{deadline_hours}h" }
 
       # Figure out how many nodes we need
       deadline = deadline_hours.hours
@@ -128,15 +92,15 @@ class Pricing::Calculation
       d = deadline.in_seconds
       b = @node_boot_time.in_seconds
       sqrt_term = (d - b)**2 - 4*a*j
-      puts "SQRT TERM: #{sqrt_term}" if DEBUG
+      debug { "SQRT TERM: #{sqrt_term}" }
       if sqrt_term.positive?
         node_count = (d - b - Math.sqrt(sqrt_term)) / (2*a)
-        puts "NODE COUNT FORMULA: #{node_count.round 4}" if DEBUG
+        debug { "NODE COUNT FORMULA: #{node_count.round 4}" }
       else
         node_count = j / (d - b)
-        puts "FALL BACK TO SIMPLE FORMULA: #{node_count.round 4}" if DEBUG
+        debug { "FALL BACK TO SIMPLE FORMULA: #{node_count.round 4}" }
       end
-      puts "NODE COUNT: #{node_count}" if DEBUG
+      debug { "NODE COUNT: #{node_count}" }
       node_count = [ 1, [ node_count.ceil, max_node_count ].min ].max
 
       # What do the nodes cost?
@@ -153,74 +117,29 @@ class Pricing::Calculation
         total_hourly_cost += @node_supplies.last.millicents_per_hour * nodes_remaining
       end
       avg_node_hour_cost = total_hourly_cost.to_f / node_count / 1_000
-      puts "AVG NODE HOUR COST: #{avg_node_hour_cost.round 4} cents" if DEBUG
+      debug { "AVG NODE HOUR COST: #{avg_node_hour_cost.round 4} cents" }
 
       # How long do we expect to run the nodes?
       node_time = (@api_time_per_node + @node_boot_time + download_time + unzip_time) *
-        node_count + all_jobs_time + [ zip_time, encode_time ].max
-      puts "NODE TIME: #{node_time.round 4}s" if DEBUG
+        node_count + all_jobs_time + post_render_time
+      debug { "NODE TIME: #{node_time.round 4}s" }
 
       node_cost = node_time.in_hours * avg_node_hour_cost
-      puts "NODE COST: #{node_cost.round 4} cents" if DEBUG
+      debug { "NODE COST: #{node_cost.round 4} cents" }
 
       speed_fac = 1.0 - (deadline_hours - @deadline_hours_min).fdiv(
         @deadline_hours_max - @deadline_hours_min)
       speed_fac = speed_fac ** 1.5
-      puts "SPEED FAC: #{speed_fac.round 4}" if DEBUG
+      debug { "SPEED FAC: #{speed_fac.round 4}" }
 
       margin = speed_fac * @margin_fast + (1 - speed_fac) * @margin_slow
-      puts "MARGIN: #{margin.round 4}" if DEBUG
+      debug { "MARGIN: #{margin.round 4}" }
 
       @price_cents = @min_price_cents + (node_cost * margin).ceil
-      puts "PRICE: #{@price_cents} cents" if DEBUG
+      debug { "PRICE: #{@price_cents} cents" }
     end
 
-    def pixel_factor
-      return @pixel_factor if defined? @pixel_factor
-
-      @pixel_factor = orig_pixel_count.fdiv(benchmark_pixel_count)
-    end
-
-    def sample_factor
-      return @sample_factor if defined? @sample_factor
-
-      @sample_factor = orig_sample_count.fdiv(benchmark_sample_count)
-    end
-
-    def orig_pixel_count
-      return @orig_pixel_count if defined? @orig_pixel_count
-
-      orig_resolution_x = @blender_scene.scaled_resolution_x(
-        @tweaks["resolution_percentage"]
-      )
-      orig_resolution_y = @blender_scene.scaled_resolution_y(
-        @tweaks["resolution_percentage"]
-      )
-
-      @orig_pixel_count = orig_resolution_x * orig_resolution_y
-    end
-
-    def benchmark_pixel_count
-      return @benchmark_pixel_count if defined? @benchmark_pixel_count
-
-      sample_resolution_x = @benchmark.scaled_resolution_x
-      sample_resolution_y = @benchmark.scaled_resolution_y
-
-      @benchmark_pixel_count = sample_resolution_x * sample_resolution_y
-    end
-
-    def orig_sample_count
-      return @orig_sample_count if defined? @orig_sample_count
-
-      max_samples = @tweaks["sampling_max_samples"] ||
-        @blender_scene.sampling_max_samples
-
-      @orig_sample_count = max_samples * orig_pixel_count
-    end
-
-    def benchmark_sample_count
-      return @benchmark_sample_count if defined? @benchmark_sample_count
-
-      @benchmark_sample_count = @benchmark.sampling_max_samples * benchmark_pixel_count
+    def debug(&message)
+      Rails.logger.debug { "[pricing] #{message.call}" }
     end
 end

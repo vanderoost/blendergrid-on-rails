@@ -2,13 +2,22 @@
 require_relative "../config/application"
 Rails.application.initialize!
 
+LOG_FILE = Rails.root.join("log", "dashboard.log")
+
+file_logger = ActiveSupport::Logger.new(LOG_FILE)
+if Rails.logger.respond_to?(:broadcasts)
+  Rails.logger.broadcasts.dup.each { |l| Rails.logger.stop_broadcasting_to(l) }
+  Rails.logger.broadcast_to(file_logger)
+else
+  Rails.logger = file_logger
+end
+
 require "curses"
 require "set"
 
-LOG_FILE = Rails.root.join("log", "dashboard.log")
 DEBUG_LOG = File.open(LOG_FILE, "a")
 DEBUG_LOG.sync = true  # Disable buffering
-PROJECT_POLL_COUNT = 32
+PROJECT_POLL_COUNT = 40
 NEW_RENDER_CENTS_THRESHOLD = 5_00
 
 GREEN = 1
@@ -16,6 +25,7 @@ BLUE = 2
 YELLOW = 3
 RED = 4
 GRAY = 5
+MAGENTA = 6
 
 # Log all SQL queries (works in all environments using notifications)
 SQL_LOG = File.open(Rails.root.join("log", "dashboard_sql.log"), "a")
@@ -81,6 +91,7 @@ class Dashboard
     init_pair(BLUE, COLOR_BLUE, -1)
     init_pair(YELLOW, COLOR_YELLOW, -1)
     init_pair(RED, COLOR_RED, -1)
+    init_pair(MAGENTA, COLOR_MAGENTA + 8, -1)
     init_pair(GRAY, COLOR_BLACK + 8, -1)
   end
 
@@ -106,6 +117,7 @@ class Dashboard
               { benchmarks: :workflow },
               { renders: :workflow },
               { order_items: :order },
+              :current_blender_scene,
             )
             .order(stage_updated_at: :desc)
             .first(PROJECT_POLL_COUNT)
@@ -118,8 +130,10 @@ class Dashboard
             owner_projects = owner_user.projects
               .includes(
                 { upload: :user },
+                { benchmarks: :workflow },
                 { renders: :workflow },
                 { order_items: :order },
+                :current_blender_scene,
               )
               .first(12)
               .to_a
@@ -128,7 +142,12 @@ class Dashboard
             log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for guest "\
               "#{owner_email}...")
             owner_projects = Project
-              .includes({ upload: :user }, { renders: :workflow })
+              .includes(
+                { upload: :user },
+                { benchmarks: :workflow },
+                { renders: :workflow },
+                :current_blender_scene,
+              )
               .joins(:upload)
               .where(upload: { guest_email_address: owner_email })
               .first(12)
@@ -418,10 +437,16 @@ class Dashboard
 
     projects.first(PROJECT_POLL_COUNT).each_with_index do |p, i|
       hl = @project_cols[@project_col] == :name && i == @project_ix
-      render_cell(p.name, 32, [
-        p.deleted_at.present? ? color_pair(GRAY) : color_pair(BLUE),
-        A_STANDOUT => hl,
-      ])
+
+      color = if p.deleted_at.present?
+        color_pair(GRAY)
+      elsif p.render_with_gpu?
+        color_pair(MAGENTA)
+      else
+        color_pair(BLUE)
+      end
+
+      render_cell(p.name, 32, [ color, A_STANDOUT => hl ])
       addstr(" ")
 
       render_cell(status_str(p), 16, [
@@ -499,7 +524,7 @@ class Dashboard
       end
       frame_str += " (#{@project.frames&.count})"
     else
-      frame_str = "#{@project.frame_range_start}"
+      frame_str = "#{@project.frame_range_single}"
     end
     render_cell("#{frame_str}", 32)
 
