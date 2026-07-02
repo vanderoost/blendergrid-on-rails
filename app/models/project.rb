@@ -302,6 +302,18 @@ class Project < ApplicationRecord
     rendering!
   end
 
+  def price_calculation
+    @price_calculation ||= Pricing::Calculation.new(
+      benchmark: benchmark,
+      node_supplies: NodeSupply.where(
+        provider_id: benchmark.workflow.node_provider_id,
+        type_name: benchmark.workflow.node_type_name
+      ),
+      blender_scene: current_blender_scene,
+      tweaks: tweaks,
+    )
+  end
+
   private
     def latest(model_sym)
       public_send(model_sym.to_s.pluralize).last
@@ -323,18 +335,6 @@ class Project < ApplicationRecord
     def stage_changed?
       return false unless status_changed?
       status_to_stage(status_was) != stage
-    end
-
-    def price_calculation
-      @price_calculation ||= Pricing::Calculation.new(
-        benchmark: benchmark,
-        node_supplies: NodeSupply.where(
-          provider_id: benchmark.workflow.node_provider_id,
-          type_name: benchmark.workflow.node_type_name
-        ),
-        blender_scene: current_blender_scene,
-        tweaks: tweaks,
-      )
     end
 
     def saved_change_to_stage?
