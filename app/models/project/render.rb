@@ -227,6 +227,10 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
 
     def render_execution(render_ex_id)
+      use_gpu = project.render_with_gpu?
+      Rails.logger.info "Project '#{project.name}' will be rendered with" \
+        " #{use_gpu ? "GPU" : "CPU"} servers"
+
       expected_duration = project.job_time || 3.minutes
 
       command = [
@@ -239,7 +243,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
       if expected_duration < 2.minutes && project.frame_range_type == "animation"
         batch_len = (5.minutes.fdiv(expected_duration)).floor
-        puts "USING BATCH SIZE: #{batch_len}" # DEBUG
+        Rails.logger.debug { "[render] USING BATCH SIZE: #{batch_len}" }
         expected_duration *= batch_len
         command += [
           "-s", "$frame_start",
@@ -274,7 +278,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
           "/frame-$frame#{project.frame_extension}",
         ],
         image: blender_image,
-        requirements: project.price_calculation.use_gpu? ? { device: "GPU" } : {},
+        requirements: use_gpu ? { device: "GPU" } : {},
       }
     end
 
