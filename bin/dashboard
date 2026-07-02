@@ -123,6 +123,34 @@ class Dashboard
             .first(PROJECT_POLL_COUNT)
             .to_a
 
+          # In-progress projects are guaranteed a spot, even when their
+          # stage_updated_at falls outside the recent window (e.g. 24h+ renders)
+          in_progress_projects = Project.unscoped
+            .includes(
+              { upload: :user },
+              { blend_checks: :workflow },
+              { benchmarks: :workflow },
+              { renders: :workflow },
+              { order_items: :order },
+              :current_blender_scene,
+            )
+            .where(status: %w[created checking benchmarking rendering])
+            .where(deleted_at: nil)
+            .where(stage_updated_at: 14.days.ago..)
+            .order(stage_updated_at: :desc)
+            .to_a
+
+          recent_projects = (recent_projects + in_progress_projects)
+            .uniq
+            .sort_by(&:stage_updated_at)
+            .reverse
+
+          # Trim the oldest non-in-progress projects back down to the poll count
+          overflow = recent_projects.length - PROJECT_POLL_COUNT
+          if overflow > 0
+            recent_projects -= recent_projects.reject(&:in_progress?).last(overflow)
+          end
+
           # If owner is active, also load their projects and merge
           if owner_user.present?
             log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for user"\
