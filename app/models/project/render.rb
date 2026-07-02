@@ -274,6 +274,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
           "/frame-$frame#{project.frame_extension}",
         ],
         image: blender_image,
+        requirements: project.price_calculation.use_gpu? ? { device: "GPU" } : {},
       }
     end
 

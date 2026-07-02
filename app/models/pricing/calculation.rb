@@ -2,6 +2,8 @@ class Pricing::Calculation
   DEBUG = false
   MIN_NODES_PER_ZONE = 4
   MAX_NODE_COUNT = 75 # Maybe depend on node_supplies?
+  GPU_SAMPLING_TIME_THRESH = 10.minutes
+  GPU_SAMPLING_FAC_THRESH = 10
 
   def initialize(benchmark:, node_supplies:, blender_scene:, tweaks: {})
     raise "No Benchmark provided" if benchmark.blank?
@@ -46,6 +48,12 @@ class Pricing::Calculation
     @job_time
   end
 
+  def use_gpu?
+    sampling_fac = @sampling_time.fdiv([ @init_time, 1.second ].max)
+
+    @sampling_time > GPU_SAMPLING_TIME_THRESH && sampling_fac > GPU_SAMPLING_FAC_THRESH
+  end
+
   private
     def calculate
       # GENERAL
@@ -53,11 +61,11 @@ class Pricing::Calculation
       unzip_time = (@timing.dig("unzip", "max") || 0).milliseconds
 
       # GENERAL JOB TIMES
-      init_time = @timing.dig("init", "mean").milliseconds +
+      @init_time = @timing.dig("init", "mean").milliseconds +
         @timing.dig("init", "std").milliseconds
-      sampling_time = @timing.dig("sampling", "mean").milliseconds +
+      @sampling_time = @timing.dig("sampling", "mean").milliseconds +
         @timing.dig("sampling", "std").milliseconds
-      sampling_time *= sample_factor
+      @sampling_time *= sample_factor
       post_time = @timing.dig("post", "mean").milliseconds +
         @timing.dig("post", "std").milliseconds
       post_time *= pixel_factor
@@ -82,7 +90,7 @@ class Pricing::Calculation
       api_time = @api_time_per_node * max_node_count
 
       min_wall_time = api_time + @node_boot_time + download_time + unzip_time +
-        (init_time + sampling_time + post_time + upload_time) *
+        (@init_time + @sampling_time + post_time + upload_time) *
         (@blender_scene.frames.count / max_node_count) +
         [ zip_time, encode_time ].max
       safe_min_wall_time = min_wall_time * @min_deadline_factor
@@ -94,7 +102,7 @@ class Pricing::Calculation
       # ONE NODE - MAX DEADLINE
       api_time = @api_time_per_node
 
-      @job_time = init_time + sampling_time + post_time + upload_time
+      @job_time = @init_time + @sampling_time + post_time + upload_time
       all_jobs_time = @job_time * @blender_scene.frames.count
 
       max_wall_time = api_time + @node_boot_time + download_time + unzip_time +
