@@ -15,7 +15,7 @@ class Pricing::Calculation
     )
     @node_supplies = node_supplies.sort_by(&:millicents_per_hour)
     @blender_scene = blender_scene
-    @tweaks = tweaks
+    @tweaks = tweaks || {}
 
     # Configuration
     @api_time_per_node = 20.seconds

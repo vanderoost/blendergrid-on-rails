@@ -6,7 +6,7 @@ class Pricing::JobEstimate
     @benchmark = benchmark
     @timing = benchmark.workflow.timing
     @blender_scene = blender_scene
-    @tweaks = tweaks
+    @tweaks = tweaks || {}
   end
 
   def download_time
