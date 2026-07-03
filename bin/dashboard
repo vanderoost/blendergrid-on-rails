@@ -17,7 +17,7 @@ require "set"
 
 DEBUG_LOG = File.open(LOG_FILE, "a")
 DEBUG_LOG.sync = true  # Disable buffering
-PROJECT_POLL_COUNT = 40
+PROJECT_POLL_COUNT = 45
 NEW_RENDER_CENTS_THRESHOLD = 5_00
 
 GREEN = 1
