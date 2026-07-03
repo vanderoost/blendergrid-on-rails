@@ -75,7 +75,7 @@ class Dashboard
     @owner_token = nil # Cached session token for user
 
     # Track which projects were rendering last poll
-    @rendering_project_ids = Set.new
+    @rendering_project_ids = nil
 
     ################ STATE ################
 
@@ -186,10 +186,12 @@ class Dashboard
           end
 
           current_rendering_ids = projects.select(&:rendering?).map(&:id).to_set
-          new_rendering_projects = projects.select do |p|
-            p.rendering? && !@rendering_project_ids.include?(p.id)
+          unless @rendering_project_ids.nil?
+            new_rendering_projects = projects.select do |p|
+              p.rendering? && !@rendering_project_ids.include?(p.id)
+            end
+            announce_new_renders(new_rendering_projects)
           end
-          announce_new_renders(new_rendering_projects)
           @rendering_project_ids = current_rendering_ids
 
           render_revenue_24h = Order

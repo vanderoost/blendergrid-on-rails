@@ -58,7 +58,8 @@
       "Bash(kamal --version)",
       "Bash(rg -rn -i \"smtp|ses|delivery_method|mailer|amazon|aws_ses\" config/)",
       "WebFetch(domain:www.youtube.com)",
-      "Bash(printenv)"
+      "Bash(printenv)",
+      "Bash(kamal config *)"
     ],
     "deny": [],
     "ask": []
