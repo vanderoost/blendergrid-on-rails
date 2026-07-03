@@ -2,6 +2,7 @@ require "test_helper"
 
 class WorkflowsControllerTest < ActionDispatch::IntegrationTest
   include ActionMailer::TestHelper
+  include ActiveJob::TestHelper
 
   test "should handle failed workflow" do
     patch api_v1_workflow_path(@blend_check_workflow),
@@ -156,6 +157,39 @@ class WorkflowsControllerTest < ActionDispatch::IntegrationTest
         headers: @auth_headers,
         as: :json
     end
+  end
+
+  test "benchmark completion should store the peak RAM from the stats logs" do
+    log_key = "projects/#{@benchmarking_project.uuid}/logs" \
+      "/#{@benchmark_workflow.uuid}-execution-1-0.json"
+    original_s3_config = Aws.config[:s3]
+    Aws.config[:s3] = original_s3_config.merge(stub_responses: {
+      list_objects_v2: { contents: [ { key: log_key } ] },
+      get_object: { body: <<~JSONL },
+        {"time":1783078133177,"cpu":0.0,"ram":9838592}
+        {"time":1783078134187,"cpu":74.7,"ram":188596224}
+      JSONL
+    })
+
+    perform_enqueued_jobs(only: FetchWorkflowPeakRamJob) do
+      patch api_v1_workflow_path(@benchmark_workflow),
+        params: {
+          workflow: {
+            status: "finished",
+            timing: {
+              "init" => { "mean" => 5000, "std" => 1000 },
+              "sampling" => { "mean" => 120000, "std" => 10000 },
+              "post" => { "mean" => 2000, "std" => 500 },
+            },
+          },
+        },
+        headers: @auth_headers,
+        as: :json
+    end
+
+    assert_equal 188596224, @benchmark_workflow.reload.peak_ram_bytes
+  ensure
+    Aws.config[:s3] = original_s3_config
   end
 
   test "render completion should change the project status to rendered" do

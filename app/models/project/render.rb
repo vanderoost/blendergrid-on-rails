@@ -231,6 +231,10 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
       Rails.logger.info "Project '#{project.name}' will be rendered with" \
         " #{use_gpu ? "GPU" : "CPU"} servers"
 
+      requirements = use_gpu ? { device: "GPU" } : {}
+      peak_ram = project.benchmark&.workflow&.peak_ram_bytes
+      requirements[:ram] = peak_ram if peak_ram.present?
+
       expected_duration = project.job_time || 3.minutes
 
       command = [
@@ -278,7 +282,7 @@ class Project::Render < ApplicationRecord # rubocop:disable Metrics/ClassLength
           "/frame-$frame#{project.frame_extension}",
         ],
         image: blender_image,
-        requirements: use_gpu ? { device: "GPU" } : {},
+        requirements: requirements,
       }
     end
 
