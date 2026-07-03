@@ -25,13 +25,8 @@ class Workflow < ApplicationRecord
     SwarmEngine.new.stop_workflow self
   end
 
-  # Reads the docker stats JSONL files the swarm engine writes to
-  # projects/<owner-uuid>/logs/<workflow-uuid>-<execution-uuid>-<job-index>.json
-  # The owner is an Upload for zip checks and a Project for everything else,
-  # matching the logs paths in the workflowables' make_start_message.
   def update_peak_ram!
-    prefix = "projects/#{owner.uuid}/logs/#{uuid}-"
-    peak = bucket.objects(prefix: prefix)
+    peak = bucket.objects(prefix: "projects/#{owner.uuid}/logs/#{uuid}-")
       .filter_map { |summary| peak_ram_in(summary.object.get.body.read) }
       .max
 
