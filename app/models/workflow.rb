@@ -1,3 +1,5 @@
+require "aws-sdk-s3"
+
 class Workflow < ApplicationRecord
   STATES = %i[created started finished stopped failed].freeze
 
@@ -24,10 +26,12 @@ class Workflow < ApplicationRecord
   end
 
   # Reads the docker stats JSONL files the swarm engine writes to
-  # projects/<project-uuid>/logs/<workflow-uuid>-<execution-uuid>-<job-index>.json
+  # projects/<owner-uuid>/logs/<workflow-uuid>-<execution-uuid>-<job-index>.json
+  # The owner is an Upload for zip checks and a Project for everything else,
+  # matching the logs paths in the workflowables' make_start_message.
   def update_peak_ram!
-    prefix = "projects/#{project.uuid}/logs/#{uuid}-"
-    peak = project.bucket.objects(prefix: prefix)
+    prefix = "projects/#{owner.uuid}/logs/#{uuid}-"
+    peak = bucket.objects(prefix: prefix)
       .filter_map { |summary| peak_ram_in(summary.object.get.body.read) }
       .max
 
@@ -70,5 +74,10 @@ class Workflow < ApplicationRecord
       rescue JSON::ParserError
         nil
       end.max
+    end
+
+    def bucket
+      @bucket ||= Aws::S3::Resource.new
+        .bucket(Rails.configuration.swarm_engine[:bucket])
     end
 end

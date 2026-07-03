@@ -13,7 +13,7 @@ class WorkflowTest < ActiveSupport::TestCase
 
   test "update_peak_ram! stores the max ram across all stats log files" do
     workflow = workflows(:finished_benchmark)
-    prefix = "projects/#{workflow.project.uuid}/logs/#{workflow.uuid}"
+    prefix = "projects/#{workflow.owner.uuid}/logs/#{workflow.uuid}"
     bodies = {
       "#{prefix}-execution-1-0.json" => <<~JSONL,
         {"time":1783078133177,"cpu":0.0,"ram":9838592}
@@ -27,7 +27,7 @@ class WorkflowTest < ActiveSupport::TestCase
       JSONL
     }
 
-    client = workflow.project.bucket.client
+    client = workflow.send(:bucket).client
     client.stub_responses(:list_objects_v2, {
       contents: bodies.keys.map { |key| { key: key } },
     })
@@ -42,6 +42,14 @@ class WorkflowTest < ActiveSupport::TestCase
 
   test "update_peak_ram! leaves peak_ram_bytes nil when no stats logs exist" do
     workflow = workflows(:finished_benchmark)
+
+    workflow.update_peak_ram!
+
+    assert_nil workflow.reload.peak_ram_bytes
+  end
+
+  test "update_peak_ram! works for workflows without a project" do
+    workflow = workflows(:finished_zip_check_blank)
 
     workflow.update_peak_ram!
 
