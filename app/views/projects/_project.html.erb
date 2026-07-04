@@ -41,7 +41,7 @@
              when "benchmarked" then "order"
            end %>
 
-        <div class="group grid grid-cols-1">
+        <div class="group grid grid-cols-1 shrink-0">
          <%= checkbox_tag "#{model}[project_uuids][]",
            project.uuid,
            checked: true,
@@ -64,9 +64,11 @@
             </svg>
           <% end %>
         <% else %>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-          </svg>
+          <%= link_to project do %>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block h-6 w-5 flex-none text-gray-400 dark:text-gray-500">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          <% end %>
         <% end %>
 
       <% else %>
@@ -80,7 +82,7 @@
 
       <div class="flex-auto">
         <div class="flex items-start gap-x-3">
-          <div class="text-sm/6 font-medium text-gray-900 dark:text-white truncate max-w-48 sm:max-w-42 md:max-w-58 lg:max-w-sm" title="<%= project.name %>">
+          <div class="text-sm/6 font-medium text-gray-900 dark:text-white truncate <%= project.benchmarked? ? "max-w-48 sm:max-w-48 md:max-w-64 lg:max-w-80 xl:max-w-72" : "max-w-48 sm:max-w-48 md:max-w-64 lg:max-w-80" %> " title="<%= project.name %>">
             <%= project.name %>
           </div>
 
@@ -89,7 +91,7 @@
             "bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 inset-ring-green-600/10 dark:inset-ring-green-500/20": badge_green?(project),
             "bg-primary-50 dark:bg-primary-800/20 text-primary-700 dark:text-primary-300 inset-ring-primary-600/10 dark:inset-ring-primary-400/20": badge_blue?(project),
             "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 inset-ring-red-600/10 dark:inset-ring-red-500/20": badge_red?(project),
-            ] do %>
+          ] + (project.benchmarked? ? %w[hidden lg:block] : []) do %>
             <%= project.status.titleize %>
           <% end %>
 
@@ -136,7 +138,7 @@
         <% end %>
       <% end %>
 
-      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400">
+      <div class="mt-1 text-xs/5 text-gray-500 dark:text-gray-400 min-w-max">
         <span class="hidden group-has-[input[value=animation]:checked]/frame-range-type:inline"><%= human_frame_range project %></span>
         <span class="hidden group-has-[input[value=image]:checked]/frame-range-type:inline"><%= human_single_frame project %></span>
         <span class="px-1.5 lg:px-2">&middot;</span>
@@ -158,7 +160,7 @@
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_deadline_hours, "Deadline" %>
             <div class="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
-              <%= form.number_field :tweaks_deadline_hours, in: project.tweaks_deadline_hours_min..project.tweaks_deadline_hours_max, class: "block min-w-12 bg-white py-0.5 pr-1 pl-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+              <%= form.number_field :tweaks_deadline_hours, in: project.tweaks_deadline_hours_min..project.tweaks_deadline_hours_max, class: "block min-w-10 bg-white py-0.5 px-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
               <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400">h</div>
             </div>
           </div>
@@ -166,7 +168,7 @@
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_resolution_percentage, "Resolution" %>
             <div class="flex items-center rounded-md bg-white px-3 outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-primary-600 dark:bg-white/5 dark:outline-white/10 dark:focus-within:outline-primary-500">
-              <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2), class: "block min-w-0 bg-white py-0.5 pr-1 pl-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
+              <%= form.number_field :tweaks_resolution_percentage, in: (project.resolution_percentage / 2)..(project.resolution_percentage * 2), class: "block min-w-0 bg-white py-0.5 px-0.5 text-gray-900 placeholder:text-gray-400 focus:outline-none text-sm/6 dark:bg-transparent dark:text-white dark:placeholder:text-gray-500" %>
               <div class="shrink-0 text-base text-gray-500 select-none sm:text-sm/6 dark:text-gray-400">%</div>
             </div>
           </div>
@@ -194,7 +196,7 @@
           <% project.sample_frame_urls.last(3).each do |url| %>
             <div
               style="background: repeating-conic-gradient(#363636 0 25%, #2a2a2a 0 50%) 50% / 16px 16px;"
-              class="-my-2 size-16 rounded overflow-clip hover:scale-110 transition-transform">
+              class="-my-2 size-16 rounded overflow-clip hover:scale-110 transition-transform hidden first:md:block not-first:xl:block">
               <img src="<%= url %>" class="w-full aspect-square object-cover" alt="Preview frame" title="Preview Frame">
             </div>
           <% end %>
