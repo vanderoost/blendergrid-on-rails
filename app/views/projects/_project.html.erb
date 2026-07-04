@@ -155,7 +155,7 @@
           settings we need to calculate the price.
       -->
       <%= turbo_frame_tag "#{dom_id(project)}_pre_render_setting" do %>
-        <%= form_with model: project, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
+        <%= form_with model: project, namespace: project.uuid, data: { controller: "autosubmit" }, class: %w[flex gap-6 text-sm] do |form| %>
           
           <div class="flex flex-col gap-2">
             <%= form.label :tweaks_deadline_hours, "Deadline" %>
