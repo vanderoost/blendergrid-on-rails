@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 require_relative "../config/application"
+require 'action_view'
+
 Rails.application.initialize!
+
+include ActionView::Helpers::NumberHelper
 
 LOG_FILE = Rails.root.join("log", "dashboard.log")
 
@@ -518,18 +522,19 @@ class Dashboard
     row = 0
     setpos(row += 1, 2)
     render_cell("#{@project.name}", 92, [ color_pair(GREEN), A_UNDERLINE ])
+
     setpos(row += 2, 2)
 
     render_cell("ID:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(@project.id, 24)
-    setpos(row += 1, 2)
 
+    setpos(row += 1, 2)
     render_cell("UUID:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(@project.uuid, 36)
-    setpos(row += 1, 2)
 
+    setpos(row += 1, 2)
     render_cell("Status:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     render_cell(status_str(@project), 16)
@@ -559,7 +564,6 @@ class Dashboard
     render_cell("#{frame_str}", 32)
 
     setpos(row += 1, 2)
-
     render_cell("Resolution:", first_col_width, color_pair(YELLOW))
     addstr(" ")
     res_str = "#{@project.resolution_x}x#{@project.resolution_y}"
@@ -596,6 +600,8 @@ class Dashboard
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
       addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
+      addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
 
@@ -606,6 +612,8 @@ class Dashboard
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
       addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
+      addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
 
@@ -615,6 +623,8 @@ class Dashboard
       render_cell("Render:", first_col_width, color_pair(YELLOW))
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
       addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
