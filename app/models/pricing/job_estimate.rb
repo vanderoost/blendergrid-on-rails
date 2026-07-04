@@ -26,11 +26,15 @@ class Pricing::JobEstimate
   end
 
   def sampling_time
-    @sampling_time ||= stat_time("sampling") * sample_factor
+    @sampling_time ||= ActiveSupport::Duration.build(
+      stat_time("sampling") * sample_factor
+    )
   end
 
   def post_time
-    @post_time ||= stat_time("post") * pixel_factor
+    @post_time ||= ActiveSupport::Duration.build(
+      stat_time("post") * pixel_factor
+    )
   end
 
   def job_time
@@ -38,16 +42,16 @@ class Pricing::JobEstimate
   end
 
   def zip_time
-    (@blender_scene.frames.count * orig_pixel_count).fdiv(10_000_000).seconds
+    (@blender_scene.frames.count * orig_pixel_count).fdiv(50_000).round.milliseconds
   end
 
   def encode_time
-    (@blender_scene.frames.count * orig_pixel_count).fdiv(10_000_000).seconds
+    (@blender_scene.frames.count * orig_pixel_count).fdiv(50_000).round.milliseconds
   end
 
   private
     def stat_time(stage)
-      @timing.dig(stage, "mean").milliseconds + @timing.dig(stage, "std").milliseconds
+      (@timing.dig(stage, "mean") + @timing.dig(stage, "std")).milliseconds
     end
 
     def pixel_factor
