@@ -6,6 +6,7 @@ class Project::Duplicate
   validates :project, presence: true
   validate :project_has_blend_check
   validate :project_has_blender_scenes
+  validate :project_has_current_blender_scene
 
   def save
     return false unless valid?
@@ -18,11 +19,9 @@ class Project::Duplicate
     new_project.price_cents = nil
 
     new_blend_check = project.blend_check.dup
+    new_blend_check.workflow = project.blend_check.workflow.dup
+    new_blend_check.workflow.uuid = SecureRandom.uuid
     new_blend_check.update(project: new_project)
-
-    new_workflow = project.blend_check.workflow.dup
-    new_workflow.uuid = SecureRandom.uuid
-    new_workflow.update(workflowable: new_blend_check)
 
     project.blender_scenes.each do |scene|
       new_scene = scene.dup
@@ -32,9 +31,6 @@ class Project::Duplicate
         new_project.current_blender_scene_id = new_scene.id
       end
     end
-
-    raise "NEW PROJECT HAS NO CURRENT BLENDER SCENE" unless
-      new_project.current_blender_scene
 
     new_project.save
   end
@@ -48,6 +44,12 @@ class Project::Duplicate
   def project_has_blender_scenes
     if project.blender_scenes.empty?
       errors.add(:base, "project has no blender scenes")
+    end
+  end
+
+  def project_has_current_blender_scene
+    if project.current_blender_scene.blank?
+      errors.add(:base, "project has no current blender scene")
     end
   end
 

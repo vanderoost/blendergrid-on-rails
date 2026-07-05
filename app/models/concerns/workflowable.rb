@@ -5,7 +5,9 @@ module Workflowable
     include Trackable
 
     has_one :workflow, as: :workflowable
-    after_create :create_workflow
+    # Check the target without loading the association: a cached nil would
+    # still be visible when Workflow#start reads `workflow` mid-create.
+    after_create :create_workflow, if: -> { association(:workflow).target.blank? }
     delegate :status, to: :workflow
 
     def make_start_message
