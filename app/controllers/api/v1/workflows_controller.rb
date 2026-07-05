@@ -19,8 +19,9 @@ class Api::V1::WorkflowsController < Api::BaseController
         :status,
         :node_provider_id,
         :node_type_name,
+        :cost_cents,
         result: {},
-        timing: {}
+        timing: {},
       )
     end
 end
