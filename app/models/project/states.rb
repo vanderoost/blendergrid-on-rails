@@ -35,6 +35,11 @@ module Project::States
 
   class Checked < BaseState
     def start_benchmarking
+      if @project.has_errors?
+        raise Error::ForbiddenTransition.new(state: @project.status,
+          event: :start_benchmarking)
+      end
+
       @project.benchmarking!
       @project.fail unless @project.benchmarks.create
     end

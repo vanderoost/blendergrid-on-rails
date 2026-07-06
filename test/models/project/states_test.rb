@@ -25,53 +25,24 @@ class Project::StatesTest < ActiveSupport::TestCase
     project = projects(:checking)
     assert project.checking?
 
-    project.blend_check.workflow.update(result: {
-      settings: {
-        scenes: { "foo" => {
-          frame_range: {
-            type: "animation",
-            start: 10,
-            end: 250,
-            step: 1,
-            single: 25,
-          },
-          resolution: {
-            x: 1920,
-            y: 1080,
-            percentage: 50,
-            use_border: false,
-          },
-          sampling: {
-            use_adaptive: true,
-            noise_threshold: 0.05,
-            min_samples: 16,
-            max_samples: 256,
-          },
-          file_output: {
-            file_format: "EXR",
-            color_mode: "RGBA",
-            color_depth: "16",
-            ffmpeg_format: "MP4",
-            ffmpeg_codec: "H264",
-            film_transparent: true,
-            fps: 60,
-          },
-          camera: {
-            name: "Camera",
-            name_options: [ "Camera", "Camera.001", "Camera.002" ],
-          },
-          post_processing: {
-            use_compositing: true,
-            use_sequencer: false,
-            use_stamp: false,
-          },
-        } },
-        scene_name: "foo",
-      },
-    })
+    project.blend_check.workflow.update(result: { settings: valid_settings })
 
     project.finish_checking
     assert project.checked?
+  end
+
+  test "a project with blend check errors still finishes checking" do
+    project = projects(:checking)
+    assert project.checking?
+
+    project.blend_check.workflow.update(result: {
+      settings: valid_settings,
+      stats: { errors: { scenes: { "foo" => [ "no camera" ] } } },
+    })
+
+    project.finish_checking
+    assert project.checked?, "Project with errors should be checked, not failed"
+    assert project.has_errors?
   end
 
   test "a project fails when finish_checking raises an error" do
@@ -91,6 +62,21 @@ class Project::StatesTest < ActiveSupport::TestCase
     assert project.checked?
     project.start_benchmarking
     assert project.benchmarking?
+  end
+
+  test "a checked project with errors can not start benchmarking" do
+    project = projects(:three_scenes)
+    project.blend_check.workflow.update(result: {
+      stats: { errors: { scenes: { "Scene-1" => [ "no camera" ] } } },
+    })
+    assert project.checked?
+    assert project.has_errors?
+
+    assert_raises(Error::ForbiddenTransition) do
+      project.start_benchmarking
+    end
+
+    assert project.checked?, "Project should still be checked"
   end
 
   test "a project can finish benchmarking" do
@@ -155,6 +141,51 @@ class Project::StatesTest < ActiveSupport::TestCase
   private
     def active_states
       %i[ checking benchmarking rendering ]
+    end
+
+    def valid_settings
+      {
+        scenes: { "foo" => {
+          frame_range: {
+            type: "animation",
+            start: 10,
+            end: 250,
+            step: 1,
+            single: 25,
+          },
+          resolution: {
+            x: 1920,
+            y: 1080,
+            percentage: 50,
+            use_border: false,
+          },
+          sampling: {
+            use_adaptive: true,
+            noise_threshold: 0.05,
+            min_samples: 16,
+            max_samples: 256,
+          },
+          file_output: {
+            file_format: "EXR",
+            color_mode: "RGBA",
+            color_depth: "16",
+            ffmpeg_format: "MP4",
+            ffmpeg_codec: "H264",
+            film_transparent: true,
+            fps: 60,
+          },
+          camera: {
+            name: "Camera",
+            name_options: [ "Camera", "Camera.001", "Camera.002" ],
+          },
+          post_processing: {
+            use_compositing: true,
+            use_sequencer: false,
+            use_stamp: false,
+          },
+        } },
+        scene_name: "foo",
+      }
     end
 
     setup do

@@ -8,6 +8,9 @@ class Quote
   attr_accessor :project_uuids
 
   def save
-    @project_uuids.each { |uuid| Project.find_by(uuid: uuid)&.start_benchmarking }
+    @project_uuids.each do |uuid|
+      project = Project.find_by(uuid: uuid)
+      project.start_benchmarking if project.present? && !project.has_errors?
+    end
   end
 end

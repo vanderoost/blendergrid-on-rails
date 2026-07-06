@@ -164,7 +164,7 @@
     Duplicate Project
   <% end %>
 
-  <% if @project.checked? %>
+  <% if @project.checked? && !@project.has_errors? %>
 
     <%= button_to quotes_path(Quote.new),
       params: { quote: { project_uuids: [@project.uuid] }, return_path: @return_path },

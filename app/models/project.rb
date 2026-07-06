@@ -109,8 +109,6 @@ class Project < ApplicationRecord
       blender_scene.update(settings.slice(*BlenderScene.column_names))
       self.current_blender_scene = blender_scene if scene_name == current_scene_name
     end
-
-    raise "BlendCheck has errors" if blend_check_errors.any?
   end
 
   def process_benchmark
@@ -235,7 +233,18 @@ class Project < ApplicationRecord
   end
 
   def blend_check_errors
-    blend_check&.workflow&.result&.dig("stats", "errors") || []
+    errors = blend_check&.workflow&.result&.dig("stats", "errors")
+    case errors
+    when Hash
+      Array(errors["global"]) +
+        Array(errors.dig("scenes", current_blender_scene&.name))
+    when Array then errors
+    else []
+    end
+  end
+
+  def has_errors?
+    blend_check_errors.any?
   end
 
   def update_price

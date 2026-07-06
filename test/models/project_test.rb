@@ -16,6 +16,46 @@ class ProjectTest < ActiveSupport::TestCase
     end
   end
 
+  test "blend_check_errors combines global and current scene errors" do
+    project = projects(:three_scenes)
+    project.blend_check.workflow.update(result: {
+      stats: { errors: {
+        global: [ "corrupt file" ],
+        scenes: { "Scene-1" => [ "no camera" ], "Scene-2" => [] },
+      } },
+    })
+
+    assert_equal [ "corrupt file", "no camera" ], project.blend_check_errors
+    assert project.has_errors?
+  end
+
+  test "has_errors? snaps back when switching to a scene without errors" do
+    project = projects(:three_scenes)
+    project.blend_check.workflow.update(result: {
+      stats: { errors: { scenes: { "Scene-1" => [ "no camera" ] } } },
+    })
+    assert project.has_errors?
+
+    project.current_blender_scene = blender_scenes(:two_of_three)
+    assert_not project.has_errors?
+  end
+
+  test "blend_check_errors supports the legacy flat array format" do
+    project = projects(:three_scenes)
+    project.blend_check.workflow.update(result: {
+      stats: { errors: [ "no camera" ] },
+    })
+
+    assert_equal [ "no camera" ], project.blend_check_errors
+    assert project.has_errors?
+  end
+
+  test "blend_check_errors is empty without a blend check result" do
+    project = projects(:created)
+    assert_equal [], project.blend_check_errors
+    assert_not project.has_errors?
+  end
+
   test "project.order should return the latest order when multiple exist" do
     project = projects(:benchmarked)
     user = users(:richard)

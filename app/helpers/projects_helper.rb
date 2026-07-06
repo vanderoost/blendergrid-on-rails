@@ -1,10 +1,12 @@
 module ProjectsHelper
   def badge_amber?(project)
-    project.in_progress? && !project.rendering?
+    (project.in_progress? && !project.rendering?) ||
+      (project.checked? && project.has_errors?)
   end
 
   def badge_green?(project)
-    project.checked? || project.benchmarked? || project.rendered?
+    (project.checked? && !project.has_errors?) ||
+      project.benchmarked? || project.rendered?
   end
 
   def badge_blue?(project)
@@ -13,6 +15,14 @@ module ProjectsHelper
 
   def badge_red?(project)
     project.failed?
+  end
+
+  def badge_text(project)
+    if project.checked? && project.has_errors?
+      "Has Errors"
+    else
+      project.status.titleize
+    end
   end
 
   def frame_description(project)
