@@ -600,7 +600,9 @@ class Dashboard
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
+      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
       addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
@@ -612,7 +614,9 @@ class Dashboard
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
+      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
       addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
@@ -624,7 +628,9 @@ class Dashboard
       addstr(" ")
       render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes) || "", 8)
+      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      addstr(" ")
+      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
       addstr(" ")
       render_cell(workflow.uuid, 36, color_pair(GRAY))
     end
