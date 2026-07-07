@@ -44,13 +44,6 @@ ActiveSupport::Notifications.subscribe("sql.active_record") do |name, start, fin
   end
 end
 
-# What to store in state?
-# VIEWS
-#  - Projects Table
-#  - Project Details
-#  - User Details
-#  - Revenue / KPI Stats
-
 class Dashboard
   include Curses
 
@@ -159,7 +152,10 @@ class Dashboard
           if owner_user.present?
             log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for user"\
               " #{owner_user.id}...")
+            # Unscope the default scope's deleted_at and 30-day updated_at
+            # filters: the owner view must show old and deleted projects too
             owner_projects = owner_user.projects
+              .unscope(where: [ :deleted_at, :updated_at ])
               .includes(
                 { upload: :user },
                 { benchmarks: :workflow },
@@ -167,6 +163,7 @@ class Dashboard
                 { order_items: :order },
                 :current_blender_scene,
               )
+              .order(stage_updated_at: :desc)
               .first(12)
               .to_a
             projects = (recent_projects + owner_projects).uniq
@@ -174,6 +171,7 @@ class Dashboard
             log("Polling latest #{PROJECT_POLL_COUNT} + owner projects for guest "\
               "#{owner_email}...")
             owner_projects = Project
+              .unscope(where: [ :deleted_at, :updated_at ])
               .includes(
                 { upload: :user },
                 { benchmarks: :workflow },
@@ -182,6 +180,7 @@ class Dashboard
               )
               .joins(:upload)
               .where(upload: { guest_email_address: owner_email })
+              .order(stage_updated_at: :desc)
               .first(12)
               .to_a
             projects = (recent_projects + owner_projects).uniq
@@ -263,13 +262,14 @@ class Dashboard
 
   def filtered_owner_projects
     # Filter projects list for active owner (must be called under @data_lock)
-    if @owner_user.present?
+    owner_projects = if @owner_user.present?
       @projects.select { |p| p.user == @owner_user }
     elsif @owner_email.present?
       @projects.select { |p| p.upload.guest_email_address == @owner_email }
     else
       []
     end
+    owner_projects.sort_by(&:stage_updated_at).reverse
   end
 
   def start_display_loop
@@ -591,48 +591,108 @@ class Dashboard
       render_cell("#{@project.tweaks["deadline_hours"]}h", 32)
     end
 
-    setpos(row += 1, 2)
+    if @project.benchmark&.workflow&.finished?
+      job_estimate = @project.job_estimate
+      cpu_job_time = job_estimate.cpu_init_time + job_estimate.cpu_sampling_time
+      gpu_job_time = job_estimate.gpu_init_time + job_estimate.gpu_sampling_time
 
-    if @project.blend_check&.workflow.present?
+      setpos(row += 2, 2)
+      render_cell("Job time estimation", nil, color_pair(BLUE))
+
       setpos(row += 1, 2)
-      workflow = @project.blend_check.workflow
+      render_cell("Device", first_col_width, color_pair(YELLOW))
+      addstr(" ")
+      render_cell("Init", 8, color_pair(YELLOW))
+      addstr(" ")
+      render_cell("Sampling", 8, color_pair(YELLOW))
+      addstr(" ")
+      render_cell("Total", 8, color_pair(YELLOW))
+
+      setpos(row += 1, 2)
+      render_cell("CPU", first_col_width)
+      addstr(" ")
+      render_cell(human_duration(job_estimate.cpu_init_time), 8)
+      addstr(" ")
+      render_cell(human_duration(job_estimate.cpu_sampling_time), 8)
+      addstr(" ")
+      render_cell(human_duration(cpu_job_time), 8)
+      if cpu_job_time < gpu_job_time
+        addstr(" ")
+        render_cell(
+          "-> #{gpu_job_time.fdiv(cpu_job_time).round(1)} × faster",
+          nil,
+          color_pair(MAGENTA)
+        )
+      end
+
+      setpos(row += 1, 2)
+      render_cell("GPU", first_col_width)
+      addstr(" ")
+      render_cell(human_duration(job_estimate.gpu_init_time), 8)
+      addstr(" ")
+      render_cell(human_duration(job_estimate.gpu_sampling_time), 8)
+      addstr(" ")
+      render_cell(human_duration(gpu_job_time), 8)
+      if gpu_job_time < cpu_job_time
+        speedup = cpu_job_time.fdiv(gpu_job_time)
+        addstr(" ")
+        render_cell(
+          "-> #{speedup.round(1)} × faster",
+          nil,
+          speedup > Pricing::JobEstimate::GPU_PRICE_FAC ?
+            color_pair(GREEN) : color_pair(MAGENTA)
+        )
+      end
+    end
+
+    blend_check_wf = @project.blend_check&.workflow
+    benchmark_wf = @project.benchmark&.workflow
+    render_wf = @project.render&.workflow
+    if blend_check_wf.present? or benchmark_wf.present? or render_wf.present?
+      setpos(row += 2, 2)
+      render_cell("Workflows", nil, color_pair(BLUE))
+    end
+
+    if blend_check_wf.present?
+      setpos(row += 1, 2)
       render_cell("Blend check:", first_col_width, color_pair(YELLOW))
       addstr(" ")
-      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      render_cell(
+        human_duration(blend_check_wf.updated_at - blend_check_wf.created_at),
+        8
+      )
       addstr(" ")
-      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      render_cell(cents_to_dollars(blend_check_wf.cost_cents), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
+      render_cell(number_to_human_size(blend_check_wf.peak_ram_bytes), 8)
       addstr(" ")
-      render_cell(workflow.uuid, 36, color_pair(GRAY))
+      render_cell(blend_check_wf.uuid, 36, color_pair(GRAY))
     end
 
-    if @project.benchmark&.workflow.present?
+    if benchmark_wf.present?
       setpos(row += 1, 2)
-      workflow = @project.benchmark.workflow
       render_cell("Benchmark:", first_col_width, color_pair(YELLOW))
       addstr(" ")
-      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      render_cell(human_duration(benchmark_wf.updated_at - benchmark_wf.created_at), 8)
       addstr(" ")
-      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      render_cell(cents_to_dollars(benchmark_wf.cost_cents), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
+      render_cell(number_to_human_size(benchmark_wf.peak_ram_bytes), 8)
       addstr(" ")
-      render_cell(workflow.uuid, 36, color_pair(GRAY))
+      render_cell(benchmark_wf.uuid, 36, color_pair(GRAY))
     end
 
-    if @project.render&.workflow.present?
+    if render_wf.present?
       setpos(row += 1, 2)
-      workflow = @project.render.workflow
       render_cell("Render:", first_col_width, color_pair(YELLOW))
       addstr(" ")
-      render_cell(human_duration(workflow.updated_at - workflow.created_at), 8)
+      render_cell(human_duration(render_wf.updated_at - render_wf.created_at), 8)
       addstr(" ")
-      render_cell(cents_to_dollars(workflow.cost_cents), 8)
+      render_cell(cents_to_dollars(render_wf.cost_cents), 8)
       addstr(" ")
-      render_cell(number_to_human_size(workflow.peak_ram_bytes), 8)
+      render_cell(number_to_human_size(render_wf.peak_ram_bytes), 8)
       addstr(" ")
-      render_cell(workflow.uuid, 36, color_pair(GRAY))
+      render_cell(render_wf.uuid, 36, color_pair(GRAY))
     end
   end
 
@@ -716,13 +776,14 @@ class Dashboard
     owner_projects.each_with_index do |p, i|
       # Highlight the selected project name
       hl = i == @project_ix
-      render_cell(p.name, 32, [ color_pair(BLUE), A_STANDOUT => hl ])
+      color = p.deleted_at.present? ? color_pair(GRAY) : color_pair(BLUE)
+      render_cell(p.name, 32, [ color, A_STANDOUT => hl ])
       addstr(" ")
 
       # Status
       render_cell(status_str(p), 16, [
         color_pair(GREEN) => p.rendered?,
-        color_pair(YELLOW) => p.in_progress?,
+        color_pair(YELLOW) => p.in_progress? && !p.deleted_at.present?,
         color_pair(RED) => p.failed?,
       ])
       addstr(" ")
@@ -745,6 +806,7 @@ class Dashboard
   end
 
   def render_cell(str, width, attrs = [])
+    width ||= str.length
     str = truncate(str, width)
     attrs = Array(attrs).flat_map do |attr|
       attr.is_a?(Hash) ? attr.select { |k, v| v }.keys : attr

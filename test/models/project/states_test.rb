@@ -107,6 +107,30 @@ class Project::StatesTest < ActiveSupport::TestCase
     assert project.benchmarked?
   end
 
+  test "finishing benchmarking fetches peak RAM before the first pricing" do
+    project = projects(:benchmarking)
+
+    # Give the benchmark workflow some data to pretend it finished
+    finished_workflow = workflows(:finished_benchmark)
+    project.benchmark.workflow.delete
+    project.benchmark.workflow = finished_workflow
+    project.benchmark.save!
+
+    # Stub stats logs for every S3 client, including the one created inside
+    # Workflow#update_peak_ram!
+    Aws.config[:s3] = { stub_responses: {
+      list_objects_v2: { contents: [ { key: "stats-log.json" } ] },
+      get_object: { body: '{"time":1783078135195,"cpu":91.3,"ram":188596224}' },
+    } }
+
+    project.finish_benchmarking
+
+    assert project.benchmarked?
+    assert_equal 188596224, finished_workflow.reload.peak_ram_bytes
+  ensure
+    Aws.config.delete(:s3)
+  end
+
   test "a benchmarked project can start rendering" do
     project = projects(:benchmarked)
     assert project.benchmarked?

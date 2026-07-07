@@ -122,6 +122,14 @@ class Project < ApplicationRecord
     self.tweaks_resolution_percentage = resolution_percentage
     self.tweaks_sampling_max_samples = sampling_max_samples
 
+    # Peak RAM decides CPU vs GPU pricing, so fetch it before the first price
+    # calculation instead of waiting for the async FetchWorkflowPeakRamJob.
+    begin
+      benchmark.workflow.update_peak_ram!
+    rescue StandardError => error
+      Rails.logger.error "Peak RAM fetch failed, pricing as CPU: #{error.message}"
+    end
+
     update_price
 
     self.save!
