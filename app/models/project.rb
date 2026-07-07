@@ -16,8 +16,6 @@ class Project < ApplicationRecord
     },
   }
   DEFAULT_DEADLINE_HOURS = 5
-  GPU_SAMPLING_TIME_THRESH = 5.minutes
-  GPU_SAMPLING_FAC_THRESH = 10
 
   include HasSceneSettings
   include JsonAccessible
@@ -308,15 +306,11 @@ class Project < ApplicationRecord
     return false if current_blender_scene.blank?
     return false if benchmark&.workflow&.timing.blank?
 
-    sampling_fac = job_estimate.sampling_time.fdiv([ job_estimate.init_time,
-      1.second ].max)
-
-    job_estimate.sampling_time > GPU_SAMPLING_TIME_THRESH &&
-      sampling_fac > GPU_SAMPLING_FAC_THRESH
+    job_estimate.use_gpu?
   end
 
   def job_estimate
-    Pricing::JobEstimate.new(
+    @job_estimate ||= Pricing::JobEstimate.new(
       benchmark: benchmark,
       blender_scene: current_blender_scene,
       tweaks: tweaks,

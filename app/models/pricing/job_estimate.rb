@@ -1,4 +1,10 @@
 class Pricing::JobEstimate
+  GPU_MAX_RAM_GB = 80
+  GPU_SAMPLING_SPEEDUP = 5.0
+  GPU_INIT_SLOWDOWN = 3.0
+  GPU_PRICE_FAC = 2.5
+  UNKNOWN_RAM_GB = 128
+
   def initialize(benchmark:, blender_scene:, tweaks: {})
     raise "No Benchmark provided" if benchmark.blank?
     raise "No BlenderScene provided" if blender_scene.blank?
@@ -21,20 +27,45 @@ class Pricing::JobEstimate
     @timing.dig("upload", "max").milliseconds
   end
 
+  def cpu_init_time
+    stat_time("init")
+  end
+
+  def gpu_init_time
+    ActiveSupport::Duration.build(stat_time("init") * GPU_INIT_SLOWDOWN)
+  end
+
   def init_time
-    @init_time ||= stat_time("init")
+    @init_time ||= use_gpu? ? gpu_init_time : cpu_init_time
+  end
+
+  def cpu_sampling_time
+    ActiveSupport::Duration.build(stat_time("sampling") * sample_factor)
+  end
+
+  def gpu_sampling_time
+    ActiveSupport::Duration.build(
+      stat_time("sampling") * sample_factor / GPU_SAMPLING_SPEEDUP
+    )
   end
 
   def sampling_time
-    @sampling_time ||= ActiveSupport::Duration.build(
-      stat_time("sampling") * sample_factor
-    )
+    @sampling_time ||= use_gpu? ? gpu_sampling_time : cpu_sampling_time
   end
 
   def post_time
-    @post_time ||= ActiveSupport::Duration.build(
-      stat_time("post") * pixel_factor
-    )
+    @post_time ||= ActiveSupport::Duration.build(stat_time("post") * pixel_factor)
+  end
+
+  def use_gpu?
+    cpu_time = cpu_init_time + cpu_sampling_time + upload_time + post_time
+    gpu_time = gpu_init_time + gpu_sampling_time + upload_time + post_time
+
+    Rails.logger.info("Job time - CPU: #{cpu_time} - GPU: #{gpu_time}")
+
+    required_ram = @benchmark.workflow.peak_ram_bytes || UNKNOWN_RAM_GB.gigabytes
+
+    cpu_time > gpu_time * GPU_PRICE_FAC && required_ram < GPU_MAX_RAM_GB.gigabytes
   end
 
   def job_time

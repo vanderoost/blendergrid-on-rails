@@ -117,6 +117,9 @@ class Pricing::Calculation
         total_hourly_cost += @node_supplies.last.millicents_per_hour * nodes_remaining
       end
       avg_node_hour_cost = total_hourly_cost.to_f / node_count / 1_000
+      if @estimate.use_gpu?
+        avg_node_hour_cost *= Pricing::JobEstimate::GPU_PRICE_FAC
+      end
       debug { "AVG NODE HOUR COST: #{avg_node_hour_cost.round 4} cents" }
 
       # How long do we expect to run the nodes?
